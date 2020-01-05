@@ -12,6 +12,7 @@ libraryDependencies ++= Seq(
   ehcache,
   guice,
   ws,
+  "org.typelevel" %% "cats-core" % "2.0.0",
   "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test,
   "org.mockito" % "mockito-all" % "1.8.4" % Test
 )
