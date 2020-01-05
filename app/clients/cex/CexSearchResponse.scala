@@ -25,8 +25,8 @@ object CexSearchResponse {
       (JsPath \ "boxName").read[String] and
       (JsPath \ "categoryName").read[String] and
       (JsPath \ "sellPrice").read[Int] and
-      (JsPath \ "cashPrice").read[Int] and
-      (JsPath \ "exchangePrice").read[Int]
+      (JsPath \ "exchangePrice").read[Int] and
+      (JsPath \ "cashPrice").read[Int]
     )(SearchResult.apply _)
 
   implicit val searchResultsReads: Reads[SearchResults] = (

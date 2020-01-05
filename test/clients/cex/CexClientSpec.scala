@@ -12,12 +12,14 @@ import play.api.test.WsTestClient
 import play.core.server.Server
 import play.api.routing.sird._
 import play.filters.HttpFiltersComponents
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 
 class CexClientSpec extends PlaySpec with ScalaFutures {
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  val cexConfig = Map("baseUri" -> "", "searchPath" -> "/search")
+  val cexConfig = Map("baseUri" -> "/cex", "searchPath" -> "/search")
   val config: Configuration = Configuration("cex" -> cexConfig)
 
   "CexClient" should {
@@ -25,7 +27,7 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
       Server.withApplicationFromContext() { context =>
         new BuiltInComponentsFromContext(context) with HttpFiltersComponents {
           override def router: Router = Router.from {
-            case GET(p"/search") =>
+            case GET(p"/cex/search" ? q"q=$query") =>
               Action { req =>
                 Results.Ok.sendResource("cex/cex-search-response.json")(executionContext, fileMimeTypes)
               }
@@ -36,8 +38,8 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
           val cexClient = new CexClient(config, client)
           val result = cexClient.findResellPrice("iphone 7")
 
-          whenReady(result) { minPrice =>
-            minPrice must be (Right(ResellPrice(BigDecimal.valueOf(10), BigDecimal.valueOf(15))))
+          whenReady(result, timeout(6 seconds), interval(500 millis)) { minPrice =>
+            minPrice must be (Right(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153))))
           }
         }
       }
