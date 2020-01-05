@@ -42,5 +42,5 @@ object CexSearchResponse {
       (JsPath \ "error").read[SearchError]
     )(SearchResponse.apply _)
 
-  implicit val cexSearchResponseReads: Reads[CexSearchResponse] = ((JsPath \ "response").read[SearchResponse])(CexSearchResponse.apply _)
+  implicit val cexSearchResponseReads: Reads[CexSearchResponse] = (JsPath \ "response").read[SearchResponse].map(CexSearchResponse.apply)
 }

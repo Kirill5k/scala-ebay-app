@@ -14,7 +14,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
 
-  private val logger: Logger = Logger(getClass())
+  private val logger: Logger = Logger(getClass)
 
   private val cexConfig = config.get[CexConfig]("cex")
   private val searchRequest = client
@@ -32,7 +32,7 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
       )
       .map(cexSearchResponse => cexSearchResponse.map(_.response.data.boxes))
       .map(searchResults => searchResults.map(boxes => {
-        logger.info(s"search \"${query}\" returned ${boxes.size} results")
+        logger.info(s"search '$query' returned ${boxes.size} results")
         calcMinResellPrice(boxes)
       }))
       .recover {
