@@ -6,9 +6,17 @@ import play.api.libs.functional.syntax._
 
 case class SearchError(code: String, internalMessage: String)
 
+object SearchError {
+  def empty(): SearchError = SearchError("", "")
+}
+
 case class SearchResult(boxId: String, boxName: String, categoryName: String, sellPrice: Int, exchangePrice: Int, cashPrice: Int)
 
 case class SearchResults(boxes: Seq[SearchResult], totalRecords: Int, minPrice: Int, maxPrice: Int)
+
+object SearchResults {
+  def empty(): SearchResults = SearchResults(Seq(), 0, 0, 0)
+}
 
 case class SearchResponse(ack: String, data: SearchResults, error: SearchError)
 

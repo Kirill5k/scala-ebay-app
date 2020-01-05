@@ -1,6 +1,7 @@
 package clients.cex
 
 import domain.ResellPrice
+import exceptions.ApiClientError
 import org.scalatest.Matchers
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
@@ -30,6 +31,26 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
 
         whenReady(result, timeout(6 seconds), interval(500 millis)) { minPrice =>
           minPrice must be (Right(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153))))
+        }
+      }
+    }
+
+    "return 0 resell price when no results" in {
+      withCexClient(200, "cex/search-noresults-response.json") { cexClient =>
+        val result = cexClient.findResellPrice("iphone 7")
+
+        whenReady(result, timeout(6 seconds), interval(500 millis)) { minPrice =>
+          minPrice must be (Right(ResellPrice(BigDecimal.valueOf(0), BigDecimal.valueOf(0))))
+        }
+      }
+    }
+
+    "return api client error when failed to parse json" in {
+      withCexClient(200, "cex/search-unexpected-response.json") { cexClient =>
+        val result = cexClient.findResellPrice("iphone 7")
+
+        whenReady(result, timeout(6 seconds), interval(500 millis)) { minPrice =>
+          minPrice must be (Left(ApiClientError(500, "JsResultException(errors:List((/response/data/boxes,List(JsonValidationError(List(error.expected.jsarray),ArraySeq())))))")))
         }
       }
     }
