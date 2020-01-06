@@ -4,11 +4,6 @@ import play.api.libs.json._
 import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
 
-case class SearchError(code: String, internalMessage: String)
-
-object SearchError {
-  def empty(): SearchError = SearchError("", "")
-}
 
 case class SearchResult(boxId: String, boxName: String, categoryName: String, sellPrice: Int, exchangePrice: Int, cashPrice: Int)
 
@@ -18,16 +13,11 @@ object SearchResults {
   def empty(): SearchResults = SearchResults(Seq(), 0, 0, 0)
 }
 
-case class SearchResponse(ack: String, data: SearchResults, error: SearchError)
+case class SearchResponse(data: SearchResults)
 
 case class CexSearchResponse(response: SearchResponse)
 
 object CexSearchResponse {
-  implicit val searchErrorReads: Reads[SearchError] = (
-    (JsPath \ "code").read[String] and
-    (JsPath \ "internal_message").read[String]
-  )(SearchError.apply _)
-
   implicit val searchResultReads: Reads[SearchResult] = (
       (JsPath \ "boxId").read[String] and
       (JsPath \ "boxName").read[String] and
@@ -44,11 +34,10 @@ object CexSearchResponse {
       (JsPath \ "maxPrice").read[Int]
     )(SearchResults.apply _)
 
-  implicit val searchResponseReads: Reads[SearchResponse] = (
-      (JsPath \ "ack").read[String] and
-      (JsPath \ "data").read[SearchResults] and
-      (JsPath \ "error").read[SearchError]
-    )(SearchResponse.apply _)
+  implicit val searchResponseReads: Reads[SearchResponse] = (JsPath \ "data").readNullable[SearchResults].map {
+    case Some(data) => SearchResponse(data)
+    case None => SearchResponse(SearchResults.empty())
+  }
 
   implicit val cexSearchResponseReads: Reads[CexSearchResponse] = (JsPath \ "response").read[SearchResponse].map(CexSearchResponse.apply)
 }
