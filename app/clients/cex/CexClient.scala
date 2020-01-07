@@ -1,7 +1,10 @@
 package clients.cex
 
+import java.io.IOException
+
 import cats.data.EitherT
 import cats.implicits._
+import com.fasterxml.jackson.core.JsonParseException
 import configs.CexConfig
 import domain.ResellPrice
 import exceptions.ApiClientError
@@ -30,9 +33,7 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
         if (Status.isSuccessful(res.status)) Right(res.body[JsValue].as[CexSearchResponse])
         else Left(ApiClientError(res.status, s"error sending request to cex: ${res.statusText}"))
       )
-      .recover {
-        case error: Throwable => Left(ApiClientError(Status.INTERNAL_SERVER_ERROR, error.getMessage))
-      }
+      .recover(ApiClientError.recoverFromHttpCallFailure.andThen(Left(_)))
 
     EitherT(searchResponse)
       .map(_.response.data.boxes)

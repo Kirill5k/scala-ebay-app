@@ -50,7 +50,7 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
         val result = cexClient.findResellPrice("iphone 7")
 
         whenReady(result, timeout(6 seconds), interval(500 millis)) { minPrice =>
-          minPrice must be (Left(ApiClientError(500, "JsResultException(errors:List((/response/data/boxes,List(JsonValidationError(List(error.expected.jsarray),ArraySeq())))))")))
+          minPrice must be (Left(ApiClientError(500, "error parsing json: JsResultException(errors:List((/response/data/boxes,List(JsonValidationError(List(error.expected.jsarray),ArraySeq())))))")))
         }
       }
     }
