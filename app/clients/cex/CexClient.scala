@@ -1,6 +1,7 @@
 package clients.cex
 
 import cats.data.EitherT
+import cats.implicits._
 import configs.CexConfig
 import domain.ResellPrice
 import exceptions.ApiClientError
@@ -14,8 +15,6 @@ import play.api.Logger
 import scala.concurrent.{ExecutionContext, Future}
 
 class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
-
-  type FutureEither[A] = EitherT[Future, ApiClientError, A]
 
   private val logger: Logger = Logger(getClass)
 
@@ -35,15 +34,14 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
         case error: Throwable => Left(ApiClientError(Status.INTERNAL_SERVER_ERROR, error.getMessage))
       }
 
-    searchResponse
-      .map(cexSearchResponse => cexSearchResponse.map(_.response.data.boxes))
-      .map(searchResults => searchResults.map(boxes => {
-        logger.info(s"search '$query' returned ${boxes.size} results")
-        findMinResellPrice(boxes)
-      }))
+    EitherT(searchResponse)
+      .map(_.response.data.boxes)
+      .map(findMinResellPrice(query, _))
+      .value
   }
 
-  private def findMinResellPrice(searchResults: Seq[SearchResult]): ResellPrice = {
+  private def findMinResellPrice(query: String, searchResults: Seq[SearchResult]): ResellPrice = {
+    logger.info(s"search '$query' returned ${searchResults.size} results")
     if (searchResults.isEmpty) ResellPrice.empty()
     else {
       val minPriceSearchResult: SearchResult = searchResults.minBy(_.exchangePrice)
