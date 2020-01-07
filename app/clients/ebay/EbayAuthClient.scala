@@ -1,6 +1,6 @@
 package clients.ebay
 
-import configs.{CexConfig, EbayConfig}
+import configs.{EbayConfig}
 import exceptions.ApiClientError
 import javax.inject.Inject
 import play.api.http.Status
