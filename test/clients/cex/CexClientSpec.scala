@@ -61,7 +61,7 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
       new BuiltInComponentsFromContext(context) with HttpFiltersComponents {
         override def router: Router = Router.from {
           case GET(p"/cex/search" ? q"q=$query") =>
-            Action { request =>
+            Action { _ =>
               Results.Status(status).sendResource(responseFile)(executionContext, fileMimeTypes)
             }
         }
