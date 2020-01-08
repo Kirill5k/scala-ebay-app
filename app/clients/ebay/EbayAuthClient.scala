@@ -29,7 +29,6 @@ class EbayAuthClient @Inject() (config: Configuration, client: WSClient)(implici
   private var authToken: FutureErrorOr[EbayAuthToken] = EitherT.leftT(AuthError("authentication with ebay is required"))
 
   def accessToken(): FutureErrorOr[EbayAuthToken] = {
-    val t = Right("hello")
     authToken = authToken
       .ensure(AuthError("ebay token has expired"))(_.isValid)
       .orElse(authenticate())
@@ -50,8 +49,8 @@ class EbayAuthClient @Inject() (config: Configuration, client: WSClient)(implici
         else (res.status, res.body[JsValue].as[EbayAuthErrorResponse])
       )
       .map {
-        case (_, EbayAuthSuccessResponse(token, expiresIn, _)) => Right(EbayAuthToken(token, expiresIn))
-        case (status, EbayAuthErrorResponse(error, description)) => Left(HttpError(status, s"error authenticating with ebay: $error-$description"))
+        case (_, EbayAuthSuccessResponse(token, expiresIn, _)) => EbayAuthToken(token, expiresIn).asRight
+        case (status, EbayAuthErrorResponse(error, description)) => HttpError(status, s"error authenticating with ebay: $error-$description").asLeft
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(Left(_)))
     EitherT(authResponse)

@@ -28,8 +28,8 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
   def findResellPrice(query: String): FutureErrorOr[ResellPrice] = {
     val searchResponse = searchRequest.withQueryStringParameters("q" -> query).get()
       .map(res =>
-        if (Status.isSuccessful(res.status)) Right(res.body[JsValue].as[CexSearchResponse])
-        else Left(HttpError(res.status, s"error sending request to cex: ${res.statusText}"))
+        if (Status.isSuccessful(res.status)) res.body[JsValue].as[CexSearchResponse].asRight
+        else HttpError(res.status, s"error sending request to cex: ${res.statusText}").asLeft
       )
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(Left(_)))
 
