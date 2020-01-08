@@ -1,13 +1,11 @@
 package clients.cex
 
-import java.io.IOException
-
 import cats.data.EitherT
 import cats.implicits._
-import com.fasterxml.jackson.core.JsonParseException
 import configs.CexConfig
 import domain.ResellPrice
-import exceptions.ApiClientError
+import exceptions.{ApiClientError, HttpError}
+import exceptions.ApiClientError.FutureErrorOr
 import javax.inject.Inject
 import play.api.Configuration
 import play.api.http.Status
@@ -15,7 +13,7 @@ import play.api.libs.json.JsValue
 import play.api.libs.ws.WSClient
 import play.api.Logger
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
 
@@ -27,18 +25,17 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
     .addHttpHeaders("Accept" -> "application/json")
     .addHttpHeaders("Content-Type" -> "application/json")
 
-  def findResellPrice(query: String): Future[Either[Throwable, ResellPrice]] = {
+  def findResellPrice(query: String): FutureErrorOr[ResellPrice] = {
     val searchResponse = searchRequest.withQueryStringParameters("q" -> query).get()
       .map(res =>
         if (Status.isSuccessful(res.status)) Right(res.body[JsValue].as[CexSearchResponse])
-        else Left(ApiClientError(res.status, s"error sending request to cex: ${res.statusText}"))
+        else Left(HttpError(res.status, s"error sending request to cex: ${res.statusText}"))
       )
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(Left(_)))
 
     EitherT(searchResponse)
       .map(_.response.data.boxes)
       .map(findMinResellPrice(query, _))
-      .value
   }
 
   private def findMinResellPrice(query: String, searchResults: Seq[SearchResult]): ResellPrice = {

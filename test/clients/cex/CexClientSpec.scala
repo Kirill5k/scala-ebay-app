@@ -1,7 +1,7 @@
 package clients.cex
 
 import domain.ResellPrice
-import exceptions.ApiClientError
+import exceptions.{ApiClientError, HttpError, InternalError}
 import org.scalatest.Matchers
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
@@ -29,7 +29,7 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
       withCexClient(200, "cex/search-success-response.json") { cexClient =>
         val result = cexClient.findResellPrice("iphone 7")
 
-        whenReady(result, timeout(6 seconds), interval(500 millis)) { minPrice =>
+        whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
           minPrice must be (Right(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153))))
         }
       }
@@ -39,18 +39,28 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
       withCexClient(200, "cex/search-noresults-response.json") { cexClient =>
         val result = cexClient.findResellPrice("iphone 7")
 
-        whenReady(result, timeout(6 seconds), interval(500 millis)) { minPrice =>
+        whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
           minPrice must be (Right(ResellPrice(BigDecimal.valueOf(0), BigDecimal.valueOf(0))))
         }
       }
     }
 
-    "return api client error when failed to parse json" in {
+    "return internal error when failed to parse json" in {
       withCexClient(200, "cex/search-unexpected-response.json") { cexClient =>
         val result = cexClient.findResellPrice("iphone 7")
 
-        whenReady(result, timeout(6 seconds), interval(500 millis)) { minPrice =>
-          minPrice must be (Left(ApiClientError(500, "error parsing json: JsResultException(errors:List((/response/data/boxes,List(JsonValidationError(List(error.expected.jsarray),ArraySeq())))))")))
+        whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
+          minPrice must be (Left(InternalError("error parsing json: JsResultException(errors:List((/response/data/boxes,List(JsonValidationError(List(error.expected.jsarray),ArraySeq())))))")))
+        }
+      }
+    }
+
+    "return http error when not success" in {
+      withCexClient(400, "cex/search-error-response.json") { cexClient =>
+        val result = cexClient.findResellPrice("iphone 7")
+
+        whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
+          minPrice must be (Left(HttpError(400, "error sending request to cex: Bad Request")))
         }
       }
     }
