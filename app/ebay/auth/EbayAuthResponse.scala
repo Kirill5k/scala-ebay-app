@@ -1,4 +1,4 @@
-package ebay
+package ebay.auth
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Reads}

@@ -1,4 +1,4 @@
-package ebay
+package ebay.auth
 
 import java.time.Instant
 

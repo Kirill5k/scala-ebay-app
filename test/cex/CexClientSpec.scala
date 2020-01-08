@@ -23,6 +23,7 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
   val config: Configuration = Configuration("cex" -> cexConfig)
 
   "CexClient" should {
+
     "find minimal resell price" in {
       withCexClient(200, "cex/search-success-response.json") { cexClient =>
         val result = cexClient.findResellPrice("iphone 7")

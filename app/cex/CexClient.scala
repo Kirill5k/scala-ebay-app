@@ -29,7 +29,7 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
         if (Status.isSuccessful(res.status)) res.body[JsValue].as[CexSearchResponse].asRight
         else HttpError(res.status, s"error sending request to cex: ${res.statusText}").asLeft
       )
-      .recover(ApiClientError.recoverFromHttpCallFailure.andThen(Left(_)))
+      .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
 
     EitherT(searchResponse)
       .map(_.response.data.boxes)

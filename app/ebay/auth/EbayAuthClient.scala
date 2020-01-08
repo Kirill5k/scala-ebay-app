@@ -1,7 +1,8 @@
-package ebay
+package ebay.auth
 
 import cats.data.EitherT
 import cats.implicits._
+import ebay.EbayConfig
 import exceptions.ApiClientError.FutureErrorOr
 import exceptions.{ApiClientError, AuthError, HttpError}
 import javax.inject.Inject
@@ -27,11 +28,11 @@ class EbayAuthClient @Inject() (config: Configuration, client: WSClient)(implici
   private var currentAccountIndex: Int = 0
   private var authToken: FutureErrorOr[EbayAuthToken] = EitherT.leftT(AuthError("authentication with ebay is required"))
 
-  def accessToken(): FutureErrorOr[EbayAuthToken] = {
+  def accessToken(): FutureErrorOr[String] = {
     authToken = authToken
       .ensure(AuthError("ebay token has expired"))(_.isValid)
       .orElse(authenticate())
-    authToken
+    authToken.map(_.token)
   }
 
   def switchAccount(): Unit = {
@@ -51,7 +52,7 @@ class EbayAuthClient @Inject() (config: Configuration, client: WSClient)(implici
         case (_, EbayAuthSuccessResponse(token, expiresIn, _)) => EbayAuthToken(token, expiresIn).asRight
         case (status, EbayAuthErrorResponse(error, description)) => HttpError(status, s"error authenticating with ebay: $error-$description").asLeft
       }
-      .recover(ApiClientError.recoverFromHttpCallFailure.andThen(Left(_)))
+      .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
     EitherT(authResponse)
   }
 }

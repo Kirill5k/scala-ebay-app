@@ -1,4 +1,4 @@
-package ebay
+package ebay.auth
 
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
