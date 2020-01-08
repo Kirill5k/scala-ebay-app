@@ -23,30 +23,16 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
   val cexConfig = Map("baseUri" -> "/cex", "searchPath" -> "/search")
   val config: Configuration = Configuration("cex" -> cexConfig)
 
+  val queryString = "iphone 7"
+
   "CexClient" should {
 
     "find minimal resell price" in {
-      Server.withApplicationFromContext() { context =>
-        new BuiltInComponentsFromContext(context) with HttpFiltersComponents {
-          override def router: Router = Router.from {
-            case GET(p"/cex/search" ? q"q=$query") =>
-              query must be ("iphone 7")
-              Action{ req =>
-                req.contentType must be (Some("application/json"))
-                req.acceptedTypes must be (MediaRange.parse("application/json"))
-                Results.Ok.sendResource("cex/search-success-response.json")(executionContext, fileMimeTypes)
-              }
-          }
-        }.application
-      } { implicit port =>
-        WsTestClient.withClient { client =>
-          val cexClient = new CexClient(config, client)
+      withCexClient(200, "cex/search-success-response.json") { cexClient =>
+        val result = cexClient.findResellPrice("iphone 7")
 
-          val result = cexClient.findResellPrice("iphone 7")
-
-          whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
-            minPrice must be (Right(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153))))
-          }
+        whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
+          minPrice must be (Right(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153))))
         }
       }
     }
@@ -87,7 +73,12 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
       new BuiltInComponentsFromContext(context) with HttpFiltersComponents {
         override def router: Router = Router.from {
           case GET(p"/cex/search" ? q"q=$query") =>
-            Action(Results.Status(status).sendResource(responseFile)(executionContext, fileMimeTypes))
+            Action{req =>
+              query must be (queryString)
+              req.contentType must be (Some("application/json"))
+              req.acceptedTypes must be (MediaRange.parse("application/json"))
+              Results.Status(status).sendResource(responseFile)(executionContext, fileMimeTypes)
+            }
         }
       }.application
     } { implicit port =>
