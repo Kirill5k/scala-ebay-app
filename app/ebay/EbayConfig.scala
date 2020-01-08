@@ -1,4 +1,4 @@
-package configs
+package ebay
 
 import java.net.URI
 

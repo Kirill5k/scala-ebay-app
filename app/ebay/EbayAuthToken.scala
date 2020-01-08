@@ -1,4 +1,4 @@
-package clients.ebay
+package ebay
 
 import java.time.Instant
 

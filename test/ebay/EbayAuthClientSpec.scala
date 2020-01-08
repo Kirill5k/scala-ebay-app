@@ -1,17 +1,15 @@
-package clients.ebay
+package ebay
 
-import org.scalatest.FunSuite
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
-import play.api.{BuiltInComponentsFromContext, Configuration}
 import play.api.mvc.Results
 import play.api.routing.Router
 import play.api.routing.sird._
 import play.api.test.WsTestClient
+import play.api.{BuiltInComponentsFromContext, Configuration}
 import play.core.server.Server
 import play.filters.HttpFiltersComponents
 
-import scala.concurrent.duration._
 import scala.language.postfixOps
 
 class EbayAuthClientSpec extends PlaySpec with ScalaFutures {

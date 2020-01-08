@@ -1,17 +1,15 @@
-package clients.cex
+package cex
 
 import cats.data.EitherT
 import cats.implicits._
-import configs.CexConfig
 import domain.ResellPrice
-import exceptions.{ApiClientError, HttpError}
 import exceptions.ApiClientError.FutureErrorOr
+import exceptions.{ApiClientError, HttpError}
 import javax.inject.Inject
-import play.api.Configuration
+import play.api.{Configuration, Logger}
 import play.api.http.Status
 import play.api.libs.json.JsValue
 import play.api.libs.ws.WSClient
-import play.api.Logger
 
 import scala.concurrent.ExecutionContext
 

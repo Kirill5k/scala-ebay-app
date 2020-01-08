@@ -1,15 +1,14 @@
-package clients.ebay
+package ebay
 
 import cats.data.EitherT
 import cats.implicits._
-import configs.EbayConfig
-import exceptions.{ApiClientError, AuthError, HttpError}
 import exceptions.ApiClientError.FutureErrorOr
+import exceptions.{ApiClientError, AuthError, HttpError}
 import javax.inject.Inject
 import play.api.http.Status
 import play.api.libs.json.JsValue
-import play.api.{Configuration, Logger}
 import play.api.libs.ws.{WSAuthScheme, WSClient}
+import play.api.{Configuration, Logger}
 
 import scala.concurrent.ExecutionContext
 

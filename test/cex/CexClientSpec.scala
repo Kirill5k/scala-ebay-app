@@ -1,17 +1,15 @@
-package clients.cex
+package cex
 
 import domain.ResellPrice
-import exceptions.{ApiClientError, HttpError, InternalError}
-import org.scalatest.Matchers
+import exceptions.{HttpError, InternalError}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
-import play.api.{BuiltInComponentsFromContext, Configuration}
-import play.api.libs.json.Json
-import play.api.mvc.{Result, Results}
+import play.api.mvc.Results
 import play.api.routing.Router
-import play.api.test.WsTestClient
-import play.core.server.Server
 import play.api.routing.sird._
+import play.api.test.WsTestClient
+import play.api.{BuiltInComponentsFromContext, Configuration}
+import play.core.server.Server
 import play.filters.HttpFiltersComponents
 
 import scala.concurrent.duration._
