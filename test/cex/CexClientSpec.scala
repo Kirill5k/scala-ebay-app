@@ -4,6 +4,7 @@ import domain.ResellPrice
 import exceptions.{HttpError, InternalError}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
+import play.api.http.MediaRange
 import play.api.mvc.Results
 import play.api.routing.Router
 import play.api.routing.sird._
@@ -25,11 +26,27 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
   "CexClient" should {
 
     "find minimal resell price" in {
-      withCexClient(200, "cex/search-success-response.json") { cexClient =>
-        val result = cexClient.findResellPrice("iphone 7")
+      Server.withApplicationFromContext() { context =>
+        new BuiltInComponentsFromContext(context) with HttpFiltersComponents {
+          override def router: Router = Router.from {
+            case GET(p"/cex/search" ? q"q=$query") =>
+              query must be ("iphone 7")
+              Action{ req =>
+                req.contentType must be (Some("application/json"))
+                req.acceptedTypes must be (MediaRange.parse("application/json"))
+                Results.Ok.sendResource("cex/search-success-response.json")(executionContext, fileMimeTypes)
+              }
+          }
+        }.application
+      } { implicit port =>
+        WsTestClient.withClient { client =>
+          val cexClient = new CexClient(config, client)
 
-        whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
-          minPrice must be (Right(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153))))
+          val result = cexClient.findResellPrice("iphone 7")
+
+          whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
+            minPrice must be (Right(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153))))
+          }
         }
       }
     }
@@ -70,9 +87,7 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
       new BuiltInComponentsFromContext(context) with HttpFiltersComponents {
         override def router: Router = Router.from {
           case GET(p"/cex/search" ? q"q=$query") =>
-            Action { _ =>
-              Results.Status(status).sendResource(responseFile)(executionContext, fileMimeTypes)
-            }
+            Action(Results.Status(status).sendResource(responseFile)(executionContext, fileMimeTypes))
         }
       }.application
     } { implicit port =>
