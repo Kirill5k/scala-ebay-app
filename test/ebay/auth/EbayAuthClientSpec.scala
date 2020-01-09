@@ -2,7 +2,7 @@ package ebay.auth
 
 import cats.data.EitherT
 import cats.implicits._
-import exceptions.{ApiClientError}
+import exceptions.{ApiClientError, HttpError}
 import org.mockito.scalatest.{IdiomaticMockito, MockitoSugar}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
@@ -31,7 +31,7 @@ class EbayAuthClientSpec extends PlaySpec with ScalaFutures with MockitoSugar {
   "EbayAuthClient" should {
 
     "make post request to obtain auth token" in {
-      withEbayAuthClient(200, "ebay/auth-success-response.json") { ebayAuthClient =>
+      withEbayAuthClient(200, "ebay/auth-success-response.json", "Basic aWQtMTpzZWNyZXQtMQ==") { ebayAuthClient =>
         val accessToken = ebayAuthClient.accessToken()
 
         whenReady(accessToken.value, timeout(10 seconds), interval(500 millis)) { token =>
@@ -53,9 +53,42 @@ class EbayAuthClientSpec extends PlaySpec with ScalaFutures with MockitoSugar {
         verifyNoMoreInteractions(wsRequestMock)
       }
     }
+
+    "authenticate with different account when switched" in {
+      withEbayAuthClient(200, "ebay/auth-success-response.json", "Basic aWQtMjpzZWNyZXQtMg==") { ebayAuthClient =>
+        ebayAuthClient.switchAccount()
+        val accessToken = ebayAuthClient.accessToken()
+
+        whenReady(accessToken.value, timeout(10 seconds), interval(500 millis)) { token =>
+          ebayAuthClient.currentAccountIndex must be (1)
+          token must be (Right("KTeE7V9J5VTzdfKpn/nnrkj4+nbtl/fDD92Vctbbalh37c1X3fvEt7u7/uLZ93emB1uu/i5eOz3o8MfJuV7288dzu48BEAAA=="))
+        }
+      }
+    }
+
+    "make another request when original token has expired" in {
+      withEbayAuthClient(200, "ebay/auth-success-response.json", "Basic aWQtMTpzZWNyZXQtMQ==") { ebayAuthClient =>
+        ebayAuthClient.authToken = EitherT.rightT[Future, ApiClientError](EbayAuthToken("test-token", 0))
+        val accessToken = ebayAuthClient.accessToken()
+
+        whenReady(accessToken.value, timeout(10 seconds), interval(500 millis)) { token =>
+          token must be (Right("KTeE7V9J5VTzdfKpn/nnrkj4+nbtl/fDD92Vctbbalh37c1X3fvEt7u7/uLZ93emB1uu/i5eOz3o8MfJuV7288dzu48BEAAA=="))
+        }
+      }
+    }
+
+    "handle errors from ebay" in {
+      withEbayAuthClient(400, "ebay/auth-error-response.json", "Basic aWQtMTpzZWNyZXQtMQ==") { ebayAuthClient =>
+        val accessToken = ebayAuthClient.accessToken()
+
+        whenReady(accessToken.value, timeout(10 seconds), interval(500 millis)) { token =>
+          token must be (Left(HttpError(400, "error authenticating with ebay: unsupported_grant_type-grant type in request is not supported by the authorization server")))
+        }
+      }
+    }
   }
 
-  def withEbayAuthClient[T](status: Int, responseFile: String, expectedAuthHeader: String = "Basic aWQtMTpzZWNyZXQtMQ==")(block: EbayAuthClient => T): T = {
+  def withEbayAuthClient[T](status: Int, responseFile: String, expectedAuthHeader: String)(block: EbayAuthClient => T): T = {
     Server.withApplicationFromContext() { context =>
       new BuiltInComponentsFromContext(context) with HttpFiltersComponents {
         override def router: Router = Router.from {
