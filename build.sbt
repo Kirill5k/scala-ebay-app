@@ -15,7 +15,8 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-core" % "2.1.0",
 
   "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test,
-  "org.mockito" % "mockito-all" % "1.8.4" % Test
+  "org.mockito" %% "mockito-scala" % "1.10.3" % Test,
+  "org.mockito" %% "mockito-scala-scalatest" % "1.10.3" % Test
 )
 
 // Adds additional packages into Twirl

@@ -32,7 +32,7 @@ class EbayAuthClient @Inject() (config: Configuration, client: WSClient)(implici
     authToken = authToken
       .ensure(AuthError("ebay token has expired"))(_.isValid)
       .orElse(authenticate())
-    authenticate().map(_.token)
+    authToken.map(_.token)
   }
 
   def switchAccount(): Unit = {
