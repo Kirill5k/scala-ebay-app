@@ -3,7 +3,7 @@ package ebay.auth
 import cats.data.EitherT
 import cats.implicits._
 import exceptions.{ApiClientError, HttpError}
-import org.mockito.scalatest.{IdiomaticMockito, MockitoSugar}
+import org.mockito.scalatest.{MockitoSugar}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import play.api.http.MediaRange

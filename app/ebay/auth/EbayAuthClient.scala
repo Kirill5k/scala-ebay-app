@@ -42,6 +42,7 @@ class EbayAuthClient @Inject() (config: Configuration, client: WSClient)(implici
 
   private def authenticate(): FutureErrorOr[EbayAuthToken] = {
     val credentials = ebayConfig.credentials(currentAccountIndex)
+    logger.info(s"authenticated with ebay account ${credentials.clientId}")
     val authResponse = authRequest
       .withAuth(credentials.clientId, credentials.clientSecret, WSAuthScheme.BASIC)
       .post(authRequestBody)
