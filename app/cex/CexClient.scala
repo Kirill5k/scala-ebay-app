@@ -7,7 +7,7 @@ import exceptions.ApiClientError.FutureErrorOr
 import exceptions.{ApiClientError, HttpError}
 import javax.inject.Inject
 import play.api.{Configuration, Logger}
-import play.api.http.Status
+import play.api.http.{HeaderNames, Status}
 import play.api.libs.json.JsValue
 import play.api.libs.ws.WSClient
 
@@ -20,8 +20,8 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
   private val cexConfig = config.get[CexConfig]("cex")
   private val searchRequest = client
     .url(s"${cexConfig.baseUri}${cexConfig.searchPath}")
-    .addHttpHeaders("Accept" -> "application/json")
-    .addHttpHeaders("Content-Type" -> "application/json")
+    .addHttpHeaders(HeaderNames.ACCEPT -> "application/json")
+    .addHttpHeaders(HeaderNames.CONTENT_TYPE -> "application/json")
 
   def findResellPrice(query: String): FutureErrorOr[ResellPrice] = {
     val searchResponse = searchRequest.withQueryStringParameters("q" -> query).get()

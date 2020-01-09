@@ -18,8 +18,11 @@ object ApiClientError {
   type FutureErrorOr[A] = EitherT[Future, ApiClientError, A]
 
   def recoverFromHttpCallFailure: PartialFunction[Throwable, ApiClientError] = {
-    case parsingError: JsResultException => InternalError(s"error parsing json: ${parsingError.getMessage}")
-    case networkingError: IOException => InternalError(s"connection error: ${networkingError.getMessage}")
-    case error: Throwable => InternalError(s"unexpected error during http call: ${error.getMessage}")
+    case parsingError: JsResultException =>
+      InternalError(s"error parsing json: ${parsingError.getMessage}")
+    case networkingError: IOException =>
+      InternalError(s"connection error: ${networkingError.getMessage}")
+    case error: Throwable =>
+      InternalError(s"unexpected error during http call: ${error.getMessage}")
   }
 }

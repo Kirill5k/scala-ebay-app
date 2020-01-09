@@ -6,7 +6,7 @@ import ebay.EbayConfig
 import exceptions.ApiClientError.FutureErrorOr
 import exceptions.{ApiClientError, AuthError, HttpError}
 import javax.inject.Inject
-import play.api.http.Status
+import play.api.http.{HeaderNames, Status}
 import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSAuthScheme, WSClient}
 import play.api.{Configuration, Logger}
@@ -19,20 +19,20 @@ class EbayAuthClient @Inject() (config: Configuration, client: WSClient)(implici
   private val ebayConfig = config.get[EbayConfig]("ebay")
 
   private val authRequest = client
-    .url(s"${ebayConfig.baseUri}${ebayConfig.searchPath}")
-    .addHttpHeaders("Accept" -> "application/json")
-    .addHttpHeaders("Content-Type" -> "application/x-www-form-urlencoded")
+    .url(s"${ebayConfig.baseUri}${ebayConfig.authPath}")
+    .addHttpHeaders(HeaderNames.ACCEPT -> "application/json")
+    .addHttpHeaders(HeaderNames.CONTENT_TYPE -> "application/x-www-form-urlencoded")
 
   private val authRequestBody = Map("scope" -> Seq("https://api.ebay.com/oauth/api_scope"), "grant_type" -> Seq("client_credentials"))
 
-  private var currentAccountIndex: Int = 0
-  private var authToken: FutureErrorOr[EbayAuthToken] = EitherT.leftT(AuthError("authentication with ebay is required"))
+  private[auth] var currentAccountIndex: Int = 0
+  private[auth] var authToken: FutureErrorOr[EbayAuthToken] = EitherT.leftT(AuthError("authentication with ebay is required"))
 
   def accessToken(): FutureErrorOr[String] = {
     authToken = authToken
       .ensure(AuthError("ebay token has expired"))(_.isValid)
       .orElse(authenticate())
-    authToken.map(_.token)
+    authenticate().map(_.token)
   }
 
   def switchAccount(): Unit = {
@@ -42,7 +42,8 @@ class EbayAuthClient @Inject() (config: Configuration, client: WSClient)(implici
 
   private def authenticate(): FutureErrorOr[EbayAuthToken] = {
     val credentials = ebayConfig.credentials(currentAccountIndex)
-    val authResponse = authRequest.withAuth(credentials.clientId, credentials.clientSecret, WSAuthScheme.BASIC)
+    val authResponse = authRequest
+      .withAuth(credentials.clientId, credentials.clientSecret, WSAuthScheme.BASIC)
       .post(authRequestBody)
       .map(res =>
         if (Status.isSuccessful(res.status)) (res.status, res.body[JsValue].as[EbayAuthSuccessResponse])
