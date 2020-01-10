@@ -1,23 +1,26 @@
 package ebay.auth
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Reads}
+import exceptions.{ApiClientError}
+import io.circe.generic.auto._
+import io.circe.parser._
+import play.api.libs.ws.BodyReadable
 
 sealed trait EbayAuthResponse
 
-final case class EbayAuthSuccessResponse(accessToken: String, expiresIn: Long, tokenType: String) extends EbayAuthResponse
+final case class EbayAuthSuccessResponse(access_token: String, expires_in: Long, token_type: String) extends EbayAuthResponse
 
-final case class EbayAuthErrorResponse(error: String, description: String) extends EbayAuthResponse
+final case class EbayAuthErrorResponse(error: String, error_description: String) extends EbayAuthResponse
 
 object EbayAuthResponse {
-  implicit val ebayAuthSuccessResponseReads: Reads[EbayAuthSuccessResponse] = (
-    (JsPath \ "access_token").read[String] and
-      (JsPath \ "expires_in").read[Long] and
-      (JsPath \ "token_type").read[String]
-    )(EbayAuthSuccessResponse.apply _)
+  implicit val ebayAuthSuccessResponseBodyReadable = BodyReadable[Either[ApiClientError, EbayAuthSuccessResponse]] { response =>
+    import play.shaded.ahc.org.asynchttpclient.{ Response => AHCResponse }
+    val responseString = response.underlying[AHCResponse].getResponseBody
+    decode[EbayAuthSuccessResponse](responseString).left.map(ApiClientError.jsonParsingError)
+  }
 
-  implicit val ebayAuthErrorResponseReads: Reads[EbayAuthErrorResponse] = (
-    (JsPath \ "error").read[String] and
-      (JsPath \ "error_description").read[String]
-    )(EbayAuthErrorResponse.apply _)
+  implicit val ebayAuthErrorResponseBodyReadable = BodyReadable[Either[ApiClientError, EbayAuthErrorResponse]] { response =>
+    import play.shaded.ahc.org.asynchttpclient.{ Response => AHCResponse }
+    val responseString = response.underlying[AHCResponse].getResponseBody
+    decode[EbayAuthErrorResponse](responseString).left.map(ApiClientError.jsonParsingError)
+  }
 }

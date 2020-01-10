@@ -8,15 +8,22 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.13.1"
 
+lazy val circeVersion = "0.12.3"
+lazy val mockitoVersion = "1.10.3"
+
 libraryDependencies ++= Seq(
   ehcache,
   guice,
   ws,
+
   "org.typelevel" %% "cats-core" % "2.1.0",
+  "io.circe" %% "circe-core" % circeVersion,
+  "io.circe" %% "circe-generic" % circeVersion,
+  "io.circe" %% "circe-parser" % circeVersion,
 
   "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test,
-  "org.mockito" %% "mockito-scala" % "1.10.3" % Test,
-  "org.mockito" %% "mockito-scala-scalatest" % "1.10.3" % Test
+  "org.mockito" %% "mockito-scala" % mockitoVersion % Test,
+  "org.mockito" %% "mockito-scala-scalatest" % mockitoVersion % Test
 )
 
 // Adds additional packages into Twirl

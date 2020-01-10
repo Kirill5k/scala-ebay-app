@@ -17,6 +17,9 @@ final case class AuthError(message: String) extends ApiClientError(Status.UNAUTH
 object ApiClientError {
   type FutureErrorOr[A] = EitherT[Future, ApiClientError, A]
 
+  def jsonParsingError(e: Throwable): ApiClientError =
+    InternalError(s"error parsing json response: ${e.getMessage}")
+
   def recoverFromHttpCallFailure: PartialFunction[Throwable, ApiClientError] = {
     case parsingError: JsResultException =>
       InternalError(s"error parsing json: ${parsingError.getMessage}")

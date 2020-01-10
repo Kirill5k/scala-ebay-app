@@ -7,7 +7,6 @@ import exceptions.ApiClientError.FutureErrorOr
 import exceptions.{ApiClientError, AuthError, HttpError}
 import javax.inject.Inject
 import play.api.http.{HeaderNames, Status}
-import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSAuthScheme, WSClient}
 import play.api.{Configuration, Logger}
 
@@ -47,13 +46,13 @@ class EbayAuthClient @Inject() (config: Configuration, client: WSClient)(implici
       .withAuth(credentials.clientId, credentials.clientSecret, WSAuthScheme.BASIC)
       .post(authRequestBody)
       .map(res =>
-        if (Status.isSuccessful(res.status)) (res.status, res.body[JsValue].as[EbayAuthSuccessResponse])
-        else (res.status, res.body[JsValue].as[EbayAuthErrorResponse])
+        if (Status.isSuccessful(res.status))
+          res.body[Either[ApiClientError, EbayAuthSuccessResponse]]
+            .map(s => EbayAuthToken(s.access_token, s.expires_in))
+        else
+          res.body[Either[ApiClientError, EbayAuthErrorResponse]]
+            .flatMap(e => HttpError(res.status, s"error authenticating with ebay: ${e.error}-${e.error_description}").asLeft)
       )
-      .map {
-        case (_, EbayAuthSuccessResponse(token, expiresIn, _)) => EbayAuthToken(token, expiresIn).asRight
-        case (status, EbayAuthErrorResponse(error, description)) => HttpError(status, s"error authenticating with ebay: $error-$description").asLeft
-      }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
     EitherT(authResponse)
   }
