@@ -1,6 +1,6 @@
 package ebay.auth
 
-import exceptions.{ApiClientError}
+import exceptions.ApiClientError
 import io.circe.generic.auto._
 import io.circe.parser._
 import play.api.libs.ws.BodyReadable

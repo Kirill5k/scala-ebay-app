@@ -3,12 +3,13 @@ package ebay.search
 import cats.data.EitherT
 import cats.implicits._
 import ebay.EbayConfig
+import ebay.auth.EbayAuthToken
 import exceptions.ApiClientError.FutureErrorOr
 import exceptions.{ApiClientError, AuthError, HttpError}
 import javax.inject.Inject
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.json.JsValue
-import play.api.libs.ws.{WSClient}
+import play.api.libs.ws.WSClient
 import play.api.{Configuration, Logger}
 
 import scala.concurrent.ExecutionContext
@@ -24,6 +25,27 @@ class EbaySearchClient @Inject()(config: Configuration, client: WSClient)(implic
     "X-EBAY-C-MARKETPLACE-ID" -> "EBAY_GB"
   ).toList
 
-  private val searchRequest = client.url(s"${ebayConfig.baseUri}${ebayConfig.searchPath}").addHttpHeaders(defaultHeaders: _*)
+  private val defaultRequest = client.url(s"${ebayConfig.baseUri}${ebayConfig.searchPath}").addHttpHeaders(defaultHeaders: _*)
   private val getItemRequest = client.url(s"${ebayConfig.baseUri}${ebayConfig.itemPath}").addHttpHeaders(defaultHeaders: _*)
+
+  def getItem(accessToken: String, itemId: String): FutureErrorOr[EbayItem] = {
+    val getItemResponse = getItemRequest
+      .withUrl(s"${ebayConfig.baseUri}${ebayConfig.itemPath}/$itemId")
+      .addHttpHeaders(HeaderNames.AUTHORIZATION -> s"Bearer $accessToken")
+      .get()
+      .map { res =>
+        if (Status.isSuccessful(res.status)) res.body[Either[ApiClientError, EbayItem]]
+        else res.body[Either[ApiClientError, EbayErrorResponse]].flatMap(toApiClientError(res.status, _))
+      }
+      .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
+    EitherT(getItemResponse)
+  }
+
+  private def toApiClientError[A](status: Int, ebayErrorResponse: EbayErrorResponse): Either[ApiClientError, A] = status match {
+    case 429 | 403 | 401 => AuthError(s"ebay account has expired: $status").asLeft[A]
+    case _ => ebayErrorResponse.errors.headOption
+        .map(e => HttpError(status, s"error sending request to ebay search api: ${e.message}"))
+        .getOrElse(HttpError(status, s"error sending request to ebay search api: $status"))
+        .asLeft[A]
+  }
 }

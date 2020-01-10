@@ -2,7 +2,7 @@ package ebay.auth
 
 import java.time.Instant
 
-case class EbayAuthToken(token: String, expiresAt: Instant) {
+final case class EbayAuthToken(token: String, expiresAt: Instant) {
   def isValid: Boolean = expiresAt.isAfter(Instant.now())
 }
 
