@@ -2,7 +2,7 @@ package ebay.search
 
 import cats.data.EitherT
 import cats.implicits._
-import exceptions.{ApiClientError, HttpError}
+import exceptions.{ApiClientError, AuthError, HttpError}
 import org.mockito.scalatest.MockitoSugar
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
@@ -38,6 +38,26 @@ class EbaySearchClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
 
         whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItem =>
           foundItem.map(_.title) must be (Right("Samsung Galaxy S10 128gb UNLOCKED Prism Blue"))
+        }
+      }
+    }
+
+    "return autherror when token expired" in {
+      withEbaySearchClient(403, "ebay/get-item-unauthorized-error-response.json") { ebaySearchClient =>
+        val item = ebaySearchClient.getItem(accessToken, itemId)
+
+        whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItem =>
+          foundItem must be (Left(AuthError("ebay account has expired: 403")))
+        }
+      }
+    }
+
+    "return httperror when error" in {
+      withEbaySearchClient(404, "ebay/get-item-notfound-error-response.json") { ebaySearchClient =>
+        val item = ebaySearchClient.getItem(accessToken, itemId)
+
+        whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItem =>
+          foundItem must be (Left(HttpError(404, "error sending request to ebay search api: The specified item Id was not found.")))
         }
       }
     }
