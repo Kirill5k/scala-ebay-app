@@ -3,20 +3,16 @@ package ebay.search
 import cats.data.EitherT
 import cats.implicits._
 import ebay.EbayConfig
-import ebay.auth.EbayAuthToken
 import exceptions.ApiClientError.FutureErrorOr
 import exceptions.{ApiClientError, AuthError, HttpError}
 import javax.inject.Inject
 import play.api.http.{HeaderNames, Status}
-import play.api.libs.json.JsValue
 import play.api.libs.ws.WSClient
-import play.api.{Configuration, Logger}
+import play.api.{Configuration}
 
 import scala.concurrent.ExecutionContext
 
 class EbaySearchClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
-  private val logger: Logger = Logger(getClass)
-
   private val ebayConfig = config.get[EbayConfig]("ebay")
 
   private val defaultHeaders = Map(
@@ -25,12 +21,10 @@ class EbaySearchClient @Inject()(config: Configuration, client: WSClient)(implic
     "X-EBAY-C-MARKETPLACE-ID" -> "EBAY_GB"
   ).toList
 
-  private val defaultRequest = client.url(s"${ebayConfig.baseUri}${ebayConfig.searchPath}").addHttpHeaders(defaultHeaders: _*)
-  private val getItemRequest = client.url(s"${ebayConfig.baseUri}${ebayConfig.itemPath}").addHttpHeaders(defaultHeaders: _*)
-
   def getItem(accessToken: String, itemId: String): FutureErrorOr[EbayItem] = {
-    val getItemResponse = getItemRequest
-      .withUrl(s"${ebayConfig.baseUri}${ebayConfig.itemPath}/$itemId")
+    val getItemResponse = client
+      .url(s"${ebayConfig.baseUri}${ebayConfig.itemPath}/$itemId")
+      .addHttpHeaders(defaultHeaders: _*)
       .addHttpHeaders(HeaderNames.AUTHORIZATION -> s"Bearer $accessToken")
       .get()
       .map { res =>

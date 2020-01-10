@@ -7,15 +7,15 @@ import io.circe.generic.auto._
 import io.circe.parser._
 import play.api.libs.ws.BodyReadable
 
-final case class ItemProperty(name: String, value: String)
+private[search] final case class ItemProperty(name: String, value: String)
 
-final case class ItemSeller(username: String, feedbackPercentage: String, feedbackScore: Int)
+private[search] final case class ItemSeller(username: String, feedbackPercentage: String, feedbackScore: Int)
 
-final case class ItemImage(imageUrl: String)
+private[search] final case class ItemImage(imageUrl: String)
 
-final case class ItemPrice(value: String, currency: String)
+private[search] final case class ItemPrice(value: String, currency: String)
 
-final case class EbayItem(
+private[search] final case class EbayItem(
                      itemId: String,
                      title: String,
                      shortDescription: String,
@@ -34,7 +34,7 @@ final case class EbayItem(
                      itemEndDate: Option[Instant]
                    )
 
-object EbayItem {
+private[search] object EbayItem {
   implicit val ebayItemBodyReadable = BodyReadable[Either[ApiClientError, EbayItem]] { response =>
     import play.shaded.ahc.org.asynchttpclient.{Response => AHCResponse}
     val responseString = response.underlying[AHCResponse].getResponseBody

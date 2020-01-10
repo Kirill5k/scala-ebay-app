@@ -6,11 +6,11 @@ import io.circe.parser._
 import play.api.libs.ws.BodyReadable
 
 
-final case class EbayError(errorId: Long, domain: String, category: String, message: String)
+private[search] final case class EbayError(errorId: Long, domain: String, category: String, message: String)
 
-final case class EbayErrorResponse(errors: Seq[EbayError])
+private[search] final case class EbayErrorResponse(errors: Seq[EbayError])
 
-object EbayErrorResponse {
+private[search] object EbayErrorResponse {
   implicit val ebayAuthSuccessResponseBodyReadable = BodyReadable[Either[ApiClientError, EbayErrorResponse]] { response =>
     import play.shaded.ahc.org.asynchttpclient.{ Response => AHCResponse }
     val responseString = response.underlying[AHCResponse].getResponseBody
