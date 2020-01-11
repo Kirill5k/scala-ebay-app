@@ -1,8 +1,8 @@
-package ebay.search
+package clients.ebay.search
 
 import cats.data.EitherT
 import cats.implicits._
-import exceptions.{ApiClientError, AuthError, HttpError}
+import exceptions.ApiClientError._
 import org.mockito.scalatest.MockitoSugar
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
@@ -47,7 +47,7 @@ class EbaySearchClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
         val item = ebaySearchClient.getItem(accessToken, itemId)
 
         whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItem =>
-          foundItem must be (Left(AuthError("ebay account has expired: 403")))
+          foundItem must be (Left(AuthError("clients.ebay account has expired: 403")))
         }
       }
     }

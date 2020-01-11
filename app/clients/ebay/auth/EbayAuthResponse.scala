@@ -1,6 +1,7 @@
-package ebay.auth
+package clients.ebay.auth
 
 import exceptions.ApiClientError
+import exceptions.ApiClientError.JsonParsingError
 import io.circe.generic.auto._
 import io.circe.parser._
 import play.api.libs.ws.BodyReadable
@@ -15,12 +16,12 @@ private[auth] object EbayAuthResponse {
   implicit val ebayAuthSuccessResponseBodyReadable = BodyReadable[Either[ApiClientError, EbayAuthSuccessResponse]] { response =>
     import play.shaded.ahc.org.asynchttpclient.{ Response => AHCResponse }
     val responseString = response.underlying[AHCResponse].getResponseBody
-    decode[EbayAuthSuccessResponse](responseString).left.map(ApiClientError.jsonParsingError)
+    decode[EbayAuthSuccessResponse](responseString).left.map(e => JsonParsingError(e.getMessage))
   }
 
   implicit val ebayAuthErrorResponseBodyReadable = BodyReadable[Either[ApiClientError, EbayAuthErrorResponse]] { response =>
     import play.shaded.ahc.org.asynchttpclient.{ Response => AHCResponse }
     val responseString = response.underlying[AHCResponse].getResponseBody
-    decode[EbayAuthErrorResponse](responseString).left.map(ApiClientError.jsonParsingError)
+    decode[EbayAuthErrorResponse](responseString).left.map(e => JsonParsingError(e.getMessage))
   }
 }

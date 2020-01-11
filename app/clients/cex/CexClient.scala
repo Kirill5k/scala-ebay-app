@@ -1,10 +1,10 @@
-package cex
+package clients.cex
 
 import cats.data.EitherT
 import cats.implicits._
 import domain.ResellPrice
-import exceptions.ApiClientError.FutureErrorOr
-import exceptions.{ApiClientError, HttpError}
+import exceptions.ApiClientError
+import exceptions.ApiClientError._
 import javax.inject.Inject
 import play.api.{Configuration, Logger}
 import play.api.http.{HeaderNames, Status}

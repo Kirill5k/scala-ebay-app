@@ -1,10 +1,11 @@
-package ebay.auth
+package clients.ebay.auth
 
 import cats.data.EitherT
 import cats.implicits._
-import ebay.EbayConfig
+import clients.ebay.EbayConfig
+import exceptions.ApiClientError
 import exceptions.ApiClientError.FutureErrorOr
-import exceptions.{ApiClientError, AuthError, HttpError}
+import exceptions.ApiClientError._
 import javax.inject.Inject
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.ws.{WSAuthScheme, WSClient}

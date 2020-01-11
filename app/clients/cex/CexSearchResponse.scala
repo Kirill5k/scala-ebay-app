@@ -1,6 +1,7 @@
-package cex
+package clients.cex
 
 import exceptions.ApiClientError
+import exceptions.ApiClientError.JsonParsingError
 import play.api.libs.ws.BodyReadable
 import io.circe.generic.auto._
 import io.circe.parser._
@@ -19,6 +20,6 @@ private[cex] object CexSearchResponse {
     import play.shaded.ahc.org.asynchttpclient.{ Response => AHCResponse }
     val ahcResponse = response.underlying[AHCResponse]
     val responseString = ahcResponse.getResponseBody
-    decode[CexSearchResponse](responseString).left.map(ApiClientError.jsonParsingError)
+    decode[CexSearchResponse](responseString).left.map(e => JsonParsingError(e.getMessage))
   }
 }

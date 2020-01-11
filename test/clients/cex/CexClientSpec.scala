@@ -1,7 +1,7 @@
-package cex
+package clients.cex
 
 import domain.ResellPrice
-import exceptions.{HttpError, InternalError}
+import exceptions.ApiClientError._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import play.api.http.MediaRange

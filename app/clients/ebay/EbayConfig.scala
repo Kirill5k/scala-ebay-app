@@ -1,4 +1,4 @@
-package ebay
+package clients.ebay
 
 import java.net.URI
 

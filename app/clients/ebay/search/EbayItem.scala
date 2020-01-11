@@ -1,8 +1,9 @@
-package ebay.search
+package clients.ebay.search
 
 import java.time.Instant
 
 import exceptions.ApiClientError
+import exceptions.ApiClientError.JsonParsingError
 import io.circe.generic.auto._
 import io.circe.parser._
 import play.api.libs.ws.BodyReadable
@@ -38,6 +39,6 @@ private[search] object EbayItem {
   implicit val ebayItemBodyReadable = BodyReadable[Either[ApiClientError, EbayItem]] { response =>
     import play.shaded.ahc.org.asynchttpclient.{Response => AHCResponse}
     val responseString = response.underlying[AHCResponse].getResponseBody
-    decode[EbayItem](responseString).left.map(ApiClientError.jsonParsingError)
+    decode[EbayItem](responseString).left.map(e => JsonParsingError(e.getMessage))
   }
 }

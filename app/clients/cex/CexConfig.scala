@@ -1,4 +1,4 @@
-package cex
+package clients.cex
 
 import java.net.URI
 
