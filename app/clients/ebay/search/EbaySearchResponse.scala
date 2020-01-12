@@ -15,7 +15,7 @@ private[ebay] object EbaySearchResponse {
   final case class ItemSeller(username: String, feedbackPercentage: String, feedbackScore: Int)
   final case class ItemImage(imageUrl: String)
   final case class ItemPrice(value: String, currency: String)
-  final case class ItemSummary(itemId: String, title: String, price: ItemPrice, seller: ItemSeller)
+  final case class EbayItemSummary(itemId: String, title: String, price: ItemPrice, seller: ItemSeller)
 
   final case class EbayItem(
                              itemId: String,
@@ -36,7 +36,7 @@ private[ebay] object EbaySearchResponse {
                              itemEndDate: Option[Instant]
                            ) extends EbaySearchResponse
 
-  final case class EbaySearchResult(total: Int, limit: Int, itemSummaries: Seq[ItemSummary]) extends EbaySearchResponse
+  final case class EbaySearchResult(total: Int, limit: Int, itemSummaries: Option[Seq[EbayItemSummary]]) extends EbaySearchResponse
   final case class EbayError(errorId: Long, domain: String, category: String, message: String)
   final case class EbayErrorResponse(errors: Seq[EbayError]) extends EbaySearchResponse
 
@@ -52,9 +52,9 @@ private[ebay] object EbaySearchResponse {
     decode[EbayErrorResponse](responseString).left.map(e => JsonParsingError(e.getMessage))
   }
 
-  implicit val ebaySearchResponseBodyReadable = BodyReadable[Either[ApiClientError, EbaySearchResponse]] { response =>
+  implicit val ebaySearchResultBodyReadable = BodyReadable[Either[ApiClientError, EbaySearchResult]] { response =>
     import play.shaded.ahc.org.asynchttpclient.{Response => AHCResponse}
     val responseString = response.underlying[AHCResponse].getResponseBody
-    decode[EbaySearchResponse](responseString).left.map(e => JsonParsingError(e.getMessage))
+    decode[EbaySearchResult](responseString).left.map(e => JsonParsingError(e.getMessage))
   }
 }

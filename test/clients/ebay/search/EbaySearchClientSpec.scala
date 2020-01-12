@@ -7,7 +7,7 @@ import org.mockito.scalatest.MockitoSugar
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import play.api.http.MediaRange
-import play.api.mvc.Results
+import play.api.mvc.{AnyContent, Request, Results}
 import play.api.routing.Router
 import play.api.routing.sird._
 import play.api.test.WsTestClient
@@ -29,8 +29,29 @@ class EbaySearchClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
 
   val accessToken = "access-token"
   val itemId = "item-id-1"
+  val searchQueryParams = Map("q" -> "iphone")
 
   "EbaySearchClient" should {
+
+    "make get request to search api" in {
+      withEbaySearchClient(200, "ebay/search-success-response.json") { ebaySearchClient =>
+        val item = ebaySearchClient.search(accessToken, searchQueryParams)
+
+        whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItems =>
+          foundItems.map(_.map(_.itemId)) must be (Right(Seq("item-1", "item-2", "item-3", "item-4", "item-5")))
+        }
+      }
+    }
+
+    "return empty seq when nothing found" in {
+      withEbaySearchClient(200, "ebay/search-empty-response.json") { ebaySearchClient =>
+        val item = ebaySearchClient.search(accessToken, searchQueryParams)
+
+        whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItems =>
+          foundItems.map(_.map(_.itemId)) must be (Right(Seq()))
+        }
+      }
+    }
 
     "make get request to obtain item details" in {
       withEbaySearchClient(200, "ebay/get-item-1-success-response.json") { ebaySearchClient =>
@@ -64,16 +85,26 @@ class EbaySearchClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
   }
 
   def withEbaySearchClient[T](status: Int, responseFile: String)(block: EbaySearchClient => T): T = {
+    def assertHeaders(request: Request[AnyContent]): Unit = {
+      request.contentType must be (Some("application/json"))
+      request.acceptedTypes must be (MediaRange.parse("application/json"))
+      request.headers.get("Authorization") must be (Some("Bearer access-token"))
+      request.headers.get("X-EBAY-C-MARKETPLACE-ID") must be (Some("EBAY_GB"))
+    }
+
     Server.withApplicationFromContext() { context =>
       new BuiltInComponentsFromContext(context) with HttpFiltersComponents {
         override def router: Router = Router.from {
           case GET(p"/ebay/item/$id") =>
             Action { req =>
               id must be ("item-id-1")
-              req.contentType must be (Some("application/json"))
-              req.acceptedTypes must be (MediaRange.parse("application/json"))
-              req.headers.get("Authorization") must be (Some("Bearer access-token"))
-              req.headers.get("X-EBAY-C-MARKETPLACE-ID") must be (Some("EBAY_GB"))
+              assertHeaders(req)
+              Results.Status(status).sendResource(responseFile)(executionContext, fileMimeTypes)
+            }
+          case GET(p"/ebay/search" ? q"q=$query") =>
+            Action { req =>
+              query must be ("iphone")
+              assertHeaders(req)
               Results.Status(status).sendResource(responseFile)(executionContext, fileMimeTypes)
             }
         }
