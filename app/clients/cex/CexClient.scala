@@ -8,7 +8,6 @@ import exceptions.ApiClientError._
 import javax.inject.Inject
 import play.api.{Configuration, Logger}
 import play.api.http.{HeaderNames, Status}
-import play.api.libs.json.JsValue
 import play.api.libs.ws.WSClient
 
 import scala.concurrent.ExecutionContext
@@ -33,10 +32,10 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
 
     EitherT(searchResponse)
       .map(_.response.data.map(_.boxes).getOrElse(Seq()))
-      .map(findMinResellPrice(query, _))
+      .map(findMinResellPrice(query))
   }
 
-  private def findMinResellPrice(query: String, searchResults: Seq[SearchResult]): ResellPrice = {
+  private def findMinResellPrice(query: String)(searchResults: Seq[SearchResult]): ResellPrice = {
     logger.info(s"search '$query' returned ${searchResults.size} results")
     if (searchResults.isEmpty) ResellPrice.empty()
     else {
