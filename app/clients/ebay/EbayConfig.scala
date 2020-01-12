@@ -5,9 +5,9 @@ import java.net.URI
 import com.typesafe.config.Config
 import play.api.ConfigLoader
 
-case class EbayCredentials(clientId: String, clientSecret: String)
+final case class EbayCredentials(clientId: String, clientSecret: String)
 
-case class EbayConfig(baseUri: URI, authPath: String, searchPath: String, itemPath: String, credentials: Array[EbayCredentials])
+final case class EbayConfig(baseUri: URI, authPath: String, searchPath: String, itemPath: String, credentials: Array[EbayCredentials])
 
 object EbayConfig {
   implicit val configLoader: ConfigLoader[EbayConfig] = (rootConfig: Config, path: String) => {

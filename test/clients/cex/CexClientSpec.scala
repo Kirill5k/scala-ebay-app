@@ -17,7 +17,7 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 
-class CexClientSpec extends PlaySpec with ScalaFutures {
+class ApaCexClientSpec extends PlaySpec with ScalaFutures {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   val cexConfig = Map("baseUri" -> "/cex", "searchPath" -> "/search")

@@ -3,6 +3,7 @@ package clients.ebay.auth
 import cats.data.EitherT
 import cats.implicits._
 import domain.ApiClientError
+import domain.ApiClientError._
 import org.mockito.scalatest.MockitoSugar
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
