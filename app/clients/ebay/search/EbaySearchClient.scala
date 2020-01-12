@@ -12,6 +12,8 @@ import play.api.{Configuration}
 
 import scala.concurrent.ExecutionContext
 
+import EbaySearchResponse._
+
 class EbaySearchClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
   private val ebayConfig = config.get[EbayConfig]("ebay")
 

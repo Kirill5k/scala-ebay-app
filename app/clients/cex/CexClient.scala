@@ -12,6 +12,8 @@ import play.api.libs.ws.WSClient
 
 import scala.concurrent.ExecutionContext
 
+import CexSearchResponse._
+
 class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
 
   private val logger: Logger = Logger(getClass)

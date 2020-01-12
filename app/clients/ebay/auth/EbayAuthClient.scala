@@ -13,6 +13,8 @@ import play.api.{Configuration, Logger}
 
 import scala.concurrent.ExecutionContext
 
+import EbayAuthResponse._
+
 class EbayAuthClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
   private val logger: Logger = Logger(getClass)
 

@@ -8,11 +8,10 @@ import play.api.libs.ws.BodyReadable
 
 sealed trait EbayAuthResponse
 
-private[auth] final case class EbayAuthSuccessResponse(access_token: String, expires_in: Long, token_type: String) extends EbayAuthResponse
-
-private[auth] final case class EbayAuthErrorResponse(error: String, error_description: String) extends EbayAuthResponse
-
 private[auth] object EbayAuthResponse {
+  final case class EbayAuthSuccessResponse(access_token: String, expires_in: Long, token_type: String) extends EbayAuthResponse
+  final case class EbayAuthErrorResponse(error: String, error_description: String) extends EbayAuthResponse
+
   implicit val ebayAuthSuccessResponseBodyReadable = BodyReadable[Either[ApiClientError, EbayAuthSuccessResponse]] { response =>
     import play.shaded.ahc.org.asynchttpclient.{ Response => AHCResponse }
     val responseString = response.underlying[AHCResponse].getResponseBody
