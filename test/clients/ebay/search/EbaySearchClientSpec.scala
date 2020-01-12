@@ -2,7 +2,7 @@ package clients.ebay.search
 
 import cats.data.EitherT
 import cats.implicits._
-import exceptions.ApiClientError._
+import domain.ApiClientError._
 import org.mockito.scalatest.MockitoSugar
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec

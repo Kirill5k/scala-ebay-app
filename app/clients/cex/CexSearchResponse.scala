@@ -1,7 +1,7 @@
 package clients.cex
 
-import exceptions.ApiClientError
-import exceptions.ApiClientError.JsonParsingError
+import domain.ApiClientError
+import domain.ApiClientError._
 import play.api.libs.ws.BodyReadable
 import io.circe.generic.auto._
 import io.circe.parser._

@@ -1,9 +1,8 @@
-package exceptions
+package domain
 
 import java.io.IOException
 
 import cats.data.EitherT
-import play.api.http.Status
 import play.api.libs.json.JsResultException
 
 import scala.concurrent.Future

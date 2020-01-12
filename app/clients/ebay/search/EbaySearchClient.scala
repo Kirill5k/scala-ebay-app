@@ -3,8 +3,6 @@ package clients.ebay.search
 import cats.data.EitherT
 import cats.implicits._
 import clients.ebay.EbayConfig
-import exceptions.ApiClientError
-import exceptions.ApiClientError._
 import javax.inject.Inject
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.ws.{WSClient, WSRequest}
@@ -12,6 +10,8 @@ import play.api.Configuration
 
 import scala.concurrent.ExecutionContext
 import EbaySearchResponse._
+import domain.ApiClientError
+import domain.ApiClientError._
 
 class EbaySearchClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
   private val ebayConfig = config.get[EbayConfig]("ebay")

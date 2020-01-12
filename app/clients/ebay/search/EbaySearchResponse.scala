@@ -2,8 +2,8 @@ package clients.ebay.search
 
 import java.time.Instant
 
-import exceptions.ApiClientError
-import exceptions.ApiClientError.JsonParsingError
+import domain.ApiClientError
+import domain.ApiClientError._
 import io.circe.generic.auto._
 import io.circe.parser._
 import play.api.libs.ws.BodyReadable

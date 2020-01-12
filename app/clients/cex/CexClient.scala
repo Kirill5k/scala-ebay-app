@@ -2,16 +2,14 @@ package clients.cex
 
 import cats.data.EitherT
 import cats.implicits._
-import domain.ResellPrice
-import exceptions.ApiClientError
-import exceptions.ApiClientError._
+import domain.{ApiClientError, ResellPrice}
+import domain.ApiClientError._
 import javax.inject.Inject
 import play.api.{Configuration, Logger}
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.ws.WSClient
 
 import scala.concurrent.ExecutionContext
-
 import CexSearchResponse._
 
 class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {

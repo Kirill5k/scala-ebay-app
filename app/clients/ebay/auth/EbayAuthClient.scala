@@ -3,17 +3,15 @@ package clients.ebay.auth
 import cats.data.EitherT
 import cats.implicits._
 import clients.ebay.EbayConfig
-import exceptions.ApiClientError
-import exceptions.ApiClientError.FutureErrorOr
-import exceptions.ApiClientError._
 import javax.inject.Inject
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.ws.{WSAuthScheme, WSClient}
 import play.api.{Configuration, Logger}
 
 import scala.concurrent.ExecutionContext
-
 import EbayAuthResponse._
+import domain.ApiClientError
+import domain.ApiClientError._
 
 class EbayAuthClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
   private val logger: Logger = Logger(getClass)
