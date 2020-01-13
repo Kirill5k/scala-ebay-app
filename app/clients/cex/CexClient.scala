@@ -22,7 +22,7 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
     .addHttpHeaders(HeaderNames.ACCEPT -> "application/json")
     .addHttpHeaders(HeaderNames.CONTENT_TYPE -> "application/json")
 
-  def findResellPrice(query: String): FutureErrorOr[ResellPrice] = {
+  def findResellPrice(query: String): FutureErrorOr[Option[ResellPrice]] = {
     val searchResponse = searchRequest.withQueryStringParameters("q" -> query).get()
       .map(res =>
         if (Status.isSuccessful(res.status)) res.body[Either[ApiClientError, CexSearchResponse]]
@@ -35,12 +35,12 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
       .map(findMinResellPrice(query))
   }
 
-  private def findMinResellPrice(query: String)(searchResults: Seq[SearchResult]): ResellPrice = {
+  private def findMinResellPrice(query: String)(searchResults: Seq[SearchResult]): Option[ResellPrice] = {
     logger.info(s"search '$query' returned ${searchResults.size} results")
-    if (searchResults.isEmpty) ResellPrice.empty()
+    if (searchResults.isEmpty) None
     else {
       val minPriceSearchResult: SearchResult = searchResults.minBy(_.exchangePrice)
-      ResellPrice(BigDecimal.valueOf(minPriceSearchResult.cashPrice), BigDecimal.valueOf(minPriceSearchResult.exchangePrice))
+      ResellPrice(BigDecimal.valueOf(minPriceSearchResult.cashPrice), BigDecimal.valueOf(minPriceSearchResult.exchangePrice)).some
     }
   }
 }

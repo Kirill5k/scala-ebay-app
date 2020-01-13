@@ -32,7 +32,7 @@ class ApaCexClientSpec extends PlaySpec with ScalaFutures {
         val result = cexClient.findResellPrice("iphone 7")
 
         whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
-          minPrice must be (Right(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153))))
+          minPrice must be (Right(Some(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153)))))
         }
       }
     }
@@ -42,7 +42,7 @@ class ApaCexClientSpec extends PlaySpec with ScalaFutures {
         val result = cexClient.findResellPrice("iphone 7")
 
         whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
-          minPrice must be (Right(ResellPrice(BigDecimal.valueOf(0), BigDecimal.valueOf(0))))
+          minPrice must be (Right(None))
         }
       }
     }
