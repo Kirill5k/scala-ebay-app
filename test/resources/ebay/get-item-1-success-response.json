@@ -89,16 +89,6 @@
     },
     {
       "type": "STRING",
-      "name": "Operating System",
-      "value": "Android"
-    },
-    {
-      "type": "STRING",
-      "name": "Lock Status",
-      "value": "Factory Unlocked"
-    },
-    {
-      "type": "STRING",
       "name": "Model",
       "value": "Samsung Galaxy S10"
     },

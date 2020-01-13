@@ -1,17 +1,19 @@
 package clients.ebay.search
 
+import java.time.Instant
+
 import cats.data.EitherT
 import cats.implicits._
 import clients.ebay.EbayConfig
+import clients.ebay.search.EbaySearchResponse._
+import domain.ApiClientError._
+import domain.{ApiClientError, ListingDetails}
 import javax.inject.Inject
+import play.api.Configuration
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.ws.{WSClient, WSRequest}
-import play.api.Configuration
 
 import scala.concurrent.ExecutionContext
-import EbaySearchResponse._
-import domain.ApiClientError
-import domain.ApiClientError._
 
 class EbaySearchClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
   private val ebayConfig = config.get[EbayConfig]("ebay")
@@ -34,7 +36,7 @@ class EbaySearchClient @Inject()(config: Configuration, client: WSClient)(implic
     EitherT(searchResponse).map(_.itemSummaries.getOrElse(Seq()))
   }
 
-  def getItem(accessToken: String, itemId: String): FutureErrorOr[EbayItem] = {
+  def getItem(accessToken: String, itemId: String): FutureErrorOr[ListingDetails] = {
     val getItemResponse = request(s"${ebayConfig.baseUri}${ebayConfig.itemPath}/$itemId", accessToken)
       .get()
       .map { res =>
@@ -42,7 +44,7 @@ class EbaySearchClient @Inject()(config: Configuration, client: WSClient)(implic
         else res.body[Either[ApiClientError, EbayErrorResponse]].flatMap(toApiClientError(res.status))
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
-    EitherT(getItemResponse)
+    EitherT(getItemResponse).map(toListingDetails)
   }
 
   private def request(url: String, accessToken: String): WSRequest =
@@ -51,8 +53,23 @@ class EbaySearchClient @Inject()(config: Configuration, client: WSClient)(implic
   private def toApiClientError[A](status: Int)(ebayErrorResponse: EbayErrorResponse): Either[ApiClientError, A] = status match {
     case 429 | 403 | 401 => AuthError(s"ebay account has expired: $status").asLeft[A]
     case _ => ebayErrorResponse.errors.headOption
-        .map(e => HttpError(status, s"error sending request to ebay search api: ${e.message}"))
-        .getOrElse(HttpError(status, s"error sending request to ebay search api: $status"))
-        .asLeft[A]
+      .map(e => HttpError(status, s"error sending request to ebay search api: ${e.message}"))
+      .getOrElse(HttpError(status, s"error sending request to ebay search api: $status"))
+      .asLeft[A]
   }
+
+  private def toListingDetails(item: EbayItem): ListingDetails =
+    ListingDetails(
+      url = item.itemWebUrl,
+      title = item.title,
+      description = item.shortDescription,
+      image = item.image.imageUrl,
+      buyingOptions = item.buyingOptions,
+      sellerName = item.seller.username,
+      price = item.price.value,
+      condition = item.condition,
+      datePosted = Instant.now,
+      dateEnded = item.itemEndDate,
+      properties = item.localizedAspects.map(prop => prop.name -> prop.value).toMap
+    )
 }

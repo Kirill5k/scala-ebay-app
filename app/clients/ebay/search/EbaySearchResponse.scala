@@ -1,5 +1,6 @@
 package clients.ebay.search
 
+import java.math.BigDecimal
 import java.time.Instant
 
 import domain.ApiClientError
@@ -14,14 +15,14 @@ private[ebay] object EbaySearchResponse {
   final case class ItemProperty(name: String, value: String)
   final case class ItemSeller(username: String, feedbackPercentage: String, feedbackScore: Int)
   final case class ItemImage(imageUrl: String)
-  final case class ItemPrice(value: String, currency: String)
+  final case class ItemPrice(value: BigDecimal, currency: String)
   final case class EbayItemSummary(itemId: String, title: String, price: ItemPrice, seller: ItemSeller)
 
   final case class EbayItem(
                              itemId: String,
                              title: String,
-                             shortDescription: String,
-                             description: String,
+                             shortDescription: Option[String],
+                             description: Option[String],
                              categoryPath: String,
                              price: ItemPrice,
                              condition: String,
