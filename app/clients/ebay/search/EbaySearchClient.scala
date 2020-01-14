@@ -53,8 +53,7 @@ class EbaySearchClient @Inject()(config: Configuration, client: WSClient)(implic
   private def toApiClientError[A](status: Int)(ebayErrorResponse: EbayErrorResponse): Either[ApiClientError, A] = status match {
     case 429 | 403 | 401 => AuthError(s"ebay account has expired: $status").asLeft[A]
     case _ => ebayErrorResponse.errors.headOption
-        .map(_.message)
-        .getOrElse(status.toString)
+        .fold(status.toString)(_.message)
         .asLeft[A]
         .leftMap(e => HttpError(status, s"error sending request to ebay search api: $e"))
   }
@@ -63,7 +62,8 @@ class EbaySearchClient @Inject()(config: Configuration, client: WSClient)(implic
     ListingDetails(
       url = item.itemWebUrl,
       title = item.title,
-      description = item.shortDescription,
+      shortDescription = item.shortDescription,
+      description = item.description.map(_.replaceAll("(?i)<[^>]*>", "")).map(_.substring(0, 500)),
       image = item.image.imageUrl,
       buyingOptions = item.buyingOptions,
       sellerName = item.seller.username,
