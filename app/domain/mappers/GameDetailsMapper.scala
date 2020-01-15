@@ -39,8 +39,8 @@ private[domain] object GameDetailsMapper {
       .filter(!_.isEmpty)
       .getOrElse(title)
       .replaceAll(s"(?i)$TITLE_WORDS_FILTER", "")
-      .replaceFirst("(?i)\\w+(?=\\s+edition) edition", "")
       .replaceAll("é", "e")
+      .replaceAll(" +", " ")
       .replaceFirst("^-", "")
       .trim()
       .some

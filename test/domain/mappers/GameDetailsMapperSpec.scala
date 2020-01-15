@@ -51,7 +51,7 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      gameDetails.name must be (Some("Call of Duty Modern Warfare"))
+      gameDetails.name must be (Some("Call of Duty Modern Warfare Limited Edition"))
       gameDetails.platform must be (Some("XBOX ONE"))
     }
 
