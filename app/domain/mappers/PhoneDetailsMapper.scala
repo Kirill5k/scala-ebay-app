@@ -52,13 +52,12 @@ private[domain] object PhoneDetailsMapper {
     listingDetails.properties.get("Storage Capacity")
       .map(_.split("[/,]")(0).trim)
       .map(_.replaceAll(" ", ""))
-      .filter(_.contains("MB"))
+      .filter(!_.contains("MB"))
   }
 
   private def mapColour(listingDetails: ListingDetails): Option[String] = {
     listingDetails.properties.get("Manufacturer Colour")
       .orElse(listingDetails.properties.get("Colour"))
-      .orElse(listingDetails.colour)
       .map(_.replaceAll("(?i)Gray", "Grey"))
       .flatMap(COLOURS_MATCH_REGEX.findFirstIn(_))
   }
@@ -77,6 +76,7 @@ private[domain] object PhoneDetailsMapper {
 
   private def conditionFromDescription(listingDetails: ListingDetails): Option[String] = {
     val completeDescription = listingDetails.shortDescription.getOrElse("") + listingDetails.description.getOrElse("")
-    if (DESCRIPTION_FAULTY_CONDITION_MATCHER.matches(completeDescription.replaceAll(" a ", " "))) Some("Faulty") else None
+    val sanatisedDescription = completeDescription.replaceAll("'|\n", "").replaceAll(" a ", " ")
+    if (DESCRIPTION_FAULTY_CONDITION_MATCHER.matches(sanatisedDescription)) Some("Faulty") else None
   }
 }
