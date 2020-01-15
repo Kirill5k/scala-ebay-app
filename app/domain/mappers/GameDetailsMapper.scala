@@ -8,10 +8,12 @@ private[domain] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
     "remastered", "playstation 4", "Nintendo switch", " - ", "sony", "ps4", "blu-ray", "Mirror", "New and sealed",
-    "Brand new", "Sealed", "Game new", "Microsoft", "Free post", "Used", "xbox one", "Uk pal", "Game code"
+    "Brand new", "Sealed", "Game new", "Microsoft", "Free post", "Used", "xbox one", "Uk pal", "Game code", "Hits",
+    "Tom clancys"
   ).mkString("|")
 
-  private val PLATFORMS_MATCH_REGEX = List("PS4", "PLAYSTATION 4", "NINTENDO SWITCH", "SWITCH", "XBOX ONE").mkString("(?i)", "|", "").r
+  private val PLATFORMS_MATCH_REGEX = List("PS4", "PLAYSTATION 4", "NINTENDO SWITCH", "SWITCH", "XBOX ONE")
+    .mkString("(?i)", "|", "").r
 
   private val PLATFORM_MAPPINGS: Map[String, String] = Map(
     "SONY PLAYSTATION 4" -> "PS4",

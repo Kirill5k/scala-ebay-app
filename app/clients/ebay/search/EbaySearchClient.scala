@@ -63,7 +63,7 @@ class EbaySearchClient @Inject()(config: Configuration, client: WSClient)(implic
       url = item.itemWebUrl,
       title = item.title,
       shortDescription = item.shortDescription,
-      description = item.description.map(_.replaceAll("(?i)<[^>]*>", "")).map(_.substring(0, 500)),
+      description = item.description.map(_.replaceAll("(?i)<[^>]*>|'|\n", "")).map(_.substring(0, 500)),
       image = item.image.imageUrl,
       buyingOptions = item.buyingOptions,
       sellerName = item.seller.username,
