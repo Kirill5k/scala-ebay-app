@@ -2,6 +2,8 @@ package domain
 
 import java.time.Instant
 
+import domain.mappers.GameDetailsMapper
+
 sealed trait ItemDetails
 
 object ItemDetails {
@@ -42,7 +44,7 @@ case class ListingDetails(
 object ListingDetails {
   import ItemDetails._
   implicit def phoneDetailsMapper: ListingDetails => PhoneDetails = ???
-  implicit def gameDetailsMapper: ListingDetails => GameDetails = ???
+  implicit def gameDetailsMapper: ListingDetails => GameDetails = GameDetailsMapper.from
 }
 
 case class ResellPrice(cash: BigDecimal, exchange: BigDecimal)
