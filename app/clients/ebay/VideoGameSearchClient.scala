@@ -25,15 +25,9 @@ class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val eb
     "priceCurrency:GBP," +
     "itemLocationCountry:GB,"
 
-  private val NEWLY_LISTED_FILTER = DEFAULT_FILTER + "buyingOptions:%7BFIXED_PRICE%7D,itemStartDate:[%s]"
+  protected val newlyListedFilterTemplate: String = DEFAULT_FILTER + "buyingOptions:%7BFIXED_PRICE%7D,itemStartDate:[%s]"
 
-  override def getItemsListedInLastMinutes(minutes: Int): FutureErrorOr[Seq[(GameDetails, ListingDetails)]] = {
-    val time = Instant.now.minusSeconds(minutes * 60).`with`(MILLI_OF_SECOND, 0)
-    val filter = NEWLY_LISTED_FILTER.format(time)
-    (getSearchParams andThen search)(filter)
-  }
-
-  private def search(params: Map[String, String]): FutureErrorOr[Seq[(GameDetails, ListingDetails)]] = {
+  override def search(params: Map[String, String]): FutureErrorOr[Seq[(GameDetails, ListingDetails)]] = {
     ebayAuthClient.accessToken().flatMap(t => ebayBrowseClient.search(t, params))
       .flatMap { itemSummaries =>
         itemSummaries
