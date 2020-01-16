@@ -1,11 +1,11 @@
-package clients.ebay.search
+package clients.ebay.browse
 
 import java.time.Instant
 
 import cats.data.EitherT
 import cats.implicits._
 import clients.ebay.EbayConfig
-import clients.ebay.search.EbaySearchResponse._
+import clients.ebay.browse.EbayBrowseResponse._
 import domain.ApiClientError._
 import domain.{ApiClientError, ListingDetails}
 import javax.inject.Inject
@@ -15,7 +15,7 @@ import play.api.libs.ws.{WSClient, WSRequest}
 
 import scala.concurrent.ExecutionContext
 
-class EbaySearchClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
+class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
   private val ebayConfig = config.get[EbayConfig]("ebay")
 
   private val defaultHeaders = Map(
@@ -29,7 +29,7 @@ class EbaySearchClient @Inject()(config: Configuration, client: WSClient)(implic
       .withQueryStringParameters(queryParams.toList: _*)
       .get()
       .map { res =>
-        if (Status.isSuccessful(res.status)) res.body[Either[ApiClientError, EbaySearchResult]]
+        if (Status.isSuccessful(res.status)) res.body[Either[ApiClientError, EbayBrowseResult]]
         else res.body[Either[ApiClientError, EbayErrorResponse]].flatMap(toApiClientError(res.status))
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))

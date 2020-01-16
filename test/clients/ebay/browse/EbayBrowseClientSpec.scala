@@ -1,4 +1,4 @@
-package clients.ebay.search
+package clients.ebay.browse
 
 import domain.ApiClientError._
 import domain.ListingDetails
@@ -17,7 +17,7 @@ import play.filters.HttpFiltersComponents
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class EbaySearchClientSpec extends PlaySpec with ScalaFutures with MockitoSugar {
+class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -95,7 +95,7 @@ class EbaySearchClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
     }
   }
 
-  def withEbaySearchClient[T](status: Int, responseFile: String)(block: EbaySearchClient => T): T = {
+  def withEbaySearchClient[T](status: Int, responseFile: String)(block: EbayBrowseClient => T): T = {
     def assertHeaders(request: Request[AnyContent]): Unit = {
       request.contentType must be(Some("application/json"))
       request.acceptedTypes must be(MediaRange.parse("application/json"))
@@ -122,7 +122,7 @@ class EbaySearchClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
       }.application
     } { implicit port =>
       WsTestClient.withClient { client =>
-        block(new EbaySearchClient(config, client))
+        block(new EbayBrowseClient(config, client))
       }
     }
   }
