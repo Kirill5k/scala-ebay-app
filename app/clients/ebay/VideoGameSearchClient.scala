@@ -5,6 +5,7 @@ import java.time.Instant
 import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
+import clients.ebay.browse.EbayBrowseResponse.EbayItemSummary
 import domain.ApiClientError.FutureErrorOr
 import domain.ItemDetails.GameDetails
 import domain.ListingDetails
@@ -33,14 +34,19 @@ class VideoGameSearchClient @Inject()(ebayAuthClient: EbayAuthClient, ebayBrowse
 
   private def search(params: Map[String, String]): FutureErrorOr[Seq[(GameDetails, ListingDetails)]] = {
     ebayAuthClient.accessToken().flatMap(t => ebayBrowseClient.search(t, params))
-      .flatMap {
-        _.filter(hasTrustedSeller)
-          .map(item => ebayAuthClient.accessToken().flatMap(t => ebayBrowseClient.getItem(t, item.itemId)))
+      .flatMap { itemSummaries =>
+        itemSummaries
+          .filter(hasTrustedSeller)
+          .map(getListingDetails)
           .toList
           .sequence
       }
-      .map {
-        _.map(ld => (ld.as[GameDetails], ld))
+      .map { listings =>
+        listings
+          .map(ld => (ld.as[GameDetails], ld))
       }
   }
+
+  private def getListingDetails(itemSummary: EbayItemSummary): FutureErrorOr[ListingDetails] =
+    ebayAuthClient.accessToken().flatMap(t => ebayBrowseClient.getItem(t, itemSummary.itemId))
 }
