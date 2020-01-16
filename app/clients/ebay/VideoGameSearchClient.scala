@@ -2,11 +2,10 @@ package clients.ebay
 
 import java.time.Instant
 
-import cats.data.EitherT
 import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
-import domain.ApiClientError.{FutureErrorOr, _}
+import domain.ApiClientError.FutureErrorOr
 import domain.ItemDetails.GameDetails
 import domain.ListingDetails
 import javax.inject._
@@ -34,13 +33,14 @@ class VideoGameSearchClient @Inject()(ebayAuthClient: EbayAuthClient, ebayBrowse
 
   private def search(params: Map[String, String]): FutureErrorOr[Seq[(GameDetails, ListingDetails)]] = {
     ebayAuthClient.accessToken().flatMap(t => ebayBrowseClient.search(t, params))
-      .flatMap { itemSummaries =>
-        itemSummaries
-          .filter(hasTrustedSeller)
-          .map(is => ebayAuthClient.accessToken().flatMap(t => ebayBrowseClient.getItem(t, is.itemId)))
-          .map(f => f.map(ld => (ld.as[GameDetails], ld)))
+      .flatMap {
+        _.filter(hasTrustedSeller)
+          .map(item => ebayAuthClient.accessToken().flatMap(t => ebayBrowseClient.getItem(t, item.itemId)))
           .toList
           .sequence
-      }.map(_.toSeq)
+      }
+      .map {
+        _.map(ld => (ld.as[GameDetails], ld))
+      }
   }
 }
