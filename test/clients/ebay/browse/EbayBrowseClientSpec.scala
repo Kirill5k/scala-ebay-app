@@ -56,7 +56,7 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
         val item = ebaySearchClient.getItem(accessToken, itemId)
 
         whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItem =>
-          val item: ListingDetails = foundItem.getOrElse(throw new RuntimeException())
+          val item: ListingDetails = foundItem.getOrElse(throw new RuntimeException()).get
           item must have (
             Symbol("url") ("https://www.ebay.co.uk/itm/Samsung-Galaxy-S10-128gb-UNLOCKED-Prism-Blue-/114059888671"),
             Symbol("title") ("Samsung Galaxy S10 128gb UNLOCKED Prism Blue"),
@@ -84,12 +84,12 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
       }
     }
 
-    "return httperror when error" in {
+    "return None when 404" in {
       withEbaySearchClient(404, "ebay/get-item-notfound-error-response.json") { ebaySearchClient =>
         val item = ebaySearchClient.getItem(accessToken, itemId)
 
         whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItem =>
-          foundItem must be(Left(HttpError(404, "error sending request to ebay search api: The specified item Id was not found.")))
+          foundItem must be(Right(None))
         }
       }
     }

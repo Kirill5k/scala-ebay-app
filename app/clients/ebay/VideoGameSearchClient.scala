@@ -1,6 +1,7 @@
 package clients.ebay
 
 import java.time.Instant
+import java.time.temporal.ChronoField.MILLI_OF_SECOND
 
 import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
@@ -14,22 +15,22 @@ import javax.inject._
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class VideoGameSearchClient @Inject()(ebayAuthClient: EbayAuthClient, ebayBrowseClient: EbayBrowseClient)(implicit ex: ExecutionContext)
+class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebayBrowseClient: EbayBrowseClient)(implicit ex: ExecutionContext)
   extends EbaySearchClient[GameDetails] {
-  private val VIDEO_GAMES_CATEGORY_ID = 139973
+  protected val categoryId: Int = 139973
 
-  private val DEFAULT_FILTER = "conditionIds:{1000|1500|2000|2500|3000|4000|5000}," +
+  private val DEFAULT_FILTER = "conditionIds:%7B1000|1500|2000|2500|3000|4000|5000%7D," +
     "deliveryCountry:GB," +
     "price:[0..100]," +
     "priceCurrency:GBP," +
     "itemLocationCountry:GB,"
 
-  private val NEWLY_LISTED_FILTER = DEFAULT_FILTER + "buyingOptions:{FIXED_PRICE},itemStartDate:[%s]"
+  private val NEWLY_LISTED_FILTER = DEFAULT_FILTER + "buyingOptions:%7BFIXED_PRICE%7D,itemStartDate:[%s]"
 
   override def getItemsListedInLastMinutes(minutes: Int): FutureErrorOr[Seq[(GameDetails, ListingDetails)]] = {
-    val filter = searchFilterWithTime(NEWLY_LISTED_FILTER, Instant.now.minusSeconds(minutes * 60))
-    val params = searchParams(VIDEO_GAMES_CATEGORY_ID, filter)
-    search(params)
+    val time = Instant.now.minusSeconds(minutes * 60).`with`(MILLI_OF_SECOND, 0)
+    val filter = NEWLY_LISTED_FILTER.format(time)
+    (getSearchParams andThen search)(filter)
   }
 
   private def search(params: Map[String, String]): FutureErrorOr[Seq[(GameDetails, ListingDetails)]] = {
@@ -48,6 +49,6 @@ class VideoGameSearchClient @Inject()(ebayAuthClient: EbayAuthClient, ebayBrowse
       }
   }
 
-  private def getListingDetails(itemSummary: EbayItemSummary): FutureErrorOr[Option[ListingDetails]] =
+  protected def getListingDetails(itemSummary: EbayItemSummary): FutureErrorOr[Option[ListingDetails]] =
     ebayAuthClient.accessToken().flatMap(t => ebayBrowseClient.getItem(t, itemSummary.itemId))
 }
