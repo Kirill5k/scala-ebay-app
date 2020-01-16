@@ -43,10 +43,11 @@ class VideoGameSearchClient @Inject()(ebayAuthClient: EbayAuthClient, ebayBrowse
       }
       .map { listings =>
         listings
+          .flatMap(_.toList)
           .map(ld => (ld.as[GameDetails], ld))
       }
   }
 
-  private def getListingDetails(itemSummary: EbayItemSummary): FutureErrorOr[ListingDetails] =
+  private def getListingDetails(itemSummary: EbayItemSummary): FutureErrorOr[Option[ListingDetails]] =
     ebayAuthClient.accessToken().flatMap(t => ebayBrowseClient.getItem(t, itemSummary.itemId))
 }
