@@ -3,7 +3,7 @@ package clients.ebay.auth
 import cats.data.EitherT
 import cats.implicits._
 import clients.ebay.EbayConfig
-import javax.inject.Inject
+import javax.inject._
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.ws.{WSAuthScheme, WSClient}
 import play.api.{Configuration, Logger}
@@ -13,6 +13,7 @@ import EbayAuthResponse._
 import domain.ApiClientError
 import domain.ApiClientError._
 
+@Singleton
 class EbayAuthClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
   private val logger: Logger = Logger(getClass)
 

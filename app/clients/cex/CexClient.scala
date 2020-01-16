@@ -4,7 +4,7 @@ import cats.data.EitherT
 import cats.implicits._
 import domain.{ApiClientError, ResellPrice}
 import domain.ApiClientError._
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import play.api.{Configuration, Logger}
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.ws.WSClient
@@ -12,6 +12,7 @@ import play.api.libs.ws.WSClient
 import scala.concurrent.ExecutionContext
 import CexSearchResponse._
 
+@Singleton
 class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
 
   private val logger: Logger = Logger(getClass)

@@ -8,13 +8,14 @@ import clients.ebay.EbayConfig
 import clients.ebay.browse.EbayBrowseResponse._
 import domain.ApiClientError._
 import domain.{ApiClientError, ListingDetails}
-import javax.inject.Inject
+import javax.inject._
 import play.api.Configuration
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.ws.{WSClient, WSRequest}
 
 import scala.concurrent.ExecutionContext
 
+@Singleton
 class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
   private val ebayConfig = config.get[EbayConfig]("ebay")
 
