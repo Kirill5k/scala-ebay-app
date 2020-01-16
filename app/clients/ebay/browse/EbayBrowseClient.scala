@@ -37,15 +37,18 @@ class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implic
     EitherT(searchResponse).map(_.itemSummaries.getOrElse(Seq()))
   }
 
-  def getItem(accessToken: String, itemId: String): FutureErrorOr[ListingDetails] = {
+  def getItem(accessToken: String, itemId: String): FutureErrorOr[Option[ListingDetails]] = {
     val getItemResponse = request(s"${ebayConfig.baseUri}${ebayConfig.itemPath}/$itemId", accessToken)
       .get()
       .map { res =>
-        if (Status.isSuccessful(res.status)) res.body[Either[ApiClientError, EbayItem]]
-        else res.body[Either[ApiClientError, EbayErrorResponse]].flatMap(toApiClientError(res.status))
+        res.status match {
+          case status if Status.isSuccessful(status) => res.body[Either[ApiClientError, EbayItem]].map(i => Some(toListingDetails(i)))
+          case Status.NOT_FOUND => none[ListingDetails].asRight[ApiClientError]
+          case status => res.body[Either[ApiClientError, EbayErrorResponse]].flatMap(toApiClientError(status))
+        }
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
-    EitherT(getItemResponse).map(toListingDetails)
+    EitherT(getItemResponse)
   }
 
   private def request(url: String, accessToken: String): WSRequest =
@@ -54,9 +57,9 @@ class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implic
   private def toApiClientError[A](status: Int)(ebayErrorResponse: EbayErrorResponse): Either[ApiClientError, A] = status match {
     case 429 | 403 | 401 => AuthError(s"ebay account has expired: $status").asLeft[A]
     case _ => ebayErrorResponse.errors.headOption
-        .fold(status.toString)(_.message)
-        .asLeft[A]
-        .leftMap(e => HttpError(status, s"error sending request to ebay search api: $e"))
+      .fold(status.toString)(_.message)
+      .asLeft[A]
+      .leftMap(e => HttpError(status, s"error sending request to ebay search api: $e"))
   }
 
   private def toListingDetails(item: EbayItem): ListingDetails =
