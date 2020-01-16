@@ -18,7 +18,7 @@ final case class ListingDetails(
                            dateEnded: Option[Instant],
                            properties: Map[String, String]
                          ) {
-  def as[T >: ItemDetails](implicit f: ListingDetails => T): T = f(this)
+  def as[T <: ItemDetails](implicit f: ListingDetails => T): T = f(this)
 }
 
 object ListingDetails {
