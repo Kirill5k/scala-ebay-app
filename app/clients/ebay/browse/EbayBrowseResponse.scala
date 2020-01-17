@@ -1,6 +1,6 @@
 package clients.ebay.browse
 
-import java.math.BigDecimal
+import scala.math.BigDecimal
 import java.time.Instant
 
 import domain.ApiClientError

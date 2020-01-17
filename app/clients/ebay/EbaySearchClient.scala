@@ -6,7 +6,7 @@ import java.time.temporal.ChronoField.MILLI_OF_SECOND
 import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
-import clients.ebay.browse.EbayBrowseResponse.EbayItemSummary
+import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary}
 import domain.ApiClientError.FutureErrorOr
 import domain.{ItemDetails, ListingDetails}
 
@@ -55,6 +55,6 @@ trait EbaySearchClient[A <: ItemDetails] {
     } yield ()
   }.isDefined
 
-  protected def getListingDetails(itemSummary: EbayItemSummary): FutureErrorOr[Option[ListingDetails]] =
+  protected def getCompleteItem(itemSummary: EbayItemSummary): FutureErrorOr[Option[EbayItem]] =
     ebayAuthClient.accessToken().flatMap(t => ebayBrowseClient.getItem(t, itemSummary.itemId))
 }

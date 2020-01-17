@@ -3,7 +3,7 @@ package clients.ebay
 import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
-import clients.ebay.mappers.ListingDetailsMapper._
+import clients.ebay.mappers.EbayItemMapper._
 import domain.ApiClientError.{AuthError, FutureErrorOr}
 import domain.ItemDetails.GameDetails
 import domain.ListingDetails
@@ -30,7 +30,7 @@ class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val eb
       .flatMap { itemSummaries =>
         itemSummaries
           .filter(hasTrustedSeller)
-          .map(getListingDetails)
+          .map(getCompleteItem)
           .toList
           .sequence
       }
@@ -43,7 +43,7 @@ class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val eb
       .map { listings =>
         listings
           .flatMap(_.toList)
-          .map(ld => (ld.as[GameDetails], ld))
+          .map(_.as[GameDetails])
       }
   }
 }

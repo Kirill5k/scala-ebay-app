@@ -1,13 +1,11 @@
 package clients.ebay.browse
 
-import java.time.Instant
-
 import cats.data.EitherT
 import cats.implicits._
 import clients.ebay.EbayConfig
 import clients.ebay.browse.EbayBrowseResponse._
 import domain.ApiClientError._
-import domain.{ApiClientError, ListingDetails}
+import domain.ApiClientError
 import javax.inject._
 import play.api.Configuration
 import play.api.http.{HeaderNames, Status}
@@ -39,13 +37,13 @@ class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implic
     EitherT(searchResponse)
   }
 
-  def getItem(accessToken: String, itemId: String): FutureErrorOr[Option[ListingDetails]] = {
+  def getItem(accessToken: String, itemId: String): FutureErrorOr[Option[EbayItem]] = {
     val getItemResponse = request(s"${ebayConfig.baseUri}${ebayConfig.itemPath}/$itemId", accessToken)
       .get()
       .map { res =>
         res.status match {
-          case status if Status.isSuccessful(status) => res.body[Either[ApiClientError, EbayItem]].map(toListingDetails(_).some)
-          case Status.NOT_FOUND => none[ListingDetails].asRight[ApiClientError]
+          case status if Status.isSuccessful(status) => res.body[Either[ApiClientError, EbayItem]].map(_.some)
+          case Status.NOT_FOUND => none[EbayItem].asRight[ApiClientError]
           case status => res.body[Either[ApiClientError, EbayErrorResponse]].flatMap(toApiClientError(status))
         }
       }
@@ -63,20 +61,4 @@ class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implic
       .asLeft[A]
       .leftMap(e => HttpError(status, s"error sending request to ebay search api: $e"))
   }
-
-  private def toListingDetails(item: EbayItem): ListingDetails =
-    ListingDetails(
-      url = item.itemWebUrl,
-      title = item.title,
-      shortDescription = item.shortDescription,
-      description = item.description.map(_.replaceAll("(?i)<[^>]*>", "")).map(_.substring(0, 500)),
-      image = item.image.imageUrl,
-      buyingOptions = item.buyingOptions,
-      sellerName = item.seller.username,
-      price = item.price.value,
-      condition = item.condition,
-      datePosted = Instant.now,
-      dateEnded = item.itemEndDate,
-      properties = item.localizedAspects.map(prop => prop.name -> prop.value).toMap
-    )
 }
