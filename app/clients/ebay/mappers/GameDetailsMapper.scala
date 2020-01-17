@@ -9,7 +9,7 @@ private[mappers] object GameDetailsMapper {
   private val TITLE_WORDS_FILTER = List(
     "remastered", "playstation 4", "Nintendo switch", " - ", "sony", "ps4", "blu-ray", "Mirror", "New and sealed",
     "Brand new", "Sealed", "Game new", "Microsoft", "Free post", "Used", "xbox one", "Uk pal", "Game code", "Hits",
-    "Tom clancys"
+    "Tom clancys", "Great Condition"
   ).mkString("|")
 
   private val PLATFORMS_MATCH_REGEX = List("PS4", "PLAYSTATION 4", "NINTENDO SWITCH", "SWITCH", "XBOX ONE")
@@ -35,7 +35,7 @@ private[mappers] object GameDetailsMapper {
   }
 
   private def mapName(listingDetails: ListingDetails): Option[String] = {
-    val title = listingDetails.properties.getOrElse("Game Name", listingDetails.title).replaceAll("[*()/|:.\\[\\]]", "")
+    val title = listingDetails.properties.getOrElse("Game Name", listingDetails.title).replaceAll("[’'*()/|:.\\[\\]]", "")
     PLATFORMS_MATCH_REGEX.split(title)
       .headOption
       .filter(!_.isEmpty)
