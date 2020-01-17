@@ -16,7 +16,7 @@ trait EbaySearchClient[A <: ItemDetails] {
   private val MIN_FEEDBACK_SCORE = 6
   private val MIN_FEEDBACK_PERCENT = 90
 
-  protected def ex: ExecutionContext
+  implicit protected def ex: ExecutionContext
 
   protected def ebayAuthClient: EbayAuthClient
   protected def ebayBrowseClient: EbayBrowseClient
@@ -34,7 +34,7 @@ trait EbaySearchClient[A <: ItemDetails] {
       .map(search)
       .toList
       .sequence
-      .map(_.flatten)(ex)
+      .map(_.flatten)
   }
 
   protected def getSearchParams(filter: String, query: String): Map[String, String] = {
@@ -54,4 +54,7 @@ trait EbaySearchClient[A <: ItemDetails] {
       if feedbackScore > MIN_FEEDBACK_SCORE
     } yield ()
   }.isDefined
+
+  protected def getListingDetails(itemSummary: EbayItemSummary): FutureErrorOr[Option[ListingDetails]] =
+    ebayAuthClient.accessToken().flatMap(t => ebayBrowseClient.getItem(t, itemSummary.itemId))
 }

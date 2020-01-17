@@ -6,7 +6,6 @@ import java.time.temporal.ChronoField.MILLI_OF_SECOND
 import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
-import clients.ebay.browse.EbayBrowseResponse.EbayItemSummary
 import domain.ApiClientError.{AuthError, FutureErrorOr}
 import domain.ItemDetails.GameDetails
 import domain.ListingDetails
@@ -49,7 +48,4 @@ class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val eb
           .map(ld => (ld.as[GameDetails], ld))
       }
   }
-
-  protected def getListingDetails(itemSummary: EbayItemSummary): FutureErrorOr[Option[ListingDetails]] =
-    ebayAuthClient.accessToken().flatMap(t => ebayBrowseClient.getItem(t, itemSummary.itemId))
 }
