@@ -7,7 +7,7 @@ private[ebay] object ListingDetailsMapper {
   implicit def phoneDetailsMapper: ListingDetails => PhoneDetails = PhoneDetailsMapper.from
   implicit def gameDetailsMapper: ListingDetails => GameDetails = GameDetailsMapper.from
 
-  implicit class ListingDetailsOps(listingDetails: ListingDetails) {
+  implicit class ListingDetailsOps(val listingDetails: ListingDetails) extends AnyVal {
     def as[T <: ItemDetails](implicit f: ListingDetails => T): T = f(listingDetails)
   }
 }
