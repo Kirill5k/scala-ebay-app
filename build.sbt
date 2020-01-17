@@ -21,6 +21,8 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
 
+  "net.jodah" % "expiringmap" % "0.5.9",
+
   "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test,
   "org.mockito" %% "mockito-scala" % mockitoVersion % Test,
   "org.mockito" %% "mockito-scala-scalatest" % mockitoVersion % Test
