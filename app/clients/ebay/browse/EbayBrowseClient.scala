@@ -42,7 +42,7 @@ class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implic
       .get()
       .map { res =>
         res.status match {
-          case status if Status.isSuccessful(status) => res.body[Either[ApiClientError, EbayItem]].map(i => Some(toListingDetails(i)))
+          case status if Status.isSuccessful(status) => res.body[Either[ApiClientError, EbayItem]].map(toListingDetails(_).some)
           case Status.NOT_FOUND => none[ListingDetails].asRight[ApiClientError]
           case status => res.body[Either[ApiClientError, EbayErrorResponse]].flatMap(toApiClientError(status))
         }
