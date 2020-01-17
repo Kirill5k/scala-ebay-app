@@ -9,15 +9,16 @@ import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse.EbayItemSummary
 import domain.ApiClientError.{AuthError, FutureErrorOr}
 import domain.ItemDetails.GameDetails
-import domain.{ApiClientError, ListingDetails}
+import domain.ListingDetails
 import javax.inject._
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebayBrowseClient: EbayBrowseClient)(implicit ex: ExecutionContext)
+class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebayBrowseClient: EbayBrowseClient)(implicit val ex: ExecutionContext)
   extends EbaySearchClient[GameDetails] {
   protected val categoryId: Int = 139973
+  protected val searchQueries: Seq[String] = List("PS4", "XBOX ONE", "SWITCH")
 
   private val DEFAULT_FILTER = "conditionIds:%7B1000|1500|2000|2500|3000|4000|5000%7D," +
     "deliveryCountry:GB," +
