@@ -7,9 +7,9 @@ import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse.EbayItemSummary
-import domain.ApiClientError.FutureErrorOr
+import domain.ApiClientError.{AuthError, FutureErrorOr}
 import domain.ItemDetails.GameDetails
-import domain.ListingDetails
+import domain.{ApiClientError, ListingDetails}
 import javax.inject._
 
 import scala.concurrent.ExecutionContext
@@ -35,6 +35,12 @@ class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val eb
           .map(getListingDetails)
           .toList
           .sequence
+      }
+      .leftMap {
+        case error @ AuthError(_) =>
+          ebayAuthClient.switchAccount()
+          error
+        case error => error
       }
       .map { listings =>
         listings
