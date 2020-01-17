@@ -1,4 +1,4 @@
-package domain.mappers
+package clients.ebay.mappers
 
 import java.time.Instant
 

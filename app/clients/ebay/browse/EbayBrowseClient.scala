@@ -30,11 +30,13 @@ class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implic
       .withQueryStringParameters(queryParams.toList: _*)
       .get()
       .map { res =>
-        if (Status.isSuccessful(res.status)) res.body[Either[ApiClientError, EbayBrowseResult]]
-        else res.body[Either[ApiClientError, EbayErrorResponse]].flatMap(toApiClientError(res.status))
+        res.status match {
+          case status if Status.isSuccessful(status) => res.body[Either[ApiClientError, EbayBrowseResult]].map(_.itemSummaries.getOrElse(Seq()))
+          case status => res.body[Either[ApiClientError, EbayErrorResponse]].flatMap(toApiClientError(status))
+        }
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
-    EitherT(searchResponse).map(_.itemSummaries.getOrElse(Seq()))
+    EitherT(searchResponse)
   }
 
   def getItem(accessToken: String, itemId: String): FutureErrorOr[Option[ListingDetails]] = {

@@ -1,11 +1,9 @@
 package clients.ebay
 
-import java.time.Instant
-import java.time.temporal.ChronoField.MILLI_OF_SECOND
-
 import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
+import clients.ebay.mappers.ListingDetailsMapper._
 import domain.ApiClientError.{AuthError, FutureErrorOr}
 import domain.ItemDetails.GameDetails
 import domain.ListingDetails

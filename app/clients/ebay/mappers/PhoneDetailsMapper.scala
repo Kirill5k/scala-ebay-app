@@ -1,10 +1,10 @@
-package domain.mappers
+package clients.ebay.mappers
 
 import cats.implicits._
 import domain.ItemDetails.PhoneDetails
 import domain.ListingDetails
 
-private[domain] object PhoneDetailsMapper {
+private[mappers] object PhoneDetailsMapper {
   private val TITLE_FAULTY_CONDITION_MATCHER = List(
     "cracked", "fault", "spares", "repair", "smashed", "no touch", "no face", "broken", "not work", "damag",
     "no service", "screenburn", "screen burn", "see description"

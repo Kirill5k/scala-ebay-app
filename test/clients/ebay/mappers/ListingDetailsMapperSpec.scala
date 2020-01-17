@@ -1,11 +1,13 @@
-package domain
+package clients.ebay.mappers
 
 import java.time.Instant
 
-import domain.ItemDetails.{GameDetails, PhoneDetails}
+import domain.ItemDetails._
+import domain.ListingDetails
 import org.scalatest._
+import clients.ebay.mappers.ListingDetailsMapper._
 
-class ListingDetailsSpec extends WordSpec with MustMatchers {
+class ListingDetailsMapperSpec extends WordSpec with MustMatchers {
 
   val videoGameListing = ListingDetails(
     "https://www.ebay.co.uk/itm/Call-of-Duty-Modern-Warfare-Xbox-One-/274204760218",
@@ -44,7 +46,7 @@ class ListingDetailsSpec extends WordSpec with MustMatchers {
     )
   )
 
-  "ListingDetails" should {
+  "ListingDetailsMapper" should {
 
     "transform to GameDetails" in {
       val gameDetails = videoGameListing.as[GameDetails]

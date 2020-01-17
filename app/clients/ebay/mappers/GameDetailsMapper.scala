@@ -1,10 +1,10 @@
-package domain.mappers
+package clients.ebay.mappers
 
 import cats.implicits._
 import domain.ItemDetails.GameDetails
 import domain.ListingDetails
 
-private[domain] object GameDetailsMapper {
+private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
     "remastered", "playstation 4", "Nintendo switch", " - ", "sony", "ps4", "blu-ray", "Mirror", "New and sealed",
