@@ -28,7 +28,7 @@ trait EbaySearchClient[A <: ItemDetails] {
 
   def getItemsListedInLastMinutes(minutes: Int): FutureErrorOr[Seq[(A, ListingDetails)]] = {
     val time = Instant.now.minusSeconds(minutes * 60).`with`(MILLI_OF_SECOND, 0)
-    val filter = newlyListedSearchFilterTemplate.format(time)
+    val filter = newlyListedSearchFilterTemplate.format(time).replaceAll("\\{", "%7B").replaceAll("}", "%7D")
     searchQueries
       .map(getSearchParams(filter, _))
       .map(search)
