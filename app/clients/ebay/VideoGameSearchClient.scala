@@ -2,7 +2,8 @@ package clients.ebay
 
 import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
-import clients.ebay.browse.EbayBrowseClient
+import clients.ebay.browse.{EbayBrowseClient, EbayBrowseResponse}
+import clients.ebay.browse.EbayBrowseResponse.EbayItemSummary
 import clients.ebay.mappers.EbayItemMapper._
 import domain.ApiClientError.FutureErrorOr
 import domain.ItemDetails.GameDetails
@@ -26,18 +27,9 @@ class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val eb
 
   protected val newlyListedSearchFilterTemplate: String = DEFAULT_SEARCH_FILTER + "buyingOptions:{FIXED_PRICE},itemStartDate:[%s]"
 
-  override def search(params: Map[String, String]): FutureErrorOr[Seq[(GameDetails, ListingDetails)]] = {
-    searchForItems(params).flatMap { itemSummaries =>
-      itemSummaries
-        .filter(hasTrustedSeller)
-        .map(getCompleteItem)
-        .toList
-        .sequence
-    }
-    .map { items =>
-      items
-        .flatMap(_.toList)
-        .map(_.as[GameDetails])
-    }
-  }
+  override protected def removeUntrusted(itemSummary: EbayItemSummary): Boolean =
+    hasTrustedSeller(itemSummary)
+
+  override protected def toDomain(items: Seq[Option[EbayBrowseResponse.EbayItem]]): Seq[(GameDetails, ListingDetails)] =
+    items.flatMap(_.toList).map(_.as[GameDetails])
 }

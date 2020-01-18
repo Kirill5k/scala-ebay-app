@@ -4,7 +4,7 @@ import cats.data.EitherT
 import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
-import clients.ebay.browse.EbayBrowseResponse.{EbayItem, ItemImage, ItemPrice, ItemProperty, ItemSeller}
+import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary, ItemImage, ItemPrice, ItemProperty, ItemSeller}
 import domain.ApiClientError
 import domain.ApiClientError.{AuthError, FutureErrorOr, HttpError}
 import org.mockito.captor.ArgCaptor
@@ -44,22 +44,6 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
       }
     }
 
-    "return api client error on failure" in {
-      val (authClient, browseClient) = mockEbayClients
-      val videoGameSearchClient = new VideoGameSearchClient(authClient, browseClient)
-
-      when(authClient.accessToken).thenReturn(successResponse(accessToken))
-      when(browseClient.search(any, any)).thenReturn(errorResponse(HttpError(404, "Bad request")))
-
-      val response = videoGameSearchClient.getItemsListedInLastMinutes(15)
-
-      whenReady(response.value, timeout(10 seconds), interval(500 millis)) { items =>
-        items must be (Left(HttpError(404, "Bad request")))
-        verify(authClient, times(3)).accessToken
-        verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
-      }
-    }
-
     "switch ebay account on autherror" in {
       val (authClient, browseClient) = mockEbayClients
       val videoGameSearchClient = new VideoGameSearchClient(authClient, browseClient)
@@ -76,6 +60,27 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
         verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
       }
     }
+
+    "return api client error on failure" in {
+      val (authClient, browseClient) = mockEbayClients
+      val videoGameSearchClient = new VideoGameSearchClient(authClient, browseClient)
+
+      when(authClient.accessToken).thenReturn(successResponse(accessToken))
+
+      doReturn(errorResponse(HttpError(400, "Bad request")))
+        .doReturn(successResponse(ebayItemSummaries("item-1", "item-2")))
+        .doReturn(successResponse(ebayItemSummaries("item-3", "item-4")))
+        .when(browseClient).search(any, any)
+
+      val response = videoGameSearchClient.getItemsListedInLastMinutes(15)
+
+      whenReady(response.value, timeout(10 seconds), interval(500 millis)) { items =>
+        items must be (Left(HttpError(400, "Bad request")))
+        verify(authClient, times(3)).accessToken
+        verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
+        verify(browseClient, never).getItem(any, any)
+      }
+    }
   }
 
   def mockEbayClients: (EbayAuthClient, EbayBrowseClient) = {
@@ -90,6 +95,10 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
 
   def errorResponse[A](error: ApiClientError): FutureErrorOr[A] = {
     EitherT.left[A](Future(error))
+  }
+
+  def ebayItemSummaries(ids: String*): Seq[EbayItemSummary] = {
+    ids.map(id => EbayItemSummary(id, "ebay item", ItemPrice(BigDecimal.valueOf(30.00), "GBP"), ItemSeller("168.robinhood", Some(100), Some(150))))
   }
 
   def ebayItem: EbayItem =
