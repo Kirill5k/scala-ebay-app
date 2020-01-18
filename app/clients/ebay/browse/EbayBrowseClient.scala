@@ -14,7 +14,7 @@ import play.api.libs.ws.{WSClient, WSRequest}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
+private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
   private val ebayConfig = config.get[EbayConfig]("ebay")
 
   private val defaultHeaders = Map(
@@ -55,7 +55,7 @@ class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implic
     client.url(url).addHttpHeaders(defaultHeaders: _*).addHttpHeaders(HeaderNames.AUTHORIZATION -> s"Bearer $accessToken")
 
   private def toApiClientError[A](status: Int)(ebayErrorResponse: EbayErrorResponse): Either[ApiClientError, A] = status match {
-    case 429 | 403 | 401 => AuthError(s"ebay account has expired: $status").asLeft[A]
+    case Status.TOO_MANY_REQUESTS | Status.FORBIDDEN | Status.UNAUTHORIZED => AuthError(s"ebay account has expired: $status").asLeft[A]
     case _ => ebayErrorResponse.errors.headOption
       .fold(status.toString)(_.message)
       .asLeft[A]

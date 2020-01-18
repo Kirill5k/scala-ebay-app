@@ -17,7 +17,7 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 
-class ApaCexClientSpec extends PlaySpec with ScalaFutures {
+class CexClientSpec extends PlaySpec with ScalaFutures {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   val cexConfig = Map("baseUri" -> "/cex", "searchPath" -> "/search")
@@ -63,6 +63,16 @@ class ApaCexClientSpec extends PlaySpec with ScalaFutures {
 
         whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
           minPrice must be (Left(HttpError(400, "error sending request to cex: Bad Request")))
+        }
+      }
+    }
+
+    "return none when 429 returned" in {
+      withCexClient(429, "cex/search-error-response.json") { cexClient =>
+        val result = cexClient.findResellPrice("iphone 7")
+
+        whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
+          minPrice must be (Right(None))
         }
       }
     }

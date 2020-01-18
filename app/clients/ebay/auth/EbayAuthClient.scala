@@ -14,7 +14,7 @@ import domain.ApiClientError
 import domain.ApiClientError._
 
 @Singleton
-class EbayAuthClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
+private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
   private val logger: Logger = Logger(getClass)
 
   private val ebayConfig = config.get[EbayConfig]("ebay")
