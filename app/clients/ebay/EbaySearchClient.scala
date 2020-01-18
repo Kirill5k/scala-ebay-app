@@ -21,14 +21,14 @@ trait EbaySearchClient[A <: ItemDetails] {
   protected def ebayAuthClient: EbayAuthClient
   protected def ebayBrowseClient: EbayBrowseClient
   protected def categoryId: Int
-  protected def newlyListedFilterTemplate: String
   protected def searchQueries: Seq[String]
+  protected def newlyListedSearchFilterTemplate: String
 
   protected def search(params: Map[String, String]): FutureErrorOr[Seq[(A, ListingDetails)]]
 
   def getItemsListedInLastMinutes(minutes: Int): FutureErrorOr[Seq[(A, ListingDetails)]] = {
     val time = Instant.now.minusSeconds(minutes * 60).`with`(MILLI_OF_SECOND, 0)
-    val filter = newlyListedFilterTemplate.format(time)
+    val filter = newlyListedSearchFilterTemplate.format(time)
     searchQueries
       .map(getSearchParams(filter, _))
       .map(search)

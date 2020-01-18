@@ -14,16 +14,17 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebayBrowseClient: EbayBrowseClient)(implicit val ex: ExecutionContext)
   extends EbaySearchClient[GameDetails] {
-  protected val categoryId: Int = 139973
-  protected val searchQueries: Seq[String] = List("PS4", "XBOX ONE", "SWITCH")
 
-  private val DEFAULT_FILTER = "conditionIds:%7B1000|1500|2000|2500|3000|4000|5000%7D," +
+  private val DEFAULT_SEARCH_FILTER = "conditionIds:%7B1000|1500|2000|2500|3000|4000|5000%7D," +
     "deliveryCountry:GB," +
     "price:[0..100]," +
     "priceCurrency:GBP," +
     "itemLocationCountry:GB,"
 
-  protected val newlyListedFilterTemplate: String = DEFAULT_FILTER + "buyingOptions:%7BFIXED_PRICE%7D,itemStartDate:[%s]"
+  protected val categoryId: Int = 139973
+  protected val searchQueries: Seq[String] = List("PS4", "XBOX ONE", "SWITCH")
+
+  protected val newlyListedSearchFilterTemplate: String = DEFAULT_SEARCH_FILTER + "buyingOptions:%7BFIXED_PRICE%7D,itemStartDate:[%s]"
 
   override def search(params: Map[String, String]): FutureErrorOr[Seq[(GameDetails, ListingDetails)]] = {
     searchForItems(params).flatMap { itemSummaries =>
