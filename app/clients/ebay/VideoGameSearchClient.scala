@@ -5,7 +5,6 @@ import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.{EbayBrowseClient, EbayBrowseResponse}
 import clients.ebay.browse.EbayBrowseResponse.EbayItemSummary
 import clients.ebay.mappers.EbayItemMapper._
-import domain.ApiClientError.FutureErrorOr
 import domain.ItemDetails.GameDetails
 import domain.ListingDetails
 import javax.inject._
@@ -31,5 +30,8 @@ class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val eb
     hasTrustedSeller(itemSummary)
 
   override protected def toDomain(items: Seq[Option[EbayBrowseResponse.EbayItem]]): Seq[(GameDetails, ListingDetails)] =
-    items.flatMap(_.toList).map(_.as[GameDetails])
+    for {
+      itemOpt <- items
+      item <- itemOpt.toList
+    } yield item.as[GameDetails]
 }

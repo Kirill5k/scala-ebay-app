@@ -37,7 +37,7 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
         items must be (Right(Seq()))
         verify(authClient, times(3)).accessToken
         verify(browseClient, times(3)).search(eqTo(accessToken), searchParamsCaptor)
-        searchParamsCaptor.values.map(_("q")) must be (Seq("PS4", "XBOX ONE", "SWITCH"))
+        searchParamsCaptor.values.map(_("q")) must contain allOf ("PS4", "XBOX ONE", "SWITCH")
         searchParamsCaptor.value("limit") must be ("200")
         searchParamsCaptor.value("category_ids") must be ("139973")
         searchParamsCaptor.value("filter") must startWith ("conditionIds:%7B1000|1500|2000|2500|3000|4000|5000%7D,deliveryCountry:GB,price:[0..100],priceCurrency:GBP,itemLocationCountry:GB,buyingOptions:%7BFIXED_PRICE%7D,itemStartDate:[")
