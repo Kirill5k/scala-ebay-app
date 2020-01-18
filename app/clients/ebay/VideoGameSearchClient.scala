@@ -22,13 +22,16 @@ class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val eb
     "itemLocationCountry:GB,"
 
   protected val categoryId: Int = 139973
-  protected val searchQueries: Seq[String] = List("PS4", "XBOX ONE", "SWITCH")
+  protected val searchQueries: List[String] = List("PS4", "XBOX ONE", "SWITCH")
 
   protected val newlyListedSearchFilterTemplate: String = DEFAULT_SEARCH_FILTER + "buyingOptions:{FIXED_PRICE},itemStartDate:[%s]"
 
-  override protected def removeUntrusted(itemSummary: EbayItemSummary): Boolean =
+  override protected def removeUnwanted(itemSummary: EbayItemSummary): Boolean =
     hasTrustedSeller(itemSummary)
 
   override protected def toDomain(items: Seq[Option[EbayBrowseResponse.EbayItem]]): Seq[(GameDetails, ListingDetails)] =
-    items.flatMap(_.toList).map(_.as[GameDetails])
+    for {
+      itemOpt <- items
+      item <- itemOpt.toList
+    } yield item.as[GameDetails]
 }

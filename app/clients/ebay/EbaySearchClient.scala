@@ -21,10 +21,10 @@ trait EbaySearchClient[A <: ItemDetails] {
   protected def ebayAuthClient: EbayAuthClient
   protected def ebayBrowseClient: EbayBrowseClient
   protected def categoryId: Int
-  protected def searchQueries: Seq[String]
+  protected def searchQueries: List[String]
   protected def newlyListedSearchFilterTemplate: String
 
-  protected def removeUntrusted(itemSummary: EbayItemSummary): Boolean
+  protected def removeUnwanted(itemSummary: EbayItemSummary): Boolean
   protected def toDomain(items: Seq[Option[EbayItem]]): Seq[(A, ListingDetails)]
 
   def getItemsListedInLastMinutes(minutes: Int): FutureErrorOr[Seq[(A, ListingDetails)]] = {
@@ -33,13 +33,12 @@ trait EbaySearchClient[A <: ItemDetails] {
     searchQueries
       .map(getSearchParams(filter, _))
       .map(searchForItems)
-      .toList
       .sequence
       .map(_.flatten)
-      .map(_.filter(removeUntrusted))
+      .map(_.filter(removeUnwanted))
       .flatMap(_.map(getCompleteItem).sequence)
-      .leftMap(switchAccountIfItHasExpired)
       .map(toDomain)
+      .leftMap(switchAccountIfItHasExpired)
   }
 
   protected def getSearchParams(filter: String, query: String): Map[String, String] =
@@ -69,7 +68,7 @@ trait EbaySearchClient[A <: ItemDetails] {
       feedbackScore <- itemSummary.seller.feedbackScore
       if feedbackScore > MIN_FEEDBACK_SCORE
     } yield ()
-    }.isDefined
+  }.isDefined
 
   protected val switchAccountIfItHasExpired: PartialFunction[ApiClientError, ApiClientError] = {
     case error: AuthError =>
