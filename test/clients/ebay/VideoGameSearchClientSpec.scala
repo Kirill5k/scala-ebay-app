@@ -7,6 +7,7 @@ import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary, ItemImage, ItemPrice, ItemProperty, ItemSeller}
 import domain.ApiClientError
 import domain.ApiClientError.{AuthError, FutureErrorOr, HttpError}
+import domain.ItemDetails.GameDetails
 import org.mockito.captor.ArgCaptor
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatest.concurrent.ScalaFutures
@@ -79,6 +80,33 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
         verify(authClient, times(3)).accessToken
         verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
         verify(browseClient, never).getItem(any, any)
+      }
+    }
+
+    "get item details for each item id" in {
+      val (authClient, browseClient) = mockEbayClients
+      val videoGameSearchClient = new VideoGameSearchClient(authClient, browseClient)
+
+      when(authClient.accessToken).thenReturn(successResponse(accessToken))
+
+      doReturn(successResponse(ebayItemSummaries("item-1")))
+        .doReturn(successResponse(ebayItemSummaries("item-2")))
+        .doReturn(successResponse(ebayItemSummaries("item-3")))
+        .when(browseClient).search(any, any)
+
+      doReturn(successResponse(None)).when(browseClient).getItem(accessToken, "item-1")
+      doReturn(successResponse(None)).when(browseClient).getItem(accessToken, "item-2")
+      doReturn(successResponse(Some(ebayItem))).when(browseClient).getItem(accessToken, "item-3")
+
+      val response = videoGameSearchClient.getItemsListedInLastMinutes(15)
+
+      whenReady(response.value, timeout(10 seconds), interval(500 millis)) { items =>
+        val listings = items.getOrElse(throw new RuntimeException())
+        listings must have size (1)
+        listings.head._1 must be (GameDetails(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action")))
+        verify(authClient, times(6)).accessToken
+        verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
+        verify(browseClient, times(3)).getItem(eqTo(accessToken), any)
       }
     }
   }

@@ -30,8 +30,5 @@ class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val eb
     hasTrustedSeller(itemSummary)
 
   override protected def toDomain(items: Seq[Option[EbayBrowseResponse.EbayItem]]): Seq[(GameDetails, ListingDetails)] =
-    for {
-      itemOpt <- items
-      item <- itemOpt.toList
-    } yield item.as[GameDetails]
+    items.flatMap(_.toList).map(_.as[GameDetails])
 }
