@@ -7,8 +7,8 @@ import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary}
-import domain.ApiClientError.FutureErrorOr
-import domain.{ItemDetails, ListingDetails}
+import domain.ApiClientError.{AuthError, FutureErrorOr}
+import domain.{ApiClientError, ItemDetails, ListingDetails}
 
 import scala.concurrent.ExecutionContext
 
@@ -19,9 +19,13 @@ trait EbaySearchClient[A <: ItemDetails] {
   implicit protected def ex: ExecutionContext
 
   protected def ebayAuthClient: EbayAuthClient
+
   protected def ebayBrowseClient: EbayBrowseClient
+
   protected def categoryId: Int
+
   protected def newlyListedFilterTemplate: String
+
   protected def searchQueries: Seq[String]
 
   protected def search(params: Map[String, String]): FutureErrorOr[Seq[(A, ListingDetails)]]
@@ -37,14 +41,25 @@ trait EbaySearchClient[A <: ItemDetails] {
       .map(_.flatten)
   }
 
-  protected def getSearchParams(filter: String, query: String): Map[String, String] = {
+  protected def getSearchParams(filter: String, query: String): Map[String, String] =
     Map(
       "category_ids" -> categoryId.toString,
       "filter" -> filter,
       "limit" -> "200",
       "q" -> query
     )
-  }
+
+  protected def searchForItems(searchParams: Map[String, String]): FutureErrorOr[Seq[EbayItemSummary]] =
+    for {
+      token <- ebayAuthClient.accessToken()
+      itemSummaries <- ebayBrowseClient.search(token, searchParams)
+    } yield itemSummaries
+
+  protected def getCompleteItem(itemSummary: EbayItemSummary): FutureErrorOr[Option[EbayItem]] =
+    for {
+      token <- ebayAuthClient.accessToken()
+      item <- ebayBrowseClient.getItem(token, itemSummary.itemId)
+    } yield item
 
   protected val hasTrustedSeller: EbayItemSummary => Boolean = itemSummary => {
     for {
@@ -55,6 +70,10 @@ trait EbaySearchClient[A <: ItemDetails] {
     } yield ()
   }.isDefined
 
-  protected def getCompleteItem(itemSummary: EbayItemSummary): FutureErrorOr[Option[EbayItem]] =
-    ebayAuthClient.accessToken().flatMap(t => ebayBrowseClient.getItem(t, itemSummary.itemId))
+  protected val switchAccountIfItHasExpired: PartialFunction[ApiClientError, ApiClientError] = {
+    case error: AuthError =>
+      ebayAuthClient.switchAccount()
+      error
+    case error => error
+  }
 }
