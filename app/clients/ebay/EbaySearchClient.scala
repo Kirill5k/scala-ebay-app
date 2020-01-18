@@ -19,13 +19,9 @@ trait EbaySearchClient[A <: ItemDetails] {
   implicit protected def ex: ExecutionContext
 
   protected def ebayAuthClient: EbayAuthClient
-
   protected def ebayBrowseClient: EbayBrowseClient
-
   protected def categoryId: Int
-
   protected def newlyListedFilterTemplate: String
-
   protected def searchQueries: Seq[String]
 
   protected def search(params: Map[String, String]): FutureErrorOr[Seq[(A, ListingDetails)]]
