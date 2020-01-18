@@ -34,6 +34,7 @@ trait EbaySearchClient[A <: ItemDetails] {
       .map(search)
       .toList
       .sequence
+      .leftMap(switchAccountIfItHasExpired)
       .map(_.flatten)
   }
 

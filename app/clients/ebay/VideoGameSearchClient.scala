@@ -34,7 +34,6 @@ class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val eb
         .toList
         .sequence
     }
-    .leftMap(switchAccountIfItHasExpired)
     .map { items =>
       items
         .flatMap(_.toList)
