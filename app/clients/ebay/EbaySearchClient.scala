@@ -2,6 +2,7 @@ package clients.ebay
 
 import java.time.Instant
 import java.time.temporal.ChronoField.MILLI_OF_SECOND
+import java.util.concurrent.TimeUnit
 
 import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
@@ -9,12 +10,18 @@ import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary}
 import domain.ApiClientError.{AuthError, FutureErrorOr}
 import domain.{ApiClientError, ItemDetails, ListingDetails}
+import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 
 import scala.concurrent.ExecutionContext
 
 trait EbaySearchClient[A <: ItemDetails] {
   private val MIN_FEEDBACK_SCORE = 6
   private val MIN_FEEDBACK_PERCENT = 90
+
+  private val itemsIds = ExpiringMap.builder()
+    .expirationPolicy(ExpirationPolicy.CREATED)
+    .expiration(60, TimeUnit.MINUTES)
+    .build[String, String]()
 
   implicit protected def ex: ExecutionContext
 
@@ -25,7 +32,7 @@ trait EbaySearchClient[A <: ItemDetails] {
   protected def newlyListedSearchFilterTemplate: String
 
   protected def removeUnwanted(itemSummary: EbayItemSummary): Boolean
-  protected def toDomain(items: Seq[Option[EbayItem]]): Seq[(A, ListingDetails)]
+  protected def toDomain(items: Seq[EbayItem]): Seq[(A, ListingDetails)]
 
   def getItemsListedInLastMinutes(minutes: Int): FutureErrorOr[Seq[(A, ListingDetails)]] = {
     val time = Instant.now.minusSeconds(minutes * 60).`with`(MILLI_OF_SECOND, 0)
@@ -34,9 +41,10 @@ trait EbaySearchClient[A <: ItemDetails] {
       .map(getSearchParams(filter, _))
       .map(searchForItems)
       .sequence
-      .map(_.flatten)
-      .map(_.filter(removeUnwanted))
+      .map(_.flatten.filter(removeUnwanted))
       .flatMap(_.map(getCompleteItem).sequence)
+      .map(_.flatten)
+      .map(markAsSeen)
       .map(toDomain)
       .leftMap(switchAccountIfItHasExpired)
   }
@@ -69,6 +77,10 @@ trait EbaySearchClient[A <: ItemDetails] {
       if feedbackScore > MIN_FEEDBACK_SCORE
     } yield ()
   }.isDefined
+
+  protected val isNew: EbayItemSummary => Boolean = itemSummary => !itemsIds.containsKey(itemSummary.itemId)
+
+  protected val markAsSeen: Seq[EbayItem] => Seq[EbayItem] = items => items.map(i => {itemsIds.put(i.itemId, ""); i})
 
   protected val switchAccountIfItHasExpired: PartialFunction[ApiClientError, ApiClientError] = {
     case error: AuthError =>

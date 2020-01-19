@@ -145,6 +145,7 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
         verify(authClient, times(6)).accessToken
         verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
         verify(browseClient, times(3)).getItem(eqTo(accessToken), any)
+        videoGameSearchClient
       }
     }
   }

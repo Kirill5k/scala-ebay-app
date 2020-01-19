@@ -2,8 +2,8 @@ package clients.ebay
 
 import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
-import clients.ebay.browse.{EbayBrowseClient, EbayBrowseResponse}
-import clients.ebay.browse.EbayBrowseResponse.EbayItemSummary
+import clients.ebay.browse.EbayBrowseClient
+import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary}
 import clients.ebay.mappers.EbayItemMapper._
 import domain.ItemDetails.GameDetails
 import domain.ListingDetails
@@ -34,11 +34,7 @@ class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val eb
   protected val newlyListedSearchFilterTemplate: String = DEFAULT_SEARCH_FILTER + "buyingOptions:{FIXED_PRICE},itemStartDate:[%s]"
 
   override protected def removeUnwanted(itemSummary: EbayItemSummary): Boolean =
-    hasTrustedSeller(itemSummary) && !LISTING_NAME_TRIGGER_WORDS.matches(itemSummary.title)
+    hasTrustedSeller(itemSummary) && !LISTING_NAME_TRIGGER_WORDS.matches(itemSummary.title) && isNew(itemSummary)
 
-  override protected def toDomain(items: Seq[Option[EbayBrowseResponse.EbayItem]]): Seq[(GameDetails, ListingDetails)] =
-    for {
-      itemOpt <- items
-      item <- itemOpt.toList
-    } yield item.as[GameDetails]
+  override protected def toDomain(items: Seq[EbayItem]): Seq[(GameDetails, ListingDetails)] = items.map(_.as[GameDetails])
 }
