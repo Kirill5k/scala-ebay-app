@@ -29,7 +29,6 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
       val (authClient, browseClient) = mockEbayClients
       val videoGameSearchClient = new VideoGameSearchClient(authClient, browseClient)
 
-      when(authClient.accessToken).thenReturn(successResponse(accessToken))
       when(browseClient.search(any, any)).thenReturn(successResponse(Seq()))
 
       val response = videoGameSearchClient.getItemsListedInLastMinutes(15)
@@ -66,8 +65,6 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
       val (authClient, browseClient) = mockEbayClients
       val videoGameSearchClient = new VideoGameSearchClient(authClient, browseClient)
 
-      when(authClient.accessToken).thenReturn(successResponse(accessToken))
-
       doReturn(errorResponse(HttpError(400, "Bad request")))
         .doReturn(successResponse(ebayItemSummaries("item-1", "item-2")))
         .doReturn(successResponse(ebayItemSummaries("item-3", "item-4")))
@@ -83,11 +80,51 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
       }
     }
 
-    "get item details for each item id" in {
+    "filter out items with bad feedback" in {
       val (authClient, browseClient) = mockEbayClients
       val videoGameSearchClient = new VideoGameSearchClient(authClient, browseClient)
 
-      when(authClient.accessToken).thenReturn(successResponse(accessToken))
+      doReturn(successResponse(Seq(ebayItemSummary("1", feedbackPercentage = 90), ebayItemSummary("1", feedbackScore = 4))))
+        .doReturn(successResponse(Seq()))
+        .doReturn(successResponse(Seq()))
+        .when(browseClient).search(any, any)
+
+      val response = videoGameSearchClient.getItemsListedInLastMinutes(15)
+
+      whenReady(response.value, timeout(10 seconds), interval(500 millis)) { items =>
+        items must be (Right(Seq()))
+        verify(authClient, times(3)).accessToken
+        verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
+        verify(browseClient, never).getItem(any, any)
+      }
+    }
+
+    "filter out items with bad names" in {
+      val (authClient, browseClient) = mockEbayClients
+      val videoGameSearchClient = new VideoGameSearchClient(authClient, browseClient)
+
+      doReturn(successResponse(Seq(
+        ebayItemSummary("1", name = "fallout 4 disc only"),
+        ebayItemSummary("2", name = "fallout 76 blah blah blah blah"),
+        ebayItemSummary("3", name = "call of duty digital code"))
+      ))
+        .doReturn(successResponse(Seq()))
+        .doReturn(successResponse(Seq()))
+        .when(browseClient).search(any, any)
+
+      val response = videoGameSearchClient.getItemsListedInLastMinutes(15)
+
+      whenReady(response.value, timeout(10 seconds), interval(500 millis)) { items =>
+        items must be (Right(Seq()))
+        verify(authClient, times(3)).accessToken
+        verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
+        verify(browseClient, never).getItem(any, any)
+      }
+    }
+
+    "get item details for each item id" in {
+      val (authClient, browseClient) = mockEbayClients
+      val videoGameSearchClient = new VideoGameSearchClient(authClient, browseClient)
 
       doReturn(successResponse(ebayItemSummaries("item-1")))
         .doReturn(successResponse(ebayItemSummaries("item-2")))
@@ -114,6 +151,7 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
   def mockEbayClients: (EbayAuthClient, EbayBrowseClient) = {
     val authClient = mock[EbayAuthClient]
     val browseClient = mock[EbayBrowseClient]
+    when(authClient.accessToken).thenReturn(successResponse(accessToken))
     (authClient, browseClient)
   }
 
