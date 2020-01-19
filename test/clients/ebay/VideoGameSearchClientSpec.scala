@@ -106,8 +106,9 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
       doReturn(successResponse(Seq(
         ebayItemSummary("1", name = "fallout 4 disc only"),
         ebayItemSummary("2", name = "fallout 76 blah blah blah blah"),
-        ebayItemSummary("3", name = "call of duty digital code"))
-      ))
+        ebayItemSummary("3", name = "call of duty digital code"),
+        ebayItemSummary("4", name = "lego worlds read description")
+      )))
         .doReturn(successResponse(Seq()))
         .doReturn(successResponse(Seq()))
         .when(browseClient).search(any, any)
