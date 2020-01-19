@@ -7,7 +7,7 @@ import clients.ebay.browse.EbayBrowseResponse._
 import domain.ApiClientError._
 import domain.ApiClientError
 import javax.inject._
-import play.api.Configuration
+import play.api.{Configuration, Logger}
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.ws.{WSClient, WSRequest}
 
@@ -15,6 +15,8 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
+  private val logger: Logger = Logger(getClass)
+
   private val ebayConfig = config.get[EbayConfig]("ebay")
 
   private val defaultHeaders = Map(
@@ -34,6 +36,10 @@ private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WS
         }
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
+    searchResponse.foreach {
+      case Right(items) => logger.info(s"search ${queryParams("q")} returned ${items.size} results")
+      case _ =>
+    }
     EitherT(searchResponse)
   }
 

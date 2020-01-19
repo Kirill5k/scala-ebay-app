@@ -52,6 +52,16 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
       }
     }
 
+    "return autherror when token expired during search" in {
+      withEbaySearchClient(403, "ebay/get-item-unauthorized-error-response.json") { ebaySearchClient =>
+        val item = ebaySearchClient.search(accessToken, searchQueryParams)
+
+        whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItems =>
+          foundItems must be(Left(AuthError("ebay account has expired: 403")))
+        }
+      }
+    }
+
     "make get request to obtain item details" in {
       withEbaySearchClient(200, "ebay/get-item-1-success-response.json") { ebaySearchClient =>
         val item = ebaySearchClient.getItem(accessToken, itemId)
