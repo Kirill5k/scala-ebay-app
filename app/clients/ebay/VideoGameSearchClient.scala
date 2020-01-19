@@ -24,7 +24,7 @@ class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val eb
   private val LISTING_NAME_TRIGGER_WORDS = List(
     "digital code", "digital-code", "download code", "upgrade code", "style covers", "no case", "credits", "read description",
     "coin", "skins", "bundle", "no game", "digital key", "download key", "just the case", "cartridge only", "disc only",
-    "fallout 76(\\s\\w+){4,}", "borderlands 3(\\s\\w+){4,}", "rocket league(\\s\\w+){4,}",
+    "fallout 76 (\\w+\\s){4,}", "borderlands 3 (\\w+\\s){4,}", "rocket league (\\w+\\s){4,}",
     "player generator", "card generator"
   ).mkString("^.*?(?i)(", "|", ").*$").r
 
