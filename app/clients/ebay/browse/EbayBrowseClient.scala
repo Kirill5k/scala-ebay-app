@@ -37,7 +37,7 @@ private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WS
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
     searchResponse.foreach {
-      case Right(items) => logger.info(s"search ${queryParams("q")} returned ${items.size} results")
+      case Right(items) => logger.info(s"search ${queryParams("q")} returned ${items.size} items")
       case _ =>
     }
     EitherT(searchResponse)
