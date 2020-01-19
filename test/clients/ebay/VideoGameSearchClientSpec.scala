@@ -126,8 +126,11 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
   }
 
   def ebayItemSummaries(ids: String*): Seq[EbayItemSummary] = {
-    ids.map(id => EbayItemSummary(id, "ebay item", ItemPrice(BigDecimal.valueOf(30.00), "GBP"), ItemSeller("168.robinhood", Some(100), Some(150))))
+    ids.map(ebayItemSummary(_))
   }
+
+  def ebayItemSummary(id: String, name: String = "ebay item", feedbackScore: Int = 150, feedbackPercentage: Int = 150) =
+    EbayItemSummary(id, name, ItemPrice(BigDecimal.valueOf(30.00), "GBP"), ItemSeller("168.robinhood", Some(feedbackPercentage), Some(feedbackScore)))
 
   def ebayItem: EbayItem =
     EbayItem(

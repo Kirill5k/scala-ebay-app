@@ -1,5 +1,6 @@
 package clients.ebay.mappers
 
+import java.net.URI
 import java.time.Instant
 
 import clients.ebay.browse.EbayBrowseResponse.EbayItem
@@ -18,11 +19,11 @@ private[ebay] object EbayItemMapper {
 
     private def toListingDetails(item: EbayItem): ListingDetails =
       ListingDetails(
-        url = item.itemWebUrl,
+        url = new URI(item.itemWebUrl),
         title = item.title,
         shortDescription = item.shortDescription,
         description = item.description.map(_.replaceAll("(?i)<[^>]*>", "")).map(_.slice(0, 500)),
-        image = item.image.imageUrl,
+        image = new URI(item.image.imageUrl),
         buyingOptions = item.buyingOptions,
         sellerName = item.seller.username,
         price = item.price.value,

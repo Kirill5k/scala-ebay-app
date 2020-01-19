@@ -1,5 +1,7 @@
 package clients.ebay.mappers
 
+import java.net.URI
+
 import clients.ebay.browse.EbayBrowseResponse._
 import domain.ItemDetails._
 import domain.ListingDetails
@@ -65,11 +67,11 @@ class EbayItemMapperSpec extends WordSpec with MustMatchers {
       gameDetails must be(GameDetails(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action")))
 
       listingDetails must be(ListingDetails(
-        "https://www.ebay.co.uk/itm/call-of-duty-modern-warfare-xbox-one-2019-/333474293066",
+        new URI("https://www.ebay.co.uk/itm/call-of-duty-modern-warfare-xbox-one-2019-/333474293066"),
         "call of duty modern warfare xbox one 2019",
         Some("call of duty modern warfare xbox one 2019. Condition is New. Game came as part of bundle and not wanted. Never playes. Dispatched with Royal Mail 1st Class Large Letter."),
         None,
-        "https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg",
+        new URI("https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg"),
         Seq("FIXED_PRICE"),
         "168.robinhood",
         BigDecimal.valueOf(30.00),
@@ -98,11 +100,11 @@ class EbayItemMapperSpec extends WordSpec with MustMatchers {
       ))
 
       listingDetails must be (ListingDetails(
-        "https://www.ebay.co.uk/itm/Samsung-Galaxy-S10-128gb-UNLOCKED-Prism-Blue-/114059888671",
+        new URI("https://www.ebay.co.uk/itm/Samsung-Galaxy-S10-128gb-UNLOCKED-Prism-Blue-/114059888671"),
         "Samsung Galaxy S10 128gb UNLOCKED Prism Blue",
         Some("Samsung Galaxy S10 Used"),
         Some("Up For GrabsSamsung Galaxy S10 128gb UNLOCKED Prism BlueGood ConditionThe usual minor wear and Tear as you would expect from a used phone.It has been in a case with a screen protector since new however they appears tohave 1 x Deeper Scratch no more than 1cm long to the top left of the phone which does not affect the use of the phone nor does it show up when the screen is in use and you have got to look for it to see it when the screen is off.Comes with Wall Plug and Wire.I like the phone but unf"),
-        "https://i.ebayimg.com/images/g/yOMAAOSw~5ReGEH2/s-l1600.jpg",
+        new URI("https://i.ebayimg.com/images/g/yOMAAOSw~5ReGEH2/s-l1600.jpg"),
         Seq("FIXED_PRICE", "BEST_OFFER"),
         "jb-liquidation3",
         BigDecimal.valueOf(425.00),
