@@ -22,10 +22,10 @@ class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val eb
     "itemLocationCountry:GB,"
 
   private val LISTING_NAME_TRIGGER_WORDS = List(
-    "digital code", "digital-code", "download code", "upgrade code", "style covers", "no case", "credits", "read description",
+    "digital code", "digital-code", "download code", "upgrade code", "style covers", "no case", "credits",
     "coin", "skins", "bundle", "no game", "digital key", "download key", "just the case", "cartridge only", "disc only",
-    "fallout 76 (\\w+\\s){4,}", "borderlands 3 (\\w+\\s){4,}", "rocket league (\\w+\\s){4,}",
-    "player generator", "card generator"
+    "player generator", "pve official", "read description",
+  "fallout 76 (\\w+\\s){4,}", "borderlands 3 (\\w+\\s){4,}", "rocket league (\\w+\\s){4,}",
   ).mkString("^.*?(?i)(", "|", ").*$").r
 
   protected val categoryId: Int = 139973

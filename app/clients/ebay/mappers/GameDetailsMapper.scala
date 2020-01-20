@@ -8,8 +8,8 @@ private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
     "remastered", "playstation 4", "Nintendo switch", " - ", "sony", "ps4", "blu-ray", "Mirror", "New and sealed",
-    "Brand new", "Sealed", "Game new", "Microsoft", "Free post", "Used", "xbox one", "Uk pal", "Game code", "Hits",
-    "Tom clancys", "Great Condition"
+    "Brand new", "Factory Sealed", "Sealed", "Game new", ",", "Microsoft", "Free post", "Used", "xbox one", "Uk pal", "Game code",
+    "Hits", "Tom clancys", "Great Condition", "[^\\p{L}\\p{M}\\p{N}\\p{P}\\p{Z}\\p{Cf}\\p{Cs}\\s]"
   ).mkString("|")
 
   private val PLATFORMS_MATCH_REGEX = List("PS4", "PLAYSTATION 4", "NINTENDO SWITCH", "SWITCH", "XBOX ONE")
