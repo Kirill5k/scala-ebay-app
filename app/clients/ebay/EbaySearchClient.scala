@@ -29,6 +29,7 @@ trait EbaySearchClient[A <: ItemDetails] {
     .build[String, String]()
 
   implicit protected def ex: ExecutionContext
+  implicit protected def m: EbayItemMapper[A]
 
   protected def ebayAuthClient: EbayAuthClient
   protected def ebayBrowseClient: EbayBrowseClient
@@ -37,7 +38,6 @@ trait EbaySearchClient[A <: ItemDetails] {
   protected def newlyListedSearchFilterTemplate: String
 
   protected def removeUnwanted(itemSummary: EbayItemSummary): Boolean
-  protected def toDomain(item: EbayItem): (A, ListingDetails)
 
   def getItemsListedInLastMinutes(minutes: Int): FutureErrorOr[Seq[(A, ListingDetails)]] = {
     val time = Instant.now.minusSeconds(minutes * 60).`with`(MILLI_OF_SECOND, 0)
@@ -80,7 +80,7 @@ trait EbaySearchClient[A <: ItemDetails] {
       item <- items.flatten
     } yield {
       itemsIds.put(item.itemId, "")
-      toDomain(item)
+      item.as[A]
     }
 
   protected val hasTrustedSeller: EbayItemSummary => Boolean = itemSummary => {

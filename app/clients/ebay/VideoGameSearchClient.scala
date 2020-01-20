@@ -2,10 +2,9 @@ package clients.ebay
 
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
-import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary}
-import clients.ebay.mappers.EbayItemMapper._
+import clients.ebay.browse.EbayBrowseResponse.EbayItemSummary
+import clients.ebay.mappers.EbayItemMapper
 import domain.ItemDetails.GameDetails
-import domain.ListingDetails
 import javax.inject._
 
 import scala.concurrent.ExecutionContext
@@ -13,6 +12,8 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebayBrowseClient: EbayBrowseClient)(implicit val ex: ExecutionContext)
   extends EbaySearchClient[GameDetails] {
+
+  implicit override protected val m = EbayItemMapper.gameDetailsMapper
 
   private val DEFAULT_SEARCH_FILTER = "conditionIds:{1000|1500|2000|2500|3000|4000|5000}," +
     "deliveryCountry:GB," +
@@ -35,5 +36,5 @@ class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val eb
   override protected def removeUnwanted(itemSummary: EbayItemSummary): Boolean =
     hasTrustedSeller(itemSummary) && !LISTING_NAME_TRIGGER_WORDS.matches(itemSummary.title) && isNew(itemSummary)
 
-  override protected def toDomain(item: EbayItem): (GameDetails, ListingDetails) = item.as[GameDetails]
+//  override protected def toDomain(item: EbayItem): (GameDetails, ListingDetails) = item.as[GameDetails]
 }
