@@ -11,10 +11,13 @@ import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary}
 import domain.ApiClientError.{AuthError, FutureErrorOr}
 import domain.{ApiClientError, ItemDetails, ListingDetails}
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
+import play.api.Logger
 
 import scala.concurrent.ExecutionContext
 
 trait EbaySearchClient[A <: ItemDetails] {
+  private val logger: Logger = Logger(getClass)
+
   private val MIN_FEEDBACK_SCORE = 6
   private val MIN_FEEDBACK_PERCENT = 90
 
@@ -61,7 +64,10 @@ trait EbaySearchClient[A <: ItemDetails] {
     for {
       token <- ebayAuthClient.accessToken()
       itemSummaries <- ebayBrowseClient.search(token, searchParams)
-    } yield itemSummaries
+    } yield {
+      logger.info(s"search ${searchParams("q")} returned ${itemSummaries.size} items")
+      itemSummaries
+    }
 
   protected def getCompleteItem(itemSummary: EbayItemSummary): FutureErrorOr[Option[EbayItem]] =
     for {
@@ -83,7 +89,8 @@ trait EbaySearchClient[A <: ItemDetails] {
   protected val markAsSeen: Seq[EbayItem] => Seq[EbayItem] = items => items.map(i => {itemsIds.put(i.itemId, ""); i})
 
   protected val switchAccountIfItHasExpired: PartialFunction[ApiClientError, ApiClientError] = {
-    case error: AuthError =>
+    case error @ AuthError(message) =>
+      logger.warn(s"switching ebay account: ${message}")
       ebayAuthClient.switchAccount()
       error
     case error => error

@@ -15,8 +15,6 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
-  private val logger: Logger = Logger(getClass)
-
   private val ebayConfig = config.get[EbayConfig]("ebay")
 
   private val defaultHeaders = Map(
@@ -36,10 +34,6 @@ private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WS
         }
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
-    searchResponse.foreach {
-      case Right(items) => logger.info(s"search ${queryParams("q")} returned ${items.size} items")
-      case _ =>
-    }
     EitherT(searchResponse)
   }
 

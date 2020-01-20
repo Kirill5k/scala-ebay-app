@@ -15,8 +15,6 @@ import domain.ApiClientError._
 
 @Singleton
 private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
-  private val logger: Logger = Logger(getClass)
-
   private val ebayConfig = config.get[EbayConfig]("ebay")
 
   private val authRequest = client
@@ -37,13 +35,11 @@ private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSCl
   }
 
   def switchAccount(): Unit = {
-    logger.warn("switching ebay account")
     currentAccountIndex = if (currentAccountIndex + 1 < ebayConfig.credentials.length) currentAccountIndex + 1 else 0
   }
 
   private def authenticate(): FutureErrorOr[EbayAuthToken] = {
     val credentials = ebayConfig.credentials(currentAccountIndex)
-    logger.info(s"authenticated with ebay account ${credentials.clientId}")
     val authResponse = authRequest
       .withAuth(credentials.clientId, credentials.clientSecret, WSAuthScheme.BASIC)
       .post(authRequestBody)
