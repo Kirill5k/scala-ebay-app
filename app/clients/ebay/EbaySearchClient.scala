@@ -35,7 +35,7 @@ trait EbaySearchClient[A <: ItemDetails] {
   protected def newlyListedSearchFilterTemplate: String
 
   protected def removeUnwanted(itemSummary: EbayItemSummary): Boolean
-  protected def toDomain(items: Seq[EbayItem]): Seq[(A, ListingDetails)]
+  protected def toDomain(item: EbayItem): (A, ListingDetails)
 
   def getItemsListedInLastMinutes(minutes: Int): FutureErrorOr[Seq[(A, ListingDetails)]] = {
     val time = Instant.now.minusSeconds(minutes * 60).`with`(MILLI_OF_SECOND, 0)
@@ -46,13 +46,11 @@ trait EbaySearchClient[A <: ItemDetails] {
       .sequence
       .map(_.flatten.filter(removeUnwanted))
       .flatMap(_.map(getCompleteItem).sequence)
-      .map(_.flatten)
-      .map(markAsSeen)
-      .map(toDomain)
+      .map(transformItems)
       .leftMap(switchAccountIfItHasExpired)
   }
 
-  protected def getSearchParams(filter: String, query: String): Map[String, String] =
+  private def getSearchParams(filter: String, query: String): Map[String, String] =
     Map(
       "category_ids" -> categoryId.toString,
       "filter" -> filter,
@@ -60,7 +58,7 @@ trait EbaySearchClient[A <: ItemDetails] {
       "q" -> query
     )
 
-  protected def searchForItems(searchParams: Map[String, String]): FutureErrorOr[Seq[EbayItemSummary]] =
+  private def searchForItems(searchParams: Map[String, String]): FutureErrorOr[Seq[EbayItemSummary]] =
     for {
       token <- ebayAuthClient.accessToken()
       itemSummaries <- ebayBrowseClient.search(token, searchParams)
@@ -69,11 +67,19 @@ trait EbaySearchClient[A <: ItemDetails] {
       itemSummaries
     }
 
-  protected def getCompleteItem(itemSummary: EbayItemSummary): FutureErrorOr[Option[EbayItem]] =
+  private def getCompleteItem(itemSummary: EbayItemSummary): FutureErrorOr[Option[EbayItem]] =
     for {
       token <- ebayAuthClient.accessToken()
       item <- ebayBrowseClient.getItem(token, itemSummary.itemId)
     } yield item
+
+  private def transformItems(items: Seq[Option[EbayItem]]): Seq[(A, ListingDetails)] =
+    for {
+      item <- items.flatten
+    } yield {
+      itemsIds.put(item.itemId, "")
+      toDomain(item)
+    }
 
   protected val hasTrustedSeller: EbayItemSummary => Boolean = itemSummary => {
     for {
@@ -85,8 +91,6 @@ trait EbaySearchClient[A <: ItemDetails] {
   }.isDefined
 
   protected val isNew: EbayItemSummary => Boolean = itemSummary => !itemsIds.containsKey(itemSummary.itemId)
-
-  protected val markAsSeen: Seq[EbayItem] => Seq[EbayItem] = items => items.map(i => {itemsIds.put(i.itemId, ""); i})
 
   protected val switchAccountIfItHasExpired: PartialFunction[ApiClientError, ApiClientError] = {
     case error @ AuthError(message) =>
