@@ -8,6 +8,8 @@ import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary}
+import clients.ebay.mappers.EbayItemMapper
+import clients.ebay.mappers.EbayItemMapper._
 import domain.ApiClientError.{AuthError, FutureErrorOr}
 import domain.{ApiClientError, ItemDetails, ListingDetails}
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
@@ -46,7 +48,7 @@ trait EbaySearchClient[A <: ItemDetails] {
       .sequence
       .map(_.flatten.filter(removeUnwanted))
       .flatMap(_.map(getCompleteItem).sequence)
-      .map(transformItems)
+      .map(transformItemsToDomain)
       .leftMap(switchAccountIfItHasExpired)
   }
 
@@ -73,7 +75,7 @@ trait EbaySearchClient[A <: ItemDetails] {
       item <- ebayBrowseClient.getItem(token, itemSummary.itemId)
     } yield item
 
-  private def transformItems(items: Seq[Option[EbayItem]]): Seq[(A, ListingDetails)] =
+  private def transformItemsToDomain(items: Seq[Option[EbayItem]]): Seq[(A, ListingDetails)] =
     for {
       item <- items.flatten
     } yield {
