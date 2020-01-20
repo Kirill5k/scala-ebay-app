@@ -36,5 +36,5 @@ class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val eb
   override protected def removeUnwanted(itemSummary: EbayItemSummary): Boolean =
     hasTrustedSeller(itemSummary) && !LISTING_NAME_TRIGGER_WORDS.matches(itemSummary.title) && isNew(itemSummary)
 
-  override protected def toDomain(items: Seq[EbayItem]): Seq[(GameDetails, ListingDetails)] = items.map(_.as[GameDetails])
+  override protected def toDomain(item: EbayItem): (GameDetails, ListingDetails) = item.as[GameDetails]
 }
