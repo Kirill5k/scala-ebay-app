@@ -3,8 +3,8 @@ package clients.ebay
 import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
-import clients.ebay.mappers.ListingDetailsMapper._
-import domain.ApiClientError.{AuthError, FutureErrorOr}
+import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary}
+import clients.ebay.mappers.EbayItemMapper._
 import domain.ItemDetails.GameDetails
 import domain.ListingDetails
 import javax.inject._
@@ -14,36 +14,27 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebayBrowseClient: EbayBrowseClient)(implicit val ex: ExecutionContext)
   extends EbaySearchClient[GameDetails] {
-  protected val categoryId: Int = 139973
-  protected val searchQueries: Seq[String] = List("PS4", "XBOX ONE", "SWITCH")
 
-  private val DEFAULT_FILTER = "conditionIds:%7B1000|1500|2000|2500|3000|4000|5000%7D," +
+  private val DEFAULT_SEARCH_FILTER = "conditionIds:{1000|1500|2000|2500|3000|4000|5000}," +
     "deliveryCountry:GB," +
     "price:[0..100]," +
     "priceCurrency:GBP," +
     "itemLocationCountry:GB,"
 
-  protected val newlyListedFilterTemplate: String = DEFAULT_FILTER + "buyingOptions:%7BFIXED_PRICE%7D,itemStartDate:[%s]"
+  private val LISTING_NAME_TRIGGER_WORDS = List(
+    "digital code", "digital-code", "download code", "upgrade code", "style covers", "no case", "credits", "read description",
+    "coin", "skins", "bundle", "no game", "digital key", "download key", "just the case", "cartridge only", "disc only",
+    "fallout 76 (\\w+\\s){4,}", "borderlands 3 (\\w+\\s){4,}", "rocket league (\\w+\\s){4,}",
+    "player generator", "card generator"
+  ).mkString("^.*?(?i)(", "|", ").*$").r
 
-  override def search(params: Map[String, String]): FutureErrorOr[Seq[(GameDetails, ListingDetails)]] = {
-    ebayAuthClient.accessToken().flatMap(t => ebayBrowseClient.search(t, params))
-      .flatMap { itemSummaries =>
-        itemSummaries
-          .filter(hasTrustedSeller)
-          .map(getListingDetails)
-          .toList
-          .sequence
-      }
-      .leftMap {
-        case error @ AuthError(_) =>
-          ebayAuthClient.switchAccount()
-          error
-        case error => error
-      }
-      .map { listings =>
-        listings
-          .flatMap(_.toList)
-          .map(ld => (ld.as[GameDetails], ld))
-      }
-  }
+  protected val categoryId: Int = 139973
+  protected val searchQueries: List[String] = List("PS4", "XBOX ONE", "SWITCH")
+
+  protected val newlyListedSearchFilterTemplate: String = DEFAULT_SEARCH_FILTER + "buyingOptions:{FIXED_PRICE},itemStartDate:[%s]"
+
+  override protected def removeUnwanted(itemSummary: EbayItemSummary): Boolean =
+    hasTrustedSeller(itemSummary) && !LISTING_NAME_TRIGGER_WORDS.matches(itemSummary.title) && isNew(itemSummary)
+
+  override protected def toDomain(items: Seq[EbayItem]): Seq[(GameDetails, ListingDetails)] = items.map(_.as[GameDetails])
 }

@@ -26,17 +26,19 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
   def findResellPrice(query: String): FutureErrorOr[Option[ResellPrice]] = {
     val searchResponse = searchRequest.withQueryStringParameters("q" -> query).get()
       .map(res =>
-        if (Status.isSuccessful(res.status)) res.body[Either[ApiClientError, CexSearchResponse]]
-        else HttpError(res.status, s"error sending request to cex: ${res.statusText}").asLeft
+        res.status match {
+          case status if Status.isSuccessful(status) => res.body[Either[ApiClientError, CexSearchResponse]].map(findMinResellPrice(query))
+          case Status.TOO_MANY_REQUESTS => none[ResellPrice].asRight[ApiClientError]
+          case status => HttpError(status, s"error sending request to cex: ${res.statusText}").asLeft
+        }
       )
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
 
     EitherT(searchResponse)
-      .map(_.response.data.map(_.boxes).getOrElse(Seq()))
-      .map(findMinResellPrice(query))
   }
 
-  private def findMinResellPrice(query: String)(searchResults: Seq[SearchResult]): Option[ResellPrice] = {
+  private def findMinResellPrice(query: String)(searchResponse: CexSearchResponse): Option[ResellPrice] = {
+    val searchResults = searchResponse.response.data.map(_.boxes).getOrElse(Seq())
     logger.info(s"search '$query' returned ${searchResults.size} results")
     if (searchResults.isEmpty) None
     else {

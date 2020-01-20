@@ -1,22 +1,22 @@
 package clients.ebay.browse
 
-import java.time.Instant
-
 import cats.data.EitherT
 import cats.implicits._
 import clients.ebay.EbayConfig
 import clients.ebay.browse.EbayBrowseResponse._
 import domain.ApiClientError._
-import domain.{ApiClientError, ListingDetails}
+import domain.ApiClientError
 import javax.inject._
-import play.api.Configuration
+import play.api.{Configuration, Logger}
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.ws.{WSClient, WSRequest}
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
+private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
+  private val logger: Logger = Logger(getClass)
+
   private val ebayConfig = config.get[EbayConfig]("ebay")
 
   private val defaultHeaders = Map(
@@ -36,16 +36,20 @@ class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implic
         }
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
+    searchResponse.foreach {
+      case Right(items) => logger.info(s"search ${queryParams("q")} returned ${items.size} items")
+      case _ =>
+    }
     EitherT(searchResponse)
   }
 
-  def getItem(accessToken: String, itemId: String): FutureErrorOr[Option[ListingDetails]] = {
+  def getItem(accessToken: String, itemId: String): FutureErrorOr[Option[EbayItem]] = {
     val getItemResponse = request(s"${ebayConfig.baseUri}${ebayConfig.itemPath}/$itemId", accessToken)
       .get()
       .map { res =>
         res.status match {
-          case status if Status.isSuccessful(status) => res.body[Either[ApiClientError, EbayItem]].map(toListingDetails(_).some)
-          case Status.NOT_FOUND => none[ListingDetails].asRight[ApiClientError]
+          case status if Status.isSuccessful(status) => res.body[Either[ApiClientError, EbayItem]].map(_.some)
+          case Status.NOT_FOUND => none[EbayItem].asRight[ApiClientError]
           case status => res.body[Either[ApiClientError, EbayErrorResponse]].flatMap(toApiClientError(status))
         }
       }
@@ -57,26 +61,10 @@ class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implic
     client.url(url).addHttpHeaders(defaultHeaders: _*).addHttpHeaders(HeaderNames.AUTHORIZATION -> s"Bearer $accessToken")
 
   private def toApiClientError[A](status: Int)(ebayErrorResponse: EbayErrorResponse): Either[ApiClientError, A] = status match {
-    case 429 | 403 | 401 => AuthError(s"ebay account has expired: $status").asLeft[A]
+    case Status.TOO_MANY_REQUESTS | Status.FORBIDDEN | Status.UNAUTHORIZED => AuthError(s"ebay account has expired: $status").asLeft[A]
     case _ => ebayErrorResponse.errors.headOption
       .fold(status.toString)(_.message)
       .asLeft[A]
       .leftMap(e => HttpError(status, s"error sending request to ebay search api: $e"))
   }
-
-  private def toListingDetails(item: EbayItem): ListingDetails =
-    ListingDetails(
-      url = item.itemWebUrl,
-      title = item.title,
-      shortDescription = item.shortDescription,
-      description = item.description.map(_.replaceAll("(?i)<[^>]*>", "")).map(_.substring(0, 500)),
-      image = item.image.imageUrl,
-      buyingOptions = item.buyingOptions,
-      sellerName = item.seller.username,
-      price = item.price.value,
-      condition = item.condition,
-      datePosted = Instant.now,
-      dateEnded = item.itemEndDate,
-      properties = item.localizedAspects.map(prop => prop.name -> prop.value).toMap
-    )
 }

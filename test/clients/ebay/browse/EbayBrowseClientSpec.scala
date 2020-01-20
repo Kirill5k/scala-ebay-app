@@ -1,5 +1,6 @@
 package clients.ebay.browse
 
+import clients.ebay.browse.EbayBrowseResponse.EbayItem
 import domain.ApiClientError._
 import domain.ListingDetails
 import org.mockito.scalatest.MockitoSugar
@@ -51,25 +52,23 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
       }
     }
 
+    "return autherror when token expired during search" in {
+      withEbaySearchClient(403, "ebay/get-item-unauthorized-error-response.json") { ebaySearchClient =>
+        val item = ebaySearchClient.search(accessToken, searchQueryParams)
+
+        whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItems =>
+          foundItems must be(Left(AuthError("ebay account has expired: 403")))
+        }
+      }
+    }
+
     "make get request to obtain item details" in {
       withEbaySearchClient(200, "ebay/get-item-1-success-response.json") { ebaySearchClient =>
         val item = ebaySearchClient.getItem(accessToken, itemId)
 
         whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItem =>
-          val item: ListingDetails = foundItem.getOrElse(throw new RuntimeException()).get
-          item must have (
-            Symbol("url") ("https://www.ebay.co.uk/itm/Samsung-Galaxy-S10-128gb-UNLOCKED-Prism-Blue-/114059888671"),
-            Symbol("title") ("Samsung Galaxy S10 128gb UNLOCKED Prism Blue"),
-            Symbol("shortDescription") (Some("Pictures to follow.")),
-            Symbol("description") (Some("Up For GrabsSamsung Galaxy S10 128gb UNLOCKED Prism BlueGood ConditionThe usual minor wear and Tear as you would expect from a used phone.It has been in a case with a screen protector since new however they appears tohave 1 x Deeper Scratch no more than 1cm long to the top left of the phone which does not affect the use of the phone nor does it show up when the screen is in use and you have got to look for it to see it when the screen is off.Comes with Wall Plug and Wire.I like the phone but unf")),
-            Symbol("image") ("https://i.ebayimg.com/images/g/yOMAAOSw~5ReGEH2/s-l1600.jpg"),
-            Symbol("buyingOptions") (Seq("FIXED_PRICE", "BEST_OFFER")),
-            Symbol("sellerName") ("jb-liquidation3"),
-            Symbol("price") (BigDecimal.valueOf(425.00)),
-            Symbol("condition") ("Used"),
-            Symbol("dateEnded") (None),
-            Symbol("properties") (Map("Colour" -> "Blue", "RAM" -> "8 GB", "Brand" -> "Samsung", "Network" -> "Unlocked", "Model" -> "Samsung Galaxy S10", "Storage Capacity" -> "128 GB"))
-          )
+          val item: EbayItem = foundItem.getOrElse(throw new RuntimeException()).get
+          item.itemId must be ("v1|114059888671|0")
         }
       }
     }
