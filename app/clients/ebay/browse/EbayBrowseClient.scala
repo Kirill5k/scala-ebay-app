@@ -29,8 +29,10 @@ private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WS
       .get()
       .map { res =>
         res.status match {
-          case status if Status.isSuccessful(status) => res.body[Either[ApiClientError, EbayBrowseResult]].map(_.itemSummaries.getOrElse(Seq()))
-          case status => res.body[Either[ApiClientError, EbayErrorResponse]].flatMap(toApiClientError(status))
+          case status if Status.isSuccessful(status) =>
+            res.body[Either[ApiClientError, EbayBrowseResult]].map(_.itemSummaries.getOrElse(Seq()))
+          case status =>
+            res.body[Either[ApiClientError, EbayErrorResponse]].flatMap(toApiClientError(status))
         }
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))

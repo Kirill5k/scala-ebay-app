@@ -4,7 +4,7 @@ import cats.data.EitherT
 import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
-import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary, ItemImage, ItemPrice, ItemProperty, ItemSeller}
+import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary, ItemImage, ItemPrice, ItemProperty, ItemSeller, ItemShippingOption, ShippingCost}
 import domain.ApiClientError
 import domain.ApiClientError.{AuthError, FutureErrorOr, HttpError}
 import domain.ItemDetails.GameDetails
@@ -194,6 +194,7 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
       None,
       None,
       None,
-      None
+      None,
+      Seq(ItemShippingOption("Royal Mail 1st class", ShippingCost(BigDecimal.valueOf(4.99), "GBR")))
     )
 }

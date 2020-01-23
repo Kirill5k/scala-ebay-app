@@ -32,7 +32,8 @@ private[ebay] object EbayItemMapper {
     def as[T <: ItemDetails](implicit m: EbayItemMapper[T]): (T, ListingDetails) = m.toDomain(ebayItem)
   }
 
-  private[mappers] def toListingDetails(item: EbayItem): ListingDetails =
+  private[mappers] def toListingDetails(item: EbayItem): ListingDetails = {
+    val postageCost = item.shippingOptions.map(_.shippingCost).map(_.value).min
     ListingDetails(
       url = new URI(item.itemWebUrl),
       title = item.title,
@@ -41,10 +42,12 @@ private[ebay] object EbayItemMapper {
       image = new URI(item.image.imageUrl),
       buyingOptions = item.buyingOptions,
       sellerName = item.seller.username,
-      price = item.price.value,
+      price = item.price.value + postageCost,
       condition = item.condition,
       datePosted = Instant.now,
       dateEnded = item.itemEndDate,
       properties = item.localizedAspects.map(prop => prop.name -> prop.value).toMap
     )
+  }
+
 }

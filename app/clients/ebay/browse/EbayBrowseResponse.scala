@@ -16,6 +16,8 @@ private[ebay] object EbayBrowseResponse {
   final case class ItemSeller(username: String, feedbackPercentage: Option[Double], feedbackScore: Option[Int])
   final case class ItemImage(imageUrl: String)
   final case class ItemPrice(value: BigDecimal, currency: String)
+  final case class ShippingCost(value: BigDecimal, currency: String)
+  final case class ItemShippingOption(shippingServiceCode: String, shippingCost: ShippingCost)
   final case class EbayItemSummary(itemId: String, title: String, price: ItemPrice, seller: ItemSeller)
 
   final case class EbayItem(
@@ -34,7 +36,8 @@ private[ebay] object EbayBrowseResponse {
                              color: Option[String],
                              brand: Option[String],
                              mpn: Option[String],
-                             itemEndDate: Option[Instant]
+                             itemEndDate: Option[Instant],
+                             shippingOptions: Seq[ItemShippingOption]
                            ) extends EbayBrowseResponse
 
   final case class EbayBrowseResult(total: Int, limit: Int, itemSummaries: Option[Seq[EbayItemSummary]]) extends EbayBrowseResponse

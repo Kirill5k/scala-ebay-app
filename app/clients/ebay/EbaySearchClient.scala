@@ -64,10 +64,8 @@ trait EbaySearchClient[A <: ItemDetails] {
     for {
       token <- ebayAuthClient.accessToken()
       itemSummaries <- ebayBrowseClient.search(token, searchParams)
-    } yield {
-      logger.info(s"search ${searchParams("q")} returned ${itemSummaries.size} items")
-      itemSummaries
-    }
+      _ = logger.info(s"search ${searchParams("q")} returned ${itemSummaries.size} items")
+    } yield itemSummaries
 
   private def getCompleteItem(itemSummary: EbayItemSummary): FutureErrorOr[Option[EbayItem]] =
     for {
@@ -78,10 +76,8 @@ trait EbaySearchClient[A <: ItemDetails] {
   private def transformItemsToDomain(items: Seq[Option[EbayItem]]): Seq[(A, ListingDetails)] =
     for {
       item <- items.flatten
-    } yield {
-      itemsIds.put(item.itemId, "")
-      item.as[A]
-    }
+      _ = itemsIds.put(item.itemId, "")
+    } yield item.as[A]
 
   protected val hasTrustedSeller: EbayItemSummary => Boolean = itemSummary => {
     for {
