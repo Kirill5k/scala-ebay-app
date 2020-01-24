@@ -7,7 +7,7 @@ import domain.ItemDetails.GameDetails
 import domain.ResellableItem.VideoGame
 
 object VideoGameBuilder {
-  def get(name: String): VideoGame = VideoGame(
+  def build(name: String): VideoGame = VideoGame(
     GameDetails(Some(name), Some("XBOX ONE"), Some("2019"), Some("Action")),
     ListingDetails(
       new URI("https://www.ebay.co.uk/itm/game-xbox-one-2019-/333474293066"),

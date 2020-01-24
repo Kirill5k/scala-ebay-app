@@ -11,5 +11,5 @@ trait PlayWithMongoSpec extends PlaySpec with GuiceOneAppPerSuite {
     .configure("mongodb.uri" -> "mongodb://localhost:27017/todos-test")
     .build()
 
-  lazy val reactiveMongoApi: ReactiveMongoApi = app.injector.instanceOf[ReactiveMongoApi]
+  implicit val reactiveMongoApi: ReactiveMongoApi = app.injector.instanceOf[ReactiveMongoApi]
 }
