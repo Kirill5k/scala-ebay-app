@@ -39,9 +39,9 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
   }
 
   "VideoGameRepository" should {
-    val videoGameRepository = new VideoGameRepository()
 
     "save video game in db" in {
+      val videoGameRepository = inject[VideoGameRepository]
       val futureResult = videoGameRepository.save(VideoGameBuilder.build("Witcher 3"))
 
       whenReady(futureResult.value, timeout(10 seconds), interval(500 millis)) { result =>

@@ -20,7 +20,7 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-core" % circeVersion,
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
-  "org.reactivemongo" %% "play2-reactivemongo" % "0.16.0-play26",
+  "org.reactivemongo" %% "play2-reactivemongo" % "0.20.2-play28",
 
   "net.jodah" % "expiringmap" % "0.5.9",
 

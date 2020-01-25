@@ -7,9 +7,8 @@ import domain.ItemDetails.GameDetails
 import domain.{ApiClientError, ListingDetails, ResellPrice}
 import domain.ResellableItem.VideoGame
 import javax.inject.Inject
-import play.api.libs.json.Format
 import play.modules.reactivemongo.ReactiveMongoApi
-import reactivemongo.api.bson.BSONObjectID
+import reactivemongo.bson.BSONObjectID
 import reactivemongo.play.json.collection.JSONCollection
 import reactivemongo.play.json._
 
