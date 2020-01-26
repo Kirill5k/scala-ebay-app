@@ -1,6 +1,5 @@
 package repositories
 
-import com.github.simplyscala.{MongoEmbedDatabase, MongodProps}
 import de.flapdoodle.embed.mongo.{MongodExecutable, MongodStarter}
 import de.flapdoodle.embed.mongo.config.{IMongodConfig, MongodConfigBuilder, Net}
 import de.flapdoodle.embed.mongo.distribution.Version
