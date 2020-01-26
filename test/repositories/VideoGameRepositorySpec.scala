@@ -43,7 +43,7 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
 
     "find all video games posted after provided date" in {
       val videoGameRepository = inject[VideoGameRepository]
-      val futureResult = videoGameRepository.findAllPostedAfter(Instant.now.minusSeconds(10000))
+      val futureResult = videoGameRepository.findAllPostedAfter(Instant.now.minusSeconds(100000))
 
       whenReady(futureResult.value, timeout(10 seconds), interval(500 millis)) { result =>
         result must be (Right(videoGames))
