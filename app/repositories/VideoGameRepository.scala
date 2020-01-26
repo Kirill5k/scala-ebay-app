@@ -12,7 +12,7 @@ import javax.inject.Inject
 import play.api.libs.json.JsObject
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.{Cursor, ReadPreference}
-import reactivemongo.bson.{BSONDateTime, BSONDocument, BSONObjectID}
+import reactivemongo.bson.{BSONDateTime, BSONDocument, BSONLong, BSONObjectID, BSONReader, BSONValue, BSONWriter}
 import reactivemongo.play.json.collection.JSONCollection
 import reactivemongo.play.json._
 
@@ -27,6 +27,15 @@ private object VideoGameEntity {
 
 private object JsonFormats {
   import play.api.libs.json._
+
+  implicit val instantReaderWriter = new BSONReader[BSONValue, Instant] with BSONWriter[Instant, BSONDateTime] {
+    override def write(t: Instant): BSONDateTime = BSONDateTime(t.toEpochMilli)
+    override def read(bson: BSONValue): Instant = bson match {
+      case BSONDateTime(value) => Instant.ofEpochMilli(value)
+      case BSONLong(value) => Instant.ofEpochMilli(value)
+      case _ => throw new RuntimeException()
+    }
+  }
 
   implicit val resellPriceFormat: OFormat[ResellPrice] = Json.format[ResellPrice]
   implicit val listingDetailsFormat: OFormat[ListingDetails] = Json.format[ListingDetails]
@@ -49,7 +58,7 @@ class VideoGameRepository @Inject()(implicit ex: ExecutionContext, mongo: Reacti
   def findAllPostedAfter(date: Instant, limit: Int = 100): FutureErrorOr[Seq[VideoGame]] = {
     val result = videoGamesCollection.flatMap { collection =>
       collection
-        .find(selector = BSONDocument("listingDetails.datePosted" -> BSONDocument("$gte" -> BSONDateTime(date.getEpochSecond))), projection = Option.empty[JsObject])
+        .find(selector = BSONDocument("listingDetails.datePosted" -> BSONDocument("$gte" -> BSONDateTime(date.toEpochMilli))), projection = Option.empty[JsObject])
         .cursor[VideoGameEntity](ReadPreference.primary)
         .collect[Seq](limit, Cursor.FailOnError[Seq[VideoGameEntity]]())
     }
