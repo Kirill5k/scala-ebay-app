@@ -26,7 +26,9 @@ libraryDependencies ++= Seq(
 
   "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test,
   "org.mockito" %% "mockito-scala" % mockitoVersion % Test,
-  "org.mockito" %% "mockito-scala-scalatest" % mockitoVersion % Test
+  "org.mockito" %% "mockito-scala-scalatest" % mockitoVersion % Test,
+  "com.github.simplyscala" % "scalatest-embedmongo_2.12" % "0.2.4" % Test,
+  "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "2.2.1-SNAPSHOT" % Test
 )
 
 // Adds additional packages into Twirl

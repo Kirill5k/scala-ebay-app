@@ -10,7 +10,7 @@ import javax.inject._
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebayBrowseClient: EbayBrowseClient)(implicit val ex: ExecutionContext)
+class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebayBrowseClient: EbayBrowseClient)(implicit val ex: ExecutionContext)
   extends EbaySearchClient[GameDetails] {
 
   implicit override protected val m: EbayItemMapper[GameDetails] = EbayItemMapper.gameDetailsMapper
@@ -34,5 +34,5 @@ class VideoGameSearchClient @Inject()(val ebayAuthClient: EbayAuthClient, val eb
   override protected val newlyListedSearchFilterTemplate: String = DEFAULT_SEARCH_FILTER + "buyingOptions:{FIXED_PRICE},itemStartDate:[%s]"
 
   override protected def removeUnwanted(itemSummary: EbayItemSummary): Boolean =
-    hasTrustedSeller(itemSummary) && !LISTING_NAME_TRIGGER_WORDS.matches(itemSummary.title) && isNew(itemSummary)
+    hasTrustedSeller(itemSummary) && !LISTING_NAME_TRIGGER_WORDS.matches(itemSummary.title.replaceAll("[\"()]", "")) && isNew(itemSummary)
 }

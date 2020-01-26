@@ -17,7 +17,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoSugar with ArgumentMatchersSugar {
+class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSugar with ArgumentMatchersSugar {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   val accessToken = "access-token"
@@ -27,7 +27,7 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
     "search for ps4, xbox one and switch games" in {
       val searchParamsCaptor = ArgCaptor[Map[String, String]]
       val (authClient, browseClient) = mockEbayClients
-      val videoGameSearchClient = new VideoGameSearchClient(authClient, browseClient)
+      val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
       when(browseClient.search(any, any)).thenReturn(successResponse(Seq()))
 
@@ -46,7 +46,7 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
 
     "switch ebay account on autherror" in {
       val (authClient, browseClient) = mockEbayClients
-      val videoGameSearchClient = new VideoGameSearchClient(authClient, browseClient)
+      val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
       when(authClient.accessToken).thenReturn(successResponse(accessToken))
       when(browseClient.search(any, any)).thenReturn(errorResponse(AuthError("Too many requests")))
@@ -63,7 +63,7 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
 
     "return api client error on failure" in {
       val (authClient, browseClient) = mockEbayClients
-      val videoGameSearchClient = new VideoGameSearchClient(authClient, browseClient)
+      val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
       doReturn(errorResponse(HttpError(400, "Bad request")))
         .doReturn(successResponse(ebayItemSummaries("item-1", "item-2")))
@@ -82,7 +82,7 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
 
     "filter out items with bad feedback" in {
       val (authClient, browseClient) = mockEbayClients
-      val videoGameSearchClient = new VideoGameSearchClient(authClient, browseClient)
+      val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
       doReturn(successResponse(Seq(ebayItemSummary("1", feedbackPercentage = 90), ebayItemSummary("1", feedbackScore = 4))))
         .doReturn(successResponse(Seq()))
@@ -101,13 +101,14 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
 
     "filter out items with bad names" in {
       val (authClient, browseClient) = mockEbayClients
-      val videoGameSearchClient = new VideoGameSearchClient(authClient, browseClient)
+      val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
       doReturn(successResponse(Seq(
         ebayItemSummary("1", name = "fallout 4 disc only"),
         ebayItemSummary("2", name = "fallout 76 blah blah blah blah blah"),
         ebayItemSummary("3", name = "call of duty digital code"),
-        ebayItemSummary("4", name = "lego worlds read description")
+        ebayItemSummary("4", name = "lego worlds read description"),
+        ebayItemSummary("5", name = s"""Borderlands 3 "Spooling Recursion" X2 Godroll Moze Splash Damage (Xbox One)""")
       )))
         .doReturn(successResponse(Seq()))
         .doReturn(successResponse(Seq()))
@@ -125,7 +126,7 @@ class VideoGameSearchClientSpec extends PlaySpec with ScalaFutures with MockitoS
 
     "get item details for each item id" in {
       val (authClient, browseClient) = mockEbayClients
-      val videoGameSearchClient = new VideoGameSearchClient(authClient, browseClient)
+      val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
       doReturn(successResponse(ebayItemSummaries("item-1")))
         .doReturn(successResponse(ebayItemSummaries("item-2")))
