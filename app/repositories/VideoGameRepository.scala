@@ -1,5 +1,7 @@
 package repositories
 
+import java.time.Instant
+
 import cats.data.EitherT
 import cats.implicits._
 import domain.ApiClientError.FutureErrorOr
@@ -7,11 +9,12 @@ import domain.ItemDetails.GameDetails
 import domain.{ApiClientError, ListingDetails, ResellPrice}
 import domain.ResellableItem.VideoGame
 import javax.inject.Inject
+import play.api.libs.json.JsObject
 import play.modules.reactivemongo.ReactiveMongoApi
-import reactivemongo.bson.BSONObjectID
+import reactivemongo.api.{Cursor, ReadPreference}
+import reactivemongo.bson.{BSONDateTime, BSONDocument, BSONObjectID}
 import reactivemongo.play.json.collection.JSONCollection
 import reactivemongo.play.json._
-
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,7 +34,7 @@ private object JsonFormats {
   implicit val videoGameFormat: OFormat[VideoGameEntity] = Json.format[VideoGameEntity]
 }
 
-class VideoGameRepository @Inject() (implicit ex: ExecutionContext, mongo: ReactiveMongoApi) {
+class VideoGameRepository @Inject()(implicit ex: ExecutionContext, mongo: ReactiveMongoApi) {
   import JsonFormats._
 
   def videoGamesCollection: Future[JSONCollection] = mongo.database.map(_.collection("videoGames"))
@@ -40,6 +43,18 @@ class VideoGameRepository @Inject() (implicit ex: ExecutionContext, mongo: React
     val result = videoGamesCollection
       .flatMap(_.insert(ordered = false).one(VideoGameEntity.from(videoGame)))
       .map(_ => ().asRight[ApiClientError])
+    EitherT(result)
+  }
+
+  def findAllPostedAfter(date: Instant, limit: Int = 100): FutureErrorOr[Seq[VideoGame]] = {
+    val result = videoGamesCollection.flatMap { collection =>
+      collection
+        .find(selector = BSONDocument("listingDetails.datePosted" -> BSONDocument("$gte" -> BSONDateTime(date.getEpochSecond))), projection = Option.empty[JsObject])
+        .cursor[VideoGameEntity](ReadPreference.primary)
+        .collect[Seq](limit, Cursor.FailOnError[Seq[VideoGameEntity]]())
+    }
+      .map(_.map(entity => VideoGame(entity.itemDetails, entity.listingDetails, entity.resellPrice)))
+      .map(_.asRight[ApiClientError])
     EitherT(result)
   }
 }
