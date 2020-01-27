@@ -23,9 +23,9 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
 
   var videoGamesDb: Future[JSONCollection] = _
   val videoGames: Seq[VideoGame] = List(
-      VideoGameBuilder.build("GTA 5"),
-      VideoGameBuilder.build("Call of Duty WW2"),
-      VideoGameBuilder.build("Super Mario 3")
+      VideoGameBuilder.build("GTA 5", Instant.now().minusSeconds(1000)),
+      VideoGameBuilder.build("Call of Duty WW2", Instant.now()),
+      VideoGameBuilder.build("Super Mario 3", Instant.now().plusSeconds(1000))
   )
 
   before {
@@ -51,12 +51,21 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
       }
     }
 
-    "find all video games posted after provided date" in {
+    "find all video games" in {
       val videoGameRepository = inject[VideoGameRepository]
-      val futureResult = videoGameRepository.findAllPostedAfter(Instant.now.minusSeconds(100000))
+      val futureResult = videoGameRepository.findAll()
 
       whenReady(futureResult.value, timeout(10 seconds), interval(500 millis)) { result =>
-        result must be (Right(videoGames))
+        result must be (Right(videoGames.reverse))
+      }
+    }
+
+    "find all video games posted after provided date" in {
+      val videoGameRepository = inject[VideoGameRepository]
+      val futureResult = videoGameRepository.findAllPostedAfter(Instant.now)
+
+      whenReady(futureResult.value, timeout(10 seconds), interval(500 millis)) { result =>
+        result must be (Right(List(videoGames(2))))
       }
     }
 

@@ -7,7 +7,7 @@ import domain.ItemDetails.GameDetails
 import domain.ResellableItem.VideoGame
 
 object VideoGameBuilder {
-  def build(name: String): VideoGame = VideoGame(
+  def build(name: String, datePosted: Instant = Instant.now()): VideoGame = VideoGame(
     GameDetails(Some(name), Some("XBOX ONE"), Some("2019"), Some("Action")),
     ListingDetails(
       new URI(s"https://www.ebay.co.uk/itm/$name".toLowerCase.replaceAll(" ", "-")),
@@ -19,7 +19,7 @@ object VideoGameBuilder {
       "168.robinhood",
       BigDecimal.valueOf(32.99),
       "New",
-      Instant.now,
+      datePosted,
       None,
       Map(
         "Game Name" -> name,

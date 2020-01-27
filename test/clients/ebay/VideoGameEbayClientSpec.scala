@@ -109,7 +109,9 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
         ebayItemSummary("3", name = "call of duty digital code"),
         ebayItemSummary("4", name = "lego worlds read description"),
         ebayItemSummary("5", name = """Borderlands 3 "Spooling Recursion" X2 Godroll Moze Splash Damage (Xbox One)"""),
-        ebayItemSummary("6", name = """Borderlands 3 - (ps4) (new maliwan takedown pistol) Moonfire (Anointed) x3 (op)""")
+        ebayItemSummary("6", name = """Borderlands 3 - (ps4) (new maliwan takedown pistol) Moonfire (Anointed) x3 (op)"""),
+        ebayItemSummary("7", name = """Borderlands 3 - (ps4) S3RV 80's Execute (anointed 50% cyro ase )(new takedown)"""),
+        ebayItemSummary("8", name = """Borderlands 3 -(ps4) Redistributor(anointed 100% dam ase x 6 pack)(new takedown)""")
       )))
         .doReturn(successResponse(Seq()))
         .doReturn(successResponse(Seq()))

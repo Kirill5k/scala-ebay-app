@@ -38,7 +38,7 @@ private object JsonFormats {
 class VideoGameRepository @Inject()(implicit ex: ExecutionContext, mongo: ReactiveMongoApi) {
   import JsonFormats._
 
-  def videoGamesCollection: Future[JSONCollection] = mongo.database.map(_.collection("videoGames"))
+  private def videoGamesCollection: Future[JSONCollection] = mongo.database.map(_.collection("videoGames"))
 
   def existsByUrl(listingUrl: URI): FutureErrorOr[Boolean] = {
     val result = videoGamesCollection.flatMap { collection =>
@@ -58,7 +58,20 @@ class VideoGameRepository @Inject()(implicit ex: ExecutionContext, mongo: Reacti
     EitherT(result)
   }
 
-  def findAllPostedAfter(date: Instant, limit: Int = 100): FutureErrorOr[Seq[VideoGame]] = {
+  def findAll(limit: Int = 100): FutureErrorOr[Seq[VideoGame]] = {
+    val result = videoGamesCollection.flatMap { collection =>
+      collection
+        .find(selector = Json.obj(), projection = Option.empty[JsObject])
+        .sort(Json.obj("listingDetails.datePosted" -> -1))
+        .cursor[VideoGameEntity](ReadPreference.primary)
+        .collect[Seq](limit, Cursor.FailOnError[Seq[VideoGameEntity]]())
+    }
+      .map(_.map(entity => VideoGame(entity.itemDetails, entity.listingDetails, entity.resellPrice)))
+      .map(_.asRight[ApiClientError])
+    EitherT(result)
+  }
+
+  def findAllPostedAfter(date: Instant, limit: Int = 1000): FutureErrorOr[Seq[VideoGame]] = {
     val result = videoGamesCollection.flatMap { collection =>
       collection
         .find(selector = BSONDocument("listingDetails.datePosted" -> BSONDocument("$gte" -> BSONString(date.toString))), projection = Option.empty[JsObject])
