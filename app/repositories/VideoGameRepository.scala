@@ -45,7 +45,7 @@ class VideoGameRepository @Inject()(implicit ex: ExecutionContext, mongo: Reacti
       collection
         .withReadPreference(ReadPreference.primary)
         .count(Some(Json.obj("listingDetails.url" -> listingUrl.toString)), None, 0, None, ReadConcern.Available)
-        .map(_ > 1)
+        .map(_ > 0)
         .map(_.asRight[ApiClientError])
     }
     EitherT(result)

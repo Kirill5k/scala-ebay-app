@@ -1,5 +1,6 @@
 package repositories
 
+import java.net.URI
 import java.time.Instant
 
 import domain.ItemDetails.GameDetails
@@ -40,6 +41,15 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
   }
 
   "VideoGameRepository" should {
+
+    "check if video game already exists by url" in {
+      val videoGameRepository = inject[VideoGameRepository]
+      val futureResult = videoGameRepository.existsByUrl(new URI("https://www.ebay.co.uk/itm/super-mario-3"))
+
+      whenReady(futureResult.value, timeout(10 seconds), interval(500 millis)) { result =>
+        result must be (Right(true))
+      }
+    }
 
     "find all video games posted after provided date" in {
       val videoGameRepository = inject[VideoGameRepository]

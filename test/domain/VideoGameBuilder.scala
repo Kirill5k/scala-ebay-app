@@ -10,7 +10,7 @@ object VideoGameBuilder {
   def build(name: String): VideoGame = VideoGame(
     GameDetails(Some(name), Some("XBOX ONE"), Some("2019"), Some("Action")),
     ListingDetails(
-      new URI("https://www.ebay.co.uk/itm/game-xbox-one-2019-/333474293066"),
+      new URI(s"https://www.ebay.co.uk/itm/$name".toLowerCase.replaceAll(" ", "-")),
       name,
       Some(s"$name xbox one 2019. Condition is New. Game came as part of bundle and not wanted. Never playes. Dispatched with Royal Mail 1st Class Large Letter."),
       None,
