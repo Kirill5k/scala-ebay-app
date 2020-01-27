@@ -1,5 +1,6 @@
 package repositories
 
+import java.net.URI
 import java.time.Instant
 
 import cats.data.EitherT
@@ -9,9 +10,9 @@ import domain.ItemDetails.GameDetails
 import domain.{ApiClientError, ListingDetails, ResellPrice}
 import domain.ResellableItem.VideoGame
 import javax.inject.Inject
-import play.api.libs.json.{JsNumber, JsObject, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.ReactiveMongoApi
-import reactivemongo.api.{Cursor, ReadPreference}
+import reactivemongo.api.{Cursor, ReadConcern, ReadPreference}
 import reactivemongo.bson.{BSONDateTime, BSONDocument, BSONLong, BSONObjectID, BSONReader, BSONString, BSONValue, BSONWriter}
 import reactivemongo.play.json.collection.JSONCollection
 import reactivemongo.play.json._
@@ -38,6 +39,17 @@ class VideoGameRepository @Inject()(implicit ex: ExecutionContext, mongo: Reacti
   import JsonFormats._
 
   def videoGamesCollection: Future[JSONCollection] = mongo.database.map(_.collection("videoGames"))
+
+  def existsByUrl(listingUrl: URI): FutureErrorOr[Boolean] = {
+    val result = videoGamesCollection.flatMap { collection =>
+      collection
+        .withReadPreference(ReadPreference.primary)
+        .count(Some(Json.obj("listingDetails.url" -> listingUrl.toString)), None, 0, None, ReadConcern.Available)
+        .map(_ > 1)
+        .map(_.asRight[ApiClientError])
+    }
+    EitherT(result)
+  }
 
   def save(videoGame: VideoGame): FutureErrorOr[Unit] = {
     val result = videoGamesCollection
