@@ -25,7 +25,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "digital code", "digital-code", "download code", "upgrade code", "style covers", "no case", "credits",
     "coin", "skins", "bundle", "no game", "digital key", "download key", "just the case", "cartridge only", "disc only",
     "player generator", "pve official", "read description", "see description", "100k", "case box",
-  "fallout 76 (\\w+\\s){4,}", "borderlands 3 (\\w+\\s){4,}", "rocket league (\\w+\\s){4,}",
+    "fallout 76(\\s+\\w+){5,}", "borderlands 3(\\s+\\w+){5,}", "rocket league(\\s+\\w+){5,}",
   ).mkString("^.*?(?i)(", "|", ").*$").r
 
   override protected val categoryId: Int = 139973
@@ -34,5 +34,5 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
   override protected val newlyListedSearchFilterTemplate: String = DEFAULT_SEARCH_FILTER + "buyingOptions:{FIXED_PRICE},itemStartDate:[%s]"
 
   override protected def removeUnwanted(itemSummary: EbayItemSummary): Boolean =
-    hasTrustedSeller(itemSummary) && !LISTING_NAME_TRIGGER_WORDS.matches(itemSummary.title.replaceAll("[\"()]", "")) && isNew(itemSummary)
+    hasTrustedSeller(itemSummary) && !LISTING_NAME_TRIGGER_WORDS.matches(itemSummary.title.replaceAll("[\"()\\-]", "")) && isNew(itemSummary)
 }
