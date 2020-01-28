@@ -24,6 +24,10 @@ private case class VideoGameEntity(_id: Option[BSONObjectID], itemDetails: GameD
 private object VideoGameEntity {
   def from(videoGame: VideoGame): VideoGameEntity =
     VideoGameEntity(None, videoGame.itemDetails, videoGame.listingDetails, videoGame.resellPrice)
+
+  implicit class VideoGameEntitySyntax(val entity: VideoGameEntity) extends AnyVal {
+    def toDomain: VideoGame = VideoGame(entity.itemDetails, entity.listingDetails, entity.resellPrice)
+  }
 }
 
 private object JsonFormats {
@@ -66,8 +70,7 @@ class VideoGameRepository @Inject()(implicit ex: ExecutionContext, mongo: Reacti
         .cursor[VideoGameEntity](ReadPreference.primary)
         .collect[Seq](limit, Cursor.FailOnError[Seq[VideoGameEntity]]())
     }
-      .map(_.map(entity => VideoGame(entity.itemDetails, entity.listingDetails, entity.resellPrice)))
-      .map(_.asRight[ApiClientError])
+      .map(_.map(_.toDomain).asRight[ApiClientError])
     EitherT(result)
   }
 
@@ -78,8 +81,7 @@ class VideoGameRepository @Inject()(implicit ex: ExecutionContext, mongo: Reacti
         .cursor[VideoGameEntity](ReadPreference.primary)
         .collect[Seq](limit, Cursor.FailOnError[Seq[VideoGameEntity]]())
     }
-      .map(_.map(entity => VideoGame(entity.itemDetails, entity.listingDetails, entity.resellPrice)))
-      .map(_.asRight[ApiClientError])
+      .map(_.map(_.toDomain).asRight[ApiClientError])
     EitherT(result)
   }
 }
