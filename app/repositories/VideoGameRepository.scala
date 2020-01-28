@@ -1,6 +1,5 @@
 package repositories
 
-import java.net.URI
 import java.time.Instant
 
 import cats.data.EitherT
@@ -10,14 +9,11 @@ import domain.ItemDetails.GameDetails
 import domain.{ApiClientError, ListingDetails, ResellPrice}
 import domain.ResellableItem.VideoGame
 import javax.inject.Inject
-import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.ReactiveMongoApi
-import reactivemongo.api.{Cursor, ReadConcern, ReadPreference}
-import reactivemongo.bson.{BSONDateTime, BSONDocument, BSONLong, BSONObjectID, BSONReader, BSONString, BSONValue, BSONWriter}
-import reactivemongo.play.json.collection.JSONCollection
+import reactivemongo.bson.BSONObjectID
 import reactivemongo.play.json._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 private[repositories] case class VideoGameEntity(
                                                   _id: Option[BSONObjectID],
@@ -44,7 +40,7 @@ private object JsonFormats {
   implicit val videoGameFormat: OFormat[VideoGameEntity] = Json.format[VideoGameEntity]
 }
 
-class VideoGameRepository @Inject()(override implicit val ex: ExecutionContext, override val mongo: ReactiveMongoApi)
+class VideoGameRepository @Inject()(implicit override val ex: ExecutionContext, override val mongo: ReactiveMongoApi)
   extends ResellableItemRepository[VideoGameEntity] {
   import JsonFormats._
 

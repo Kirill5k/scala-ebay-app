@@ -18,11 +18,10 @@ import reactivemongo.play.json._
 import scala.concurrent.{ExecutionContext, Future}
 
 trait ResellableItemRepository[E] {
+  implicit protected def ex: ExecutionContext
+  implicit protected def mongo: ReactiveMongoApi
 
-  implicit protected val ex: ExecutionContext
-  implicit protected val mongo: ReactiveMongoApi
-
-  protected val collectionName: String
+  protected def collectionName: String
   protected val itemCollection: Future[JSONCollection] = mongo.database.map(_.collection(collectionName))
 
   def existsByUrl(listingUrl: URI): FutureErrorOr[Boolean] = {

@@ -10,7 +10,7 @@ import javax.inject._
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebayBrowseClient: EbayBrowseClient)(implicit val ex: ExecutionContext)
+class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebayBrowseClient: EbayBrowseClient)(implicit override val ex: ExecutionContext)
   extends EbaySearchClient[GameDetails] {
 
   implicit override protected val m: EbayItemMapper[GameDetails] = EbayItemMapper.gameDetailsMapper

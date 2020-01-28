@@ -3,9 +3,8 @@ package repositories
 import java.net.URI
 import java.time.Instant
 
-import domain.ItemDetails.GameDetails
 import domain.ResellableItem.VideoGame
-import domain.{ListingDetails, ResellPrice, VideoGameBuilder}
+import domain.VideoGameBuilder
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.BeforeAndAfter
 import reactivemongo.play.json.collection.JSONCollection
@@ -14,7 +13,6 @@ import play.api.test.Helpers._
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
-
 
 
 class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with ScalaFutures {
