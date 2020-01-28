@@ -1,15 +1,58 @@
 package repositories
 
+import java.net.URI
+import java.time.Instant
+
+import cats.data.EitherT
+import cats.implicits._
+import domain.ApiClientError
+import domain.ApiClientError.FutureErrorOr
+import play.api.libs.json.{JsObject, Json, OFormat}
 import play.modules.reactivemongo.ReactiveMongoApi
+import reactivemongo.api.commands.WriteResult
+import reactivemongo.api.{Cursor, ReadConcern, ReadPreference}
+import reactivemongo.bson.{BSONDocument, BSONString}
 import reactivemongo.play.json.collection.JSONCollection
+import reactivemongo.play.json._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait ResellableItemRepository {
+trait ResellableItemRepository[E] {
 
   implicit protected val ex: ExecutionContext
   implicit protected val mongo: ReactiveMongoApi
 
   protected val collectionName: String
   protected val itemCollection: Future[JSONCollection] = mongo.database.map(_.collection(collectionName))
+
+  def existsByUrl(listingUrl: URI): FutureErrorOr[Boolean] = {
+    val result = itemCollection.flatMap { collection =>
+      collection
+        .withReadPreference(ReadPreference.primary)
+        .count(Some(Json.obj("listingDetails.url" -> listingUrl.toString)), None, 0, None, ReadConcern.Available)
+        .map(_ > 0)
+        .map(_.asRight[ApiClientError])
+    }
+    EitherT(result)
+  }
+
+  protected def saveEntity(entity: E)(implicit f: OFormat[E]): Future[WriteResult] =
+    itemCollection.flatMap(_.insert(ordered = false).one(entity))
+
+  protected def findAllEntities(limit: Int)(implicit f: OFormat[E]): Future[Seq[E]] =
+    itemCollection.flatMap { collection =>
+      collection
+        .find(selector = Json.obj(), projection = Option.empty[JsObject])
+        .sort(Json.obj("listingDetails.datePosted" -> -1))
+        .cursor[E](ReadPreference.primary)
+        .collect[Seq](limit, Cursor.FailOnError[Seq[E]]())
+    }
+
+  protected def findAllEntitiesPostedAfter(date: Instant, limit: Int)(implicit f: OFormat[E]): Future[Seq[E]] =
+    itemCollection.flatMap { collection =>
+      collection
+        .find(selector = BSONDocument("listingDetails.datePosted" -> BSONDocument("$gte" -> BSONString(date.toString))), projection = Option.empty[JsObject])
+        .cursor[E](ReadPreference.primary)
+        .collect[Seq](limit, Cursor.FailOnError[Seq[E]]())
+    }
 }
