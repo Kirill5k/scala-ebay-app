@@ -39,13 +39,13 @@ private object JsonFormats {
   implicit val videoGameFormat: OFormat[VideoGameEntity] = Json.format[VideoGameEntity]
 }
 
-class VideoGameRepository @Inject()(implicit ex: ExecutionContext, mongo: ReactiveMongoApi) {
+class VideoGameRepository @Inject()(override implicit val ex: ExecutionContext, override val mongo: ReactiveMongoApi) extends ResellableItemRepository {
   import JsonFormats._
 
-  private def videoGamesCollection: Future[JSONCollection] = mongo.database.map(_.collection("videoGames"))
+  override protected val collectionName: String = "videoGames"
 
   def existsByUrl(listingUrl: URI): FutureErrorOr[Boolean] = {
-    val result = videoGamesCollection.flatMap { collection =>
+    val result = itemCollection.flatMap { collection =>
       collection
         .withReadPreference(ReadPreference.primary)
         .count(Some(Json.obj("listingDetails.url" -> listingUrl.toString)), None, 0, None, ReadConcern.Available)
@@ -56,14 +56,14 @@ class VideoGameRepository @Inject()(implicit ex: ExecutionContext, mongo: Reacti
   }
 
   def save(videoGame: VideoGame): FutureErrorOr[Unit] = {
-    val result = videoGamesCollection
+    val result = itemCollection
       .flatMap(_.insert(ordered = false).one(VideoGameEntity.from(videoGame)))
       .map(_ => ().asRight[ApiClientError])
     EitherT(result)
   }
 
   def findAll(limit: Int = 100): FutureErrorOr[Seq[VideoGame]] = {
-    val result = videoGamesCollection.flatMap { collection =>
+    val result = itemCollection.flatMap { collection =>
       collection
         .find(selector = Json.obj(), projection = Option.empty[JsObject])
         .sort(Json.obj("listingDetails.datePosted" -> -1))
@@ -75,7 +75,7 @@ class VideoGameRepository @Inject()(implicit ex: ExecutionContext, mongo: Reacti
   }
 
   def findAllPostedAfter(date: Instant, limit: Int = 1000): FutureErrorOr[Seq[VideoGame]] = {
-    val result = videoGamesCollection.flatMap { collection =>
+    val result = itemCollection.flatMap { collection =>
       collection
         .find(selector = BSONDocument("listingDetails.datePosted" -> BSONDocument("$gte" -> BSONString(date.toString))), projection = Option.empty[JsObject])
         .cursor[VideoGameEntity](ReadPreference.primary)
