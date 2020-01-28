@@ -32,26 +32,38 @@ trait ResellableItemRepository[E] {
         .map(_ > 0)
         .map(_.asRight[ApiClientError])
     }
+      .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
     EitherT(result)
   }
 
-  protected def saveEntity(entity: E)(implicit f: OFormat[E]): Future[WriteResult] =
-    itemCollection.flatMap(_.insert(ordered = false).one(entity))
+  protected def saveEntity(entity: E)(implicit f: OFormat[E]): FutureErrorOr[Unit] = {
+    val result = itemCollection.flatMap(_.insert(ordered = false).one(entity).map(_ => ().asRight[ApiClientError]))
+    EitherT(result)
+  }
 
-  protected def findAllEntities(limit: Int)(implicit f: OFormat[E]): Future[Seq[E]] =
-    itemCollection.flatMap { collection =>
+  protected def findAllEntities(limit: Int)(implicit f: OFormat[E]): FutureErrorOr[Seq[E]] = {
+    val result = itemCollection.flatMap { collection =>
       collection
         .find(selector = Json.obj(), projection = Option.empty[JsObject])
         .sort(Json.obj("listingDetails.datePosted" -> -1))
         .cursor[E](ReadPreference.primary)
         .collect[Seq](limit, Cursor.FailOnError[Seq[E]]())
     }
+      .map(_.asRight)
+      .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
+    EitherT(result)
+  }
 
-  protected def findAllEntitiesPostedAfter(date: Instant, limit: Int)(implicit f: OFormat[E]): Future[Seq[E]] =
-    itemCollection.flatMap { collection =>
+  protected def findAllEntitiesPostedAfter(date: Instant, limit: Int)(implicit f: OFormat[E]): FutureErrorOr[Seq[E]] = {
+    val result = itemCollection.flatMap { collection =>
       collection
         .find(selector = BSONDocument("listingDetails.datePosted" -> BSONDocument("$gte" -> BSONString(date.toString))), projection = Option.empty[JsObject])
         .cursor[E](ReadPreference.primary)
         .collect[Seq](limit, Cursor.FailOnError[Seq[E]]())
     }
+      .map(_.asRight)
+      .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
+    EitherT(result)
+  }
+
 }

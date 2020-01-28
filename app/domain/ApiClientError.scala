@@ -18,6 +18,7 @@ object ApiClientError {
   final case class InternalError(message: String) extends ApiClientError
   final case class AuthError(message: String) extends ApiClientError
   final case class JsonParsingError(message: String) extends ApiClientError
+  final case class DbError(message: String) extends ApiClientError
 
   def recoverFromHttpCallFailure: PartialFunction[Throwable, ApiClientError] = {
     case parsingError: JsResultException =>
@@ -26,5 +27,9 @@ object ApiClientError {
       InternalError(s"connection error: ${networkingError.getMessage}")
     case error: Throwable =>
       InternalError(s"unexpected error during http call: ${error.getMessage}")
+  }
+
+  def recoverFromDbError: PartialFunction[Throwable, ApiClientError] = {
+    case error: Throwable => DbError(s"error during db operation: ${error.getMessage}")
   }
 }

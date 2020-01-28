@@ -47,11 +47,11 @@ class VideoGameRepository @Inject()(implicit override val ex: ExecutionContext, 
   override protected val collectionName: String = "videoGames"
 
   def save(videoGame: VideoGame): FutureErrorOr[Unit] =
-    EitherT(saveEntity(VideoGameEntity.from(videoGame)).map(_ => ().asRight[ApiClientError]))
+    (VideoGameEntity.from _ andThen saveEntity)(videoGame)
 
   def findAll(limit: Int = 100): FutureErrorOr[Seq[VideoGame]] =
-    EitherT(findAllEntities(limit).map(_.map(_.toDomain).asRight[ApiClientError]))
+    findAllEntities(limit).map(_.map(_.toDomain))
 
   def findAllPostedAfter(date: Instant, limit: Int = 1000): FutureErrorOr[Seq[VideoGame]] =
-    EitherT(findAllEntitiesPostedAfter(date, limit).map(_.map(_.toDomain).asRight[ApiClientError]))
+    findAllEntitiesPostedAfter(date, limit).map(_.map(_.toDomain))
 }
