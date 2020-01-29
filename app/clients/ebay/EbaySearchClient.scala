@@ -48,7 +48,6 @@ trait EbaySearchClient[A <: ItemDetails] {
       .map(getSearchParams(filter, _))
       .map(searchForItems)
       .foldLeft[FutureErrorOr[Seq[EbayItemSummary]]](EitherT.rightT(Nil))((acc, el) => (acc, el).mapN(_ :++ _))
-      .map(_.filter(removeUnwanted))
 
     itemSummaries
       .flatMap(_.map(getCompleteItem).toList.sequence)
@@ -67,9 +66,10 @@ trait EbaySearchClient[A <: ItemDetails] {
   private def searchForItems(searchParams: Map[String, String]): FutureErrorOr[Seq[EbayItemSummary]] =
     for {
       token <- ebayAuthClient.accessToken()
-      itemSummaries <- ebayBrowseClient.search(token, searchParams)
-      _ = logger.info(s"search ${searchParams("q")} returned ${itemSummaries.size} items")
-    } yield itemSummaries
+      items <- ebayBrowseClient.search(token, searchParams)
+      goodItems = items.filter(removeUnwanted)
+      _ = logger.info(s"search ${searchParams("q")} returned ${items.size} items with ${goodItems.size} of them are being valid")
+    } yield goodItems
 
   private def getCompleteItem(itemSummary: EbayItemSummary): FutureErrorOr[Option[EbayItem]] =
     for {
