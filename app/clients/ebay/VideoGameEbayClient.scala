@@ -34,5 +34,5 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
   override protected val newlyListedSearchFilterTemplate: String = DEFAULT_SEARCH_FILTER + "buyingOptions:{FIXED_PRICE},itemStartDate:[%s]"
 
   override protected def removeUnwanted(itemSummary: EbayItemSummary): Boolean =
-    hasTrustedSeller(itemSummary) && !LISTING_NAME_TRIGGER_WORDS.matches(itemSummary.title.replaceAll("['\"()\\-%]", "")) && isNew(itemSummary)
+    hasTrustedSeller(itemSummary) && !LISTING_NAME_TRIGGER_WORDS.matches(itemSummary.title.replaceAll("[”+./“'\"()\\-%]", "")) && isNew(itemSummary)
 }

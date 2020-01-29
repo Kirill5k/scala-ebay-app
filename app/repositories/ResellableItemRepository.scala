@@ -9,7 +9,6 @@ import domain.ApiClientError
 import domain.ApiClientError.FutureErrorOr
 import play.api.libs.json.{JsObject, Json, OFormat}
 import play.modules.reactivemongo.ReactiveMongoApi
-import reactivemongo.api.commands.WriteResult
 import reactivemongo.api.{Cursor, ReadConcern, ReadPreference}
 import reactivemongo.bson.{BSONDocument, BSONString}
 import reactivemongo.play.json.collection.JSONCollection

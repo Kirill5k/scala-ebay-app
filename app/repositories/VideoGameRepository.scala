@@ -6,7 +6,7 @@ import cats.data.EitherT
 import cats.implicits._
 import domain.ApiClientError.FutureErrorOr
 import domain.ItemDetails.GameDetails
-import domain.{ApiClientError, ListingDetails, ResellPrice}
+import domain.{ListingDetails, ResellPrice}
 import domain.ResellableItem.VideoGame
 import javax.inject.Inject
 import play.modules.reactivemongo.ReactiveMongoApi
