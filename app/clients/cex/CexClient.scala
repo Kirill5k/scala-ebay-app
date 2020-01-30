@@ -28,11 +28,11 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
   private[cex] val searchResultsCache = ExpiringMap.builder()
     .expirationPolicy(ExpirationPolicy.CREATED)
     .expiration(24, TimeUnit.HOURS)
-    .build[String, ResellPrice]()
+    .build[String, Option[ResellPrice]]()
 
   def findResellPrice(query: String): FutureErrorOr[Option[ResellPrice]] = {
     if (searchResultsCache.containsKey(query))
-      EitherT.rightT[Future, ApiClientError](Some(searchResultsCache.get(query)))
+      EitherT.rightT[Future, ApiClientError](searchResultsCache.get(query))
     else
       EitherT(searchRequest.withQueryStringParameters("q" -> query).get()
         .map { res =>
@@ -46,15 +46,14 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
   }
 
   private def findMinResellPrice(query: String)(searchResponse: CexSearchResponse): Option[ResellPrice] = {
-    val searchResults = searchResponse.response.data.map(_.boxes).getOrElse(Seq())
-    if (searchResults.isEmpty) {
-      logger.warn(s"search '$query' returned 0 results")
-      None
-    } else {
-      val minPriceSearchResult: SearchResult = searchResults.minBy(_.exchangePrice)
-      val resellPrice = ResellPrice(BigDecimal.valueOf(minPriceSearchResult.cashPrice), BigDecimal.valueOf(minPriceSearchResult.exchangePrice))
-      searchResultsCache.put(query, resellPrice)
-      resellPrice.some
-    }
+    val resellPrice = searchResponse.response.data
+      .map(_.boxes).getOrElse(Seq())
+      .minByOption(_.exchangePrice)
+      .map(minPriceResult => ResellPrice(BigDecimal.valueOf(minPriceResult.cashPrice), BigDecimal.valueOf(minPriceResult.exchangePrice)))
+
+    if (resellPrice.isEmpty) logger.warn(s"search '$query' returned 0 results")
+
+    searchResultsCache.put(query, resellPrice)
+    resellPrice
   }
 }
