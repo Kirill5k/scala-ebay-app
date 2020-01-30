@@ -10,8 +10,8 @@ private[mappers] object GameDetailsMapper {
     "remastered", "playstation 4", "Nintendo switch", " - ", "sony", "ps4", "blu-ray", "Mirror", "New and sealed",
     "Brand new", "Factory Sealed", "Sealed", "Game new", ",", "Microsoft", "Free post", "Used", "xbox one", "Uk pal", "Game code",
     "Hits", "Tom clancys", "Great Condition", "Videogame fasting", "switch",
-    "[^\\p{L}\\p{M}\\p{N}\\p{P}\\p{Z}\\p{Cf}\\p{Cs}\\s]"
-  ).mkString("|")
+    "[\\x{0001f300}-\\x{0001f64f}]", "[\\x{0001f680}-\\x{0001f6ff}]"
+  ).mkString("(?i)", "|", "")
 
   private val PLATFORMS_MATCH_REGEX = List("PS4", "PLAYSTATION 4", "NINTENDO SWITCH", "SWITCH", "XBOX ONE")
     .mkString("(?i)", "|", "").r
@@ -41,7 +41,7 @@ private[mappers] object GameDetailsMapper {
       .headOption
       .filter(!_.isEmpty)
       .getOrElse(title)
-      .replaceAll(s"(?i)$TITLE_WORDS_FILTER", "")
+      .replaceAll(TITLE_WORDS_FILTER, "")
       .replaceAll("é", "e")
       .replaceAll(" +", " ")
       .replaceFirst("^-", "")

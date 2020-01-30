@@ -30,7 +30,7 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
     .expiration(24, TimeUnit.HOURS)
     .build[String, Option[ResellPrice]]()
 
-  def findResellPrice(query: String): FutureErrorOr[Option[ResellPrice]] = {
+  def findResellPrice(query: String): FutureErrorOr[Option[ResellPrice]] =
     if (searchResultsCache.containsKey(query))
       EitherT.rightT[Future, ApiClientError](searchResultsCache.get(query))
     else
@@ -43,7 +43,6 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
           }
         }
         .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft)))
-  }
 
   private def findMinResellPrice(query: String)(searchResponse: CexSearchResponse): Option[ResellPrice] = {
     val resellPrice = searchResponse.response.data
