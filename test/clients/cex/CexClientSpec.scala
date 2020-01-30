@@ -27,12 +27,14 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
 
   "CexClient" should {
 
-    "find minimal resell price" in {
+    "find minimal resell price and store it in cache" in {
       withCexClient(200, "cex/search-success-response.json") { cexClient =>
         val result = cexClient.findResellPrice("iphone 7")
 
         whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
-          minPrice must be (Right(Some(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153)))))
+          val expectedPrice = ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153))
+          minPrice must be (Right(Some(expectedPrice)))
+          cexClient.searchResultsCache.get("iphone 7") must be (expectedPrice)
         }
       }
     }
