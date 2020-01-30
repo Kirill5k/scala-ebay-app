@@ -67,7 +67,7 @@ trait EbaySearchClient[A <: ItemDetails] {
     for {
       token <- ebayAuthClient.accessToken()
       items <- ebayBrowseClient.search(token, searchParams)
-      goodItems = items.filter(removeUnwanted)
+      goodItems = items.filter(isNew).filter(hasTrustedSeller).filter(removeUnwanted)
       _ = logger.info(s"search ${searchParams("q")} returned ${items.size} items with ${goodItems.size} of them are being valid")
     } yield goodItems
 
@@ -92,7 +92,8 @@ trait EbaySearchClient[A <: ItemDetails] {
     } yield ()
   }.isDefined
 
-  protected val isNew: EbayItemSummary => Boolean = itemSummary => !itemsIds.containsKey(itemSummary.itemId)
+  protected val isNew: EbayItemSummary => Boolean =
+    itemSummary => !itemsIds.containsKey(itemSummary.itemId)
 
   protected val switchAccountIfItHasExpired: PartialFunction[ApiClientError, ApiClientError] = {
     case error @ AuthError(message) =>
