@@ -7,8 +7,8 @@ import domain.ItemDetails.GameDetails
 import domain.ResellableItem.VideoGame
 
 object VideoGameBuilder {
-  def build(name: String, datePosted: Instant = Instant.now()): VideoGame = VideoGame(
-    GameDetails(Some(name), Some("XBOX ONE"), Some("2019"), Some("Action")),
+  def build(name: String, datePosted: Instant = Instant.now(), platform: String = "XBOX ONE"): VideoGame = VideoGame(
+    GameDetails(Some(name), Some(platform), Some("2019"), Some("Action")),
     ListingDetails(
       new URI(s"https://www.ebay.co.uk/itm/$name".toLowerCase.replaceAll(" ", "-")),
       name,
