@@ -27,8 +27,18 @@ class TelegramClientSpec extends PlaySpec with ScalaFutures {
 
   "TelegramClient" should {
 
+    "send message to the main channel" in {
+      withTelegramClient(200, "m1") { telegramClient =>
+        val result = telegramClient.sendMessageToMainChannel(message)
+
+        whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
+          minPrice must be (Right(()))
+        }
+      }
+    }
+
     "send message to the channel" in {
-      withTelegramClient(200) { telegramClient =>
+      withTelegramClient(200, "m1") { telegramClient =>
         val result = telegramClient.sendMessage("m1", message)
 
         whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
@@ -38,7 +48,7 @@ class TelegramClientSpec extends PlaySpec with ScalaFutures {
     }
 
     "return error when not success" in {
-      withTelegramClient(400) { telegramClient =>
+      withTelegramClient(400, "m1") { telegramClient =>
         val result = telegramClient.sendMessage("m1", message)
 
         whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
@@ -48,12 +58,12 @@ class TelegramClientSpec extends PlaySpec with ScalaFutures {
     }
   }
 
-  def withTelegramClient[T](status: Int)(block: TelegramClient => T): T = {
+  def withTelegramClient[T](status: Int, channel: String)(block: TelegramClient => T): T = {
     Server.withRouterFromComponents() { components =>
       import components.{ defaultActionBuilder => Action }
       {
         case GET(p"/telegram/message" ? q"chat_id=$chatId" & q"text=$text") =>
-          chatId must be ("m1")
+          chatId must be (channel)
           text must be ("lorem ipsum dolor sit amet")
           Action {
             Results.Status(status)

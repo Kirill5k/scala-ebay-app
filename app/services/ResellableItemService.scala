@@ -1,5 +1,7 @@
 package services
 
+import cats.data.EitherT
+import cats.implicits._
 import clients.cex.CexClient
 import clients.ebay.EbaySearchClient
 import clients.telegram.TelegramClient
@@ -23,9 +25,12 @@ trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: Resellab
 
   def sendNotification(item: I): FutureErrorOr[Unit]
 
-  def save(item: I): FutureErrorOr[Unit]
+  def save(item: I): FutureErrorOr[Unit] =
+    itemRepository.save(item)
 
-  def getLatest(limit: Int): FutureErrorOr[Seq[I]]
+  def getLatest(limit: Int): FutureErrorOr[Seq[I]] =
+    itemRepository.findAll(limit)
 
-  def isNew(item: I): FutureErrorOr[Boolean]
+  def isNew(item: I): FutureErrorOr[Boolean] =
+    itemRepository.existsByUrl(item.listingDetails.url).map(!_)
 }

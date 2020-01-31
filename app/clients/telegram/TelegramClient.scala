@@ -14,6 +14,9 @@ import scala.concurrent.ExecutionContext
 class TelegramClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
   private val telegramConfig = config.get[TelegramConfig]("telegram")
 
+  def sendMessageToMainChannel(message: String): FutureErrorOr[Unit] =
+    sendMessage(telegramConfig.mainChannelId, message)
+
   def sendMessage(channelId: String, message: String): FutureErrorOr[Unit] = {
     val response = client
       .url(s"${telegramConfig.baseUri}${telegramConfig.messagePath}")
