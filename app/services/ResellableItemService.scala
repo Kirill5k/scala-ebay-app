@@ -9,7 +9,7 @@ import repositories.{ResellableItemEntity, ResellableItemRepository}
 
 import scala.concurrent.ExecutionContext
 
-trait ResellableItemService[I <: ResellableItem, E <: ResellableItemEntity, D <: ItemDetails] {
+trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: ResellableItemEntity] {
   implicit protected def ex: ExecutionContext
 
   protected def itemRepository: ResellableItemRepository[I, E]
