@@ -14,12 +14,9 @@ import reactivemongo.bson.{BSONDocument, BSONString}
 import reactivemongo.play.json.collection.JSONCollection
 import reactivemongo.play.json._
 
-
 import scala.concurrent.{ExecutionContext, Future}
 
 private[repositories] trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
-  import ResellableItemEntity._
-
   implicit protected def ex: ExecutionContext
   implicit protected def mongo: ReactiveMongoApi
   implicit protected def entityMapper: ResellableItemEntityMapper[A, B]
