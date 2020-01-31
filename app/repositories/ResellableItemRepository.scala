@@ -17,7 +17,7 @@ import reactivemongo.play.json._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
+private[repositories] trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
   import ResellableItemEntity._
 
   implicit protected def ex: ExecutionContext
@@ -44,7 +44,13 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     (entityMapper.toEntity _ andThen saveEntity)(item)
 
   private def saveEntity(entity: B): FutureErrorOr[Unit] = {
-    val result = itemCollection.flatMap(_.insert(ordered = false).one(entity).map(_ => ().asRight[ApiClientError]))
+    val result = itemCollection.flatMap{ collection =>
+      collection
+        .insert(ordered = false).
+        one(entity)
+    }
+      .map(_ => ().asRight[ApiClientError])
+      .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))
     EitherT(result)
   }
 

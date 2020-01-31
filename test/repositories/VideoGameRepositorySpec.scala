@@ -50,6 +50,15 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
       }
     }
 
+    "check if video game doesnt exist by url" in {
+      val videoGameRepository = inject[VideoGameRepository]
+      val futureResult = videoGameRepository.existsByUrl(new URI("https://www.ebay.co.uk/itm/super-mario-4"))
+
+      whenReady(futureResult.value, timeout(10 seconds), interval(500 millis)) { result =>
+        result must be (Right(false))
+      }
+    }
+
     "find all video games" in {
       val videoGameRepository = inject[VideoGameRepository]
       val futureResult = videoGameRepository.findAll()
