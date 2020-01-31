@@ -23,7 +23,7 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
   val cexConfig = Map("baseUri" -> "/cex", "searchPath" -> "/search")
   val config: Configuration = Configuration("cex" -> cexConfig)
 
-  val queryString = "iphone 7"
+  val queryString = "super mario 3 XBOX ONE"
 
   "CexClient" should {
     val gameDetails = VideoGameBuilder.build("super mario 3").itemDetails
@@ -35,7 +35,7 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
         whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
           val expectedPrice = Some(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153)))
           minPrice must be (Right(expectedPrice))
-          cexClient.searchResultsCache.get("super mario 3 XBOX ONE") must be (expectedPrice)
+          cexClient.searchResultsCache.get(queryString) must be (expectedPrice)
         }
       }
     }
@@ -46,7 +46,7 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
 
         whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
           minPrice must be (Right(None))
-          cexClient.searchResultsCache.get("super mario 3 XBOX ONE") must be (None)
+          cexClient.searchResultsCache.get(queryString) must be (None)
         }
       }
     }
@@ -57,7 +57,7 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
 
         whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
           minPrice must be (Right(None))
-          cexClient.searchResultsCache.containsKey("super mario 3 XBOX ONE") must be (false)
+          cexClient.searchResultsCache.containsKey(queryString) must be (false)
         }
       }
     }

@@ -39,7 +39,7 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
         findResellPrice(query)
       case None =>
         logger.warn(s"not enough details to query for resell price $itemDetails")
-        EitherT.rightT[Future, ApiClientError](None)
+        EitherT.rightT[Future, ApiClientError](none[ResellPrice])
     }
   }
 
