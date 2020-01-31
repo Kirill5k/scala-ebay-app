@@ -17,7 +17,8 @@ import scala.language.postfixOps
 
 class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with ScalaFutures {
   import scala.concurrent.ExecutionContext.Implicits.global
-  import JsonFormats._
+  import ResellableItemEntity._
+  import ResellableItemEntityMapper._
 
   var videoGamesDb: Future[JSONCollection] = _
   val videoGames: Seq[VideoGame] = List(
@@ -30,7 +31,7 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
     await {
       videoGamesDb = reactiveMongoApi.database.map(_.collection("videoGames"))
 
-      videoGamesDb.flatMap(_.insert(ordered = false).many(videoGames.map(VideoGameEntity.from)))
+      videoGamesDb.flatMap(_.insert(ordered = false).many(videoGames.map(videoGameEntityMapper.toEntity)))
     }
   }
 
