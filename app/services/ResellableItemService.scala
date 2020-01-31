@@ -4,7 +4,7 @@ import clients.cex.CexClient
 import clients.ebay.EbaySearchClient
 import clients.telegram.TelegramClient
 import domain.ApiClientError.FutureErrorOr
-import domain.{ItemDetails, ResellableItem}
+import domain.{ItemDetails, ListingDetails, ResellPrice, ResellableItem}
 import repositories.{ResellableItemEntity, ResellableItemRepository}
 
 import scala.concurrent.ExecutionContext
@@ -16,6 +16,8 @@ trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: Resellab
   protected def ebaySearchClient: EbaySearchClient[D]
   protected def telegramClient: TelegramClient
   protected def cexClient: CexClient
+
+  protected def createItem(itemDetails: D, listingDetails: ListingDetails, resellPrice: Option[ResellPrice]): I
 
   def getLatestFromEbay(minutes: Int): FutureErrorOr[Seq[I]]
 

@@ -4,6 +4,7 @@ import clients.cex.CexClient
 import clients.ebay.VideoGameEbayClient
 import clients.telegram.TelegramClient
 import domain.ItemDetails.GameDetails
+import domain.{ListingDetails, ResellPrice}
 import domain.ResellableItem.VideoGame
 import javax.inject.Inject
 import repositories.ResellableItemEntity.VideoGameEntity
@@ -19,4 +20,6 @@ class VideoGameService @Inject()(
                                 )(implicit override val ex: ExecutionContext)
   extends ResellableItemService[VideoGame, GameDetails, VideoGameEntity] {
 
+  override protected def createItem(itemDetails: GameDetails, listingDetails: ListingDetails, resellPrice: Option[ResellPrice]): VideoGame =
+    VideoGame.apply(itemDetails, listingDetails, resellPrice)
 }
