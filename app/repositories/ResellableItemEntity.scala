@@ -5,14 +5,14 @@ import domain.{ItemDetails, ListingDetails, ResellPrice}
 import reactivemongo.bson.BSONObjectID
 import reactivemongo.play.json._
 
-private[repositories] trait ResellableItemEntity {
+trait ResellableItemEntity {
   def _id: Option[BSONObjectID]
   def itemDetails: ItemDetails
   def listingDetails: ListingDetails
   def resellPrice: Option[ResellPrice]
 }
 
-private[repositories] object ResellableItemEntity {
+object ResellableItemEntity {
   case class VideoGameEntity(
                               _id: Option[BSONObjectID],
                               itemDetails: GameDetails,
