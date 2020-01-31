@@ -1,6 +1,6 @@
 package clients.cex
 
-import domain.ResellPrice
+import domain.{ResellPrice, VideoGameBuilder}
 import domain.ApiClientError._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
@@ -26,33 +26,45 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
   val queryString = "iphone 7"
 
   "CexClient" should {
+    val gameDetails = VideoGameBuilder.build("super mario 3").itemDetails
 
     "find minimal resell price and store it in cache" in {
       withCexClient(200, "cex/search-success-response.json") { cexClient =>
-        val result = cexClient.findResellPrice("iphone 7")
+        val result = cexClient.findResellPrice(gameDetails)
 
         whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
           val expectedPrice = Some(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153)))
           minPrice must be (Right(expectedPrice))
-          cexClient.searchResultsCache.get("iphone 7") must be (expectedPrice)
+          cexClient.searchResultsCache.get("super mario 3 XBOX ONE") must be (expectedPrice)
         }
       }
     }
 
-    "return 0 resell price when no results" in {
+    "return none when no results" in {
       withCexClient(200, "cex/search-noresults-response.json") { cexClient =>
-        val result = cexClient.findResellPrice("iphone 7")
+        val result = cexClient.findResellPrice(gameDetails)
 
         whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
           minPrice must be (Right(None))
-          cexClient.searchResultsCache.get("iphone 7") must be (None)
+          cexClient.searchResultsCache.get("super mario 3 XBOX ONE") must be (None)
+        }
+      }
+    }
+
+    "return none when not enough details" in {
+      withCexClient(200, "cex/search-noresults-response.json") { cexClient =>
+        val result = cexClient.findResellPrice(gameDetails.copy(name = None))
+
+        whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
+          minPrice must be (Right(None))
+          cexClient.searchResultsCache.containsKey("super mario 3 XBOX ONE") must be (false)
         }
       }
     }
 
     "return internal error when failed to parse json" in {
       withCexClient(200, "cex/search-unexpected-response.json") { cexClient =>
-        val result = cexClient.findResellPrice("iphone 7")
+        val result = cexClient.findResellPrice(gameDetails)
 
         whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
           minPrice must be (Left(JsonParsingError("C[A]: DownField(boxes),DownField(data),DownField(response)")))
@@ -62,7 +74,7 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
 
     "return http error when not success" in {
       withCexClient(400, "cex/search-error-response.json") { cexClient =>
-        val result = cexClient.findResellPrice("iphone 7")
+        val result = cexClient.findResellPrice(gameDetails)
 
         whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
           minPrice must be (Left(HttpError(400, "error sending request to cex: Bad Request")))
@@ -72,7 +84,7 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
 
     "return none when 429 returned" in {
       withCexClient(429, "cex/search-error-response.json") { cexClient =>
-        val result = cexClient.findResellPrice("iphone 7")
+        val result = cexClient.findResellPrice(gameDetails)
 
         whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
           minPrice must be (Right(None))
