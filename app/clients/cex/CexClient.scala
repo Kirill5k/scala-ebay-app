@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 
 import cats.data.EitherT
 import cats.implicits._
-import domain.{ApiClientError, ResellPrice}
+import domain.{ApiClientError, ItemDetails, ResellPrice}
 import domain.ApiClientError._
 import javax.inject.{Inject, Singleton}
 import play.api.{Configuration, Logger}
@@ -17,6 +17,7 @@ import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 
 @Singleton
 class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
+  import CexClientOps._
   private val logger: Logger = Logger(getClass)
 
   private val cexConfig = config.get[CexConfig]("cex")
@@ -29,6 +30,8 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
     .expirationPolicy(ExpirationPolicy.CREATED)
     .expiration(24, TimeUnit.HOURS)
     .build[String, Option[ResellPrice]]()
+
+  def findResellPrice(itemDetails: ItemDetails): FutureErrorOr[Option[ResellPrice]] = ???
 
   def findResellPrice(query: String): FutureErrorOr[Option[ResellPrice]] =
     if (searchResultsCache.containsKey(query))
