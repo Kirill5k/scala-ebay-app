@@ -24,8 +24,8 @@ trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: Resellab
   def getLatestFromEbay(minutes: Int): FutureErrorOr[Seq[I]] = {
     ebaySearchClient.getItemsListedInLastMinutes(minutes).flatMap { itemDetails =>
       itemDetails.map {
-        case (itemDetails, listingDetails) => cexClient.findResellPrice(itemDetails).map { resellPrice =>
-          createItem(itemDetails, listingDetails, resellPrice)
+        case (id, ld) => cexClient.findResellPrice(id).map { rp =>
+          createItem(id, ld, rp)
         }
       }.toList.sequence
     }.map(_.toSeq)
