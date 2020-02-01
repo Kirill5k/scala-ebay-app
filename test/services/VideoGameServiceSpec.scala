@@ -37,6 +37,18 @@ class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures 
         verify(repository).existsByUrl(videoGame.listingDetails.url)
       }
     }
+
+    "store item in db" in {
+      val (repository, ebayClient, telegramClient, cexClient) = mockDependecies
+      when(repository.save(any)).thenReturn(successResponse(()))
+      val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
+
+      val result = service.save(videoGame)
+
+      whenReady(result.value, timeout(10 seconds), interval(500 millis)) { _ =>
+        verify(repository).save(videoGame)
+      }
+    }
   }
 
   def mockDependecies: (VideoGameRepository, VideoGameEbayClient, TelegramClient, CexClient) = {
