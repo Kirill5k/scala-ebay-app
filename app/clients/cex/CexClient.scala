@@ -31,7 +31,7 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
     .expiration(24, TimeUnit.HOURS)
     .build[String, Option[ResellPrice]]()
 
-  def findResellPrice(itemDetails: ItemDetails): FutureErrorOr[Option[ResellPrice]] = {
+  def findResellPrice(itemDetails: ItemDetails): FutureErrorOr[Option[ResellPrice]] =
     EitherT.rightT[Future, ApiClientError](itemDetails.searchQuery).flatMap {
       case Some(query) if searchResultsCache.containsKey(query) =>
         EitherT.rightT[Future, ApiClientError](searchResultsCache.get(query))
@@ -41,7 +41,6 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
         logger.warn(s"not enough details to query for resell price $itemDetails")
         EitherT.rightT[Future, ApiClientError](none[ResellPrice])
     }
-  }
 
   private def findResellPrice(query: String): FutureErrorOr[Option[ResellPrice]] =
     EitherT(searchRequest.withQueryStringParameters("q" -> query).get()
