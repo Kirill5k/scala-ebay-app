@@ -17,7 +17,7 @@ import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 
 @Singleton
 class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
-  import CexClientOps._
+  import domain.ItemDetailsOps._
   private val logger: Logger = Logger(getClass)
 
   private val cexConfig = config.get[CexConfig]("cex")
@@ -32,7 +32,7 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
     .build[String, Option[ResellPrice]]()
 
   def findResellPrice(itemDetails: ItemDetails): FutureErrorOr[Option[ResellPrice]] =
-    EitherT.rightT[Future, ApiClientError](itemDetails.searchQuery).flatMap {
+    EitherT.rightT[Future, ApiClientError](itemDetails.summary).flatMap {
       case Some(query) if searchResultsCache.containsKey(query) =>
         EitherT.rightT[Future, ApiClientError](searchResultsCache.get(query))
       case Some(query) =>
