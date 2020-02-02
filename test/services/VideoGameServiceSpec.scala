@@ -9,6 +9,7 @@ import clients.ebay.browse.EbayBrowseClient
 import clients.telegram.TelegramClient
 import domain.{ApiClientError, VideoGameBuilder}
 import domain.ApiClientError.FutureErrorOr
+import domain.ResellableItem.VideoGame
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{MustMatchers, WordSpec}
@@ -47,6 +48,18 @@ class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures 
 
       whenReady(result.value, timeout(10 seconds), interval(500 millis)) { _ =>
         verify(repository).save(videoGame)
+      }
+    }
+
+    "send notification message" in {
+      val (repository, ebayClient, telegramClient, cexClient) = mockDependecies
+      when(telegramClient.sendMessageToMainChannel(any[VideoGame])).thenReturn(successResponse(()))
+      val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
+
+      val result = service.sendNotification(videoGame)
+
+      whenReady(result.value, timeout(10 seconds), interval(500 millis)) { _ =>
+        verify(telegramClient).sendMessageToMainChannel(videoGame)
       }
     }
   }

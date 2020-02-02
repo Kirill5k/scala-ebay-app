@@ -5,7 +5,7 @@ import cats.implicits._
 import domain.ApiClientError._
 import domain.{ApiClientError, ResellableItem}
 import javax.inject.Inject
-import play.api.http.{Status}
+import play.api.http.Status
 import play.api.libs.ws.WSClient
 import play.api.{Configuration, Logger}
 

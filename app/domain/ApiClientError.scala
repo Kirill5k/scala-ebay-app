@@ -19,6 +19,7 @@ object ApiClientError {
   final case class AuthError(message: String) extends ApiClientError
   final case class JsonParsingError(message: String) extends ApiClientError
   final case class DbError(message: String) extends ApiClientError
+  final case class NotEnoughDetailsError(message: String) extends ApiClientError
 
   def recoverFromHttpCallFailure: PartialFunction[Throwable, ApiClientError] = {
     case parsingError: JsResultException =>

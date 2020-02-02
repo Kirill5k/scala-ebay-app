@@ -23,7 +23,8 @@ trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: Resellab
 
   def getLatestFromEbay(minutes: Int): FutureErrorOr[Seq[I]] = ???
 
-  def sendNotification(item: I): FutureErrorOr[Unit] = ???
+  def sendNotification(item: I): FutureErrorOr[Unit] =
+    telegramClient.sendMessageToMainChannel(item)
 
   def save(item: I): FutureErrorOr[Unit] =
     itemRepository.save(item)
