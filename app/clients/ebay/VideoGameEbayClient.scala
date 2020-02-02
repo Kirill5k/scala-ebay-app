@@ -34,5 +34,5 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
   override protected val newlyListedSearchFilterTemplate: String = DEFAULT_SEARCH_FILTER + "buyingOptions:{FIXED_PRICE},itemStartDate:[%s]"
 
   override protected def removeUnwanted(itemSummary: EbayItemSummary): Boolean =
-    !LISTING_NAME_TRIGGER_WORDS.matches(itemSummary.title.replaceAll("[*\\[\\],”+./“'\"()\\-%]", ""))
+    !LISTING_NAME_TRIGGER_WORDS.matches(itemSummary.title.replaceAll("[^a-zA-Z0-9 ]", ""))
 }

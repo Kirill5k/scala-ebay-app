@@ -4,8 +4,6 @@ import cats.data.EitherT
 import cats.implicits._
 import clients.cex.CexClient
 import clients.ebay.VideoGameEbayClient
-import clients.ebay.auth.EbayAuthClient
-import clients.ebay.browse.EbayBrowseClient
 import clients.telegram.TelegramClient
 import domain.{ApiClientError, VideoGameBuilder}
 import domain.ApiClientError.FutureErrorOr
