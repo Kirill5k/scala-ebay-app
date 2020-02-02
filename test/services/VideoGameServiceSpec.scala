@@ -34,7 +34,7 @@ class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures 
       val result = service.isNew(videoGame)
 
       whenReady(result.value, timeout(10 seconds), interval(500 millis)) { isNew =>
-        isNew must not be
+        isNew must be (Right(false))
         verify(repository).existsByUrl(videoGame.listingDetails.url)
       }
     }
@@ -46,8 +46,22 @@ class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures 
 
       val result = service.save(videoGame)
 
-      whenReady(result.value, timeout(10 seconds), interval(500 millis)) { _ =>
+      whenReady(result.value, timeout(10 seconds), interval(500 millis)) { value =>
+        value must be (Right(()))
         verify(repository).save(videoGame)
+      }
+    }
+
+    "get latest items from db" in {
+      val (repository, ebayClient, telegramClient, cexClient) = mockDependecies
+      when(repository.findAll(any)).thenReturn(successResponse(List(videoGame)))
+      val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
+
+      val result = service.getLatest(10)
+
+      whenReady(result.value, timeout(10 seconds), interval(500 millis)) { items =>
+        items must be (Right(List(videoGame)))
+        verify(repository).findAll(10)
       }
     }
 
@@ -58,7 +72,8 @@ class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures 
 
       val result = service.sendNotification(videoGame)
 
-      whenReady(result.value, timeout(10 seconds), interval(500 millis)) { _ =>
+      whenReady(result.value, timeout(10 seconds), interval(500 millis)) { value =>
+        value must be (Right(()))
         verify(telegramClient).sendMessageToMainChannel(videoGame)
       }
     }

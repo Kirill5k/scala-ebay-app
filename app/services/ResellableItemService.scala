@@ -21,7 +21,7 @@ trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: Resellab
 
   protected def createItem(itemDetails: D, listingDetails: ListingDetails, resellPrice: Option[ResellPrice]): I
 
-  def getLatestFromEbay(minutes: Int): FutureErrorOr[Seq[I]] = {
+  def getLatestFromEbay(minutes: Int): FutureErrorOr[Seq[I]] =
     ebaySearchClient.getItemsListedInLastMinutes(minutes).flatMap { itemDetails =>
       itemDetails.map {
         case (id, ld) => cexClient.findResellPrice(id).map { rp =>
@@ -29,7 +29,6 @@ trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: Resellab
         }
       }.toList.sequence
     }.map(_.toSeq)
-  }
 
   def sendNotification(item: I): FutureErrorOr[Unit] =
     telegramClient.sendMessageToMainChannel(item)
