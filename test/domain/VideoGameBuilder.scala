@@ -28,6 +28,6 @@ object VideoGameBuilder {
         "Genre" -> "Action"
       )
     ),
-    Some(ResellPrice(BigDecimal.valueOf(10), BigDecimal.valueOf(20)))
+    Some(ResellPrice(BigDecimal.valueOf(100), BigDecimal.valueOf(80)))
   )
 }
