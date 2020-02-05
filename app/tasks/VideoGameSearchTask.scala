@@ -9,6 +9,7 @@ import services.VideoGameService
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
+import scala.language.postfixOps
 
 class VideoGameSearchTask @Inject()(override val itemService: VideoGameService, actorSystem: ActorSystem)(implicit override val ex: ExecutionContext)
   extends ItemFinder[VideoGame, GameDetails, VideoGameEntity] {

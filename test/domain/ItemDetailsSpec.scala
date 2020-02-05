@@ -3,8 +3,6 @@ package domain
 import org.scalatest.{MustMatchers, WordSpec}
 
 class ItemDetailsSpec extends WordSpec with MustMatchers {
-  import ItemDetailsOps._
-
   "A VideoGame" should {
     val game = VideoGameBuilder.build("super mario 3", platform = "SWITCH")
 

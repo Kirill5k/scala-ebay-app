@@ -17,7 +17,6 @@ import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 
 @Singleton
 class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
-  import domain.ItemDetailsOps._
   private val log: Logger = Logger(getClass)
 
   private val cexConfig = config.get[CexConfig]("cex")

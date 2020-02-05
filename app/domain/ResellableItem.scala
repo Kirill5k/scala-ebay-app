@@ -19,7 +19,7 @@ private[domain] trait NotificationMessageGenerator[A <: ResellableItem] {
 }
 
 object ResellableItemOps {
-  import domain.ItemDetailsOps._
+
   val messageGenerator = new NotificationMessageGenerator[ResellableItem] {
     override def generate(item: ResellableItem): Option[String] =
       for {
