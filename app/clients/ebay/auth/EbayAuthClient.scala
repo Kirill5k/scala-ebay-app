@@ -6,7 +6,7 @@ import clients.ebay.EbayConfig
 import javax.inject._
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.ws.{WSAuthScheme, WSClient}
-import play.api.{Configuration, Logger}
+import play.api.Configuration
 
 import scala.concurrent.ExecutionContext
 import EbayAuthResponse._

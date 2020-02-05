@@ -7,7 +7,7 @@ import clients.ebay.browse.EbayBrowseResponse._
 import domain.ApiClientError._
 import domain.ApiClientError
 import javax.inject._
-import play.api.{Configuration, Logger}
+import play.api.Configuration
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.ws.{WSClient, WSRequest}
 

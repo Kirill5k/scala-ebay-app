@@ -18,7 +18,7 @@ import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 @Singleton
 class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
   import domain.ItemDetailsOps._
-  private val logger: Logger = Logger(getClass)
+  private val log: Logger = Logger(getClass)
 
   private val cexConfig = config.get[CexConfig]("cex")
   private val searchRequest = client
@@ -38,7 +38,7 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
       case Some(query) =>
         queryResellPrice(query)
       case None =>
-        logger.warn(s"not enough details to query for resell price $itemDetails")
+        log.warn(s"not enough details to query for resell price $itemDetails")
         EitherT.rightT[Future, ApiClientError](none[ResellPrice])
     }
 
@@ -59,7 +59,7 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
       .minByOption(_.exchangePrice)
       .map(minPriceResult => ResellPrice(BigDecimal.valueOf(minPriceResult.cashPrice), BigDecimal.valueOf(minPriceResult.exchangePrice)))
 
-    if (resellPrice.isEmpty) logger.warn(s"search '$query' returned 0 results")
+    if (resellPrice.isEmpty) log.warn(s"search '$query' returned 0 results")
 
     searchResultsCache.put(query, resellPrice)
     resellPrice

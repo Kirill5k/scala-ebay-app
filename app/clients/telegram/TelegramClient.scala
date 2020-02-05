@@ -13,7 +13,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TelegramClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
   import domain.ResellableItemOps._
-  private val logger: Logger = Logger(getClass)
+  private val log: Logger = Logger(getClass)
 
   private val telegramConfig = config.get[TelegramConfig]("telegram")
 
@@ -21,7 +21,7 @@ class TelegramClient @Inject()(config: Configuration, client: WSClient)(implicit
     EitherT.rightT[Future, ApiClientError](item.notificationMessage).flatMap {
       case Some(message) => sendMessageToMainChannel(message)
       case None =>
-        logger.warn(s"not enough details for sending notification $item")
+        log.warn(s"not enough details for sending notification $item")
         EitherT.rightT[Future, ApiClientError](none[Unit])
     }
 

@@ -19,7 +19,7 @@ trait ItemFinder[I <: ResellableItem, D <: ItemDetails, E <: ResellableItemEntit
   protected def itemService: ResellableItemService[I, D, E]
 
 
-  def searchForCheapItems: Unit = {
+  def searchForCheapItems(): Unit = {
     itemService.getLatestFromEbay(15)
       .map(_.toList)
       .flatMap(_.map(isNew).sequence)

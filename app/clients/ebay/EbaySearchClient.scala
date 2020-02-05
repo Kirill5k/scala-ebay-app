@@ -19,7 +19,7 @@ import play.api.Logger
 import scala.concurrent.ExecutionContext
 
 trait EbaySearchClient[A <: ItemDetails] {
-  private val logger: Logger = Logger(getClass)
+  private val log: Logger = Logger(getClass)
 
   private val MIN_FEEDBACK_SCORE = 6
   private val MIN_FEEDBACK_PERCENT = 90
@@ -68,7 +68,7 @@ trait EbaySearchClient[A <: ItemDetails] {
       token <- ebayAuthClient.accessToken()
       items <- ebayBrowseClient.search(token, searchParams)
       goodItems = items.filter(isNew).filter(hasTrustedSeller).filter(removeUnwanted)
-      _ = logger.info(s"search ${searchParams("q")} returned ${items.size} items with ${goodItems.size} of them are being valid")
+      _ = log.info(s"search ${searchParams("q")} returned ${items.size} items with ${goodItems.size} of them are being valid")
     } yield goodItems
 
   private def getCompleteItem(itemSummary: EbayItemSummary): FutureErrorOr[Option[EbayItem]] =
@@ -97,7 +97,7 @@ trait EbaySearchClient[A <: ItemDetails] {
 
   protected val switchAccountIfItHasExpired: PartialFunction[ApiClientError, ApiClientError] = {
     case error @ AuthError(message) =>
-      logger.warn(s"switching ebay account: ${message}")
+      log.warn(s"switching ebay account: ${message}")
       ebayAuthClient.switchAccount()
       error
     case error => error
