@@ -1,4 +1,5 @@
-import cats.data.EitherT
+package tasks
+
 import cats.implicits._
 import domain.ApiClientError.FutureErrorOr
 import domain.{ItemDetails, ResellableItem}
