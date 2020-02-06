@@ -10,7 +10,7 @@ private[mappers] object GameDetailsMapper {
     "remastered", "playstation 4", "Nintendo switch", " - ", "sony", "ps4", "blu-ray", "Mirror", "New and sealed",
     "Brand new", "Factory Sealed", "Sealed", "Game new", ",", "Microsoft", "Free post", "Used", "xbox one", "Uk pal", "Game code",
     "Hits", "Tom clancys", "Great Condition", "Videogame fasting", "switch",
-    "[\\x{0001f300}-\\x{0001f64f}]", "[\\x{0001f680}-\\x{0001f6ff}]"
+    "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 
   private val PLATFORMS_MATCH_REGEX = List("PS4", "PLAYSTATION 4", "NINTENDO SWITCH", "SWITCH", "XBOX ONE")
