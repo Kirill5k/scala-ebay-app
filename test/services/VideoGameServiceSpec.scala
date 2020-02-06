@@ -21,8 +21,29 @@ class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures 
   import scala.concurrent.ExecutionContext.Implicits.global
 
   val videoGame = VideoGameBuilder.build("super mario 3")
+  val videoGame2 = VideoGameBuilder.build("Battlefield 1", resellPrice = None)
 
   "VideoGameService" should {
+    "return new items from ebay" in {
+      val (repository, ebayClient, telegramClient, cexClient) = mockDependecies
+      val searchResponse = List((videoGame.itemDetails, videoGame.listingDetails), (videoGame2.itemDetails, videoGame2.listingDetails))
+      when(ebayClient.getItemsListedInLastMinutes(anyInt)).thenReturn(successResponse(searchResponse))
+      when(cexClient.findResellPrice(videoGame.itemDetails)).thenReturn(successResponse(videoGame.resellPrice))
+      when(cexClient.findResellPrice(videoGame2.itemDetails)).thenReturn(successResponse(None))
+
+      val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
+
+      val result = service.getLatestFromEbay(10)
+
+      whenReady(result.value, timeout(10 seconds), interval(500 millis)) { items =>
+        items must be (Right(List(videoGame, videoGame2)))
+
+        verify(ebayClient).getItemsListedInLastMinutes(10)
+        verify(cexClient).findResellPrice(videoGame.itemDetails)
+        verify(cexClient).findResellPrice(videoGame2.itemDetails)
+      }
+    }
+
     "check if item is new" in {
       val (repository, ebayClient, telegramClient, cexClient) = mockDependecies
       when(repository.existsByUrl(any)).thenReturn(successResponse(true))
