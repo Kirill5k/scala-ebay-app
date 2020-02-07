@@ -10,7 +10,7 @@ import services.ResellableItemService
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
-trait ItemFinder[I <: ResellableItem, D <: ItemDetails, E <: ResellableItemEntity] {
+trait ResellableItemFinder[I <: ResellableItem, D <: ItemDetails, E <: ResellableItemEntity] {
   private val logger: Logger = Logger(getClass)
 
   implicit protected def ex: ExecutionContext
