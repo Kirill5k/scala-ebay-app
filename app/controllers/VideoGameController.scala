@@ -2,6 +2,7 @@ package controllers
 
 import domain.ItemDetails.GameDetails
 import domain.ResellableItem.VideoGame
+import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.ControllerComponents
 import repositories.ResellableItemEntity.VideoGameEntity
@@ -16,4 +17,5 @@ class VideoGameController @Inject()(
                                    )(implicit override val ex: ExecutionContext)
   extends ResellableItemController[VideoGame, GameDetails, VideoGameEntity] {
 
+  override implicit protected val je = Encoder[VideoGame]
 }

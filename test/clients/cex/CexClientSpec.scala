@@ -46,7 +46,7 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
 
         whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
           minPrice must be (Right(None))
-          cexClient.searchResultsCache.get(queryString) must be (None)
+          cexClient.searchResultsCache.containsKey(queryString) must be (false)
         }
       }
     }

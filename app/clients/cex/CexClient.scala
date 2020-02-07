@@ -59,8 +59,8 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
       .map(minPriceResult => ResellPrice(BigDecimal.valueOf(minPriceResult.cashPrice), BigDecimal.valueOf(minPriceResult.exchangePrice)))
 
     if (resellPrice.isEmpty) log.warn(s"search '$query' returned 0 results")
+    else searchResultsCache.put(query, resellPrice)
 
-    searchResultsCache.put(query, resellPrice)
     resellPrice
   }
 }
