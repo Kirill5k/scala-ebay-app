@@ -12,8 +12,8 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class VideoGameController @Inject()(
                                      override val itemService: VideoGameService,
-                                     override val controllerComponents: ControllerComponents)
-                                   (implicit override val ex: ExecutionContext)
+                                     override val controllerComponents: ControllerComponents
+                                   )(implicit override val ex: ExecutionContext)
   extends ResellableItemController[VideoGame, GameDetails, VideoGameEntity] {
 
 }
