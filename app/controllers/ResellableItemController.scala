@@ -11,8 +11,6 @@ import scala.concurrent.ExecutionContext
 trait ResellableItemController[I <: ResellableItem, D <: ItemDetails, E <: ResellableItemEntity] extends BaseController {
   implicit protected def ex: ExecutionContext
 
-  protected def minMarginPercentage: Int
-
   protected def itemService: ResellableItemService[I, D, E]
 
   def getAll(limit: Int = 100): Action[AnyContent] = Action.async {
