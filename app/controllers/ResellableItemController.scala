@@ -1,7 +1,8 @@
 package controllers
 
 import domain.{ItemDetails, ResellableItem}
-import play.api.mvc.BaseController
+import play.api.mvc.{Action, AnyContent, BaseController}
+import play.api.libs.json._
 import repositories.ResellableItemEntity
 import services.ResellableItemService
 
@@ -14,4 +15,10 @@ trait ResellableItemController[I <: ResellableItem, D <: ItemDetails, E <: Resel
 
   protected def itemService: ResellableItemService[I, D, E]
 
+  def getAll(limit: Int = 100): Action[AnyContent] = Action.async {
+    itemService.getLatest(100).value.map{
+      case Right(items) => Ok(Json.toJson(items))
+      case Left(error) => InternalServerError(error)
+    }
+  }
 }
