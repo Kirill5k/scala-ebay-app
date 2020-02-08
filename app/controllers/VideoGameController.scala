@@ -1,21 +1,21 @@
 package controllers
 
-import domain.ItemDetails.GameDetails
-import domain.ResellableItem.VideoGame
-import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.ControllerComponents
-import repositories.ResellableItemEntity.VideoGameEntity
+import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
+import play.api.http.ContentTypes
+import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
 import services.VideoGameService
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class VideoGameController @Inject()(
-                                     override val itemService: VideoGameService,
-                                     override val controllerComponents: ControllerComponents
-                                   )(implicit override val ex: ExecutionContext)
-  extends ResellableItemController[VideoGame, GameDetails, VideoGameEntity] {
+class VideoGameController @Inject()(itemService: VideoGameService, override val controllerComponents: ControllerComponents)(implicit ex: ExecutionContext)
+  extends BaseController {
 
-  override implicit protected val je = Encoder[VideoGame]
+  def getAll(limit: Int = 100): Action[AnyContent] = Action.async {
+    itemService.getLatest(100).value.map{
+      case Right(items) => Ok(items.asJson.noSpaces).as(ContentTypes.JSON)
+      case Left(error) => InternalServerError(error.asJson.noSpaces).as(ContentTypes.JSON)
+    }
+  }
 }

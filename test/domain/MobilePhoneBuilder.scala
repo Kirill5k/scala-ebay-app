@@ -11,11 +11,11 @@ object MobilePhoneBuilder {
     MobilePhone(
       PhoneDetails(Some(make), Some(model), Some(colour), Some(storage), Some("Unlocked"), Some("USED")),
       ListingDetails(
-        new URI(s"https://www.ebay.co.uk/itm/$make-$model-$colour".toLowerCase.replaceAll(" ", "-")),
+        s"https://www.ebay.co.uk/itm/$make-$model-$colour".toLowerCase.replaceAll(" ", "-"),
         s"$make $model $colour $storage",
         Some(s"$make $model $colour $storage. Condition is Used. Dispatched with Royal Mail 1st Class Small parcel."),
         None,
-        new URI("https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg"),
+        "https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg",
         Seq("FIXED_PRICE"),
         "168.robinhood",
         BigDecimal.valueOf(99.99),

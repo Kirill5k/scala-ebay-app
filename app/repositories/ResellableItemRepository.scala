@@ -25,7 +25,7 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
   protected def collectionName: String
   protected val itemCollection: Future[JSONCollection] = mongo.database.map(_.collection(collectionName))
 
-  def existsByUrl(listingUrl: URI): FutureErrorOr[Boolean] = {
+  def existsByUrl(listingUrl: String): FutureErrorOr[Boolean] = {
     val result = itemCollection.flatMap { collection =>
       collection
         .withReadPreference(ReadPreference.primary)

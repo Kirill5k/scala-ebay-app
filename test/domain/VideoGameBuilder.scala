@@ -11,11 +11,11 @@ object VideoGameBuilder {
     VideoGame(
       GameDetails(Some(name), Some(platform), Some("2019"), Some("Action")),
       ListingDetails(
-        new URI(s"https://www.ebay.co.uk/itm/$name".toLowerCase.replaceAll(" ", "-")),
+        s"https://www.ebay.co.uk/itm/$name".toLowerCase.replaceAll(" ", "-"),
         name,
         Some(s"$name xbox one 2019. Condition is New. Game came as part of bundle and not wanted. Never playes. Dispatched with Royal Mail 1st Class Large Letter."),
         None,
-        new URI("https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg"),
+        "https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg",
         Seq("FIXED_PRICE"),
         "168.robinhood",
         BigDecimal.valueOf(32.99),

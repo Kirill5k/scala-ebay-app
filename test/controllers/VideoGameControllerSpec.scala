@@ -8,7 +8,6 @@ import domain.{ApiClientError, VideoGameBuilder}
 import domain.ApiClientError.FutureErrorOr
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatestplus.play._
-import org.scalatestplus.play.guice._
 import play.api.test.Helpers._
 import play.api.test._
 import services.VideoGameService
