@@ -26,7 +26,7 @@ private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WS
     "X-EBAY-C-MARKETPLACE-ID" -> "EBAY_GB"
   ).toList
 
-  def search(accessToken: String, queryParams: Map[String, String]): IOErrorOr[Seq[EbayItemSummary]] = {
+  def search(accessToken: String, queryParams: Map[String, String]): IO[Seq[EbayItemSummary]] = {
     val searchResponse = request(s"${ebayConfig.baseUri}${ebayConfig.searchPath}", accessToken)
       .withQueryStringParameters(queryParams.toList: _*)
       .get()
@@ -39,10 +39,10 @@ private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WS
         }
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
-    IO.fromFuture(IO(searchResponse))
+    IO.fromFuture(IO(searchResponse)).flatMap(_.fold(IO.raiseError, IO.pure))
   }
 
-  def getItem(accessToken: String, itemId: String): IOErrorOr[Option[EbayItem]] = {
+  def getItem(accessToken: String, itemId: String): IO[Option[EbayItem]] = {
     val getItemResponse = request(s"${ebayConfig.baseUri}${ebayConfig.itemPath}/$itemId", accessToken)
       .get()
       .map { res =>
@@ -53,7 +53,7 @@ private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WS
         }
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
-    IO.fromFuture(IO(getItemResponse))
+    IO.fromFuture(IO(getItemResponse)).flatMap(_.fold(IO.raiseError, IO.pure))
   }
 
   private def request(url: String, accessToken: String): WSRequest =
