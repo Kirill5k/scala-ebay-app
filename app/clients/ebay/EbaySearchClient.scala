@@ -11,7 +11,7 @@ import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary}
 import clients.ebay.mappers.EbayItemMapper
 import clients.ebay.mappers.EbayItemMapper._
-import domain.ApiClientError.{AuthError, FutureErrorOr}
+import domain.ApiClientError.{AuthError, IOErrorOr}
 import domain.{ApiClientError, ItemDetails, ListingDetails}
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 import play.api.Logger
@@ -40,14 +40,14 @@ trait EbaySearchClient[A <: ItemDetails] {
 
   protected def removeUnwanted(itemSummary: EbayItemSummary): Boolean
 
-  def getItemsListedInLastMinutes(minutes: Int): FutureErrorOr[Seq[(A, ListingDetails)]] = {
+  def getItemsListedInLastMinutes(minutes: Int): IOErrorOr[Seq[(A, ListingDetails)]] = {
     val time = Instant.now.minusSeconds(minutes * 60).`with`(MILLI_OF_SECOND, 0)
     val filter = newlyListedSearchFilterTemplate.format(time).replaceAll("\\{", "%7B").replaceAll("}", "%7D")
 
     val itemSummaries = searchQueries
       .map(getSearchParams(filter, _))
       .map(searchForItems)
-      .foldLeft[FutureErrorOr[Seq[EbayItemSummary]]](EitherT.rightT(Nil))((acc, el) => (acc, el).mapN(_ :++ _))
+      .foldLeft[IOErrorOr[Seq[EbayItemSummary]]](EitherT.rightT(Nil))((acc, el) => (acc, el).mapN(_ :++ _))
 
     itemSummaries
       .flatMap(_.map(getCompleteItem).toList.sequence)
@@ -63,7 +63,7 @@ trait EbaySearchClient[A <: ItemDetails] {
       "q" -> query
     )
 
-  private def searchForItems(searchParams: Map[String, String]): FutureErrorOr[Seq[EbayItemSummary]] =
+  private def searchForItems(searchParams: Map[String, String]): IOErrorOr[Seq[EbayItemSummary]] =
     for {
       token <- ebayAuthClient.accessToken()
       items <- ebayBrowseClient.search(token, searchParams)
@@ -71,7 +71,7 @@ trait EbaySearchClient[A <: ItemDetails] {
       _ = log.info(s"search ${searchParams("q")} returned ${items.size} items with ${goodItems.size} of them are being valid")
     } yield goodItems
 
-  private def getCompleteItem(itemSummary: EbayItemSummary): FutureErrorOr[Option[EbayItem]] =
+  private def getCompleteItem(itemSummary: EbayItemSummary): IOErrorOr[Option[EbayItem]] =
     for {
       token <- ebayAuthClient.accessToken()
       item <- ebayBrowseClient.getItem(token, itemSummary.itemId)

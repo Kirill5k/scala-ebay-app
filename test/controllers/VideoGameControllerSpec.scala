@@ -5,7 +5,7 @@ import java.time.Instant
 import cats.data.EitherT
 import cats.implicits._
 import domain.{ApiClientError, VideoGameBuilder}
-import domain.ApiClientError.FutureErrorOr
+import domain.ApiClientError.IOErrorOr
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatestplus.play._
 import play.api.test.Helpers._
@@ -37,7 +37,7 @@ class VideoGameControllerSpec extends PlaySpec with MockitoSugar with ArgumentMa
     }
   }
 
-  def successResponse[A](response: A): FutureErrorOr[A] = {
+  def successResponse[A](response: A): IOErrorOr[A] = {
     EitherT.right[ApiClientError](Future(response))
   }
 }

@@ -6,7 +6,7 @@ import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary, ItemImage, ItemPrice, ItemProperty, ItemSeller, ItemShippingOption, ShippingCost}
 import domain.ApiClientError
-import domain.ApiClientError.{AuthError, FutureErrorOr, HttpError}
+import domain.ApiClientError.{AuthError, IOErrorOr, HttpError}
 import domain.ItemDetails.GameDetails
 import org.mockito.captor.ArgCaptor
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
@@ -163,11 +163,11 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
     (authClient, browseClient)
   }
 
-  def successResponse[A](response: A): FutureErrorOr[A] = {
+  def successResponse[A](response: A): IOErrorOr[A] = {
     EitherT.right[ApiClientError](Future(response))
   }
 
-  def errorResponse[A](error: ApiClientError): FutureErrorOr[A] = {
+  def errorResponse[A](error: ApiClientError): IOErrorOr[A] = {
     EitherT.left[A](Future(error))
   }
 

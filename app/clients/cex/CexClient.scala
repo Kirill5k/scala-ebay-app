@@ -30,7 +30,7 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
     .expiration(24, TimeUnit.HOURS)
     .build[String, Option[ResellPrice]]()
 
-  def findResellPrice(itemDetails: ItemDetails): FutureErrorOr[Option[ResellPrice]] =
+  def findResellPrice(itemDetails: ItemDetails): IOErrorOr[Option[ResellPrice]] =
     EitherT.rightT[Future, ApiClientError](itemDetails.summary).flatMap {
       case Some(query) if searchResultsCache.containsKey(query) =>
         EitherT.rightT[Future, ApiClientError](searchResultsCache.get(query))
@@ -41,7 +41,7 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
         EitherT.rightT[Future, ApiClientError](none[ResellPrice])
     }
 
-  private def queryResellPrice(query: String): FutureErrorOr[Option[ResellPrice]] =
+  private def queryResellPrice(query: String): IOErrorOr[Option[ResellPrice]] =
     EitherT(searchRequest.withQueryStringParameters("q" -> query).get()
       .map { res =>
         res.status match {

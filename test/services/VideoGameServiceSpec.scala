@@ -6,7 +6,7 @@ import clients.cex.CexClient
 import clients.ebay.VideoGameEbayClient
 import clients.telegram.TelegramClient
 import domain.{ApiClientError, VideoGameBuilder}
-import domain.ApiClientError.FutureErrorOr
+import domain.ApiClientError.IOErrorOr
 import domain.ResellableItem.VideoGame
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatest.concurrent.ScalaFutures
@@ -106,7 +106,7 @@ class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures 
     (repository, ebayClient, telegramClient, cexClient)
   }
 
-  def successResponse[A](response: A): FutureErrorOr[A] = {
+  def successResponse[A](response: A): IOErrorOr[A] = {
     EitherT.right[ApiClientError](Future(response))
   }
 }

@@ -3,6 +3,7 @@ package domain
 import java.io.IOException
 
 import cats.data.EitherT
+import cats.effect.IO
 import play.api.libs.json.JsResultException
 
 import scala.concurrent.Future
@@ -12,7 +13,7 @@ sealed trait ApiClientError {
 }
 
 object ApiClientError {
-  type FutureErrorOr[A] = EitherT[Future, ApiClientError, A]
+  type IOErrorOr[A] = IO[Either[ApiClientError, A]]
 
   final case class HttpError(status: Int, message: String) extends ApiClientError
   final case class InternalError(message: String) extends ApiClientError

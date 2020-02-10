@@ -17,7 +17,7 @@ class TelegramClient @Inject()(config: Configuration, client: WSClient)(implicit
 
   private val telegramConfig = config.get[TelegramConfig]("telegram")
 
-  def sendMessageToMainChannel(item: ResellableItem): FutureErrorOr[Unit] =
+  def sendMessageToMainChannel(item: ResellableItem): IOErrorOr[Unit] =
     EitherT.rightT[Future, ApiClientError](item.notificationMessage).flatMap {
       case Some(message) => sendMessageToMainChannel(message)
       case None =>
@@ -25,10 +25,10 @@ class TelegramClient @Inject()(config: Configuration, client: WSClient)(implicit
         EitherT.rightT[Future, ApiClientError](none[Unit])
     }
 
-  def sendMessageToMainChannel(message: String): FutureErrorOr[Unit] =
+  def sendMessageToMainChannel(message: String): IOErrorOr[Unit] =
     sendMessage(telegramConfig.mainChannelId, message)
 
-  def sendMessage(channelId: String, message: String): FutureErrorOr[Unit] = {
+  def sendMessage(channelId: String, message: String): IOErrorOr[Unit] = {
     val response = client
       .url(s"${telegramConfig.baseUri}${telegramConfig.messagePath}")
       .withQueryStringParameters("chat_id" -> channelId, "text" -> message)

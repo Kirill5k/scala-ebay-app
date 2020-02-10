@@ -6,7 +6,7 @@ import java.time.Instant
 import cats.data.EitherT
 import cats.implicits._
 import domain.{ApiClientError, ResellableItem}
-import domain.ApiClientError.FutureErrorOr
+import domain.ApiClientError.IOErrorOr
 import play.api.libs.json.{JsObject, Json, OFormat}
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.{Cursor, ReadConcern, ReadPreference}
@@ -25,7 +25,7 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
   protected def collectionName: String
   protected val itemCollection: Future[JSONCollection] = mongo.database.map(_.collection(collectionName))
 
-  def existsByUrl(listingUrl: String): FutureErrorOr[Boolean] = {
+  def existsByUrl(listingUrl: String): IOErrorOr[Boolean] = {
     val result = itemCollection.flatMap { collection =>
       collection
         .withReadPreference(ReadPreference.primary)
@@ -37,10 +37,10 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     EitherT(result)
   }
 
-  def save(item: A): FutureErrorOr[Unit] =
+  def save(item: A): IOErrorOr[Unit] =
     (entityMapper.toEntity _ andThen saveEntity)(item)
 
-  private def saveEntity(entity: B): FutureErrorOr[Unit] = {
+  private def saveEntity(entity: B): IOErrorOr[Unit] = {
     val result = itemCollection.flatMap{ collection =>
       collection
         .insert(ordered = false).
@@ -51,10 +51,10 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     EitherT(result)
   }
 
-  def findAll(limit: Int = 100): FutureErrorOr[Seq[A]] =
+  def findAll(limit: Int = 100): IOErrorOr[Seq[A]] =
     findAllEntities(limit).map(_.map(entityMapper.toDomain))
 
-  private def findAllEntities(limit: Int): FutureErrorOr[Seq[B]] = {
+  private def findAllEntities(limit: Int): IOErrorOr[Seq[B]] = {
     val result = itemCollection.flatMap { collection =>
       collection
         .find(selector = Json.obj(), projection = Option.empty[JsObject])
@@ -67,10 +67,10 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     EitherT(result)
   }
 
-  def findAllPostedAfter(date: Instant, limit: Int = 1000): FutureErrorOr[Seq[A]] =
+  def findAllPostedAfter(date: Instant, limit: Int = 1000): IOErrorOr[Seq[A]] =
     findAllEntitiesPostedAfter(date, limit).map(_.map(entityMapper.toDomain))
 
-  private def findAllEntitiesPostedAfter(date: Instant, limit: Int): FutureErrorOr[Seq[B]] = {
+  private def findAllEntitiesPostedAfter(date: Instant, limit: Int): IOErrorOr[Seq[B]] = {
     val result = itemCollection.flatMap { collection =>
       collection
         .find(selector = BSONDocument("listingDetails.datePosted" -> BSONDocument("$gte" -> BSONString(date.toString))), projection = Option.empty[JsObject])

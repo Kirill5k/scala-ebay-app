@@ -1,6 +1,7 @@
 package clients.ebay.browse
 
 import cats.data.EitherT
+import cats.effect.{ContextShift, IO}
 import cats.implicits._
 import clients.ebay.EbayConfig
 import clients.ebay.browse.EbayBrowseResponse._
@@ -15,6 +16,8 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
+  private implicit val cs: ContextShift[IO] = IO.contextShift(ex)
+
   private val ebayConfig = config.get[EbayConfig]("ebay")
 
   private val defaultHeaders = Map(
@@ -23,7 +26,7 @@ private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WS
     "X-EBAY-C-MARKETPLACE-ID" -> "EBAY_GB"
   ).toList
 
-  def search(accessToken: String, queryParams: Map[String, String]): FutureErrorOr[Seq[EbayItemSummary]] = {
+  def search(accessToken: String, queryParams: Map[String, String]): IOErrorOr[Seq[EbayItemSummary]] = {
     val searchResponse = request(s"${ebayConfig.baseUri}${ebayConfig.searchPath}", accessToken)
       .withQueryStringParameters(queryParams.toList: _*)
       .get()
@@ -36,10 +39,10 @@ private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WS
         }
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
-    EitherT(searchResponse)
+    IO.fromFuture(IO(searchResponse))
   }
 
-  def getItem(accessToken: String, itemId: String): FutureErrorOr[Option[EbayItem]] = {
+  def getItem(accessToken: String, itemId: String): IOErrorOr[Option[EbayItem]] = {
     val getItemResponse = request(s"${ebayConfig.baseUri}${ebayConfig.itemPath}/$itemId", accessToken)
       .get()
       .map { res =>
@@ -50,7 +53,7 @@ private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WS
         }
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
-    EitherT(getItemResponse)
+    IO.fromFuture(IO(getItemResponse))
   }
 
   private def request(url: String, accessToken: String): WSRequest =

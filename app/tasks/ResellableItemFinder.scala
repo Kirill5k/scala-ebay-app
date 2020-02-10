@@ -1,7 +1,7 @@
 package tasks
 
 import cats.implicits._
-import domain.ApiClientError.FutureErrorOr
+import domain.ApiClientError.IOErrorOr
 import domain.{ItemDetails, ResellableItem}
 import play.api.Logger
 import repositories.ResellableItemEntity
@@ -36,15 +36,15 @@ trait ResellableItemFinder[I <: ResellableItem, D <: ItemDetails, E <: Resellabl
       }
   }
 
-  private val isNew: I => FutureErrorOr[Option[I]] =
+  private val isNew: I => IOErrorOr[Option[I]] =
     item => itemService.isNew(item).map(if (_) Some(item) else None)
 
-  private val save: I => FutureErrorOr[I] =
+  private val save: I => IOErrorOr[I] =
     item => itemService.save(item).map(_ => item)
 
   private val isProfitableToResell: I => Boolean =
     item => item.resellPrice.exists(rp => (rp.exchange * 100 / item.listingDetails.price - 100) > minMarginPercentage)
 
-  private val informAboutGoodDeal: I => FutureErrorOr[I] =
+  private val informAboutGoodDeal: I => IOErrorOr[I] =
     item => itemService.sendNotification(item).map(_ => item)
 }
