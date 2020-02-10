@@ -1,6 +1,6 @@
 package clients.telegram
 
-import cats.data.EitherT
+import cats.effect.{ContextShift, IO}
 import cats.implicits._
 import domain.ApiClientError._
 import domain.{ApiClientError, ResellableItem}
@@ -9,20 +9,22 @@ import play.api.http.Status
 import play.api.libs.ws.WSClient
 import play.api.{Configuration, Logger}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext}
 
 class TelegramClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
+  private implicit val cs: ContextShift[IO] = IO.contextShift(ex)
+
   import domain.ResellableItemOps._
   private val log: Logger = Logger(getClass)
 
   private val telegramConfig = config.get[TelegramConfig]("telegram")
 
   def sendMessageToMainChannel(item: ResellableItem): IOErrorOr[Unit] =
-    EitherT.rightT[Future, ApiClientError](item.notificationMessage).flatMap {
+    IO(item.notificationMessage).flatMap {
       case Some(message) => sendMessageToMainChannel(message)
       case None =>
         log.warn(s"not enough details for sending notification $item")
-        EitherT.rightT[Future, ApiClientError](none[Unit])
+        IO(Right(none[Unit]))
     }
 
   def sendMessageToMainChannel(message: String): IOErrorOr[Unit] =
@@ -39,6 +41,6 @@ class TelegramClient @Inject()(config: Configuration, client: WSClient)(implicit
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
 
-    EitherT(response)
+    IO.fromFuture(IO(response))
   }
 }

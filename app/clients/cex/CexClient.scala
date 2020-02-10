@@ -2,7 +2,7 @@ package clients.cex
 
 import java.util.concurrent.TimeUnit
 
-import cats.data.EitherT
+
 import cats.effect.{ContextShift, IO}
 import cats.implicits._
 import domain.{ApiClientError, ItemDetails, ResellPrice}
