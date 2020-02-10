@@ -10,15 +10,14 @@ scalaVersion := "2.13.1"
 
 lazy val circeVersion = "0.12.3"
 lazy val mockitoVersion = "1.10.3"
-lazy val catsVersion = "2.1.0"
 
 libraryDependencies ++= Seq(
   ehcache,
   guice,
   ws,
 
-  "org.typelevel" %% "cats-core" % catsVersion,
-  "org.typelevel" %% "cats-effect" % catsVersion,
+  "org.typelevel" %% "cats-core" % "2.1.0",
+  "org.typelevel" %% "cats-effect" % "2.1.1",
   "io.circe" %% "circe-core" % circeVersion,
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
