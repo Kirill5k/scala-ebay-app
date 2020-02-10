@@ -19,18 +19,18 @@ class TelegramClient @Inject()(config: Configuration, client: WSClient)(implicit
 
   private val telegramConfig = config.get[TelegramConfig]("telegram")
 
-  def sendMessageToMainChannel(item: ResellableItem): IOErrorOr[Unit] =
+  def sendMessageToMainChannel(item: ResellableItem): IO[Unit] =
     IO(item.notificationMessage).flatMap {
       case Some(message) => sendMessageToMainChannel(message)
       case None =>
         log.warn(s"not enough details for sending notification $item")
-        IO(Right(none[Unit]))
+        IO.pure(None)
     }
 
-  def sendMessageToMainChannel(message: String): IOErrorOr[Unit] =
+  def sendMessageToMainChannel(message: String): IO[Unit] =
     sendMessage(telegramConfig.mainChannelId, message)
 
-  def sendMessage(channelId: String, message: String): IOErrorOr[Unit] = {
+  def sendMessage(channelId: String, message: String): IO[Unit] = {
     val response = client
       .url(s"${telegramConfig.baseUri}${telegramConfig.messagePath}")
       .withQueryStringParameters("chat_id" -> channelId, "text" -> message)
@@ -41,6 +41,6 @@ class TelegramClient @Inject()(config: Configuration, client: WSClient)(implicit
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
 
-    IO.fromFuture(IO(response))
+    IO.fromFuture(IO(response)).flatMap(_.fold(IO.raiseError, IO.pure))
   }
 }

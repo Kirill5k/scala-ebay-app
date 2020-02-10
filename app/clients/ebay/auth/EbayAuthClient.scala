@@ -29,12 +29,12 @@ private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSCl
   private[auth] var currentAccountIndex: Int = 0
   private[auth] var authToken: IOErrorOr[EbayAuthToken] = IO(Left(AuthError("authentication with ebay is required")))
 
-  def accessToken(): IOErrorOr[String] = {
+  def accessToken(): IO[String] = {
     authToken = for {
       currentToken <- authToken
       validToken <- if (currentToken.exists(_.isValid)) IO(currentToken) else authenticate()
     } yield validToken
-    authToken.map(_.map(_.token))
+    authToken.flatMap(_.fold(IO.raiseError, IO.pure)).map(_.token)
   }
 
   def switchAccount(): Unit = {
