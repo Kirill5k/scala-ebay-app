@@ -27,7 +27,7 @@ private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSCl
   private val authRequestBody = Map("scope" -> Seq("https://api.ebay.com/oauth/api_scope"), "grant_type" -> Seq("client_credentials"))
 
   private[auth] var currentAccountIndex: Int = 0
-  private[auth] var authToken: IOErrorOr[EbayAuthToken] = IO(Left(AuthError("authentication with ebay is required")))
+  private[auth] var authToken: IOErrorOr[EbayAuthToken] = IO.pure(Left(AuthError("authentication with ebay is required")))
 
   def accessToken(): IO[String] = {
     authToken = for {

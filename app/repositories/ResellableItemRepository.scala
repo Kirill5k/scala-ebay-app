@@ -26,7 +26,7 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
   protected def collectionName: String
   protected val itemCollection: Future[JSONCollection] = mongo.database.map(_.collection(collectionName))
 
-  def existsByUrl(listingUrl: String): IOErrorOr[Boolean] = {
+  def existsByUrl(listingUrl: String): IO[Boolean] = {
     val result = itemCollection.flatMap { collection =>
       collection
         .withReadPreference(ReadPreference.primary)
@@ -35,13 +35,13 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
         .map(_.asRight[ApiClientError])
     }
       .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))
-    IO.fromFuture(IO(result))
+    IO.fromFuture(IO(result)).flatMap(_.fold(IO.raiseError, IO.pure))
   }
 
-  def save(item: A): IOErrorOr[Unit] =
+  def save(item: A): IO[Unit] =
     (entityMapper.toEntity _ andThen saveEntity)(item)
 
-  private def saveEntity(entity: B): IOErrorOr[Unit] = {
+  private def saveEntity(entity: B): IO[Unit] = {
     val result = itemCollection.flatMap{ collection =>
       collection
         .insert(ordered = false).
@@ -49,13 +49,13 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     }
       .map(_ => ().asRight[ApiClientError])
       .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))
-    IO.fromFuture(IO(result))
+    IO.fromFuture(IO(result)).flatMap(_.fold(IO.raiseError, IO.pure))
   }
 
-  def findAll(limit: Int = 100): IOErrorOr[Seq[A]] =
-    EitherT(findAllEntities(limit)).map(_.map(entityMapper.toDomain)).value
+  def findAll(limit: Int = 100): IO[Seq[A]] =
+    findAllEntities(limit).map(_.map(entityMapper.toDomain))
 
-  private def findAllEntities(limit: Int): IOErrorOr[Seq[B]] = {
+  private def findAllEntities(limit: Int): IO[Seq[B]] = {
     val result = itemCollection.flatMap { collection =>
       collection
         .find(selector = Json.obj(), projection = Option.empty[JsObject])
@@ -65,13 +65,13 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     }
       .map(_.asRight)
       .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))
-    IO.fromFuture(IO(result))
+    IO.fromFuture(IO(result)).flatMap(_.fold(IO.raiseError, IO.pure))
   }
 
-  def findAllPostedAfter(date: Instant, limit: Int = 1000): IOErrorOr[Seq[A]] =
-    EitherT(findAllEntitiesPostedAfter(date, limit)).map(_.map(entityMapper.toDomain)).value
+  def findAllPostedAfter(date: Instant, limit: Int = 1000): IO[Seq[A]] =
+    findAllEntitiesPostedAfter(date, limit).map(_.map(entityMapper.toDomain))
 
-  private def findAllEntitiesPostedAfter(date: Instant, limit: Int): IOErrorOr[Seq[B]] = {
+  private def findAllEntitiesPostedAfter(date: Instant, limit: Int): IO[Seq[B]] = {
     val result = itemCollection.flatMap { collection =>
       collection
         .find(selector = BSONDocument("listingDetails.datePosted" -> BSONDocument("$gte" -> BSONString(date.toString))), projection = Option.empty[JsObject])
@@ -80,7 +80,7 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     }
       .map(_.asRight)
       .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))
-    IO.fromFuture(IO(result))
+    IO.fromFuture(IO(result)).flatMap(_.fold(IO.raiseError, IO.pure))
   }
 
 }
