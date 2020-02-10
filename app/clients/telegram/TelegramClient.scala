@@ -9,7 +9,7 @@ import play.api.http.Status
 import play.api.libs.ws.WSClient
 import play.api.{Configuration, Logger}
 
-import scala.concurrent.{ExecutionContext}
+import scala.concurrent.ExecutionContext
 
 class TelegramClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
   private implicit val cs: ContextShift[IO] = IO.contextShift(ex)

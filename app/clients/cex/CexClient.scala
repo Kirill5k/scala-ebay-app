@@ -9,10 +9,11 @@ import domain.{ApiClientError, ItemDetails, ResellPrice}
 import domain.ApiClientError._
 import javax.inject.{Inject, Singleton}
 import play.api.{Configuration, Logger}
-import play.api.http.{HeaderNames, Status}
+import play.api.http.HeaderNames
+import play.api.http.Status._
 import play.api.libs.ws.WSClient
 
-import scala.concurrent.{ExecutionContext}
+import scala.concurrent.ExecutionContext
 import CexSearchResponse._
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 
@@ -48,8 +49,8 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
     IO.fromFuture(IO(searchRequest.withQueryStringParameters("q" -> query).get()
       .map { res =>
         res.status match {
-          case status if Status.isSuccessful(status) => res.body[Either[ApiClientError, CexSearchResponse]].map(getMinResellPrice(query))
-          case Status.TOO_MANY_REQUESTS => none[ResellPrice].asRight[ApiClientError]
+          case status if isSuccessful(status) => res.body[Either[ApiClientError, CexSearchResponse]].map(getMinResellPrice(query))
+          case TOO_MANY_REQUESTS => none[ResellPrice].asRight[ApiClientError]
           case status => HttpError(status, s"error sending request to cex: ${res.statusText}").asLeft
         }
       }

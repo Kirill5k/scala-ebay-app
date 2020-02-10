@@ -1,9 +1,9 @@
 package repositories
 
-import java.net.URI
 import java.time.Instant
 
 import cats.data.EitherT
+import cats.effect.{ContextShift, IO}
 import cats.implicits._
 import domain.{ApiClientError, ResellableItem}
 import domain.ApiClientError.IOErrorOr
@@ -21,6 +21,7 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
   implicit protected def mongo: ReactiveMongoApi
   implicit protected def entityMapper: ResellableItemEntityMapper[A, B]
   implicit protected def entityFormat: OFormat[B]
+  implicit private val cs: ContextShift[IO] = IO.contextShift(ex)
 
   protected def collectionName: String
   protected val itemCollection: Future[JSONCollection] = mongo.database.map(_.collection(collectionName))
@@ -34,7 +35,7 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
         .map(_.asRight[ApiClientError])
     }
       .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))
-    EitherT(result)
+    IO.fromFuture(IO(result))
   }
 
   def save(item: A): IOErrorOr[Unit] =
@@ -48,11 +49,11 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     }
       .map(_ => ().asRight[ApiClientError])
       .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))
-    EitherT(result)
+    IO.fromFuture(IO(result))
   }
 
   def findAll(limit: Int = 100): IOErrorOr[Seq[A]] =
-    findAllEntities(limit).map(_.map(entityMapper.toDomain))
+    EitherT(findAllEntities(limit)).map(_.map(entityMapper.toDomain)).value
 
   private def findAllEntities(limit: Int): IOErrorOr[Seq[B]] = {
     val result = itemCollection.flatMap { collection =>
@@ -64,11 +65,11 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     }
       .map(_.asRight)
       .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))
-    EitherT(result)
+    IO.fromFuture(IO(result))
   }
 
   def findAllPostedAfter(date: Instant, limit: Int = 1000): IOErrorOr[Seq[A]] =
-    findAllEntitiesPostedAfter(date, limit).map(_.map(entityMapper.toDomain))
+    EitherT(findAllEntitiesPostedAfter(date, limit)).map(_.map(entityMapper.toDomain)).value
 
   private def findAllEntitiesPostedAfter(date: Instant, limit: Int): IOErrorOr[Seq[B]] = {
     val result = itemCollection.flatMap { collection =>
@@ -79,7 +80,7 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     }
       .map(_.asRight)
       .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))
-    EitherT(result)
+    IO.fromFuture(IO(result))
   }
 
 }
