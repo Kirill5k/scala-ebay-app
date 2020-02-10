@@ -34,18 +34,18 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
     .expiration(24, TimeUnit.HOURS)
     .build[String, Option[ResellPrice]]()
 
-  def findResellPrice(itemDetails: ItemDetails): IOErrorOr[Option[ResellPrice]] =
+  def findResellPrice(itemDetails: ItemDetails): IO[Option[ResellPrice]] =
     IO(itemDetails.summary).flatMap {
       case Some(query) if searchResultsCache.containsKey(query) =>
-        IO(Right(searchResultsCache.get(query)))
+        IO.pure(searchResultsCache.get(query))
       case Some(query) =>
         queryResellPrice(query)
       case None =>
         log.warn(s"not enough details to query for resell price $itemDetails")
-        IO(Right(none[ResellPrice]))
+        IO.pure(none[ResellPrice])
     }
 
-  private def queryResellPrice(query: String): IOErrorOr[Option[ResellPrice]] =
+  private def queryResellPrice(query: String): IO[Option[ResellPrice]] =
     IO.fromFuture(IO(searchRequest.withQueryStringParameters("q" -> query).get()
       .map { res =>
         res.status match {
@@ -55,6 +55,7 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
         }
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))))
+    .flatMap(_.fold(IO.raiseError, IO.pure))
 
   private def getMinResellPrice(query: String)(searchResponse: CexSearchResponse): Option[ResellPrice] = {
     val resellPrice = searchResponse.response.data

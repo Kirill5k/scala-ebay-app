@@ -2,15 +2,10 @@ package domain
 
 import java.io.IOException
 
-import cats.data.EitherT
 import cats.effect.IO
 import play.api.libs.json.JsResultException
 
-import scala.concurrent.Future
-
-sealed trait ApiClientError {
-  def message: String
-}
+sealed trait ApiClientError extends Throwable
 
 object ApiClientError {
   type IOErrorOr[A] = IO[Either[ApiClientError, A]]
