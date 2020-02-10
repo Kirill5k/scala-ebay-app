@@ -1,6 +1,5 @@
 package clients.ebay.browse
 
-import cats.data.EitherT
 import cats.effect.{ContextShift, IO}
 import cats.implicits._
 import clients.ebay.EbayConfig

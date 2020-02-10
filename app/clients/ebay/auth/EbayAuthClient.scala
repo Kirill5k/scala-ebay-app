@@ -1,7 +1,7 @@
 package clients.ebay.auth
 
-import cats.data.EitherT
 import cats.implicits._
+import cats.effect.{ContextShift, IO}
 import clients.ebay.EbayConfig
 import javax.inject._
 import play.api.http.{HeaderNames, Status}
@@ -15,6 +15,8 @@ import domain.ApiClientError._
 
 @Singleton
 private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
+  private implicit val cs: ContextShift[IO] = IO.contextShift(ex)
+
   private val ebayConfig = config.get[EbayConfig]("ebay")
 
   private val authRequest = client
@@ -25,13 +27,14 @@ private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSCl
   private val authRequestBody = Map("scope" -> Seq("https://api.ebay.com/oauth/api_scope"), "grant_type" -> Seq("client_credentials"))
 
   private[auth] var currentAccountIndex: Int = 0
-  private[auth] var authToken: IOErrorOr[EbayAuthToken] = EitherT.leftT(AuthError("authentication with ebay is required"))
+  private[auth] var authToken: IOErrorOr[EbayAuthToken] = IO(Left(AuthError("authentication with ebay is required")))
 
   def accessToken(): IOErrorOr[String] = {
-    authToken = authToken
-      .ensure(AuthError("ebay token has expired"))(_.isValid)
-      .orElse(authenticate())
-    authToken.map(_.token)
+    authToken = for {
+      currentToken <- authToken
+      validToken <- if (currentToken.exists(_.isValid)) IO(currentToken) else authenticate()
+    } yield validToken
+    authToken.map(_.map(_.token))
   }
 
   def switchAccount(): Unit = {
@@ -43,12 +46,14 @@ private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSCl
     val authResponse = authRequest
       .withAuth(credentials.clientId, credentials.clientSecret, WSAuthScheme.BASIC)
       .post(authRequestBody)
-      .map(res =>
-        if (Status.isSuccessful(res.status)) res.body[Either[ApiClientError, EbayAuthSuccessResponse]]
-        else res.body[Either[ApiClientError, EbayAuthErrorResponse]].flatMap(toApiClientError(res.status))
-      )
+      .map { res =>
+        if (Status.isSuccessful(res.status))
+          res.body[Either[ApiClientError, EbayAuthSuccessResponse]].map(s => EbayAuthToken(s.access_token, s.expires_in))
+        else
+          res.body[Either[ApiClientError, EbayAuthErrorResponse]].flatMap(toApiClientError(res.status))
+      }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
-    EitherT(authResponse).map(s => EbayAuthToken(s.access_token, s.expires_in))
+    IO.fromFuture(IO(authResponse))
   }
 
   private def toApiClientError[A](status: Int)(authError: EbayAuthErrorResponse): Either[ApiClientError, A] =
