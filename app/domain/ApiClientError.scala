@@ -2,8 +2,10 @@ package domain
 
 import java.io.IOException
 
-import cats.effect.IO
+import cats.effect.{ContextShift, IO}
 import play.api.libs.json.JsResultException
+
+import scala.concurrent.Future
 
 sealed trait ApiClientError extends Throwable
 
@@ -29,4 +31,7 @@ object ApiClientError {
   def recoverFromDbError: PartialFunction[Throwable, ApiClientError] = {
     case error: Throwable => DbError(s"error during db operation: ${error.getMessage}")
   }
+
+  def fromFutureErrorToIO[A](futureError: Future[Either[ApiClientError, A]])(implicit cs: ContextShift[IO]): IO[A] =
+    IO.fromFuture(IO(futureError)).flatMap(_.fold(IO.raiseError, IO.pure))
 }

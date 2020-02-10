@@ -45,8 +45,8 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
         IO.pure(none[ResellPrice])
     }
 
-  private def queryResellPrice(query: String): IO[Option[ResellPrice]] =
-    IO.fromFuture(IO(searchRequest.withQueryStringParameters("q" -> query).get()
+  private def queryResellPrice(query: String): IO[Option[ResellPrice]] = {
+    val response = searchRequest.withQueryStringParameters("q" -> query).get()
       .map { res =>
         res.status match {
           case status if isSuccessful(status) => res.body[Either[ApiClientError, CexSearchResponse]].map(getMinResellPrice(query))
@@ -55,7 +55,9 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
         }
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))))
-    .flatMap(_.fold(IO.raiseError, IO.pure))
+
+    ApiClientError.fromFutureErrorToIO(response)
+  }
 
   private def getMinResellPrice(query: String)(searchResponse: CexSearchResponse): Option[ResellPrice] = {
     val resellPrice = searchResponse.response.data

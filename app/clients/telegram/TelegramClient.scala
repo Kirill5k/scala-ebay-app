@@ -41,6 +41,6 @@ class TelegramClient @Inject()(config: Configuration, client: WSClient)(implicit
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
 
-    IO.fromFuture(IO(response)).flatMap(_.fold(IO.raiseError, IO.pure))
+    ApiClientError.fromFutureErrorToIO(response)
   }
 }

@@ -32,7 +32,7 @@ private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSCl
   def accessToken(): IO[String] = {
     authToken = for {
       currentToken <- authToken
-      validToken <- if (currentToken.exists(_.isValid)) IO(currentToken) else authenticate()
+      validToken <- if (currentToken.exists(_.isValid)) IO.pure(currentToken) else authenticate()
     } yield validToken
     authToken.flatMap(_.fold(IO.raiseError, IO.pure)).map(_.token)
   }

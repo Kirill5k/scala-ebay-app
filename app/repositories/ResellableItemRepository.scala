@@ -2,11 +2,9 @@ package repositories
 
 import java.time.Instant
 
-import cats.data.EitherT
 import cats.effect.{ContextShift, IO}
 import cats.implicits._
 import domain.{ApiClientError, ResellableItem}
-import domain.ApiClientError.IOErrorOr
 import play.api.libs.json.{JsObject, Json, OFormat}
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.{Cursor, ReadConcern, ReadPreference}
@@ -35,7 +33,7 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
         .map(_.asRight[ApiClientError])
     }
       .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))
-    IO.fromFuture(IO(result)).flatMap(_.fold(IO.raiseError, IO.pure))
+    ApiClientError.fromFutureErrorToIO(result)
   }
 
   def save(item: A): IO[Unit] =
@@ -49,7 +47,7 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     }
       .map(_ => ().asRight[ApiClientError])
       .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))
-    IO.fromFuture(IO(result)).flatMap(_.fold(IO.raiseError, IO.pure))
+    ApiClientError.fromFutureErrorToIO(result)
   }
 
   def findAll(limit: Int = 100): IO[Seq[A]] =
@@ -65,7 +63,7 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     }
       .map(_.asRight)
       .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))
-    IO.fromFuture(IO(result)).flatMap(_.fold(IO.raiseError, IO.pure))
+    ApiClientError.fromFutureErrorToIO(result)
   }
 
   def findAllPostedAfter(date: Instant, limit: Int = 1000): IO[Seq[A]] =
@@ -80,7 +78,7 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     }
       .map(_.asRight)
       .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))
-    IO.fromFuture(IO(result)).flatMap(_.fold(IO.raiseError, IO.pure))
+    ApiClientError.fromFutureErrorToIO(result)
   }
 
 }

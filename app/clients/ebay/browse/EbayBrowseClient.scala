@@ -39,7 +39,7 @@ private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WS
         }
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
-    IO.fromFuture(IO(searchResponse)).flatMap(_.fold(IO.raiseError, IO.pure))
+    ApiClientError.fromFutureErrorToIO(searchResponse)
   }
 
   def getItem(accessToken: String, itemId: String): IO[Option[EbayItem]] = {
@@ -53,7 +53,7 @@ private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WS
         }
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
-    IO.fromFuture(IO(getItemResponse)).flatMap(_.fold(IO.raiseError, IO.pure))
+    ApiClientError.fromFutureErrorToIO(getItemResponse)
   }
 
   private def request(url: String, accessToken: String): WSRequest =
