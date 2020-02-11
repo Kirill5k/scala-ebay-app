@@ -4,16 +4,15 @@ import java.time.Instant
 import java.time.temporal.ChronoField.MILLI_OF_SECOND
 import java.util.concurrent.TimeUnit
 
-//import cats.data.EitherT
-//import cats.implicits._
+
 import cats.effect.IO
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary}
 import clients.ebay.mappers.EbayItemMapper
 import clients.ebay.mappers.EbayItemMapper._
-import domain.ApiClientError.{AuthError, IOErrorOr}
-import domain.{ApiClientError, ItemDetails, ListingDetails}
+import domain.ApiClientError.AuthError
+import domain.{ItemDetails, ListingDetails}
 import fs2.Stream
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 import play.api.Logger
@@ -52,7 +51,7 @@ trait EbaySearchClient[A <: ItemDetails] {
       .flatMap(x => fs2.Stream.apply(x: _*))
       .evalMap(getCompleteItem)
       .unNone
-      .map(transformToDomain)
+      .map(_.as[A])
       .handleErrorWith(switchAccountIfItHasExpired)
   }
 
@@ -76,12 +75,8 @@ trait EbaySearchClient[A <: ItemDetails] {
     for {
       token <- ebayAuthClient.accessToken()
       item <- ebayBrowseClient.getItem(token, itemSummary.itemId)
+      _ = itemsIds.put(itemSummary.itemId, "")
     } yield item
-
-  private def transformToDomain(item: EbayItem): (A, ListingDetails) = {
-    itemsIds.put(item.itemId, "")
-    item.as[A]
-  }
 
   protected val hasTrustedSeller: EbayItemSummary => Boolean = itemSummary => {
     for {
