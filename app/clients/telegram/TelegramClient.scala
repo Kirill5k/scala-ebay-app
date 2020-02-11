@@ -24,7 +24,7 @@ class TelegramClient @Inject()(config: Configuration, client: WSClient)(implicit
       case Some(message) => sendMessageToMainChannel(message)
       case None =>
         log.warn(s"not enough details for sending notification $item")
-        IO.pure(None)
+        IO.pure(none[Unit])
     }
 
   def sendMessageToMainChannel(message: String): IO[Unit] =
