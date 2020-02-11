@@ -8,7 +8,7 @@ import play.api.http.{HeaderNames, Status}
 import play.api.libs.ws.{WSAuthScheme, WSClient}
 import play.api.Configuration
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import EbayAuthResponse._
 import domain.ApiClientError
 import domain.ApiClientError._
@@ -27,12 +27,12 @@ private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSCl
   private val authRequestBody = Map("scope" -> Seq("https://api.ebay.com/oauth/api_scope"), "grant_type" -> Seq("client_credentials"))
 
   private[auth] var currentAccountIndex: Int = 0
-  private[auth] var authToken: IOErrorOr[EbayAuthToken] = IO.pure(Left(AuthError("authentication with ebay is required")))
+  private[auth] var authToken: IO[Either[ApiClientError, EbayAuthToken]] = IO.pure(Left(AuthError("authentication with ebay is required")))
 
   def accessToken(): IO[String] = {
     authToken = for {
       currentToken <- authToken
-      validToken <- if (currentToken.exists(_.isValid)) IO.pure(currentToken) else authenticate()
+      validToken <- if (currentToken.exists(_.isValid)) IO.pure(currentToken) else IO.fromFuture(IO.pure(authenticate()))
     } yield validToken
     authToken.flatMap(_.fold(IO.raiseError, IO.pure)).map(_.token)
   }
@@ -41,9 +41,9 @@ private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSCl
     currentAccountIndex = if (currentAccountIndex + 1 < ebayConfig.credentials.length) currentAccountIndex + 1 else 0
   }
 
-  private def authenticate(): IOErrorOr[EbayAuthToken] = {
+  private def authenticate(): Future[Either[ApiClientError, EbayAuthToken]] = {
     val credentials = ebayConfig.credentials(currentAccountIndex)
-    val authResponse = authRequest
+    authRequest
       .withAuth(credentials.clientId, credentials.clientSecret, WSAuthScheme.BASIC)
       .post(authRequestBody)
       .map { res =>
@@ -53,7 +53,6 @@ private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSCl
           res.body[Either[ApiClientError, EbayAuthErrorResponse]].flatMap(toApiClientError(res.status))
       }
       .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
-    IO.fromFuture(IO(authResponse))
   }
 
   private def toApiClientError[A](status: Int)(authError: EbayAuthErrorResponse): Either[ApiClientError, A] =

@@ -35,7 +35,7 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
     .build[String, Option[ResellPrice]]()
 
   def findResellPrice(itemDetails: ItemDetails): IO[Option[ResellPrice]] =
-    IO(itemDetails.summary).flatMap {
+    IO.pure(itemDetails.summary).flatMap {
       case Some(query) if searchResultsCache.containsKey(query) =>
         IO.pure(searchResultsCache.get(query))
       case Some(query) =>
