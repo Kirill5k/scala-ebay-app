@@ -1,6 +1,7 @@
 package tasks
 
-
+import cats.effect.IO
+import cats.implicits._
 import domain.{ItemDetails, ResellableItem}
 import fs2.Stream
 import play.api.Logger
@@ -21,9 +22,9 @@ trait ResellableItemFinder[I <: ResellableItem, D <: ItemDetails, E <: Resellabl
   def searchForCheapItems(): Unit = {
     itemService.getLatestFromEbay(15)
       .evalFilter(itemService.isNew)
-      .evalMap(item => itemService.save(item).map(_ => item))
+      .evalMap(item => itemService.save(item) >> IO.pure(item))
       .filter(isProfitableToResell)
-      .evalMap(item => itemService.sendNotification(item).map(_ => item))
+      .evalMap(item => itemService.sendNotification(item) >> IO.pure(item))
       .handleErrorWith { error =>
         logger.error(s"error obtaining new items from ebay: ${error.getMessage}")
         Stream.empty
