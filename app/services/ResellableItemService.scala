@@ -1,6 +1,5 @@
 package services
 
-
 import cats.effect.{IO, Timer}
 import clients.cex.CexClient
 import clients.ebay.EbaySearchClient

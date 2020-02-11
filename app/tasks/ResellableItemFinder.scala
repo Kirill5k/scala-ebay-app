@@ -1,14 +1,13 @@
 package tasks
 
-import cats.implicits._
-import domain.ApiClientError.IOErrorOr
+
 import domain.{ItemDetails, ResellableItem}
+import fs2.Stream
 import play.api.Logger
 import repositories.ResellableItemEntity
 import services.ResellableItemService
 
 import scala.concurrent.ExecutionContext
-import scala.util.{Failure, Success}
 
 trait ResellableItemFinder[I <: ResellableItem, D <: ItemDetails, E <: ResellableItemEntity] {
   private val logger: Logger = Logger(getClass)
@@ -19,32 +18,21 @@ trait ResellableItemFinder[I <: ResellableItem, D <: ItemDetails, E <: Resellabl
 
   protected def itemService: ResellableItemService[I, D, E]
 
-
   def searchForCheapItems(): Unit = {
     itemService.getLatestFromEbay(15)
-      .map(_.toList)
-      .flatMap(_.map(isNew).sequence)
-      .map(_.flatten)
-      .flatMap(_.map(save).sequence)
-      .map(_.filter(isProfitableToResell))
-      .flatMap(_.map(informAboutGoodDeal).sequence)
-      .value
-      .onComplete {
-        case Success(Right(items)) => logger.info(s"found ${items.size} new good deals")
-        case Success(Left(error)) => logger.error(s"error obtaining new items from ebay: ${error.message}")
-        case Failure(exception) => logger.error(s"exception trying to obtain new items from ebay: ${exception.getMessage}")
+      .evalFilter(itemService.isNew)
+      .evalMap(item => itemService.save(item).map(_ => item))
+      .filter(isProfitableToResell)
+      .evalMap(item => itemService.sendNotification(item).map(_ => item))
+      .handleErrorWith { error =>
+        logger.error(s"error obtaining new items from ebay: ${error.getMessage}")
+        Stream.empty
       }
+      .compile
+      .toList
+      .unsafeRunSync
   }
-
-  private val isNew: I => IOErrorOr[Option[I]] =
-    item => itemService.isNew(item).map(if (_) Some(item) else None)
-
-  private val save: I => IOErrorOr[I] =
-    item => itemService.save(item).map(_ => item)
 
   private val isProfitableToResell: I => Boolean =
     item => item.resellPrice.exists(rp => (rp.exchange * 100 / item.listingDetails.price - 100) > minMarginPercentage)
-
-  private val informAboutGoodDeal: I => IOErrorOr[I] =
-    item => itemService.sendNotification(item).map(_ => item)
 }
