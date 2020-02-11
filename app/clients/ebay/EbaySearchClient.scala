@@ -48,7 +48,7 @@ trait EbaySearchClient[A <: ItemDetails] {
     Stream.emits(searchQueries)
       .map(getSearchParams(filter, _))
       .evalMap(searchForItems)
-      .flatMap(x => fs2.Stream.apply(x: _*))
+      .flatMap(x => Stream.apply(x: _*))
       .evalMap(getCompleteItem)
       .unNone
       .map(_.as[A])
