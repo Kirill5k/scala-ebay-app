@@ -3,7 +3,6 @@ package clients.cex
 import cats.effect.testing.scalatest.AsyncIOSpec
 import domain.{ResellPrice, VideoGameBuilder}
 import domain.ApiClientError._
-import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import play.api.http.MediaRange
 import play.api.mvc.Results
@@ -13,9 +12,6 @@ import play.api.test.WsTestClient
 import play.api.{BuiltInComponentsFromContext, Configuration}
 import play.core.server.Server
 import play.filters.HttpFiltersComponents
-
-import scala.concurrent.duration._
-import scala.language.postfixOps
 
 
 class CexClientSpec extends PlaySpec with AsyncIOSpec {

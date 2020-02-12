@@ -1,10 +1,8 @@
 package clients.ebay.browse
 
-import clients.ebay.browse.EbayBrowseResponse.EbayItem
+import cats.effect.testing.scalatest.AsyncIOSpec
 import domain.ApiClientError._
-import domain.ListingDetails
 import org.mockito.scalatest.MockitoSugar
-import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import play.api.http.MediaRange
 import play.api.mvc.{AnyContent, Request, Results}
@@ -15,10 +13,8 @@ import play.api.{BuiltInComponentsFromContext, Configuration}
 import play.core.server.Server
 import play.filters.HttpFiltersComponents
 
-import scala.concurrent.duration._
-import scala.language.postfixOps
 
-class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar {
+class EbayBrowseClientSpec extends PlaySpec with AsyncIOSpec with MockitoSugar {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -34,31 +30,25 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
 
     "make get request to search api" in {
       withEbaySearchClient(200, "ebay/search-success-response.json") { ebaySearchClient =>
-        val item = ebaySearchClient.search(accessToken, searchQueryParams)
+        val foundItems = ebaySearchClient.search(accessToken, searchQueryParams)
 
-        whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItems =>
-          foundItems.map(_.map(_.itemId)) must be(Right(Seq("item-1", "item-2", "item-3", "item-4", "item-5")))
-        }
+        foundItems.asserting(_.map(_.itemId) must be(Seq("item-1", "item-2", "item-3", "item-4", "item-5")))
       }
     }
 
     "return empty seq when nothing found" in {
       withEbaySearchClient(200, "ebay/search-empty-response.json") { ebaySearchClient =>
-        val item = ebaySearchClient.search(accessToken, searchQueryParams)
+        val foundItems = ebaySearchClient.search(accessToken, searchQueryParams)
 
-        whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItems =>
-          foundItems.map(_.map(_.itemId)) must be(Right(Seq()))
-        }
+        foundItems.asserting(_.map(_.itemId) must be(Seq()))
       }
     }
 
     "return autherror when token expired during search" in {
       withEbaySearchClient(403, "ebay/get-item-unauthorized-error-response.json") { ebaySearchClient =>
-        val item = ebaySearchClient.search(accessToken, searchQueryParams)
+        val result = ebaySearchClient.search(accessToken, searchQueryParams)
 
-        whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItems =>
-          foundItems must be(Left(AuthError("ebay account has expired: 403")))
-        }
+        result.assertThrows[AuthError]
       }
     }
 
@@ -66,20 +56,15 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
       withEbaySearchClient(200, "ebay/get-item-1-success-response.json") { ebaySearchClient =>
         val item = ebaySearchClient.getItem(accessToken, itemId)
 
-        whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItem =>
-          val item: EbayItem = foundItem.getOrElse(throw new RuntimeException()).get
-          item.itemId must be ("v1|114059888671|0")
-        }
+        item.asserting(_.map(_.itemId) must be (Some("v1|114059888671|0")))
       }
     }
 
     "return autherror when token expired" in {
       withEbaySearchClient(403, "ebay/get-item-unauthorized-error-response.json") { ebaySearchClient =>
-        val item = ebaySearchClient.getItem(accessToken, itemId)
+        val result = ebaySearchClient.getItem(accessToken, itemId)
 
-        whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItem =>
-          foundItem must be(Left(AuthError("ebay account has expired: 403")))
-        }
+        result.assertThrows[AuthError]
       }
     }
 
@@ -87,9 +72,7 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
       withEbaySearchClient(404, "ebay/get-item-notfound-error-response.json") { ebaySearchClient =>
         val item = ebaySearchClient.getItem(accessToken, itemId)
 
-        whenReady(item.value, timeout(10 seconds), interval(500 millis)) { foundItem =>
-          foundItem must be(Right(None))
-        }
+        item.asserting(_ must be (None))
       }
     }
   }

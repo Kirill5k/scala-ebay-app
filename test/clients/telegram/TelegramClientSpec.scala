@@ -6,11 +6,8 @@ import org.scalatestplus.play.PlaySpec
 import play.api.mvc.Results
 import play.api.routing.sird._
 import play.api.test.WsTestClient
-import play.api.{Configuration}
+import play.api.Configuration
 import play.core.server.Server
-
-import scala.concurrent.duration._
-import scala.language.postfixOps
 
 
 class TelegramClientSpec extends PlaySpec with AsyncIOSpec {
