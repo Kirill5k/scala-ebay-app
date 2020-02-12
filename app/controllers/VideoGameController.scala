@@ -13,9 +13,10 @@ class VideoGameController @Inject()(itemService: VideoGameService, override val 
   extends BaseController {
 
   def getAll(limit: Int = 100): Action[AnyContent] = Action.async {
-    itemService.getLatest(100).value.map{
-      case Right(items) => Ok(items.asJson.noSpaces).as(ContentTypes.JSON)
-      case Left(error) => InternalServerError(error.asJson.noSpaces).as(ContentTypes.JSON)
+    itemService.getLatest(100)
+      .unsafeToFuture()
+      .map(items => Ok(items.asJson.noSpaces).as(ContentTypes.JSON))
+      .recover(error => InternalServerError(error.asJson.noSpaces).as(ContentTypes.JSON))
     }
-  }
+
 }
