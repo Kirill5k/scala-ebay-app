@@ -1,5 +1,6 @@
 package clients.cex
 
+import cats.effect.testing.scalatest.AsyncIOSpec
 import domain.{ResellPrice, VideoGameBuilder}
 import domain.ApiClientError._
 import org.scalatest.concurrent.ScalaFutures
@@ -17,7 +18,7 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 
-class CexClientSpec extends PlaySpec with ScalaFutures {
+class CexClientSpec extends PlaySpec with AsyncIOSpec {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   val cexConfig = Map("baseUri" -> "/cex", "searchPath" -> "/search")
@@ -32,11 +33,9 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
       withCexClient(200, "cex/search-success-response.json") { cexClient =>
         val result = cexClient.findResellPrice(gameDetails)
 
-        whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
-          val expectedPrice = Some(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153)))
-          minPrice must be (Right(expectedPrice))
-          cexClient.searchResultsCache.get(queryString) must be (expectedPrice)
-        }
+        val expectedPrice = Some(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153)))
+        result.asserting(_ must be (expectedPrice))
+        cexClient.searchResultsCache.get(queryString) must be (expectedPrice)
       }
     }
 
@@ -44,10 +43,8 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
       withCexClient(200, "cex/search-noresults-response.json") { cexClient =>
         val result = cexClient.findResellPrice(gameDetails)
 
-        whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
-          minPrice must be (Right(None))
-          cexClient.searchResultsCache.containsKey(queryString) must be (false)
-        }
+        result.asserting(_ must be (None))
+        cexClient.searchResultsCache.containsKey(queryString) must be (false)
       }
     }
 
@@ -55,10 +52,8 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
       withCexClient(200, "cex/search-noresults-response.json") { cexClient =>
         val result = cexClient.findResellPrice(gameDetails.copy(name = None))
 
-        whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
-          minPrice must be (Right(None))
-          cexClient.searchResultsCache.containsKey(queryString) must be (false)
-        }
+        result.asserting(_ must be (None))
+        cexClient.searchResultsCache.containsKey(queryString) must be (false)
       }
     }
 
@@ -66,9 +61,7 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
       withCexClient(200, "cex/search-unexpected-response.json") { cexClient =>
         val result = cexClient.findResellPrice(gameDetails)
 
-        whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
-          minPrice must be (Left(JsonParsingError("C[A]: DownField(boxes),DownField(data),DownField(response)")))
-        }
+        result.assertThrows[JsonParsingError]
       }
     }
 
@@ -76,9 +69,7 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
       withCexClient(400, "cex/search-error-response.json") { cexClient =>
         val result = cexClient.findResellPrice(gameDetails)
 
-        whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
-          minPrice must be (Left(HttpError(400, "error sending request to cex: Bad Request")))
-        }
+        result.assertThrows[HttpError]
       }
     }
 
@@ -86,9 +77,8 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
       withCexClient(429, "cex/search-error-response.json") { cexClient =>
         val result = cexClient.findResellPrice(gameDetails)
 
-        whenReady(result.value, timeout(6 seconds), interval(500 millis)) { minPrice =>
-          minPrice must be (Right(None))
-        }
+        result.asserting(_ must be (None))
+        cexClient.searchResultsCache.containsKey(queryString) must be (false)
       }
     }
   }
