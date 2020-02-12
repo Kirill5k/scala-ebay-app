@@ -30,7 +30,7 @@ trait ResellableItemFinder[I <: ResellableItem, D <: ItemDetails, E <: Resellabl
         Stream.empty
       }
       .compile
-      .toList
+      .drain
       .unsafeRunSync
   }
 

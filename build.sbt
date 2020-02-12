@@ -30,7 +30,8 @@ libraryDependencies ++= Seq(
   "org.mockito" %% "mockito-scala" % mockitoVersion % Test,
   "org.mockito" %% "mockito-scala-scalatest" % mockitoVersion % Test,
   "com.github.simplyscala" % "scalatest-embedmongo_2.12" % "0.2.4" % Test,
-  "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "2.2.0" % Test
+  "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "2.2.0" % Test,
+  "com.codecommit" %% "cats-effect-testing-scalatest" % "0.4.0" % Test
 )
 
 // Adds additional packages into Twirl
