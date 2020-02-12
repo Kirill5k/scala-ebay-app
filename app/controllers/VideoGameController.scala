@@ -1,7 +1,8 @@
 package controllers
 
+import io.circe.generic.auto._
+import io.circe.syntax._
 import javax.inject.{Inject, Singleton}
-import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
 import play.api.http.ContentTypes
 import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
 import services.VideoGameService
@@ -17,6 +18,6 @@ class VideoGameController @Inject()(itemService: VideoGameService, override val 
       .unsafeToFuture()
       .map(items => Ok(items.asJson.noSpaces).as(ContentTypes.JSON))
       .recover(error => InternalServerError(error.asJson.noSpaces).as(ContentTypes.JSON))
-    }
+  }
 
 }
