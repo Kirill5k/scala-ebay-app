@@ -13,8 +13,7 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: ResellableItemEntity] {
-  implicit protected def ex: ExecutionContext
-  implicit private val timer: Timer[IO] = IO.timer(ex)
+  implicit protected def timer: Timer[IO]
 
   protected def itemRepository: ResellableItemRepository[I, E]
   protected def ebaySearchClient: EbaySearchClient[D]

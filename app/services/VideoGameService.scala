@@ -1,5 +1,6 @@
 package services
 
+import cats.effect.{IO, Timer}
 import clients.cex.CexClient
 import clients.ebay.VideoGameEbayClient
 import clients.telegram.TelegramClient
@@ -17,8 +18,10 @@ class VideoGameService @Inject()(
                                   override val ebaySearchClient: VideoGameEbayClient,
                                   override val telegramClient: TelegramClient,
                                   override val cexClient: CexClient
-                                )(implicit override val ex: ExecutionContext)
+                                )(implicit ex: ExecutionContext)
   extends ResellableItemService[VideoGame, GameDetails, VideoGameEntity] {
+
+  override implicit protected val timer: Timer[IO] = IO.timer(ex)
 
   override protected def createItem(itemDetails: GameDetails, listingDetails: ListingDetails, resellPrice: Option[ResellPrice]): VideoGame =
     VideoGame.apply(itemDetails, listingDetails, resellPrice)

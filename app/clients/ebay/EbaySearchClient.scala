@@ -17,8 +17,6 @@ import fs2.Stream
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 import play.api.Logger
 
-import scala.concurrent.ExecutionContext
-
 trait EbaySearchClient[A <: ItemDetails] {
   private val log: Logger = Logger(getClass)
 
@@ -30,7 +28,6 @@ trait EbaySearchClient[A <: ItemDetails] {
     .expiration(60, TimeUnit.MINUTES)
     .build[String, String]()
 
-  implicit protected def ex: ExecutionContext
   implicit protected def m: EbayItemMapper[A]
 
   protected def ebayAuthClient: EbayAuthClient

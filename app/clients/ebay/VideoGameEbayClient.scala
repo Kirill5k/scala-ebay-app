@@ -7,11 +7,9 @@ import clients.ebay.mappers.EbayItemMapper
 import domain.ItemDetails.GameDetails
 import javax.inject._
 
-import scala.concurrent.ExecutionContext
 
 @Singleton
-class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebayBrowseClient: EbayBrowseClient)(implicit override val ex: ExecutionContext)
-  extends EbaySearchClient[GameDetails] {
+class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebayBrowseClient: EbayBrowseClient) extends EbaySearchClient[GameDetails] {
 
   implicit override protected val m: EbayItemMapper[GameDetails] = EbayItemMapper.gameDetailsMapper
 
@@ -25,7 +23,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "digital code", "digital-code", "download code", "upgrade code", "style covers", "no case", "credits",
     "coin", "skins", "bundle", "no game", "digital key", "download key", "just the case", "cartridge only", "disc only",
     "player generator", "pve official", "read description", "see description", "100k", "case box", "dlc",
-    "pre-order", "preorder",
+    "pre-order", "preorder", "season pass",
     "fifa 20(\\s+(\\w+|\\d+)){5,}", "fallout 76(\\s+(\\w+|\\d+)){5,}", "borderlands 3(\\s+(\\w+|\\d+)){5,}",
     "rocket league(\\s+(\\w+|\\d+)){5,}", "ark survival(\\s+(\\w+|\\d+)){5,}"
   ).mkString("^.*?(?i)(", "|", ").*$").r
