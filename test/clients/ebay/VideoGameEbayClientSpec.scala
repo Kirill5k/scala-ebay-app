@@ -1,25 +1,18 @@
 package clients.ebay
 
-import cats.data.EitherT
-import cats.implicits._
+import cats.effect.IO
+import cats.effect.testing.scalatest.AsyncIOSpec
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary, ItemImage, ItemPrice, ItemProperty, ItemSeller, ItemShippingOption, ShippingCost}
-import domain.ApiClientError
-import domain.ApiClientError.{AuthError, IOErrorOr, HttpError}
+import domain.ApiClientError.{AuthError, HttpError}
 import domain.ItemDetails.GameDetails
 import org.mockito.captor.ArgCaptor
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
-import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 
-import scala.concurrent.Future
-import scala.concurrent.duration._
-import scala.language.postfixOps
 
-class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSugar with ArgumentMatchersSugar {
-  import scala.concurrent.ExecutionContext.Implicits.global
-
+class VideoGameEbayClientSpec extends PlaySpec with AsyncIOSpec with MockitoSugar with ArgumentMatchersSugar {
   val accessToken = "access-token"
 
   "VideoGameSearchClient" should {
@@ -29,81 +22,77 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
       val (authClient, browseClient) = mockEbayClients
       val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
-      when(browseClient.search(any, any)).thenReturn(successResponse(Seq()))
+      when(browseClient.search(any, any)).thenReturn(IO.pure(Seq()))
 
-      val response = videoGameSearchClient.getItemsListedInLastMinutes(15)
+      val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(response.value, timeout(10 seconds), interval(500 millis)) { items =>
-        items must be (Right(Seq()))
-        verify(authClient, times(3)).accessToken
-        verify(browseClient, times(3)).search(eqTo(accessToken), searchParamsCaptor)
-        searchParamsCaptor.values.map(_("q")) must contain allOf ("PS4", "XBOX ONE", "SWITCH")
-        searchParamsCaptor.value("limit") must be ("200")
-        searchParamsCaptor.value("category_ids") must be ("139973")
-        searchParamsCaptor.value("filter") must startWith ("conditionIds:%7B1000|1500|2000|2500|3000|4000|5000%7D,deliveryCountry:GB,price:[0..100],priceCurrency:GBP,itemLocationCountry:GB,buyingOptions:%7BFIXED_PRICE%7D,itemStartDate:[")
-      }
+      itemsResponse.compile.toList.asserting(_ must be (List()))
+
+      verify(authClient, times(3)).accessToken
+      verify(browseClient, times(3)).search(eqTo(accessToken), searchParamsCaptor)
+      searchParamsCaptor.values.map(_("q")) must contain allOf ("PS4", "XBOX ONE", "SWITCH")
+      searchParamsCaptor.value("limit") must be ("200")
+      searchParamsCaptor.value("category_ids") must be ("139973")
+      searchParamsCaptor.value("filter") must startWith ("conditionIds:%7B1000|1500|2000|2500|3000|4000|5000%7D,deliveryCountry:GB,price:[0..100],priceCurrency:GBP,itemLocationCountry:GB,buyingOptions:%7BFIXED_PRICE%7D,itemStartDate:[")
     }
 
     "switch ebay account on autherror" in {
       val (authClient, browseClient) = mockEbayClients
       val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
-      when(authClient.accessToken).thenReturn(successResponse(accessToken))
-      when(browseClient.search(any, any)).thenReturn(errorResponse(AuthError("Too many requests")))
+      when(authClient.accessToken).thenReturn(IO.pure(accessToken))
+      when(browseClient.search(any, any)).thenReturn(IO.raiseError(AuthError("Too many requests")))
 
-      val response = videoGameSearchClient.getItemsListedInLastMinutes(15)
+      val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(response.value, timeout(10 seconds), interval(500 millis)) { items =>
-        items must be (Left(AuthError("Too many requests")))
-        verify(authClient, times(3)).accessToken
-        verify(authClient, times(1)).switchAccount
-        verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
-      }
+      itemsResponse.compile.toList.assertThrows[AuthError]
+
+      verify(authClient, times(3)).accessToken
+      verify(authClient, times(1)).switchAccount
+      verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
     }
 
     "return api client error on failure" in {
       val (authClient, browseClient) = mockEbayClients
       val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
-      doReturn(errorResponse(HttpError(400, "Bad request")))
-        .doReturn(successResponse(ebayItemSummaries("item-1", "item-2")))
-        .doReturn(successResponse(ebayItemSummaries("item-3", "item-4")))
+      doReturn(IO.raiseError(HttpError(400, "Bad request")))
+        .doReturn(IO.pure(ebayItemSummaries("item-1", "item-2")))
+        .doReturn(IO.pure(ebayItemSummaries("item-3", "item-4")))
         .when(browseClient).search(any, any)
 
-      val response = videoGameSearchClient.getItemsListedInLastMinutes(15)
+      val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(response.value, timeout(10 seconds), interval(500 millis)) { items =>
-        items must be (Left(HttpError(400, "Bad request")))
-        verify(authClient, times(3)).accessToken
-        verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
-        verify(browseClient, never).getItem(any, any)
-      }
+      itemsResponse.compile.toList.assertThrows[HttpError]
+
+      verify(authClient, times(3)).accessToken
+      verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
+      verify(browseClient, never).getItem(any, any)
     }
 
     "filter out items with bad feedback" in {
       val (authClient, browseClient) = mockEbayClients
       val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
-      doReturn(successResponse(Seq(ebayItemSummary("1", feedbackPercentage = 90), ebayItemSummary("1", feedbackScore = 4))))
-        .doReturn(successResponse(Seq()))
-        .doReturn(successResponse(Seq()))
+      doReturn(IO.pure(Seq(ebayItemSummary("1", feedbackPercentage = 90), ebayItemSummary("1", feedbackScore = 4))))
+        .doReturn(IO.pure(Seq()))
+        .doReturn(IO.pure(Seq()))
         .when(browseClient).search(any, any)
 
-      val response = videoGameSearchClient.getItemsListedInLastMinutes(15)
+      val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(response.value, timeout(10 seconds), interval(500 millis)) { items =>
-        items must be (Right(Seq()))
-        verify(authClient, times(3)).accessToken
-        verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
-        verify(browseClient, never).getItem(any, any)
-      }
+      itemsResponse.compile.toList.asserting(_ must be (List()))
+
+      verify(authClient, times(3)).accessToken
+      verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
+      verify(browseClient, never).getItem(any, any)
     }
 
     "filter out items with bad names" in {
       val (authClient, browseClient) = mockEbayClients
       val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
-      doReturn(successResponse(Seq(
+      doReturn(IO.pure(Seq(
         ebayItemSummary("1", name = "fallout 4 disc only"),
         ebayItemSummary("2", name = "fallout 76 blah blah blah blah blah"),
         ebayItemSummary("3", name = "call of duty digital code"),
@@ -115,60 +104,43 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
         ebayItemSummary("9", name = """Borderlands 3 “Teething St4kbot” SMGdmg/+5GRENADE/JWD (Xbox One)"""),
         ebayItemSummary("10", name = """Borderlands 3 Rain Firestorm Grenade Anointed. 25% Damage 6 Seconds (Xbox1)"""),
       )))
-        .doReturn(successResponse(Seq()))
-        .doReturn(successResponse(Seq()))
+        .doReturn(IO.pure(Seq()))
+        .doReturn(IO.pure(Seq()))
         .when(browseClient).search(any, any)
 
-      val response = videoGameSearchClient.getItemsListedInLastMinutes(15)
+      val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(response.value, timeout(10 seconds), interval(500 millis)) { items =>
-        items must be (Right(Seq()))
-        verify(authClient, times(3)).accessToken
-        verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
-        verify(browseClient, never).getItem(any, any)
-      }
+      itemsResponse.compile.toList.asserting(_ must be (List()))
     }
 
     "get item details for each item id" in {
       val (authClient, browseClient) = mockEbayClients
       val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
-      doReturn(successResponse(ebayItemSummaries("item-1")))
-        .doReturn(successResponse(ebayItemSummaries("item-2")))
-        .doReturn(successResponse(ebayItemSummaries("item-3")))
+      doReturn(IO.pure(ebayItemSummaries("item-1")))
+        .doReturn(IO.pure(ebayItemSummaries("item-2")))
+        .doReturn(IO.pure(ebayItemSummaries("item-3")))
         .when(browseClient).search(any, any)
 
-      doReturn(successResponse(None)).when(browseClient).getItem(accessToken, "item-1")
-      doReturn(successResponse(None)).when(browseClient).getItem(accessToken, "item-2")
-      doReturn(successResponse(Some(ebayItem))).when(browseClient).getItem(accessToken, "item-3")
+      doReturn(IO.pure(None)).when(browseClient).getItem(accessToken, "item-1")
+      doReturn(IO.pure(None)).when(browseClient).getItem(accessToken, "item-2")
+      doReturn(IO.pure(Some(ebayItem))).when(browseClient).getItem(accessToken, "item-3")
 
-      val response = videoGameSearchClient.getItemsListedInLastMinutes(15)
+      val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(response.value, timeout(10 seconds), interval(500 millis)) { items =>
-        val listings = items.getOrElse(throw new RuntimeException())
-        listings must have size (1)
-        listings.head._1 must be (GameDetails(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action")))
-        verify(authClient, times(6)).accessToken
-        verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
-        verify(browseClient, times(3)).getItem(eqTo(accessToken), any)
-        videoGameSearchClient
-      }
+      itemsResponse.compile.toList.asserting(_.map(_._1) must be (List(GameDetails(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action")))))
+
+      verify(authClient, times(6)).accessToken
+      verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
+      verify(browseClient, times(3)).getItem(eqTo(accessToken), any)
     }
   }
 
   def mockEbayClients: (EbayAuthClient, EbayBrowseClient) = {
     val authClient = mock[EbayAuthClient]
     val browseClient = mock[EbayBrowseClient]
-    when(authClient.accessToken).thenReturn(successResponse(accessToken))
+    when(authClient.accessToken).thenReturn(IO.pure(accessToken))
     (authClient, browseClient)
-  }
-
-  def successResponse[A](response: A): IOErrorOr[A] = {
-    EitherT.right[ApiClientError](Future(response))
-  }
-
-  def errorResponse[A](error: ApiClientError): IOErrorOr[A] = {
-    EitherT.left[A](Future(error))
   }
 
   def ebayItemSummaries(ids: String*): Seq[EbayItemSummary] = {
