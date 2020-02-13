@@ -1,23 +1,20 @@
 package services
 
-import cats.data.EitherT
-import cats.implicits._
+import cats.effect.IO
+import cats.effect.testing.scalatest.AsyncIOSpec
 import clients.cex.CexClient
 import clients.ebay.VideoGameEbayClient
 import clients.telegram.TelegramClient
-import domain.{ApiClientError, VideoGameBuilder}
-import domain.ApiClientError.IOErrorOr
+import domain.VideoGameBuilder
 import domain.ResellableItem.VideoGame
+import fs2.Stream
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.must.Matchers
 import repositories.VideoGameRepository
 
-import scala.concurrent.Future
-import scala.concurrent.duration._
-import scala.language.postfixOps
 
-class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures with MockitoSugar with ArgumentMatchersSugar {
+class VideoGameServiceSpec extends AnyWordSpec with Matchers with AsyncIOSpec with MockitoSugar with ArgumentMatchersSugar {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   val videoGame = VideoGameBuilder.build("super mario 3")
@@ -27,74 +24,65 @@ class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures 
     "return new items from ebay" in {
       val (repository, ebayClient, telegramClient, cexClient) = mockDependecies
       val searchResponse = List((videoGame.itemDetails, videoGame.listingDetails), (videoGame2.itemDetails, videoGame2.listingDetails))
-      when(ebayClient.getItemsListedInLastMinutes(anyInt)).thenReturn(successResponse(searchResponse))
-      when(cexClient.findResellPrice(videoGame.itemDetails)).thenReturn(successResponse(videoGame.resellPrice))
-      when(cexClient.findResellPrice(videoGame2.itemDetails)).thenReturn(successResponse(None))
+      when(ebayClient.getItemsListedInLastMinutes(anyInt)).thenReturn(Stream.evalSeq(IO.pure(searchResponse)))
+      when(cexClient.findResellPrice(videoGame.itemDetails)).thenReturn(IO.pure(videoGame.resellPrice))
+      when(cexClient.findResellPrice(videoGame2.itemDetails)).thenReturn(IO.pure(None))
 
       val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
 
-      val result = service.getLatestFromEbay(10)
+      val latestItemsResponse = service.getLatestFromEbay(10)
 
-      whenReady(result.value, timeout(10 seconds), interval(500 millis)) { items =>
-        items must be (Right(List(videoGame, videoGame2)))
+      latestItemsResponse.compile.toList.asserting(_ must be (List(videoGame, videoGame2)))
 
-        verify(ebayClient).getItemsListedInLastMinutes(10)
-        verify(cexClient).findResellPrice(videoGame.itemDetails)
-        verify(cexClient).findResellPrice(videoGame2.itemDetails)
-      }
+      verify(ebayClient).getItemsListedInLastMinutes(10)
+      verify(cexClient).findResellPrice(videoGame.itemDetails)
+      verify(cexClient).findResellPrice(videoGame2.itemDetails)
     }
 
     "check if item is new" in {
       val (repository, ebayClient, telegramClient, cexClient) = mockDependecies
-      when(repository.existsByUrl(any)).thenReturn(successResponse(true))
+      when(repository.existsByUrl(any)).thenReturn(IO.pure(true))
 
       val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
 
-      val result = service.isNew(videoGame)
+      val isNew = service.isNew(videoGame)
 
-      whenReady(result.value, timeout(10 seconds), interval(500 millis)) { isNew =>
-        isNew must be (Right(false))
-        verify(repository).existsByUrl(videoGame.listingDetails.url)
-      }
+      isNew.asserting(_ must be (false))
+      verify(repository).existsByUrl(videoGame.listingDetails.url)
     }
 
     "store item in db" in {
       val (repository, ebayClient, telegramClient, cexClient) = mockDependecies
-      when(repository.save(any)).thenReturn(successResponse(()))
+      when(repository.save(any)).thenReturn(IO.pure(()))
       val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
 
-      val result = service.save(videoGame)
+      val save = service.save(videoGame)
 
-      whenReady(result.value, timeout(10 seconds), interval(500 millis)) { value =>
-        value must be (Right(()))
-        verify(repository).save(videoGame)
-      }
+      save.asserting(_ must be (()))
+
+      verify(repository).save(videoGame)
     }
 
     "get latest items from db" in {
       val (repository, ebayClient, telegramClient, cexClient) = mockDependecies
-      when(repository.findAll(any)).thenReturn(successResponse(List(videoGame)))
+      when(repository.findAll(any)).thenReturn(IO.pure(List(videoGame)))
       val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
 
-      val result = service.getLatest(10)
+      val latestResult = service.getLatest(10)
 
-      whenReady(result.value, timeout(10 seconds), interval(500 millis)) { items =>
-        items must be (Right(List(videoGame)))
-        verify(repository).findAll(10)
-      }
+      latestResult.asserting(_ must be (List(videoGame)))
+      verify(repository).findAll(10)
     }
 
     "send notification message" in {
       val (repository, ebayClient, telegramClient, cexClient) = mockDependecies
-      when(telegramClient.sendMessageToMainChannel(any[VideoGame])).thenReturn(successResponse(()))
+      when(telegramClient.sendMessageToMainChannel(any[VideoGame])).thenReturn(IO.pure(()))
       val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
 
-      val result = service.sendNotification(videoGame)
+      val notificationResult = service.sendNotification(videoGame)
 
-      whenReady(result.value, timeout(10 seconds), interval(500 millis)) { value =>
-        value must be (Right(()))
-        verify(telegramClient).sendMessageToMainChannel(videoGame)
-      }
+      notificationResult.asserting(_ must be (()))
+      verify(telegramClient).sendMessageToMainChannel(videoGame)
     }
   }
 
@@ -104,9 +92,5 @@ class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures 
     val telegramClient = mock[TelegramClient]
     val cexClient = mock[CexClient]
     (repository, ebayClient, telegramClient, cexClient)
-  }
-
-  def successResponse[A](response: A): IOErrorOr[A] = {
-    EitherT.right[ApiClientError](Future(response))
   }
 }
