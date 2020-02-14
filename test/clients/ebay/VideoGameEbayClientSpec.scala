@@ -1,7 +1,6 @@
 package clients.ebay
 
 import cats.effect.IO
-import cats.effect.testing.scalatest.AsyncIOSpec
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary, ItemImage, ItemPrice, ItemProperty, ItemSeller, ItemShippingOption, ShippingCost}

@@ -1,8 +1,8 @@
 package clients.ebay.browse
 
-import cats.effect.testing.scalatest.AsyncIOSpec
 import domain.ApiClientError._
 import org.mockito.scalatest.MockitoSugar
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import play.api.http.MediaRange
 import play.api.mvc.{AnyContent, Request, Results}
@@ -14,7 +14,7 @@ import play.core.server.Server
 import play.filters.HttpFiltersComponents
 
 
-class EbayBrowseClientSpec extends PlaySpec with AsyncIOSpec with MockitoSugar {
+class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -32,7 +32,9 @@ class EbayBrowseClientSpec extends PlaySpec with AsyncIOSpec with MockitoSugar {
       withEbaySearchClient(200, "ebay/search-success-response.json") { ebaySearchClient =>
         val foundItems = ebaySearchClient.search(accessToken, searchQueryParams)
 
-        foundItems.asserting(_.map(_.itemId) must be(Seq("item-1", "item-2", "item-3", "item-4", "item-5")))
+        whenReady(foundItems.unsafeToFuture()) { items =>
+          items must be (Seq("item-1", "item-2", "item-3", "item-4", "item-5"))
+        }
       }
     }
 
@@ -40,7 +42,9 @@ class EbayBrowseClientSpec extends PlaySpec with AsyncIOSpec with MockitoSugar {
       withEbaySearchClient(200, "ebay/search-empty-response.json") { ebaySearchClient =>
         val foundItems = ebaySearchClient.search(accessToken, searchQueryParams)
 
-        foundItems.asserting(_.map(_.itemId) must be(Seq()))
+        whenReady(foundItems.unsafeToFuture()) { items =>
+          items must be (Seq())
+        }
       }
     }
 
@@ -48,15 +52,20 @@ class EbayBrowseClientSpec extends PlaySpec with AsyncIOSpec with MockitoSugar {
       withEbaySearchClient(403, "ebay/get-item-unauthorized-error-response.json") { ebaySearchClient =>
         val result = ebaySearchClient.search(accessToken, searchQueryParams)
 
-        result.assertThrows[AuthError]
+        whenReady(result.unsafeToFuture()) { error =>
+          error must be (AuthError("ebay account has expired: 403"))
+        }
       }
     }
 
     "make get request to obtain item details" in {
       withEbaySearchClient(200, "ebay/get-item-1-success-response.json") { ebaySearchClient =>
-        val item = ebaySearchClient.getItem(accessToken, itemId)
+        val itemResult = ebaySearchClient.getItem(accessToken, itemId)
 
-        item.asserting(_.map(_.itemId) must be (Some("v1|114059888671|0")))
+
+        whenReady(itemResult.unsafeToFuture()) { item =>
+          item.map(_.itemId) must be (Some("v1|114059888671|0"))
+        }
       }
     }
 
@@ -64,15 +73,19 @@ class EbayBrowseClientSpec extends PlaySpec with AsyncIOSpec with MockitoSugar {
       withEbaySearchClient(403, "ebay/get-item-unauthorized-error-response.json") { ebaySearchClient =>
         val result = ebaySearchClient.getItem(accessToken, itemId)
 
-        result.assertThrows[AuthError]
+        whenReady(result.unsafeToFuture()) { error =>
+          error must be (AuthError("ebay account has expired: 403"))
+        }
       }
     }
 
     "return None when 404" in {
       withEbaySearchClient(404, "ebay/get-item-notfound-error-response.json") { ebaySearchClient =>
-        val item = ebaySearchClient.getItem(accessToken, itemId)
+        val itemResult = ebaySearchClient.getItem(accessToken, itemId)
 
-        item.asserting(_ must be (None))
+        whenReady(itemResult.unsafeToFuture()) { items =>
+          items must be (None)
+        }
       }
     }
   }

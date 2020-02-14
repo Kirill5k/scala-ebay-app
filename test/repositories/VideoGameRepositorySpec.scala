@@ -2,7 +2,6 @@ package repositories
 
 import java.time.Instant
 
-import cats.effect.testing.scalatest.AsyncIOSpec
 import domain.ResellableItem.VideoGame
 import domain.VideoGameBuilder
 import org.scalatest.BeforeAndAfter
