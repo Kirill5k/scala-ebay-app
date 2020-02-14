@@ -1,8 +1,8 @@
 package clients.cex
 
-import cats.effect.testing.scalatest.AsyncIOSpec
 import domain.{ResellPrice, VideoGameBuilder}
 import domain.ApiClientError._
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import play.api.http.MediaRange
 import play.api.mvc.Results
@@ -14,7 +14,7 @@ import play.core.server.Server
 import play.filters.HttpFiltersComponents
 
 
-class CexClientSpec extends PlaySpec with AsyncIOSpec {
+class CexClientSpec extends PlaySpec with ScalaFutures {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   val cexConfig = Map("baseUri" -> "/cex", "searchPath" -> "/search")
@@ -23,15 +23,17 @@ class CexClientSpec extends PlaySpec with AsyncIOSpec {
   val queryString = "super mario 3 XBOX ONE"
 
   "CexClient" should {
-    val gameDetails = VideoGameBuilder.build("super mario 3").itemDetails
+    val gameDetails = VideoGameBuilder.build("super mario 3", platform = "XBOX ONE").itemDetails
 
     "find minimal resell price and store it in cache" in {
       withCexClient(200, "cex/search-success-response.json") { cexClient =>
         val result = cexClient.findResellPrice(gameDetails)
 
-        val expectedPrice = Some(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153)))
-        result.asserting(_ must be (expectedPrice))
-        cexClient.searchResultsCache.get(queryString) must be (expectedPrice)
+        whenReady(result.unsafeToFuture()) { price =>
+          val expectedPrice = Some(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153)))
+          price must be (expectedPrice)
+          cexClient.searchResultsCache.get(queryString) must be (expectedPrice)
+        }
       }
     }
 
@@ -39,8 +41,10 @@ class CexClientSpec extends PlaySpec with AsyncIOSpec {
       withCexClient(200, "cex/search-noresults-response.json") { cexClient =>
         val result = cexClient.findResellPrice(gameDetails)
 
-        result.asserting(_ must be (None))
-        cexClient.searchResultsCache.containsKey(queryString) must be (false)
+        whenReady(result.unsafeToFuture()) { price =>
+          price must be (None)
+          cexClient.searchResultsCache.containsKey(queryString) must be (false)
+        }
       }
     }
 
@@ -48,8 +52,10 @@ class CexClientSpec extends PlaySpec with AsyncIOSpec {
       withCexClient(200, "cex/search-noresults-response.json") { cexClient =>
         val result = cexClient.findResellPrice(gameDetails.copy(name = None))
 
-        result.asserting(_ must be (None))
-        cexClient.searchResultsCache.containsKey(queryString) must be (false)
+        whenReady(result.unsafeToFuture()) { price =>
+          price must be (None)
+          cexClient.searchResultsCache.isEmpty must be (true)
+        }
       }
     }
 
@@ -57,7 +63,10 @@ class CexClientSpec extends PlaySpec with AsyncIOSpec {
       withCexClient(200, "cex/search-unexpected-response.json") { cexClient =>
         val result = cexClient.findResellPrice(gameDetails)
 
-        result.assertThrows[JsonParsingError]
+        whenReady(result.unsafeToFuture()) { price =>
+          price must be (JsonParsingError("C[A]: DownField(boxes),DownField(data),DownField(response)"))
+          cexClient.searchResultsCache.isEmpty must be (true)
+        }
       }
     }
 
@@ -65,7 +74,10 @@ class CexClientSpec extends PlaySpec with AsyncIOSpec {
       withCexClient(400, "cex/search-error-response.json") { cexClient =>
         val result = cexClient.findResellPrice(gameDetails)
 
-        result.assertThrows[HttpError]
+        whenReady(result.unsafeToFuture()) { price =>
+          price must be (HttpError(400, "error sending request to cex: Bad Request"))
+          cexClient.searchResultsCache.isEmpty must be (true)
+        }
       }
     }
 
@@ -73,8 +85,10 @@ class CexClientSpec extends PlaySpec with AsyncIOSpec {
       withCexClient(429, "cex/search-error-response.json") { cexClient =>
         val result = cexClient.findResellPrice(gameDetails)
 
-        result.asserting(_ must be (None))
-        cexClient.searchResultsCache.containsKey(queryString) must be (false)
+        whenReady(result.unsafeToFuture()) { price =>
+          price must be (None)
+          cexClient.searchResultsCache.isEmpty must be (true)
+        }
       }
     }
   }
