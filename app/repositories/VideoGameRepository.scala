@@ -9,11 +9,9 @@ import repositories.ResellableItemEntity.VideoGameEntity
 
 import scala.concurrent.ExecutionContext
 
-class VideoGameRepository @Inject()(implicit ex: ExecutionContext, override val mongo: ReactiveMongoApi)
+class VideoGameRepository @Inject()(implicit override val ex: ExecutionContext, override val mongo: ReactiveMongoApi)
   extends ResellableItemRepository[VideoGame, VideoGameEntity] {
   import ResellableItemEntity._
-
-  override implicit protected val cs: ContextShift[IO] = IO.contextShift(ex)
 
   override implicit protected def entityMapper: ResellableItemEntityMapper[VideoGame, VideoGameEntity] =
     ResellableItemEntityMapper.videoGameEntityMapper

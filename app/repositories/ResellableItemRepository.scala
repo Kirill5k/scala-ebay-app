@@ -15,10 +15,12 @@ import reactivemongo.play.json._
 import scala.concurrent.{ExecutionContext, Future}
 
 trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
-  implicit protected def cs: ContextShift[IO]
+  implicit protected def ex: ExecutionContext
   implicit protected def mongo: ReactiveMongoApi
   implicit protected def entityMapper: ResellableItemEntityMapper[A, B]
   implicit protected def entityFormat: OFormat[B]
+
+  implicit private val cs: ContextShift[IO] = IO.contextShift(ex)
 
   protected def collectionName: String
   protected val itemCollection: Future[JSONCollection] = mongo.database.map(_.collection(collectionName))

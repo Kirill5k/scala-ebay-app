@@ -1,14 +1,13 @@
 package clients.ebay.mappers
 
-import java.net.URI
-
 import clients.ebay.browse.EbayBrowseResponse._
 import domain.ItemDetails._
 import domain.ListingDetails
 import org.scalatest._
+import org.scalatest.matchers.must.Matchers
 import clients.ebay.mappers.EbayItemMapper._
 
-class EbayItemMapperSpec extends WordSpec with MustMatchers {
+class EbayItemMapperSpec extends WordSpec with Matchers {
 
   val videoGameEbayItem = EbayItem(
     "item-1",

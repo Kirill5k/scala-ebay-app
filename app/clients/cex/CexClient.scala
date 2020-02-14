@@ -54,7 +54,7 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
           case status => HttpError(status, s"error sending request to cex: ${res.statusText}").asLeft
         }
       }
-      .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))))
+      .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
 
     ApiClientError.fromFutureErrorToIO(response)
   }
