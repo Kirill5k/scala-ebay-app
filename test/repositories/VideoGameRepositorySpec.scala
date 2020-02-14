@@ -11,6 +11,8 @@ import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with ScalaFutures {
   import scala.concurrent.ExecutionContext.Implicits.global
@@ -42,7 +44,7 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
       val videoGameRepository = inject[VideoGameRepository]
       val existsResult = videoGameRepository.existsByUrl("https://www.ebay.co.uk/itm/super-mario-3")
 
-      whenReady(existsResult.unsafeToFuture()) { exists =>
+      whenReady(existsResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { exists =>
         exists must be (true)
       }
     }
@@ -51,7 +53,7 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
       val videoGameRepository = inject[VideoGameRepository]
       val existsResult = videoGameRepository.existsByUrl("https://www.ebay.co.uk/itm/super-mario-4")
 
-      whenReady(existsResult.unsafeToFuture()) { exists =>
+      whenReady(existsResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { exists =>
         exists must be (false)
       }
     }
@@ -61,7 +63,7 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
       val findAllResult = videoGameRepository.findAll()
 
 
-      whenReady(findAllResult.unsafeToFuture()) { items =>
+      whenReady(findAllResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
         items must be (videoGames.reverse)
       }
     }
@@ -71,7 +73,7 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
       val findAllResult = videoGameRepository.findAllPostedAfter(Instant.now)
 
 
-      whenReady(findAllResult.unsafeToFuture()) { items =>
+      whenReady(findAllResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
         items must be (List(videoGames(2)))
       }
     }
@@ -80,7 +82,7 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
       val videoGameRepository = inject[VideoGameRepository]
       val saveResult = videoGameRepository.save(VideoGameBuilder.build("Witcher 3"))
 
-      whenReady(saveResult.unsafeToFuture()) { saved =>
+      whenReady(saveResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { saved =>
         saved must be (())
       }
     }

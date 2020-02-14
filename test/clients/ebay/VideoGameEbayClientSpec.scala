@@ -11,6 +11,8 @@ import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSugar with ArgumentMatchersSugar {
   val accessToken = "access-token"
@@ -22,11 +24,11 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
       val (authClient, browseClient) = mockEbayClients
       val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
-      when(browseClient.search(any, any)).thenReturn(IO.pure(Seq()))
+      when(browseClient.search(any, any)).thenReturn(IO.pure(List()))
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(itemsResponse.compile.toList.unsafeToFuture()) { items =>
+      whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
         items must be (List())
         verify(authClient, times(3)).accessToken
         verify(browseClient, times(3)).search(eqTo(accessToken), searchParamsCaptor)
@@ -42,16 +44,22 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
       val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
       when(authClient.accessToken).thenReturn(IO.pure(accessToken))
-      when(browseClient.search(any, any)).thenReturn(IO.raiseError(AuthError("Too many requests")))
+      when(browseClient.getItem(any, any)).thenReturn(IO.pure(None))
+
+      doReturn(IO.pure(List(ebayItemSummary("1"))))
+        .doReturn(IO.pure(List()))
+        .doReturn(IO.raiseError(AuthError("Too many requests")))
+        .when(browseClient).search(any, any)
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(itemsResponse.compile.toList.unsafeToFuture()) { error =>
-        error must be (AuthError("Too many requests"))
+      whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { error =>
+        error must be (List())
 
-        verify(authClient, times(3)).accessToken
+        verify(authClient, times(4)).accessToken
         verify(authClient, times(1)).switchAccount
         verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
+        verify(browseClient).getItem(accessToken, "1")
       }
     }
 
@@ -66,11 +74,12 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(itemsResponse.compile.toList.unsafeToFuture()) { error =>
-        error must be (HttpError(400, "Bad request"))
+      whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { error =>
+        error must be (List())
 
-        verify(authClient, times(3)).accessToken
-        verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
+        verify(authClient, times(1)).accessToken
+        verify(authClient, never).switchAccount
+        verify(browseClient, times(1)).search(eqTo(accessToken), anyMap[String, String])
         verify(browseClient, never).getItem(any, any)
       }
     }
@@ -79,14 +88,14 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
       val (authClient, browseClient) = mockEbayClients
       val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
-      doReturn(IO.pure(Seq(ebayItemSummary("1", feedbackPercentage = 90), ebayItemSummary("1", feedbackScore = 4))))
-        .doReturn(IO.pure(Seq()))
-        .doReturn(IO.pure(Seq()))
+      doReturn(IO.pure(List(ebayItemSummary("1", feedbackPercentage = 90), ebayItemSummary("1", feedbackScore = 4))))
+        .doReturn(IO.pure(List()))
+        .doReturn(IO.pure(List()))
         .when(browseClient).search(any, any)
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(itemsResponse.compile.toList.unsafeToFuture()) { items =>
+      whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
         items must be (List())
 
         verify(authClient, times(3)).accessToken
@@ -99,7 +108,7 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
       val (authClient, browseClient) = mockEbayClients
       val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
-      doReturn(IO.pure(Seq(
+      doReturn(IO.pure(List(
         ebayItemSummary("1", name = "fallout 4 disc only"),
         ebayItemSummary("2", name = "fallout 76 blah blah blah blah blah"),
         ebayItemSummary("3", name = "call of duty digital code"),
@@ -111,13 +120,13 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
         ebayItemSummary("9", name = """Borderlands 3 “Teething St4kbot” SMGdmg/+5GRENADE/JWD (Xbox One)"""),
         ebayItemSummary("10", name = """Borderlands 3 Rain Firestorm Grenade Anointed. 25% Damage 6 Seconds (Xbox1)"""),
       )))
-        .doReturn(IO.pure(Seq()))
-        .doReturn(IO.pure(Seq()))
+        .doReturn(IO.pure(List()))
+        .doReturn(IO.pure(List()))
         .when(browseClient).search(any, any)
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(itemsResponse.compile.toList.unsafeToFuture()) { items =>
+      whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
         items must be (List())
       }
     }
@@ -137,7 +146,7 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(itemsResponse.compile.toList.unsafeToFuture()) { items =>
+      whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
         items.map(_._1) must be (List(GameDetails(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action"))))
 
         verify(authClient, times(6)).accessToken

@@ -24,10 +24,12 @@ private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSCl
     .addHttpHeaders(HeaderNames.ACCEPT -> "application/json")
     .addHttpHeaders(HeaderNames.CONTENT_TYPE -> "application/x-www-form-urlencoded")
 
-  private val authRequestBody = Map("scope" -> Seq("https://api.ebay.com/oauth/api_scope"), "grant_type" -> Seq("client_credentials"))
+  private val authRequestBody = Map("scope" -> List("https://api.ebay.com/oauth/api_scope"), "grant_type" -> List("client_credentials"))
+
+  private val expiredToken: IO[Left[AuthError, Nothing]] = IO.pure(Left(AuthError("authentication with ebay is required")))
 
   private[auth] var currentAccountIndex: Int = 0
-  private[auth] var authToken: IO[Either[ApiClientError, EbayAuthToken]] = IO.pure(Left(AuthError("authentication with ebay is required")))
+  private[auth] var authToken: IO[Either[ApiClientError, EbayAuthToken]] = expiredToken
 
   def accessToken(): IO[String] = {
     authToken = for {
@@ -39,6 +41,7 @@ private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSCl
 
   def switchAccount(): Unit = {
     currentAccountIndex = if (currentAccountIndex + 1 < ebayConfig.credentials.length) currentAccountIndex + 1 else 0
+    authToken = expiredToken
   }
 
   private def authenticate(): Future[Either[ApiClientError, EbayAuthToken]] = {

@@ -33,7 +33,7 @@ private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WS
       .map { res =>
         res.status match {
           case status if isSuccessful(status) =>
-            res.body[Either[ApiClientError, EbayBrowseResult]].map(_.itemSummaries.getOrElse(Seq()))
+            res.body[Either[ApiClientError, EbayBrowseResult]].map(_.itemSummaries.getOrElse(List()))
           case status =>
             res.body[Either[ApiClientError, EbayErrorResponse]].flatMap(toApiClientError(status))
         }

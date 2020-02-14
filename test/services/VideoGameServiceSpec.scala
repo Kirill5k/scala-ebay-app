@@ -12,6 +12,8 @@ import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatest.concurrent.ScalaFutures
 import repositories.VideoGameRepository
 
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures with MockitoSugar with ArgumentMatchersSugar {
   import scala.concurrent.ExecutionContext.Implicits.global
@@ -31,7 +33,7 @@ class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures 
 
       val latestItemsResponse = service.getLatestFromEbay(10)
 
-      whenReady(latestItemsResponse.compile.toList.unsafeToFuture()) { items =>
+      whenReady(latestItemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
         items must be (List(videoGame, videoGame2))
         verify(ebayClient).getItemsListedInLastMinutes(10)
         verify(cexClient).findResellPrice(videoGame.itemDetails)
@@ -47,7 +49,7 @@ class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures 
 
       val isNewResult = service.isNew(videoGame)
 
-      whenReady(isNewResult.unsafeToFuture()) { isNew =>
+      whenReady(isNewResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { isNew =>
         isNew must be (false)
         verify(repository).existsByUrl(videoGame.listingDetails.url)
       }
@@ -60,7 +62,7 @@ class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures 
 
       val saveResult = service.save(videoGame)
 
-      whenReady(saveResult.unsafeToFuture()) { saved =>
+      whenReady(saveResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { saved =>
         saved must be (())
         verify(repository).save(videoGame)
       }
@@ -73,7 +75,7 @@ class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures 
 
       val latestResult = service.getLatest(10)
 
-      whenReady(latestResult.unsafeToFuture()) { latest =>
+      whenReady(latestResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { latest =>
         latest must be (List(videoGame))
         verify(repository).findAll(10)
       }
@@ -86,7 +88,7 @@ class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures 
 
       val notificationResult = service.sendNotification(videoGame)
 
-      whenReady(notificationResult.unsafeToFuture()) { sent =>
+      whenReady(notificationResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { sent =>
         sent must be (())
         verify(telegramClient).sendMessageToMainChannel(videoGame)
       }
