@@ -1,9 +1,9 @@
 package clients.ebay.auth
 
 import cats.effect.IO
-import cats.effect.testing.scalatest.AsyncIOSpec
 import domain.ApiClientError._
 import org.mockito.scalatest.MockitoSugar
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import play.api.http.MediaRange
 import play.api.libs.ws.{WSClient, WSRequest}
@@ -17,7 +17,7 @@ import play.filters.HttpFiltersComponents
 
 import scala.collection.immutable.ListMap
 
-class EbayAuthClientSpec extends PlaySpec with AsyncIOSpec with MockitoSugar {
+class EbayAuthClientSpec extends PlaySpec with ScalaFutures with MockitoSugar {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   val ebayCredentials = Seq(Map("clientId" -> "id-1", "clientSecret" -> "secret-1"), Map("clientId" -> "id-2", "clientSecret" -> "secret-2"))
@@ -30,7 +30,9 @@ class EbayAuthClientSpec extends PlaySpec with AsyncIOSpec with MockitoSugar {
       withEbayAuthClient(200, "ebay/auth-success-response.json", "Basic aWQtMTpzZWNyZXQtMQ==") { ebayAuthClient =>
         val accessToken = ebayAuthClient.accessToken()
 
-        accessToken.asserting(_ must be ("KTeE7V9J5VTzdfKpn/nnrkj4+nbtl/fDD92Vctbbalh37c1X3fvEt7u7/uLZ93emB1uu/i5eOz3o8MfJuV7288dzu48BEAAA=="))
+        whenReady(accessToken.unsafeToFuture()) { token =>
+          token must be ("KTeE7V9J5VTzdfKpn/nnrkj4+nbtl/fDD92Vctbbalh37c1X3fvEt7u7/uLZ93emB1uu/i5eOz3o8MfJuV7288dzu48BEAAA==")
+        }
       }
     }
 
@@ -41,10 +43,11 @@ class EbayAuthClientSpec extends PlaySpec with AsyncIOSpec with MockitoSugar {
 
       val accessToken = ebayAuthClient.accessToken()
 
-      accessToken.asserting(_ must be ("test-token"))
-
-      verify(wsRequestMock, times(2)).addHttpHeaders(any)
-      verifyNoMoreInteractions(wsRequestMock)
+      whenReady(accessToken.unsafeToFuture()) { token =>
+        token must be ("test-token")
+        verify(wsRequestMock, times(2)).addHttpHeaders(any)
+        verifyNoMoreInteractions(wsRequestMock)
+      }
     }
 
     "authenticate with different account when switched" in {
@@ -52,8 +55,10 @@ class EbayAuthClientSpec extends PlaySpec with AsyncIOSpec with MockitoSugar {
         ebayAuthClient.switchAccount()
         val accessToken = ebayAuthClient.accessToken()
 
-        accessToken.asserting(_ must be ("KTeE7V9J5VTzdfKpn/nnrkj4+nbtl/fDD92Vctbbalh37c1X3fvEt7u7/uLZ93emB1uu/i5eOz3o8MfJuV7288dzu48BEAAA=="))
-        ebayAuthClient.currentAccountIndex must be (1)
+        whenReady(accessToken.unsafeToFuture()) { token =>
+          token must be ("KTeE7V9J5VTzdfKpn/nnrkj4+nbtl/fDD92Vctbbalh37c1X3fvEt7u7/uLZ93emB1uu/i5eOz3o8MfJuV7288dzu48BEAAA==")
+          ebayAuthClient.currentAccountIndex must be (1)
+        }
       }
     }
 
@@ -62,7 +67,9 @@ class EbayAuthClientSpec extends PlaySpec with AsyncIOSpec with MockitoSugar {
         ebayAuthClient.authToken = IO.pure(Right(EbayAuthToken("test-token", 0)))
         val accessToken = ebayAuthClient.accessToken()
 
-        accessToken.asserting(_ must be ("KTeE7V9J5VTzdfKpn/nnrkj4+nbtl/fDD92Vctbbalh37c1X3fvEt7u7/uLZ93emB1uu/i5eOz3o8MfJuV7288dzu48BEAAA=="))
+        whenReady(accessToken.unsafeToFuture()) { token =>
+          token must be ("KTeE7V9J5VTzdfKpn/nnrkj4+nbtl/fDD92Vctbbalh37c1X3fvEt7u7/uLZ93emB1uu/i5eOz3o8MfJuV7288dzu48BEAAA==")
+        }
       }
     }
 
@@ -70,7 +77,9 @@ class EbayAuthClientSpec extends PlaySpec with AsyncIOSpec with MockitoSugar {
       withEbayAuthClient(400, "ebay/auth-error-response.json", "Basic aWQtMTpzZWNyZXQtMQ==") { ebayAuthClient =>
         val accessToken = ebayAuthClient.accessToken()
 
-        accessToken.assertThrows[HttpError]
+        whenReady(accessToken.unsafeToFuture()) { token =>
+          token must be (HttpError(400, "error authenticating with ebay: unsupported_grant_type-grant type in request is not supported by the authorization server"))
+        }
       }
     }
   }
