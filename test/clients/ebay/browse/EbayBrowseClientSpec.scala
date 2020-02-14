@@ -13,6 +13,8 @@ import play.api.{BuiltInComponentsFromContext, Configuration}
 import play.core.server.Server
 import play.filters.HttpFiltersComponents
 
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar {
 
@@ -32,8 +34,8 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
       withEbaySearchClient(200, "ebay/search-success-response.json") { ebaySearchClient =>
         val foundItems = ebaySearchClient.search(accessToken, searchQueryParams)
 
-        whenReady(foundItems.unsafeToFuture()) { items =>
-          items must be (Seq("item-1", "item-2", "item-3", "item-4", "item-5"))
+        whenReady(foundItems.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
+          items.map(_.itemId) must be (Seq("item-1", "item-2", "item-3", "item-4", "item-5"))
         }
       }
     }
@@ -42,7 +44,7 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
       withEbaySearchClient(200, "ebay/search-empty-response.json") { ebaySearchClient =>
         val foundItems = ebaySearchClient.search(accessToken, searchQueryParams)
 
-        whenReady(foundItems.unsafeToFuture()) { items =>
+        whenReady(foundItems.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
           items must be (Seq())
         }
       }
@@ -52,8 +54,8 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
       withEbaySearchClient(403, "ebay/get-item-unauthorized-error-response.json") { ebaySearchClient =>
         val result = ebaySearchClient.search(accessToken, searchQueryParams)
 
-        whenReady(result.unsafeToFuture()) { error =>
-          error must be (AuthError("ebay account has expired: 403"))
+        whenReady(result.attempt.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { error =>
+          error must be (Left(AuthError("ebay account has expired: 403")))
         }
       }
     }
@@ -63,7 +65,7 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
         val itemResult = ebaySearchClient.getItem(accessToken, itemId)
 
 
-        whenReady(itemResult.unsafeToFuture()) { item =>
+        whenReady(itemResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { item =>
           item.map(_.itemId) must be (Some("v1|114059888671|0"))
         }
       }
@@ -73,8 +75,8 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
       withEbaySearchClient(403, "ebay/get-item-unauthorized-error-response.json") { ebaySearchClient =>
         val result = ebaySearchClient.getItem(accessToken, itemId)
 
-        whenReady(result.unsafeToFuture()) { error =>
-          error must be (AuthError("ebay account has expired: 403"))
+        whenReady(result.attempt.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { error =>
+          error must be (Left(AuthError("ebay account has expired: 403")))
         }
       }
     }
@@ -83,7 +85,7 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
       withEbaySearchClient(404, "ebay/get-item-notfound-error-response.json") { ebaySearchClient =>
         val itemResult = ebaySearchClient.getItem(accessToken, itemId)
 
-        whenReady(itemResult.unsafeToFuture()) { items =>
+        whenReady(itemResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
           items must be (None)
         }
       }

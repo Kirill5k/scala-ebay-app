@@ -17,6 +17,9 @@ import play.filters.HttpFiltersComponents
 
 import scala.collection.immutable.ListMap
 
+import scala.concurrent.duration._
+import scala.language.postfixOps
+
 class EbayAuthClientSpec extends PlaySpec with ScalaFutures with MockitoSugar {
   import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -30,7 +33,7 @@ class EbayAuthClientSpec extends PlaySpec with ScalaFutures with MockitoSugar {
       withEbayAuthClient(200, "ebay/auth-success-response.json", "Basic aWQtMTpzZWNyZXQtMQ==") { ebayAuthClient =>
         val accessToken = ebayAuthClient.accessToken()
 
-        whenReady(accessToken.unsafeToFuture()) { token =>
+        whenReady(accessToken.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { token =>
           token must be ("KTeE7V9J5VTzdfKpn/nnrkj4+nbtl/fDD92Vctbbalh37c1X3fvEt7u7/uLZ93emB1uu/i5eOz3o8MfJuV7288dzu48BEAAA==")
         }
       }
@@ -43,7 +46,7 @@ class EbayAuthClientSpec extends PlaySpec with ScalaFutures with MockitoSugar {
 
       val accessToken = ebayAuthClient.accessToken()
 
-      whenReady(accessToken.unsafeToFuture()) { token =>
+      whenReady(accessToken.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { token =>
         token must be ("test-token")
         verify(wsRequestMock, times(2)).addHttpHeaders(any)
         verifyNoMoreInteractions(wsRequestMock)
@@ -55,7 +58,7 @@ class EbayAuthClientSpec extends PlaySpec with ScalaFutures with MockitoSugar {
         ebayAuthClient.switchAccount()
         val accessToken = ebayAuthClient.accessToken()
 
-        whenReady(accessToken.unsafeToFuture()) { token =>
+        whenReady(accessToken.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { token =>
           token must be ("KTeE7V9J5VTzdfKpn/nnrkj4+nbtl/fDD92Vctbbalh37c1X3fvEt7u7/uLZ93emB1uu/i5eOz3o8MfJuV7288dzu48BEAAA==")
           ebayAuthClient.currentAccountIndex must be (1)
         }
@@ -67,7 +70,7 @@ class EbayAuthClientSpec extends PlaySpec with ScalaFutures with MockitoSugar {
         ebayAuthClient.authToken = IO.pure(Right(EbayAuthToken("test-token", 0)))
         val accessToken = ebayAuthClient.accessToken()
 
-        whenReady(accessToken.unsafeToFuture()) { token =>
+        whenReady(accessToken.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { token =>
           token must be ("KTeE7V9J5VTzdfKpn/nnrkj4+nbtl/fDD92Vctbbalh37c1X3fvEt7u7/uLZ93emB1uu/i5eOz3o8MfJuV7288dzu48BEAAA==")
         }
       }
@@ -77,8 +80,8 @@ class EbayAuthClientSpec extends PlaySpec with ScalaFutures with MockitoSugar {
       withEbayAuthClient(400, "ebay/auth-error-response.json", "Basic aWQtMTpzZWNyZXQtMQ==") { ebayAuthClient =>
         val accessToken = ebayAuthClient.accessToken()
 
-        whenReady(accessToken.unsafeToFuture()) { token =>
-          token must be (HttpError(400, "error authenticating with ebay: unsupported_grant_type-grant type in request is not supported by the authorization server"))
+        whenReady(accessToken.attempt.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { token =>
+          token must be (Left(HttpError(400, "error authenticating with ebay: unsupported_grant_type-grant type in request is not supported by the authorization server")))
         }
       }
     }

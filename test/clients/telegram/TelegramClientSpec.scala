@@ -9,6 +9,8 @@ import play.api.test.WsTestClient
 import play.api.Configuration
 import play.core.server.Server
 
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 class TelegramClientSpec extends PlaySpec with ScalaFutures {
   import scala.concurrent.ExecutionContext.Implicits.global
@@ -24,7 +26,7 @@ class TelegramClientSpec extends PlaySpec with ScalaFutures {
       withTelegramClient(200, "m1") { telegramClient =>
         val result = telegramClient.sendMessageToMainChannel(message)
 
-        whenReady(result.unsafeToFuture()) { sent =>
+        whenReady(result.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { sent =>
           sent must be (())
         }
       }
@@ -34,7 +36,7 @@ class TelegramClientSpec extends PlaySpec with ScalaFutures {
       withTelegramClient(200, "m1") { telegramClient =>
         val result = telegramClient.sendMessage("m1", message)
 
-        whenReady(result.unsafeToFuture()) { sent =>
+        whenReady(result.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { sent =>
           sent must be (())
         }
       }
@@ -44,8 +46,8 @@ class TelegramClientSpec extends PlaySpec with ScalaFutures {
       withTelegramClient(400, "m1") { telegramClient =>
         val result = telegramClient.sendMessage("m1", message)
 
-        whenReady(result.unsafeToFuture()) { sent =>
-          sent must be (HttpError(400, "error sending message to telegram channel m1: 400"))
+        whenReady(result.attempt.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { sent =>
+          sent must be (Left(HttpError(400, "error sending message to telegram channel m1: 400")))
         }
       }
     }
