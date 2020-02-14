@@ -9,7 +9,7 @@ private[mappers] object GameDetailsMapper {
   private val TITLE_WORDS_FILTER = List(
     "remastered", "playstation 4", "Nintendo switch", " - ", "sony", "ps4", "blu-ray", "Mirror", "New and sealed",
     "Brand new", "Factory Sealed", "Sealed", "Game new", ",", "Microsoft", "Free post", "Used", "xbox one", "Uk pal", "Game code",
-    "Hits", "Tom clancys", "Great Condition", "Videogame fasting", "switch",
+    "Hits", "Tom clancys", "Great Condition", "Videogame fasting", "switch", "new game",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 
@@ -23,7 +23,8 @@ private[mappers] object GameDetailsMapper {
     "SONY PLAYSTATION 2" -> "PS2",
     "PLAYSTATION 2" -> "PS2",
     "NINTENDO SWITCH" -> "SWITCH",
-    "MICROSOFT XBOX ONE" -> "XBOX ONE"
+    "MICROSOFT XBOX ONE" -> "XBOX ONE",
+    "MICROSOFT XBOX 360" -> "XBOX 360",
   )
 
   def from(listingDetails: ListingDetails): GameDetails = {

@@ -1,21 +1,18 @@
 package repositories
 
-import java.net.URI
 import java.time.Instant
 
+import cats.effect.testing.scalatest.AsyncIOSpec
 import domain.ResellableItem.VideoGame
 import domain.VideoGameBuilder
-import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.BeforeAndAfter
 import reactivemongo.play.json.collection.JSONCollection
 import play.api.test.Helpers._
 
 import scala.concurrent.Future
-import scala.concurrent.duration._
-import scala.language.postfixOps
 
 
-class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with ScalaFutures {
+class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with AsyncIOSpec {
   import scala.concurrent.ExecutionContext.Implicits.global
   import ResellableItemEntity._
   import ResellableItemEntityMapper._
@@ -43,47 +40,37 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
 
     "check if video game already exists by url" in {
       val videoGameRepository = inject[VideoGameRepository]
-      val futureResult = videoGameRepository.existsByUrl("https://www.ebay.co.uk/itm/super-mario-3")
+      val existsResult = videoGameRepository.existsByUrl("https://www.ebay.co.uk/itm/super-mario-3")
 
-      whenReady(futureResult.value, timeout(10 seconds), interval(500 millis)) { result =>
-        result must be (Right(true))
-      }
+      existsResult.asserting(_ must be (true))
     }
 
     "check if video game doesnt exist by url" in {
       val videoGameRepository = inject[VideoGameRepository]
-      val futureResult = videoGameRepository.existsByUrl("https://www.ebay.co.uk/itm/super-mario-4")
+      val existsResult = videoGameRepository.existsByUrl("https://www.ebay.co.uk/itm/super-mario-4")
 
-      whenReady(futureResult.value, timeout(10 seconds), interval(500 millis)) { result =>
-        result must be (Right(false))
-      }
+      existsResult.asserting(_ must be (false))
     }
 
     "find all video games" in {
       val videoGameRepository = inject[VideoGameRepository]
-      val futureResult = videoGameRepository.findAll()
+      val findAllResult = videoGameRepository.findAll()
 
-      whenReady(futureResult.value, timeout(10 seconds), interval(500 millis)) { result =>
-        result must be (Right(videoGames.reverse))
-      }
+      findAllResult.asserting(_ must be (videoGames.reverse))
     }
 
     "find all video games posted after provided date" in {
       val videoGameRepository = inject[VideoGameRepository]
-      val futureResult = videoGameRepository.findAllPostedAfter(Instant.now)
+      val findAllResult = videoGameRepository.findAllPostedAfter(Instant.now)
 
-      whenReady(futureResult.value, timeout(10 seconds), interval(500 millis)) { result =>
-        result must be (Right(List(videoGames(2))))
-      }
+      findAllResult.asserting(_ must be (List(videoGames(2))))
     }
 
     "save video game in db" in {
       val videoGameRepository = inject[VideoGameRepository]
-      val futureResult = videoGameRepository.save(VideoGameBuilder.build("Witcher 3"))
+      val saveResult = videoGameRepository.save(VideoGameBuilder.build("Witcher 3"))
 
-      whenReady(futureResult.value, timeout(10 seconds), interval(500 millis)) { result =>
-        result must be (Right(()))
-      }
+      saveResult.asserting(_ must be (()))
     }
   }
 }
