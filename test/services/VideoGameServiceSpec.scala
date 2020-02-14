@@ -1,7 +1,6 @@
 package services
 
 import cats.effect.IO
-import cats.effect.testing.scalatest.AsyncIOSpec
 import clients.cex.CexClient
 import clients.ebay.VideoGameEbayClient
 import clients.telegram.TelegramClient
@@ -9,12 +8,13 @@ import domain.VideoGameBuilder
 import domain.ResellableItem.VideoGame
 import fs2.Stream
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.must.Matchers
 import repositories.VideoGameRepository
 
 
-class VideoGameServiceSpec extends AnyWordSpec with Matchers with AsyncIOSpec with MockitoSugar with ArgumentMatchersSugar {
+class VideoGameServiceSpec extends AnyWordSpec with Matchers with ScalaFutures with MockitoSugar with ArgumentMatchersSugar {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   val videoGame = VideoGameBuilder.build("super mario 3")
@@ -32,11 +32,12 @@ class VideoGameServiceSpec extends AnyWordSpec with Matchers with AsyncIOSpec wi
 
       val latestItemsResponse = service.getLatestFromEbay(10)
 
-      latestItemsResponse.compile.toList.asserting(_ must be (List(videoGame, videoGame2)))
-
-      verify(ebayClient).getItemsListedInLastMinutes(10)
-      verify(cexClient).findResellPrice(videoGame.itemDetails)
-      verify(cexClient).findResellPrice(videoGame2.itemDetails)
+      whenReady(latestItemsResponse.compile.toList.unsafeToFuture()) { items =>
+        items must be (List(videoGame, videoGame2))
+        verify(ebayClient).getItemsListedInLastMinutes(10)
+        verify(cexClient).findResellPrice(videoGame.itemDetails)
+        verify(cexClient).findResellPrice(videoGame2.itemDetails)
+      }
     }
 
     "check if item is new" in {
@@ -45,10 +46,12 @@ class VideoGameServiceSpec extends AnyWordSpec with Matchers with AsyncIOSpec wi
 
       val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
 
-      val isNew = service.isNew(videoGame)
+      val isNewResult = service.isNew(videoGame)
 
-      isNew.asserting(_ must be (false))
-      verify(repository).existsByUrl(videoGame.listingDetails.url)
+      whenReady(isNewResult.unsafeToFuture()) { isNew =>
+        isNew must be (false)
+        verify(repository).existsByUrl(videoGame.listingDetails.url)
+      }
     }
 
     "store item in db" in {
@@ -56,11 +59,12 @@ class VideoGameServiceSpec extends AnyWordSpec with Matchers with AsyncIOSpec wi
       when(repository.save(any)).thenReturn(IO.pure(()))
       val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
 
-      val save = service.save(videoGame)
+      val saveResult = service.save(videoGame)
 
-      save.asserting(_ must be (()))
-
-      verify(repository).save(videoGame)
+      whenReady(saveResult.unsafeToFuture()) { saved =>
+        saved must be (())
+        verify(repository).save(videoGame)
+      }
     }
 
     "get latest items from db" in {
@@ -70,8 +74,10 @@ class VideoGameServiceSpec extends AnyWordSpec with Matchers with AsyncIOSpec wi
 
       val latestResult = service.getLatest(10)
 
-      latestResult.asserting(_ must be (List(videoGame)))
-      verify(repository).findAll(10)
+      whenReady(latestResult.unsafeToFuture()) { latest =>
+        latest must be (List(videoGame))
+        verify(repository).findAll(10)
+      }
     }
 
     "send notification message" in {
@@ -81,8 +87,10 @@ class VideoGameServiceSpec extends AnyWordSpec with Matchers with AsyncIOSpec wi
 
       val notificationResult = service.sendNotification(videoGame)
 
-      notificationResult.asserting(_ must be (()))
-      verify(telegramClient).sendMessageToMainChannel(videoGame)
+      whenReady(notificationResult.unsafeToFuture()) { sent =>
+        sent must be (())
+        verify(telegramClient).sendMessageToMainChannel(videoGame)
+      }
     }
   }
 
