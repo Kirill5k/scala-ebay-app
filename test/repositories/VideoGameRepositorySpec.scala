@@ -5,13 +5,14 @@ import java.time.Instant
 import domain.ResellableItem.VideoGame
 import domain.VideoGameBuilder
 import org.scalatest.BeforeAndAfter
+import org.scalatest.concurrent.ScalaFutures
 import reactivemongo.play.json.collection.JSONCollection
 import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
 
-class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with AsyncIOSpec {
+class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with ScalaFutures {
   import scala.concurrent.ExecutionContext.Implicits.global
   import ResellableItemEntity._
   import ResellableItemEntityMapper._
@@ -41,35 +42,47 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
       val videoGameRepository = inject[VideoGameRepository]
       val existsResult = videoGameRepository.existsByUrl("https://www.ebay.co.uk/itm/super-mario-3")
 
-      existsResult.asserting(_ must be (true))
+      whenReady(existsResult.unsafeToFuture()) { exists =>
+        exists must be (true)
+      }
     }
 
     "check if video game doesnt exist by url" in {
       val videoGameRepository = inject[VideoGameRepository]
       val existsResult = videoGameRepository.existsByUrl("https://www.ebay.co.uk/itm/super-mario-4")
 
-      existsResult.asserting(_ must be (false))
+      whenReady(existsResult.unsafeToFuture()) { exists =>
+        exists must be (false)
+      }
     }
 
     "find all video games" in {
       val videoGameRepository = inject[VideoGameRepository]
       val findAllResult = videoGameRepository.findAll()
 
-      findAllResult.asserting(_ must be (videoGames.reverse))
+
+      whenReady(findAllResult.unsafeToFuture()) { items =>
+        items must be (videoGames.reverse)
+      }
     }
 
     "find all video games posted after provided date" in {
       val videoGameRepository = inject[VideoGameRepository]
       val findAllResult = videoGameRepository.findAllPostedAfter(Instant.now)
 
-      findAllResult.asserting(_ must be (List(videoGames(2))))
+
+      whenReady(findAllResult.unsafeToFuture()) { items =>
+        items must be (List(videoGames(2)))
+      }
     }
 
     "save video game in db" in {
       val videoGameRepository = inject[VideoGameRepository]
       val saveResult = videoGameRepository.save(VideoGameBuilder.build("Witcher 3"))
 
-      saveResult.asserting(_ must be (()))
+      whenReady(saveResult.unsafeToFuture()) { saved =>
+        saved must be (())
+      }
     }
   }
 }
