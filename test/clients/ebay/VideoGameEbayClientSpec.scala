@@ -8,10 +8,11 @@ import domain.ApiClientError.{AuthError, HttpError}
 import domain.ItemDetails.GameDetails
 import org.mockito.captor.ArgCaptor
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 
 
-class VideoGameEbayClientSpec extends PlaySpec with AsyncIOSpec with MockitoSugar with ArgumentMatchersSugar {
+class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSugar with ArgumentMatchersSugar {
   val accessToken = "access-token"
 
   "VideoGameSearchClient" should {
@@ -25,14 +26,15 @@ class VideoGameEbayClientSpec extends PlaySpec with AsyncIOSpec with MockitoSuga
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      itemsResponse.compile.toList.asserting(_ must be (List()))
-
-      verify(authClient, times(3)).accessToken
-      verify(browseClient, times(3)).search(eqTo(accessToken), searchParamsCaptor)
-      searchParamsCaptor.values.map(_("q")) must contain allOf ("PS4", "XBOX ONE", "SWITCH")
-      searchParamsCaptor.value("limit") must be ("200")
-      searchParamsCaptor.value("category_ids") must be ("139973")
-      searchParamsCaptor.value("filter") must startWith ("conditionIds:%7B1000|1500|2000|2500|3000|4000|5000%7D,deliveryCountry:GB,price:[0..100],priceCurrency:GBP,itemLocationCountry:GB,buyingOptions:%7BFIXED_PRICE%7D,itemStartDate:[")
+      whenReady(itemsResponse.compile.toList.unsafeToFuture()) { items =>
+        items must be (List())
+        verify(authClient, times(3)).accessToken
+        verify(browseClient, times(3)).search(eqTo(accessToken), searchParamsCaptor)
+        searchParamsCaptor.values.map(_("q")) must contain allOf ("PS4", "XBOX ONE", "SWITCH")
+        searchParamsCaptor.value("limit") must be ("200")
+        searchParamsCaptor.value("category_ids") must be ("139973")
+        searchParamsCaptor.value("filter") must startWith ("conditionIds:%7B1000|1500|2000|2500|3000|4000|5000%7D,deliveryCountry:GB,price:[0..100],priceCurrency:GBP,itemLocationCountry:GB,buyingOptions:%7BFIXED_PRICE%7D,itemStartDate:[")
+      }
     }
 
     "switch ebay account on autherror" in {
@@ -44,11 +46,13 @@ class VideoGameEbayClientSpec extends PlaySpec with AsyncIOSpec with MockitoSuga
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      itemsResponse.compile.toList.assertThrows[AuthError]
+      whenReady(itemsResponse.compile.toList.unsafeToFuture()) { error =>
+        error must be (AuthError("Too many requests"))
 
-      verify(authClient, times(3)).accessToken
-      verify(authClient, times(1)).switchAccount
-      verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
+        verify(authClient, times(3)).accessToken
+        verify(authClient, times(1)).switchAccount
+        verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
+      }
     }
 
     "return api client error on failure" in {
@@ -62,11 +66,13 @@ class VideoGameEbayClientSpec extends PlaySpec with AsyncIOSpec with MockitoSuga
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      itemsResponse.compile.toList.assertThrows[HttpError]
+      whenReady(itemsResponse.compile.toList.unsafeToFuture()) { error =>
+        error must be (HttpError(400, "Bad request"))
 
-      verify(authClient, times(3)).accessToken
-      verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
-      verify(browseClient, never).getItem(any, any)
+        verify(authClient, times(3)).accessToken
+        verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
+        verify(browseClient, never).getItem(any, any)
+      }
     }
 
     "filter out items with bad feedback" in {
@@ -80,11 +86,13 @@ class VideoGameEbayClientSpec extends PlaySpec with AsyncIOSpec with MockitoSuga
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      itemsResponse.compile.toList.asserting(_ must be (List()))
+      whenReady(itemsResponse.compile.toList.unsafeToFuture()) { items =>
+        items must be (List())
 
-      verify(authClient, times(3)).accessToken
-      verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
-      verify(browseClient, never).getItem(any, any)
+        verify(authClient, times(3)).accessToken
+        verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
+        verify(browseClient, never).getItem(any, any)
+      }
     }
 
     "filter out items with bad names" in {
@@ -109,7 +117,9 @@ class VideoGameEbayClientSpec extends PlaySpec with AsyncIOSpec with MockitoSuga
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      itemsResponse.compile.toList.asserting(_ must be (List()))
+      whenReady(itemsResponse.compile.toList.unsafeToFuture()) { items =>
+        items must be (List())
+      }
     }
 
     "get item details for each item id" in {
@@ -127,11 +137,13 @@ class VideoGameEbayClientSpec extends PlaySpec with AsyncIOSpec with MockitoSuga
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      itemsResponse.compile.toList.asserting(_.map(_._1) must be (List(GameDetails(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action")))))
+      whenReady(itemsResponse.compile.toList.unsafeToFuture()) { items =>
+        items.map(_._1) must be (List(GameDetails(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action"))))
 
-      verify(authClient, times(6)).accessToken
-      verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
-      verify(browseClient, times(3)).getItem(eqTo(accessToken), any)
+        verify(authClient, times(6)).accessToken
+        verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
+        verify(browseClient, times(3)).getItem(eqTo(accessToken), any)
+      }
     }
   }
 
