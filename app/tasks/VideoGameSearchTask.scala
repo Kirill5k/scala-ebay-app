@@ -16,5 +16,7 @@ class VideoGameSearchTask @Inject()(override val itemService: VideoGameService, 
 
   override protected def minMarginPercentage: Int = 0
 
-  actorSystem.scheduler.scheduleWithFixedDelay(initialDelay = 5 seconds, delay = 60 seconds) { () => searchForCheapItems() }
+  actorSystem.scheduler.scheduleWithFixedDelay(initialDelay = 5 seconds, delay = 60 seconds) { () =>
+    searchForCheapItems().compile.drain.unsafeRunSync
+  }
 }

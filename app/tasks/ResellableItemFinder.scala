@@ -19,7 +19,7 @@ trait ResellableItemFinder[I <: ResellableItem, D <: ItemDetails, E <: Resellabl
 
   protected def itemService: ResellableItemService[I, D, E]
 
-  def searchForCheapItems(): Unit = {
+  def searchForCheapItems(): Stream[IO, I] =
     itemService.getLatestFromEbay(15)
       .evalFilter(itemService.isNew)
       .evalMap(item => itemService.save(item) >> IO.pure(item))
@@ -29,10 +29,6 @@ trait ResellableItemFinder[I <: ResellableItem, D <: ItemDetails, E <: Resellabl
         logger.error(s"error obtaining new items from ebay: ${error.getMessage}")
         Stream.empty
       }
-      .compile
-      .drain
-      .unsafeRunSync
-  }
 
   private val isProfitableToResell: I => Boolean =
     item => item.resellPrice.exists(rp => (rp.exchange * 100 / item.listingDetails.price - 100) > minMarginPercentage)
