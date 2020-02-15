@@ -13,4 +13,4 @@ jobs:
   include:
     - stage: test
       name: "Run all unit tests"
-      script: sbt test
+      script: "sbt test"
