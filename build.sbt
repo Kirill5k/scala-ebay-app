@@ -1,8 +1,9 @@
-
 name := """scala-ebay-app"""
 organization := "io.kirill"
-
 version := "1.0"
+
+herokuAppName in Compile := "scala-ebay-app"
+herokuJdkVersion in Compile := "11"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
@@ -32,9 +33,3 @@ libraryDependencies ++= Seq(
   "com.github.simplyscala" % "scalatest-embedmongo_2.12" % "0.2.4" % Test,
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "2.2.0" % Test
 )
-
-// Adds additional packages into Twirl
-//TwirlKeys.templateImports += "io.kirill.controllers._"
-
-// Adds additional packages into conf/routes
-// play.sbt.routes.RoutesKeys.routesImport += "io.kirill.binders._"
