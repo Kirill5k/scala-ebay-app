@@ -2,16 +2,17 @@ package controllers
 
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test._
 import play.api.test.Helpers._
+import tasks.VideoGameSearchModule
 
-/**
- * Add your spec here.
- * You can mock out a whole application including requests, plugins etc.
- *
- * For more information, see https://www.playframework.com/documentation/latest/ScalaTestingWithScalaTest
- */
+
 class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting {
+
+  override def fakeApplication = new GuiceApplicationBuilder()
+    .disable[VideoGameSearchModule]
+    .build()
 
   "HomeController GET" should {
 
