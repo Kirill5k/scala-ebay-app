@@ -8,7 +8,7 @@ import io.circe.parser._
 
 
 private[cex] object CexSearchResponse {
-  final case class SearchResult(boxId: String, boxName: String, categoryName: String, sellPrice: Int, exchangePrice: Int, cashPrice: Int)
+  final case class SearchResult(boxId: String, boxName: String, categoryName: String, sellPrice: Int, exchangePrice: Double, cashPrice: Double)
   final case class SearchResults(boxes: Seq[SearchResult], totalRecords: Int, minPrice: Int, maxPrice: Int)
   final case class SearchResponse(data: Option[SearchResults])
   final case class CexSearchResponse(response: SearchResponse)
