@@ -1,0 +1,16 @@
+os: osx
+
+language: scala
+scala:
+  - 2.13.1
+
+jdk: openjdk11
+
+stages:
+  - test
+
+jobs:
+  include:
+    - stage: test
+      name: "Run all unit tests"
+      script: sbt test
