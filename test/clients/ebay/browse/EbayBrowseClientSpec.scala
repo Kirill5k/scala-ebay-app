@@ -71,6 +71,16 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
       }
     }
 
+    "make get request to obtain item details without aspects" in {
+      withEbaySearchClient(200, "ebay/get-item-3-no-aspects-success-response.json") { ebaySearchClient =>
+        val itemResult = ebaySearchClient.getItem(accessToken, itemId)
+
+        whenReady(itemResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { item =>
+          item.map(_.localizedAspects) must be (Some(None))
+        }
+      }
+    }
+
     "return autherror when token expired" in {
       withEbaySearchClient(403, "ebay/get-item-unauthorized-error-response.json") { ebaySearchClient =>
         val result = ebaySearchClient.getItem(accessToken, itemId)

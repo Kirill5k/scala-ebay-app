@@ -30,7 +30,7 @@ private[ebay] object EbayBrowseResponse {
                              condition: String,
                              image: ItemImage,
                              seller: ItemSeller,
-                             localizedAspects: Seq[ItemProperty],
+                             localizedAspects: Option[Seq[ItemProperty]],
                              buyingOptions: Seq[String],
                              itemWebUrl: String,
                              color: Option[String],

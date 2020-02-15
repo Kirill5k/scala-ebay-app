@@ -35,12 +35,10 @@ private[ebay] object EbayItemMapper {
   private[mappers] def toListingDetails(item: EbayItem): ListingDetails = {
     val postageCost = item.shippingOptions.map(_.shippingCost).map(_.value).min
     ListingDetails(
-//      url = new URI(item.itemWebUrl),
       url = item.itemWebUrl,
       title = item.title,
       shortDescription = item.shortDescription,
       description = item.description.map(_.replaceAll("(?i)<[^>]*>", "")).map(_.slice(0, 500)),
-//      image = new URI(item.image.imageUrl),
       image = item.image.imageUrl,
       buyingOptions = item.buyingOptions,
       sellerName = item.seller.username,
@@ -48,7 +46,7 @@ private[ebay] object EbayItemMapper {
       condition = item.condition,
       datePosted = Instant.now,
       dateEnded = item.itemEndDate,
-      properties = item.localizedAspects.map(prop => prop.name -> prop.value).toMap
+      properties = item.localizedAspects.getOrElse(List()).map(prop => prop.name -> prop.value).toMap
     )
   }
 

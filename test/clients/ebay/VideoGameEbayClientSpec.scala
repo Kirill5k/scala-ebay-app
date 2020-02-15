@@ -182,12 +182,12 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
       "New",
       ItemImage("https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg"),
       ItemSeller("168.robinhood", Some(100), Some(150)),
-      List(
+      Some(List(
         ItemProperty("Game Name", "Call of Duty: Modern Warfare"),
         ItemProperty("Release Year", "2019"),
         ItemProperty("Platform", "Microsoft Xbox One"),
         ItemProperty("Genre", "Action"),
-      ),
+      )),
       List("FIXED_PRICE"),
       "https://www.ebay.co.uk/itm/call-of-duty-modern-warfare-xbox-one-2019-/333474293066",
       None,

@@ -21,7 +21,9 @@ class TelegramClient @Inject()(config: Configuration, client: WSClient)(implicit
 
   def sendMessageToMainChannel(item: ResellableItem): IO[Unit] =
     IO.pure(item.notificationMessage).flatMap {
-      case Some(message) => sendMessageToMainChannel(message)
+      case Some(message) =>
+        log.info(s"""sending "$message"""")
+        sendMessageToMainChannel(message)
       case None =>
         log.warn(s"not enough details for sending notification $item")
         IO.pure(none[Unit])
