@@ -5,13 +5,15 @@ import org.scalatestplus.play.guice._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test._
 import play.api.test.Helpers._
-import tasks.VideoGameSearchModule
-
 
 class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting {
 
   override def fakeApplication = new GuiceApplicationBuilder()
-    .disable[VideoGameSearchModule]
+    .configure("ebay.credentials" -> List())
+    .configure("telegram.messagePath" -> "/bot-1/sendMessage")
+    .configure("telegram.mainChannelId" -> "c-main")
+    .configure("telegram.secondaryChannelId" -> "c-secondary")
+    .configure("mongodb.uri" -> "mongodb://localhost:12345/mongo-test")
     .build()
 
   "HomeController GET" should {

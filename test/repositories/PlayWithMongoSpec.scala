@@ -10,7 +10,6 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Injecting
 import play.modules.reactivemongo.ReactiveMongoApi
-import tasks.VideoGameSearchModule
 
 trait PlayWithMongoSpec extends PlaySpec with GuiceOneAppPerSuite with Injecting with BeforeAndAfterAll {
 
@@ -32,7 +31,10 @@ trait PlayWithMongoSpec extends PlaySpec with GuiceOneAppPerSuite with Injecting
   }
 
   override def fakeApplication = new GuiceApplicationBuilder()
-    .disable[VideoGameSearchModule]
+    .configure("ebay.credentials" -> List())
+    .configure("telegram.messagePath" -> "/bot-1/sendMessage")
+    .configure("telegram.mainChannelId" -> "c-main")
+    .configure("telegram.secondaryChannelId" -> "c-secondary")
     .configure("mongodb.uri" -> "mongodb://localhost:12345/mongo-test")
     .build()
 
