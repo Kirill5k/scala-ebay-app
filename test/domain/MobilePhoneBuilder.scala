@@ -16,7 +16,7 @@ object MobilePhoneBuilder {
         Some(s"$make $model $colour $storage. Condition is Used. Dispatched with Royal Mail 1st Class Small parcel."),
         None,
         "https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg",
-        Seq("FIXED_PRICE"),
+        List("FIXED_PRICE"),
         "168.robinhood",
         BigDecimal.valueOf(99.99),
         "New",

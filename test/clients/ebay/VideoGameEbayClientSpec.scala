@@ -55,7 +55,7 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
 
       whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { error =>
         error must be (List())
-
+        videoGameSearchClient.itemsIds.isEmpty must be (true)
         verify(authClient, times(4)).accessToken
         verify(authClient, times(1)).switchAccount
         verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
@@ -76,7 +76,7 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
 
       whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { error =>
         error must be (List())
-
+        videoGameSearchClient.itemsIds.isEmpty must be (true)
         verify(authClient, times(1)).accessToken
         verify(authClient, never).switchAccount
         verify(browseClient, times(1)).search(eqTo(accessToken), anyMap[String, String])
@@ -97,7 +97,7 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
 
       whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
         items must be (List())
-
+        videoGameSearchClient.itemsIds.isEmpty must be (true)
         verify(authClient, times(3)).accessToken
         verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
         verify(browseClient, never).getItem(any, any)
@@ -128,6 +128,7 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
 
       whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
         items must be (List())
+        videoGameSearchClient.itemsIds.isEmpty must be (true)
       }
     }
 
@@ -142,13 +143,13 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
 
       doReturn(IO.pure(None)).when(browseClient).getItem(accessToken, "item-1")
       doReturn(IO.pure(None)).when(browseClient).getItem(accessToken, "item-2")
-      doReturn(IO.pure(Some(ebayItem))).when(browseClient).getItem(accessToken, "item-3")
+      doReturn(IO.pure(Some(ebayItem.copy(itemId = "item-3")))).when(browseClient).getItem(accessToken, "item-3")
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
       whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
         items.map(_._1) must be (List(GameDetails(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action"))))
-
+        videoGameSearchClient.itemsIds.containsKey("item-3") must be (true)
         verify(authClient, times(6)).accessToken
         verify(browseClient, times(3)).search(eqTo(accessToken), anyMap[String, String])
         verify(browseClient, times(3)).getItem(eqTo(accessToken), any)
@@ -181,18 +182,18 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
       "New",
       ItemImage("https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg"),
       ItemSeller("168.robinhood", Some(100), Some(150)),
-      Seq(
+      List(
         ItemProperty("Game Name", "Call of Duty: Modern Warfare"),
         ItemProperty("Release Year", "2019"),
         ItemProperty("Platform", "Microsoft Xbox One"),
         ItemProperty("Genre", "Action"),
       ),
-      Seq("FIXED_PRICE"),
+      List("FIXED_PRICE"),
       "https://www.ebay.co.uk/itm/call-of-duty-modern-warfare-xbox-one-2019-/333474293066",
       None,
       None,
       None,
       None,
-      Seq(ItemShippingOption("Royal Mail 1st class", ShippingCost(BigDecimal.valueOf(4.99), "GBR")))
+      List(ItemShippingOption("Royal Mail 1st class", ShippingCost(BigDecimal.valueOf(4.99), "GBR")))
     )
 }

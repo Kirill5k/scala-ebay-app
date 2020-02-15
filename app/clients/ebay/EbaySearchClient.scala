@@ -4,15 +4,15 @@ import java.time.Instant
 import java.time.temporal.ChronoField.MILLI_OF_SECOND
 import java.util.concurrent.TimeUnit
 
-
 import cats.effect.IO
+import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary}
 import clients.ebay.mappers.EbayItemMapper
 import clients.ebay.mappers.EbayItemMapper._
 import domain.ApiClientError.AuthError
-import domain.{ItemDetails, ListingDetails}
+import domain.{ApiClientError, ItemDetails, ListingDetails}
 import fs2.Stream
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 import play.api.Logger
@@ -23,7 +23,7 @@ trait EbaySearchClient[A <: ItemDetails] {
   private val MIN_FEEDBACK_SCORE = 6
   private val MIN_FEEDBACK_PERCENT = 90
 
-  private val itemsIds = ExpiringMap.builder()
+  private[ebay] val itemsIds = ExpiringMap.builder()
     .expirationPolicy(ExpirationPolicy.CREATED)
     .expiration(60, TimeUnit.MINUTES)
     .build[String, String]()
@@ -48,6 +48,7 @@ trait EbaySearchClient[A <: ItemDetails] {
       .flatMap(x => Stream.apply(x: _*))
       .evalMap(getCompleteItem)
       .unNone
+      .evalMap(item => IO(itemsIds.put(item.itemId, "")) >> IO.pure(item))
       .map(_.as[A])
       .handleErrorWith(switchAccountIfItHasExpired)
   }
@@ -72,7 +73,6 @@ trait EbaySearchClient[A <: ItemDetails] {
     for {
       token <- ebayAuthClient.accessToken()
       item <- ebayBrowseClient.getItem(token, itemSummary.itemId)
-      _ = itemsIds.put(itemSummary.itemId, "")
     } yield item
 
   protected val hasTrustedSeller: EbayItemSummary => Boolean = itemSummary => {
@@ -89,11 +89,14 @@ trait EbaySearchClient[A <: ItemDetails] {
 
   protected val switchAccountIfItHasExpired: PartialFunction[Throwable, Stream[IO, (A, ListingDetails)]] = {
     case AuthError(message) =>
-      log.warn(s"switching ebay account: ${message}")
+      log.warn(s"auth error from ebay client, switching account: ${message}")
       ebayAuthClient.switchAccount()
       Stream.empty
+    case error: ApiClientError =>
+      log.error(s"api client error while getting items from ebay: ${error.message}")
+      Stream.empty
     case error =>
-      log.error(s"error getting items from ebay: ${error.getMessage}")
+      log.error(s"unexpected error while getting items from ebay: ${error.getMessage}")
       Stream.empty
   }
 }

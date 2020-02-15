@@ -20,7 +20,7 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  val ebayCredentials = Seq(Map("clientId" -> "id-1", "clientSecret" -> "secret-1"), Map("clientId" -> "id-2", "clientSecret" -> "secret-2"))
+  val ebayCredentials = List(Map("clientId" -> "id-1", "clientSecret" -> "secret-1"), Map("clientId" -> "id-2", "clientSecret" -> "secret-2"))
   val ebayConfig = Map("baseUri" -> "/ebay", "authPath" -> "/auth", "searchPath" -> "/search", "itemPath" -> "/item", "credentials" -> ebayCredentials)
   val config: Configuration = Configuration("ebay" -> ebayConfig)
 
@@ -35,7 +35,7 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
         val foundItems = ebaySearchClient.search(accessToken, searchQueryParams)
 
         whenReady(foundItems.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
-          items.map(_.itemId) must be (Seq("item-1", "item-2", "item-3", "item-4", "item-5"))
+          items.map(_.itemId) must be (List("item-1", "item-2", "item-3", "item-4", "item-5"))
         }
       }
     }
@@ -45,7 +45,7 @@ class EbayBrowseClientSpec extends PlaySpec with ScalaFutures with MockitoSugar 
         val foundItems = ebaySearchClient.search(accessToken, searchQueryParams)
 
         whenReady(foundItems.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
-          items must be (Seq())
+          items must be (Nil)
         }
       }
     }

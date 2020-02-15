@@ -7,7 +7,11 @@ import play.api.libs.json.JsResultException
 
 import scala.concurrent.Future
 
-sealed trait ApiClientError extends Throwable
+sealed trait ApiClientError extends Throwable {
+  def message: String
+
+  override def getMessage: String = message
+}
 
 object ApiClientError {
   final case class HttpError(status: Int, message: String) extends ApiClientError

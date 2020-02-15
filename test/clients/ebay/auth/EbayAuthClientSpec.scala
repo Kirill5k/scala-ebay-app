@@ -23,7 +23,7 @@ import scala.language.postfixOps
 class EbayAuthClientSpec extends PlaySpec with ScalaFutures with MockitoSugar {
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  val ebayCredentials = Seq(Map("clientId" -> "id-1", "clientSecret" -> "secret-1"), Map("clientId" -> "id-2", "clientSecret" -> "secret-2"))
+  val ebayCredentials = List(Map("clientId" -> "id-1", "clientSecret" -> "secret-1"), Map("clientId" -> "id-2", "clientSecret" -> "secret-2"))
   val ebayConfig = Map("baseUri" -> "/ebay", "authPath" -> "/auth", "searchPath" -> "/search", "itemPath" -> "/item", "credentials" -> ebayCredentials)
   val config: Configuration = Configuration("ebay" -> ebayConfig)
 
@@ -96,7 +96,7 @@ class EbayAuthClientSpec extends PlaySpec with ScalaFutures with MockitoSugar {
               req.contentType must be (Some("application/x-www-form-urlencoded"))
               req.acceptedTypes must be (MediaRange.parse("application/json"))
               req.headers.get("Authorization") must be (Some(expectedAuthHeader))
-              req.body.asFormUrlEncoded must be (Some(ListMap("scope" -> Seq("https://api.ebay.com/oauth/api_scope"), "grant_type" -> Seq("client_credentials"))))
+              req.body.asFormUrlEncoded must be (Some(ListMap("scope" -> List("https://api.ebay.com/oauth/api_scope"), "grant_type" -> List("client_credentials"))))
               Results.Status(status).sendResource(responseFile)(executionContext, fileMimeTypes)
             }
         }

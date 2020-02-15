@@ -18,19 +18,19 @@ class EbayItemMapperSpec extends WordSpec with MustMatchers {
     "New",
     ItemImage("https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg"),
     ItemSeller("168.robinhood", Some(100), Some(150)),
-    Seq(
+    List(
       ItemProperty("Game Name", "Call of Duty: Modern Warfare"),
       ItemProperty("Release Year", "2019"),
       ItemProperty("Platform", "Microsoft Xbox One"),
       ItemProperty("Genre", "Action"),
     ),
-    Seq("FIXED_PRICE"),
+    List("FIXED_PRICE"),
     "https://www.ebay.co.uk/itm/call-of-duty-modern-warfare-xbox-one-2019-/333474293066",
     None,
     None,
     None,
     None,
-    Seq(ItemShippingOption("Royal Mail 1st class", ShippingCost(BigDecimal.valueOf(4.99), "GBR")), ItemShippingOption("Royal Mail 2nd class", ShippingCost(BigDecimal.valueOf(2.99), "GBR")))
+    List(ItemShippingOption("Royal Mail 1st class", ShippingCost(BigDecimal.valueOf(4.99), "GBR")), ItemShippingOption("Royal Mail 2nd class", ShippingCost(BigDecimal.valueOf(2.99), "GBR")))
   )
 
   val mobilePhoneEbayItem = EbayItem(
@@ -43,20 +43,20 @@ class EbayItemMapperSpec extends WordSpec with MustMatchers {
     "Used",
     ItemImage("https://i.ebayimg.com/images/g/yOMAAOSw~5ReGEH2/s-l1600.jpg"),
     ItemSeller("jb-liquidation3", Some(100), Some(98)),
-    Seq(
+    List(
       ItemProperty("Brand", "Samsung"),
       ItemProperty("Model", "Samsung Galaxy S10"),
       ItemProperty("Network", "Unlocked"),
       ItemProperty("Storage Capacity", "128 GB"),
       ItemProperty("Colour", "Blue")
     ),
-    Seq("FIXED_PRICE", "BEST_OFFER"),
+    List("FIXED_PRICE", "BEST_OFFER"),
     "https://www.ebay.co.uk/itm/Samsung-Galaxy-S10-128gb-UNLOCKED-Prism-Blue-/114059888671",
     Some("Blue"),
     Some("Samsung"),
     None,
     None,
-    Seq(ItemShippingOption("Royal Mail 1st class", ShippingCost(BigDecimal.valueOf(4.99), "GBR")))
+    List(ItemShippingOption("Royal Mail 1st class", ShippingCost(BigDecimal.valueOf(4.99), "GBR")))
   )
 
   "EbayItemMapper" should {
@@ -72,7 +72,7 @@ class EbayItemMapperSpec extends WordSpec with MustMatchers {
         Some("call of duty modern warfare xbox one 2019. Condition is New. Game came as part of bundle and not wanted. Never playes. Dispatched with Royal Mail 1st Class Large Letter."),
         None,
         "https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg",
-        Seq("FIXED_PRICE"),
+        List("FIXED_PRICE"),
         "168.robinhood",
         BigDecimal.valueOf(32.99),
         "New",
@@ -105,7 +105,7 @@ class EbayItemMapperSpec extends WordSpec with MustMatchers {
         Some("Samsung Galaxy S10 Used"),
         Some("Up For GrabsSamsung Galaxy S10 128gb UNLOCKED Prism BlueGood ConditionThe usual minor wear and Tear as you would expect from a used phone.It has been in a case with a screen protector since new however they appears tohave 1 x Deeper Scratch no more than 1cm long to the top left of the phone which does not affect the use of the phone nor does it show up when the screen is in use and you have got to look for it to see it when the screen is off.Comes with Wall Plug and Wire.I like the phone but unf"),
         "https://i.ebayimg.com/images/g/yOMAAOSw~5ReGEH2/s-l1600.jpg",
-        Seq("FIXED_PRICE", "BEST_OFFER"),
+        List("FIXED_PRICE", "BEST_OFFER"),
         "jb-liquidation3",
         BigDecimal.valueOf(429.99),
         "Used",
