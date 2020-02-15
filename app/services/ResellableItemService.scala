@@ -24,7 +24,6 @@ trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: Resellab
 
   def getLatestFromEbay(minutes: Int): Stream[IO, I] =
     ebaySearchClient.getItemsListedInLastMinutes(minutes)
-      .delayBy(400 milliseconds)
       .evalMap { case (id, ld) => cexClient.findResellPrice(id).map(rp => createItem(id, ld, rp)) }
 
   def sendNotification(item: I): IO[Unit] =

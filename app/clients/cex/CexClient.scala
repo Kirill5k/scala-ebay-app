@@ -49,8 +49,11 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
     val response = searchRequest.withQueryStringParameters("q" -> query).get()
       .map { res =>
         res.status match {
-          case status if isSuccessful(status) => res.body[Either[ApiClientError, CexSearchResponse]].map(getMinResellPrice(query))
-          case TOO_MANY_REQUESTS => none[ResellPrice].asRight[ApiClientError]
+          case status if isSuccessful(status) =>
+            res.body[Either[ApiClientError, CexSearchResponse]].map(getMinResellPrice(query))
+          case TOO_MANY_REQUESTS =>
+            log.error(s"too many requests to cex")
+            none[ResellPrice].asRight[ApiClientError]
           case status => HttpError(status, s"error sending request to cex: ${res.statusText}").asLeft
         }
       }
