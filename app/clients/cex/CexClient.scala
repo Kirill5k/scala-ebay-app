@@ -63,10 +63,10 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
   }
 
   private def getMinResellPrice(query: String)(searchResponse: CexSearchResponse): Option[ResellPrice] = {
-    val resellPrice = searchResponse.response.data
-      .map(_.boxes).getOrElse(List())
-      .minByOption(_.exchangePrice)
-      .map(minPriceResult => ResellPrice(BigDecimal.valueOf(minPriceResult.cashPrice), BigDecimal.valueOf(minPriceResult.exchangePrice)))
+    val resellPrice = for {
+      data <- searchResponse.response.data
+      cheapest <- data.boxes.minByOption(_.exchangePrice)
+    } yield ResellPrice(BigDecimal.valueOf(cheapest.cashPrice), BigDecimal.valueOf(cheapest.exchangePrice))
 
     if (resellPrice.isEmpty) log.warn(s"search '$query' returned 0 results")
     else searchResultsCache.put(query, resellPrice)

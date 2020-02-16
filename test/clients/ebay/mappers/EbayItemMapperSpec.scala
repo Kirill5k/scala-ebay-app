@@ -87,6 +87,32 @@ class EbayItemMapperSpec extends WordSpec with MustMatchers {
       ))
     }
 
+    "transform to GameDetails even if no shipping options" in {
+      val (gameDetails, listingDetails) = videoGameEbayItem.copy(shippingOptions = None).as[GameDetails]
+
+      gameDetails must be(GameDetails(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action")))
+
+      listingDetails must be(ListingDetails(
+        "https://www.ebay.co.uk/itm/call-of-duty-modern-warfare-xbox-one-2019-/333474293066",
+        "call of duty modern warfare xbox one 2019",
+        Some("call of duty modern warfare xbox one 2019. Condition is New. Game came as part of bundle and not wanted. Never playes. Dispatched with Royal Mail 1st Class Large Letter."),
+        None,
+        "https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg",
+        List("FIXED_PRICE"),
+        "168.robinhood",
+        BigDecimal.valueOf(30.0),
+        "New",
+        listingDetails.datePosted,
+        None,
+        Map(
+          "Game Name" -> "Call of Duty: Modern Warfare",
+          "Release Year" -> "2019",
+          "Platform" -> "Microsoft Xbox One",
+          "Genre" -> "Action"
+        )
+      ))
+    }
+
     "transform to PhoneDetails" in {
       val (phoneDetails, listingDetails) = mobilePhoneEbayItem.as[PhoneDetails]
 

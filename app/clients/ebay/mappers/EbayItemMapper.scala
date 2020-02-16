@@ -33,7 +33,11 @@ private[ebay] object EbayItemMapper {
   }
 
   private[mappers] def toListingDetails(item: EbayItem): ListingDetails = {
-    val postageCost = item.shippingOptions.getOrElse(List()).map(_.shippingCost).map(_.value).min
+    val postageCost = for {
+      shippings <- item.shippingOptions
+      minShippingCost <- shippings.map(_.shippingCost).map(_.value).minOption
+    } yield minShippingCost
+
     ListingDetails(
       url = item.itemWebUrl,
       title = item.title,
@@ -42,7 +46,7 @@ private[ebay] object EbayItemMapper {
       image = item.image.imageUrl,
       buyingOptions = item.buyingOptions,
       sellerName = item.seller.username,
-      price = item.price.value + postageCost,
+      price = item.price.value + postageCost.getOrElse(BigDecimal.valueOf(0)),
       condition = item.condition,
       datePosted = Instant.now,
       dateEnded = item.itemEndDate,
