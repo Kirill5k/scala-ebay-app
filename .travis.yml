@@ -8,14 +8,19 @@ jdk: openjdk11
 
 cache:
   directories:
+    - $HOME/.m2/repository
     - $HOME/.ivy2/cache
-    - $HOME/.sbt/boot/scala-$TRAVIS_SCALA_VERSION
+    - $HOME/.sbt
 
 stages:
   - test
+  - deploy
 
 jobs:
   include:
     - stage: test
       name: "Run all unit tests"
       script: "sbt test"
+    - stage: deploy
+      name: "Deploy app to Heroku"
+      script: "sbt stage deployHeroku"
