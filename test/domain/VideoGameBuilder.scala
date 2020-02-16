@@ -14,7 +14,7 @@ object VideoGameBuilder {
         name,
         Some(s"$name xbox one 2019. Condition is New. Game came as part of bundle and not wanted. Never playes. Dispatched with Royal Mail 1st Class Large Letter."),
         None,
-        "https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg",
+        Some("https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg"),
         List("FIXED_PRICE"),
         Some("168.robinhood"),
         BigDecimal.valueOf(32.99),

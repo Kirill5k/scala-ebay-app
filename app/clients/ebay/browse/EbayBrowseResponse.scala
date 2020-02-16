@@ -28,7 +28,7 @@ private[ebay] object EbayBrowseResponse {
                              categoryPath: String,
                              price: ItemPrice,
                              condition: String,
-                             image: ItemImage,
+                             image: Option[ItemImage],
                              seller: ItemSeller,
                              localizedAspects: Option[Seq[ItemProperty]],
                              buyingOptions: Seq[String],

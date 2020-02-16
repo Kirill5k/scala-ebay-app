@@ -43,7 +43,7 @@ private[ebay] object EbayItemMapper {
       title = item.title,
       shortDescription = item.shortDescription,
       description = item.description.map(_.replaceAll("(?i)<[^>]*>", "")).map(_.slice(0, 500)),
-      image = item.image.imageUrl,
+      image = item.image.map(_.imageUrl),
       buyingOptions = item.buyingOptions,
       sellerName = item.seller.username,
       price = item.price.value + postageCost.getOrElse(BigDecimal.valueOf(0)),

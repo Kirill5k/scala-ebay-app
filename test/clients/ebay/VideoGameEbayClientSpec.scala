@@ -180,7 +180,7 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
       "Video Games & Consoles|Video Games",
       ItemPrice(BigDecimal.valueOf(30.00), "GBP"),
       "New",
-      ItemImage("https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg"),
+      Some(ItemImage("https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg")),
       ItemSeller(Some("168.robinhood"), Some(100), Some(150)),
       Some(List(
         ItemProperty("Game Name", "Call of Duty: Modern Warfare"),

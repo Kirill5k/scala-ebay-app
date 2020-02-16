@@ -12,7 +12,7 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
     "Call of Duty: Modern Warfare Limited Edition (Xbox One)",
     Some("Call of Duty: Modern Warfare (Xbox One). Condition is New. Dispatched with Royal Mail 1st Class Large Letter."),
     None,
-    "https://i.ebayimg.com/images/g/PW4AAOSweS5eHsrk/s-l1600.jpg",
+    Some("https://i.ebayimg.com/images/g/PW4AAOSweS5eHsrk/s-l1600.jpg"),
     List("FIXED_PRICE"),
     Some("boris999"),
     BigDecimal.valueOf(10),

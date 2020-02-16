@@ -8,7 +8,7 @@ final case class ListingDetails(
                                  title: String,
                                  shortDescription: Option[String],
                                  description: Option[String],
-                                 image: String,
+                                 image: Option[String],
                                  buyingOptions: Seq[String],
                                  sellerName: Option[String],
                                  price: BigDecimal,
