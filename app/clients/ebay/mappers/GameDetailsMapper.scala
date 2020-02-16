@@ -43,6 +43,7 @@ private[mappers] object GameDetailsMapper {
       .filter(!_.isEmpty)
       .getOrElse(title)
       .replaceAll(TITLE_WORDS_FILTER, "")
+      .replaceFirst("(?i)\\w+(?=\\s+edition) edition", "")
       .replaceAll("é", "e")
       .replaceAll(" +", " ")
       .replaceFirst("^-", "")

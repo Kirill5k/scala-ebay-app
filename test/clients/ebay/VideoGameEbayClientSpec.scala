@@ -194,6 +194,6 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
       None,
       None,
       None,
-      List(ItemShippingOption("Royal Mail 1st class", ShippingCost(BigDecimal.valueOf(4.99), "GBR")))
+      Some(List(ItemShippingOption("Royal Mail 1st class", ShippingCost(BigDecimal.valueOf(4.99), "GBR"))))
     )
 }

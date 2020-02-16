@@ -1,6 +1,5 @@
 package clients.ebay.mappers
 
-import java.net.URI
 import java.time.Instant
 
 import domain.ListingDetails
@@ -10,7 +9,7 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
 
   val testListing = ListingDetails(
     "https://www.ebay.co.uk/itm/Call-of-Duty-Modern-Warfare-Xbox-One-/274204760218",
-    "Call of Duty: Modern Warfare (Xbox One)",
+    "Call of Duty: Modern Warfare Limited Edition (Xbox One)",
     Some("Call of Duty: Modern Warfare (Xbox One). Condition is New. Dispatched with Royal Mail 1st Class Large Letter."),
     None,
     "https://i.ebayimg.com/images/g/PW4AAOSweS5eHsrk/s-l1600.jpg",
@@ -52,7 +51,7 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      gameDetails.name must be (Some("Call of Duty Modern Warfare Limited Edition"))
+      gameDetails.name must be (Some("Call of Duty Modern Warfare"))
       gameDetails.platform must be (Some("XBOX ONE"))
     }
 

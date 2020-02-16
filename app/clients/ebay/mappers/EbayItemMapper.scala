@@ -33,7 +33,7 @@ private[ebay] object EbayItemMapper {
   }
 
   private[mappers] def toListingDetails(item: EbayItem): ListingDetails = {
-    val postageCost = item.shippingOptions.map(_.shippingCost).map(_.value).min
+    val postageCost = item.shippingOptions.getOrElse(List()).map(_.shippingCost).map(_.value).min
     ListingDetails(
       url = item.itemWebUrl,
       title = item.title,

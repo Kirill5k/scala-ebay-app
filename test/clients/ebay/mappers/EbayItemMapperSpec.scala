@@ -30,7 +30,7 @@ class EbayItemMapperSpec extends WordSpec with MustMatchers {
     None,
     None,
     None,
-    List(ItemShippingOption("Royal Mail 1st class", ShippingCost(BigDecimal.valueOf(4.99), "GBR")), ItemShippingOption("Royal Mail 2nd class", ShippingCost(BigDecimal.valueOf(2.99), "GBR")))
+    Some(List(ItemShippingOption("Royal Mail 1st class", ShippingCost(BigDecimal.valueOf(4.99), "GBR")), ItemShippingOption("Royal Mail 2nd class", ShippingCost(BigDecimal.valueOf(2.99), "GBR"))))
   )
 
   val mobilePhoneEbayItem = EbayItem(
@@ -56,7 +56,7 @@ class EbayItemMapperSpec extends WordSpec with MustMatchers {
     Some("Samsung"),
     None,
     None,
-    List(ItemShippingOption("Royal Mail 1st class", ShippingCost(BigDecimal.valueOf(4.99), "GBR")))
+    Some(List(ItemShippingOption("Royal Mail 1st class", ShippingCost(BigDecimal.valueOf(4.99), "GBR"))))
   )
 
   "EbayItemMapper" should {

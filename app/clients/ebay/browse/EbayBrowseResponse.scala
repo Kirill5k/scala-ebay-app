@@ -37,7 +37,7 @@ private[ebay] object EbayBrowseResponse {
                              brand: Option[String],
                              mpn: Option[String],
                              itemEndDate: Option[Instant],
-                             shippingOptions: Seq[ItemShippingOption]
+                             shippingOptions: Option[Seq[ItemShippingOption]]
                            ) extends EbayBrowseResponse
 
   final case class EbayBrowseResult(total: Int, limit: Int, itemSummaries: Option[Seq[EbayItemSummary]]) extends EbayBrowseResponse
