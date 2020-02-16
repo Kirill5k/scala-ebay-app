@@ -169,7 +169,7 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
   }
 
   def ebayItemSummary(id: String, name: String = "ebay item", feedbackScore: Int = 150, feedbackPercentage: Int = 150) =
-    EbayItemSummary(id, name, ItemPrice(BigDecimal.valueOf(30.00), "GBP"), ItemSeller("168.robinhood", Some(feedbackPercentage), Some(feedbackScore)))
+    EbayItemSummary(id, name, ItemPrice(BigDecimal.valueOf(30.00), "GBP"), ItemSeller(Some("168.robinhood"), Some(feedbackPercentage), Some(feedbackScore)))
 
   def ebayItem: EbayItem =
     EbayItem(
@@ -181,7 +181,7 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
       ItemPrice(BigDecimal.valueOf(30.00), "GBP"),
       "New",
       ItemImage("https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg"),
-      ItemSeller("168.robinhood", Some(100), Some(150)),
+      ItemSeller(Some("168.robinhood"), Some(100), Some(150)),
       Some(List(
         ItemProperty("Game Name", "Call of Duty: Modern Warfare"),
         ItemProperty("Release Year", "2019"),

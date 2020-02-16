@@ -13,7 +13,6 @@ lazy val circeVersion = "0.12.3"
 lazy val mockitoVersion = "1.10.3"
 
 libraryDependencies ++= Seq(
-  ehcache,
   guice,
   ws,
 

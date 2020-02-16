@@ -13,7 +13,7 @@ sealed trait EbayBrowseResponse
 
 private[ebay] object EbayBrowseResponse {
   final case class ItemProperty(name: String, value: String)
-  final case class ItemSeller(username: String, feedbackPercentage: Option[Double], feedbackScore: Option[Int])
+  final case class ItemSeller(username: Option[String], feedbackPercentage: Option[Double], feedbackScore: Option[Int])
   final case class ItemImage(imageUrl: String)
   final case class ItemPrice(value: BigDecimal, currency: String)
   final case class ShippingCost(value: BigDecimal, currency: String)

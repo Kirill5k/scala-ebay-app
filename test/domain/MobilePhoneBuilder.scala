@@ -17,7 +17,7 @@ object MobilePhoneBuilder {
         None,
         "https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg",
         List("FIXED_PRICE"),
-        "168.robinhood",
+        Some("168.robinhood"),
         BigDecimal.valueOf(99.99),
         "New",
         datePosted,

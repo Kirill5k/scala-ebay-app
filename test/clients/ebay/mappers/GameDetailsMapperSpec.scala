@@ -14,7 +14,7 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
     None,
     "https://i.ebayimg.com/images/g/PW4AAOSweS5eHsrk/s-l1600.jpg",
     List("FIXED_PRICE"),
-    "boris999",
+    Some("boris999"),
     BigDecimal.valueOf(10),
     "USED",
     Instant.now,

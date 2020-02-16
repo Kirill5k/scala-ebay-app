@@ -10,7 +10,7 @@ final case class ListingDetails(
                                  description: Option[String],
                                  image: String,
                                  buyingOptions: Seq[String],
-                                 sellerName: String,
+                                 sellerName: Option[String],
                                  price: BigDecimal,
                                  condition: String,
                                  datePosted: Instant,
