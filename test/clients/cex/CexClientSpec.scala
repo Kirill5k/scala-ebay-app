@@ -40,7 +40,7 @@ class CexClientSpec extends PlaySpec with ScalaFutures {
     }
 
     "return none when no results" in {
-      withCexClient(200, "cex/search-noresults-response.json") { cexClient =>
+      withCexClient(200,"cex/search-noresults-response.json") { cexClient =>
         val result = cexClient.findResellPrice(gameDetails)
 
         whenReady(result.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { price =>
