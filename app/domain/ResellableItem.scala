@@ -28,7 +28,8 @@ object ResellableItemOps {
         price = item.listingDetails.price
         profitPercentage = rp.exchange * 100 / price - 100
         isEnding = item.listingDetails.dateEnded.exists(_.minusSeconds(600).isBefore(Instant.now))
-      } yield s"""${if (isEnding) "ENDING" else "NEW"} "$itemSummary" - ebay: £$price, cex: £${rp.exchange}(${profitPercentage.intValue}%)/£${rp.cash}"""
+        url = item.listingDetails.url
+      } yield s"""${if (isEnding) "ENDING" else "NEW"} "$itemSummary" - ebay: £$price, cex: £${rp.exchange}(${profitPercentage.intValue}%)/£${rp.cash} $url"""
   }
 
   implicit class ResellableItemSyntax(val item: ResellableItem) extends AnyVal {

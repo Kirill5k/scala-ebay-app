@@ -10,7 +10,7 @@ class ResellableItemSpec extends WordSpec with MustMatchers {
 
     "return notification message string" in {
       val query = game.notificationMessage
-      query must be (Some("""NEW "super mario 3 SWITCH" - ebay: £32.99, cex: £80(142%)/£100"""))
+      query must be (Some("""NEW "super mario 3 SWITCH" - ebay: £32.99, cex: £80(142%)/£100 https://www.ebay.co.uk/itm/super-mario-3"""))
     }
 
     "return none if some of the item details are missing" in {
