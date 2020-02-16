@@ -169,7 +169,7 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
   }
 
   def ebayItemSummary(id: String, name: String = "ebay item", feedbackScore: Int = 150, feedbackPercentage: Int = 150) =
-    EbayItemSummary(id, name, ItemPrice(BigDecimal.valueOf(30.00), "GBP"), ItemSeller(Some("168.robinhood"), Some(feedbackPercentage), Some(feedbackScore)))
+    EbayItemSummary(id, name, Some(ItemPrice(BigDecimal.valueOf(30.00), "GBP")), ItemSeller(Some("168.robinhood"), Some(feedbackPercentage), Some(feedbackScore)))
 
   def ebayItem: EbayItem =
     EbayItem(
