@@ -4,7 +4,7 @@ language: scala
 scala:
   - 2.13.1
 
-jdk: openjdk13
+jdk: openjdk11
 
 cache:
   directories:
