@@ -51,16 +51,16 @@ trait ResellableItemRepository[D <: ResellableItem, E <: ResellableItemEntity] {
     ApiClientError.fromFutureErrorToIO(result)
   }
 
-  def findAll(limit: Int = 100, from: Option[Instant] = None): IO[Seq[D]] =
+  def findAll(limit: Option[Int] = None, from: Option[Instant] = None): IO[Seq[D]] =
     findAllEntities(limit, from).map(_.map(entityMapper.toDomain))
 
-  private def findAllEntities(limit: Int, from: Option[Instant]): IO[Seq[E]] = {
+  private def findAllEntities(limit: Option[Int], from: Option[Instant]): IO[Seq[E]] = {
     val result = itemCollection.flatMap { collection =>
       collection
         .find(selector = from.fold(BSONDocument())(postedAfterSelector), projection = Option.empty[JsObject])
         .sort(Json.obj("listingDetails.datePosted" -> -1))
         .cursor[E](ReadPreference.primary)
-        .collect[Seq](limit, Cursor.FailOnError[Seq[E]]())
+        .collect[Seq](limit.getOrElse(100), Cursor.FailOnError[Seq[E]]())
     }
       .map(_.asRight)
       .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))

@@ -70,14 +70,14 @@ class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures 
 
     "get latest items from db" in {
       val (repository, ebayClient, telegramClient, cexClient) = mockDependecies
-      when(repository.findAll(any)).thenReturn(IO.pure(List(videoGame)))
+      when(repository.findAll(any, any)).thenReturn(IO.pure(List(videoGame)))
       val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
 
-      val latestResult = service.getLatest(10)
+      val latestResult = service.getLatest(Some(10), None)
 
       whenReady(latestResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { latest =>
         latest must be (List(videoGame))
-        verify(repository).findAll(10)
+        verify(repository).findAll(Some(10), None)
       }
     }
 

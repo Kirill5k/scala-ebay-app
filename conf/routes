@@ -1,7 +1,7 @@
 GET     /                           controllers.HomeController.index
 
 # Rest API
-GET     /api/video-games            controllers.VideoGameController.getAll(limit: Int ?= 100)
+GET     /api/video-games            controllers.VideoGameController.getAll(limit: Option[Int], from: Option[Instant])
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

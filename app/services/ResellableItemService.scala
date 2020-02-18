@@ -1,5 +1,7 @@
 package services
 
+import java.time.Instant
+
 import cats.effect.{IO, Timer}
 import clients.cex.CexClient
 import clients.ebay.EbaySearchClient
@@ -7,10 +9,6 @@ import clients.telegram.TelegramClient
 import domain.{ItemDetails, ListingDetails, ResellPrice, ResellableItem}
 import fs2.Stream
 import repositories.{ResellableItemEntity, ResellableItemRepository}
-
-import scala.concurrent.ExecutionContext
-import scala.concurrent.duration._
-import scala.language.postfixOps
 
 trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: ResellableItemEntity] {
   implicit protected def timer: Timer[IO]
@@ -32,8 +30,8 @@ trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: Resellab
   def save(item: I): IO[Unit] =
     itemRepository.save(item)
 
-  def getLatest(limit: Int): IO[Seq[I]] =
-    itemRepository.findAll(limit)
+  def getLatest(limit: Option[Int], from: Option[Instant]): IO[Seq[I]] =
+    itemRepository.findAll(limit, from)
 
   def isNew(item: I): IO[Boolean] =
     itemRepository.existsByUrl(item.listingDetails.url).map(!_)

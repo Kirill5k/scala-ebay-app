@@ -22,28 +22,31 @@ class VideoGameControllerSpec extends PlaySpec with MockitoSugar with ArgumentMa
 
     "return list of video games" in {
       val service = mock[VideoGameService]
-      when(service.getLatest(anyInt)).thenReturn(IO.pure(List(videoGame, videoGame2)))
+      when(service.getLatest(any, any)).thenReturn(IO.pure(List(videoGame, videoGame2)))
 
       val controller = new VideoGameController(service, stubControllerComponents())
 
-      val itemsResponse = controller.getAll(10).apply(FakeRequest(GET, "/"))
+      val from = Instant.now()
+      val itemsResponse = controller.getAll(Some(100), Some(from)).apply(FakeRequest())
 
       status(itemsResponse) mustBe OK
       contentType(itemsResponse) mustBe Some("application/json")
       contentAsString(itemsResponse) mustBe ("""[{"itemDetails":{"name":"super mario 3","platform":"XBOX ONE","releaseYear":"2019","genre":"Action"},"listingDetails":{"url":"https://www.ebay.co.uk/itm/super-mario-3","title":"super mario 3","shortDescription":"super mario 3 xbox one 2019. Condition is New. Game came as part of bundle and not wanted. Never playes. Dispatched with Royal Mail 1st Class Large Letter.","description":null,"image":"https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg","buyingOptions":["FIXED_PRICE"],"sellerName":"168.robinhood","price":32.99,"condition":"New","datePosted":"2020-01-01T00:00:00Z","dateEnded":null,"properties":{"Game Name":"super mario 3","Release Year":"2019","Platform":"Microsoft Xbox One","Genre":"Action"}},"resellPrice":{"cash":100,"exchange":80}},{"itemDetails":{"name":"Battlefield 1","platform":"XBOX ONE","releaseYear":"2019","genre":"Action"},"listingDetails":{"url":"https://www.ebay.co.uk/itm/battlefield-1","title":"Battlefield 1","shortDescription":"Battlefield 1 xbox one 2019. Condition is New. Game came as part of bundle and not wanted. Never playes. Dispatched with Royal Mail 1st Class Large Letter.","description":null,"image":"https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg","buyingOptions":["FIXED_PRICE"],"sellerName":"168.robinhood","price":32.99,"condition":"New","datePosted":"2020-01-01T00:00:00Z","dateEnded":null,"properties":{"Game Name":"Battlefield 1","Release Year":"2019","Platform":"Microsoft Xbox One","Genre":"Action"}},"resellPrice":null}]""")
+      verify(service).getLatest(Some(100), Some(from))
     }
 
     "return error" in {
       val service = mock[VideoGameService]
-      when(service.getLatest(anyInt)).thenReturn(IO.raiseError(HttpError(400, "bad request")))
+      when(service.getLatest(any, any)).thenReturn(IO.raiseError(HttpError(400, "bad request")))
 
       val controller = new VideoGameController(service, stubControllerComponents())
 
-      val itemsResponse = controller.getAll(10).apply(FakeRequest(GET, "/"))
+      val itemsResponse = controller.getAll(None, None).apply(FakeRequest())
 
       status(itemsResponse) mustBe INTERNAL_SERVER_ERROR
       contentType(itemsResponse) mustBe Some("application/json")
       contentAsString(itemsResponse) mustBe ("""{"message":"bad request"}""")
+      verify(service).getLatest(None, None)
     }
   }
 }

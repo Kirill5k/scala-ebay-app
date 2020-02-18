@@ -78,6 +78,16 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
       }
     }
 
+    "find all video games with limit" in {
+      val videoGameRepository = inject[VideoGameRepository]
+      val findAllResult = videoGameRepository.findAll(Some(1))
+
+
+      whenReady(findAllResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
+        items must be (List(videoGames(2)))
+      }
+    }
+
     "save video game in db" in {
       val videoGameRepository = inject[VideoGameRepository]
       val saveResult = videoGameRepository.save(VideoGameBuilder.build("Witcher 3"))
