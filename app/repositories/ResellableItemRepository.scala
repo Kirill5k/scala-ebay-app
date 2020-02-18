@@ -14,11 +14,11 @@ import reactivemongo.play.json._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
+trait ResellableItemRepository[D <: ResellableItem, E <: ResellableItemEntity] {
   implicit protected def ex: ExecutionContext
   implicit protected def mongo: ReactiveMongoApi
-  implicit protected def entityMapper: ResellableItemEntityMapper[A, B]
-  implicit protected def entityFormat: OFormat[B]
+  implicit protected def entityMapper: ResellableItemEntityMapper[D, E]
+  implicit protected def entityFormat: OFormat[E]
 
   implicit private val cs: ContextShift[IO] = IO.contextShift(ex)
 
@@ -37,10 +37,10 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     ApiClientError.fromFutureErrorToIO(result)
   }
 
-  def save(item: A): IO[Unit] =
+  def save(item: D): IO[Unit] =
     (entityMapper.toEntity _ andThen saveEntity)(item)
 
-  private def saveEntity(entity: B): IO[Unit] = {
+  private def saveEntity(entity: E): IO[Unit] = {
     val result = itemCollection.flatMap{ collection =>
       collection
         .insert(ordered = false).
@@ -51,16 +51,16 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     ApiClientError.fromFutureErrorToIO(result)
   }
 
-  def findAll(limit: Int = 100, from: Option[Instant] = None): IO[Seq[A]] =
+  def findAll(limit: Int = 100, from: Option[Instant] = None): IO[Seq[D]] =
     findAllEntities(limit, from).map(_.map(entityMapper.toDomain))
 
-  private def findAllEntities(limit: Int, from: Option[Instant]): IO[Seq[B]] = {
+  private def findAllEntities(limit: Int, from: Option[Instant]): IO[Seq[E]] = {
     val result = itemCollection.flatMap { collection =>
       collection
         .find(selector = from.fold(BSONDocument())(postedAfterSelector), projection = Option.empty[JsObject])
         .sort(Json.obj("listingDetails.datePosted" -> -1))
-        .cursor[B](ReadPreference.primary)
-        .collect[Seq](limit, Cursor.FailOnError[Seq[B]]())
+        .cursor[E](ReadPreference.primary)
+        .collect[Seq](limit, Cursor.FailOnError[Seq[E]]())
     }
       .map(_.asRight)
       .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))

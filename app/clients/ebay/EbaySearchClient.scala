@@ -96,7 +96,7 @@ trait EbaySearchClient[A <: ItemDetails] {
       log.error(s"api client error while getting items from ebay: ${error.message}")
       Stream.empty
     case error =>
-      log.error(s"unexpected error while getting items from ebay: ${error.getMessage}")
+      log.error(s"unexpected error while getting items from ebay: ${error.getMessage}", error)
       Stream.empty
   }
 }

@@ -26,7 +26,7 @@ trait ResellableItemFinder[I <: ResellableItem, D <: ItemDetails, E <: Resellabl
       .filter(isProfitableToResell)
       .evalMap(item => itemService.sendNotification(item) >> IO.pure(item))
       .handleErrorWith { error =>
-        logger.error(s"error obtaining new items from ebay: ${error.getMessage}")
+        logger.error(s"error obtaining new items from ebay: ${error.getMessage}", error)
         Stream.empty
       }
 
