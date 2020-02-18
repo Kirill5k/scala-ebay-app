@@ -51,13 +51,13 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     ApiClientError.fromFutureErrorToIO(result)
   }
 
-  def findAll(limit: Int = 100): IO[Seq[A]] =
-    findAllEntities(limit).map(_.map(entityMapper.toDomain))
+  def findAll(limit: Int = 100, from: Option[Instant] = None): IO[Seq[A]] =
+    findAllEntities(limit, from).map(_.map(entityMapper.toDomain))
 
-  private def findAllEntities(limit: Int): IO[Seq[B]] = {
+  private def findAllEntities(limit: Int, from: Option[Instant]): IO[Seq[B]] = {
     val result = itemCollection.flatMap { collection =>
       collection
-        .find(selector = Json.obj(), projection = Option.empty[JsObject])
+        .find(selector = from.fold(BSONDocument())(postedAfterSelector), projection = Option.empty[JsObject])
         .sort(Json.obj("listingDetails.datePosted" -> -1))
         .cursor[B](ReadPreference.primary)
         .collect[Seq](limit, Cursor.FailOnError[Seq[B]]())
@@ -67,19 +67,6 @@ trait ResellableItemRepository[A <: ResellableItem, B <: ResellableItemEntity] {
     ApiClientError.fromFutureErrorToIO(result)
   }
 
-  def findAllPostedAfter(date: Instant, limit: Int = 1000): IO[Seq[A]] =
-    findAllEntitiesPostedAfter(date, limit).map(_.map(entityMapper.toDomain))
-
-  private def findAllEntitiesPostedAfter(date: Instant, limit: Int): IO[Seq[B]] = {
-    val result = itemCollection.flatMap { collection =>
-      collection
-        .find(selector = BSONDocument("listingDetails.datePosted" -> BSONDocument("$gte" -> BSONString(date.toString))), projection = Option.empty[JsObject])
-        .cursor[B](ReadPreference.primary)
-        .collect[Seq](limit, Cursor.FailOnError[Seq[B]]())
-    }
-      .map(_.asRight)
-      .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))
-    ApiClientError.fromFutureErrorToIO(result)
-  }
-
+  private def postedAfterSelector(from: Instant): BSONDocument =
+    BSONDocument("listingDetails.datePosted" -> BSONDocument("$gte" -> BSONString(from.toString)))
 }
