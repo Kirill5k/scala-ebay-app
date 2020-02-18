@@ -1,3 +1,5 @@
+import play.sbt.routes.RoutesKeys._
+
 name := """scala-ebay-app"""
 organization := "io.kirill"
 version := "1.0"
@@ -33,6 +35,4 @@ libraryDependencies ++= Seq(
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "2.2.0" % Test
 )
 
-import play.sbt.routes.RoutesKeys
-RoutesKeys.routesImport += "binders.QueryStringBinders._"
-RoutesKeys.routesImport += "java.time.Instant"
+routesImport ++= Seq("binders.QueryStringBinders._", "java.time.Instant")
