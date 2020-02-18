@@ -32,3 +32,7 @@ libraryDependencies ++= Seq(
   "com.github.simplyscala" % "scalatest-embedmongo_2.12" % "0.2.4" % Test,
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "2.2.0" % Test
 )
+
+import play.sbt.routes.RoutesKeys
+RoutesKeys.routesImport += "binders.PathBinders._"
+RoutesKeys.routesImport += "java.time.Instant"
