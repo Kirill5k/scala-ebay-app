@@ -34,5 +34,5 @@ libraryDependencies ++= Seq(
 )
 
 import play.sbt.routes.RoutesKeys
-RoutesKeys.routesImport += "binders.PathBinders._"
+RoutesKeys.routesImport += "binders.QueryStringBinders._"
 RoutesKeys.routesImport += "java.time.Instant"
