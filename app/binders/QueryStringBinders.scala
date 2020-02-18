@@ -7,7 +7,7 @@ import play.api.mvc.QueryStringBindable
 import scala.util.{Either, Try}
 
 object QueryStringBinders {
-  implicit def bindableInstant(): QueryStringBindable[Instant] = new QueryStringBindable[Instant] {
+  implicit def bindableInstant(implicit stringBinder: QueryStringBindable[String]): QueryStringBindable[Instant] = new QueryStringBindable[Instant] {
     override def bind(key: String, params: Map[String,Seq[String]]): Option[Either[String, Instant]] = {
       params.get(key)
         .flatMap(_.headOption)
