@@ -11,7 +11,6 @@ const displayStats = games => {
   videoGamesStats.querySelectorAll(".badge")[0].innerHTML = total;
   videoGamesStats.querySelectorAll(".badge")[1].innerHTML = withoutResellPrice;
   videoGamesStats.querySelectorAll(".badge")[2].innerHTML = withGoodPrice;
-  videoGamesStats.style.display = "block";
 }
 
 fetch(`/api/video-games?limit=${limit}&from=${from}`)
