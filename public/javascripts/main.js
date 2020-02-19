@@ -8,9 +8,9 @@ const displayStats = games => {
   const withoutResellPrice = games.filter(g => !g.resellPrice).length
   const withGoodPrice = games.filter(g => g.resellPrice && g.listingDetails.price < g.resellPrice.cash).length
   const videoGamesStats = document.getElementById("video-games")
-  videoGamesStats.querySelector(".badge:nth-of-type(1)").innerHTML = total
-  videoGamesStats.querySelector(".badge:nth-of-type(2)").innerHTML = withoutResellPrice
-  videoGamesStats.querySelector(".badge:nth-of-type(3)").innerHTML = withGoodPrice
+  videoGamesStats.querySelectorAll(".badge")[0].innerHTML = total
+  videoGamesStats.querySelectorAll(".badge")[0].innerHTML = withoutResellPrice
+  videoGamesStats.querySelectorAll(".badge")[0].innerHTML = withGoodPrice
 }
 
 fetch(`/api/video-games?limit=${limit}&from=${from}`)
