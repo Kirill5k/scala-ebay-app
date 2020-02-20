@@ -59,8 +59,8 @@ trait ResellableItemRepository[D <: ResellableItem, E <: ResellableItemEntity] {
       collection
         .find(selector = from.fold(BSONDocument())(postedAfterSelector), projection = Option.empty[JsObject])
         .sort(Json.obj("listingDetails.datePosted" -> -1))
-        .cursor[E](ReadPreference.primary)
-        .collect[Seq](limit.getOrElse(1000), Cursor.FailOnError[Seq[E]]())
+        .cursor[E]()
+        .collect[List](limit.getOrElse(-1), Cursor.FailOnError[List[E]]())
     }
       .map(_.asRight)
       .recover(ApiClientError.recoverFromDbError.andThen(_.asLeft))
