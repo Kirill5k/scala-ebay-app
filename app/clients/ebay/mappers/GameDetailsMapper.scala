@@ -7,7 +7,7 @@ import domain.ListingDetails
 private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
-    "remastered", "playstation 4", "Nintendo switch", "sony", "ps4", "blu-ray", "Mirror", "New and sealed",
+    "remastered", "playstation 4", "Nintendo switch", "sony", "ps4", "blu-ray", "Mirror", "New and sealed", "day one edition",
     "Brand new", "Factory Sealed", "Sealed", "Game new", ",", "Microsoft", "Free post", "Used", "xbox one", "Uk pal", "Game code",
     "Hits", "Tom clancys", "Great Condition", "Videogame fasting", "switch", "new game", "premium",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
