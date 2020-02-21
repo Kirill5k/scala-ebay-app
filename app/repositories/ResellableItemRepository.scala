@@ -4,6 +4,7 @@ import java.time.Instant
 
 import cats.effect.{ContextShift, IO}
 import cats.implicits._
+import domain.ApiClientError.DbError
 import domain.{ApiClientError, ResellableItem}
 import play.api.libs.json.{JsObject, Json, OFormat}
 import play.modules.reactivemongo.ReactiveMongoApi
@@ -56,7 +57,7 @@ trait ResellableItemRepository[D <: ResellableItem, E <: ResellableItemEntity] {
     })
 
   private def toIO[A](result: Future[A]): IO[A] =
-    IO.fromFuture(IO(result)).handleErrorWith(error => IO.raiseError(ApiClientError.recoverFromDbError(error)))
+    IO.fromFuture(IO(result)).handleErrorWith(e => IO.raiseError(DbError(s"error during db operation: ${e.getMessage}")))
 
   private def postedAfterSelector(from: Instant): BSONDocument =
     BSONDocument("listingDetails.datePosted" -> BSONDocument("$gte" -> BSONString(from.toString)))

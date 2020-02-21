@@ -30,10 +30,6 @@ object ApiClientError {
       InternalError(s"unexpected error during http call: ${error.getMessage}")
   }
 
-  def recoverFromDbError: PartialFunction[Throwable, ApiClientError] = {
-    case error: Throwable => DbError(s"error during db operation: ${error.getMessage}")
-  }
-
   def fromFutureErrorToIO[A](futureError: Future[Either[ApiClientError, A]])(implicit cs: ContextShift[IO]): IO[A] =
     IO.fromFuture(IO(futureError)).flatMap(_.fold(IO.raiseError, IO.pure))
 }
