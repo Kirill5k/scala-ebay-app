@@ -7,13 +7,13 @@ import domain.ListingDetails
 private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
-    "remastered", "playstation 4", "Nintendo switch", "sony", "ps4", "blu-ray", "Mirror", "New and sealed", "day one edition",
-    "Brand new", "Factory Sealed", "Sealed", "Game new", ",", "Microsoft", "Free post", "Used", "xbox one", "Uk pal", "Game code",
-    "Hits", "Tom clancys", "Great Condition", "Videogame fasting", "switch", "new game", "premium",
+    "remastered", "playstation 4", "Nintendo switch", "sony", "ps4", "blu-ray", "Mirror", "New and sealed", "day one edition", "day 1",
+    "Brand new", "Factory Sealed", "Sealed", "Game new", ",", "Microsoft", "Free post", "Used", "xbox one", "Uk pal",
+    "Hits", "Tom clancys", "Great Condition", "Videogame fasting", "switch", "new game", "premium", "directors cut",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 
-  private val PLATFORMS_MATCH_REGEX = List("PS4", "PLAYSTATION 4", "NINTENDO SWITCH", "SWITCH", "XBOX ONE")
+  private val PLATFORMS_MATCH_REGEX = List("PS4", "PLAYSTATION 4", "NINTENDO SWITCH", "SWITCH", "XBOX ONE", "XBONE")
     .mkString("(?i)", "|", "").r
 
   private val PLATFORM_MAPPINGS: Map[String, String] = Map(
@@ -21,10 +21,13 @@ private[mappers] object GameDetailsMapper {
     "PLAYSTATION 4" -> "PS4",
     "SONY PLAYSTATION 3" -> "PS3",
     "SONY PLAYSTATION 2" -> "PS2",
+    "SONY PLAYSTATION 1" -> "PS1",
     "PLAYSTATION 2" -> "PS2",
     "NINTENDO SWITCH" -> "SWITCH",
     "MICROSOFT XBOX ONE" -> "XBOX ONE",
+    "XBONE" -> "XBOX ONE",
     "MICROSOFT XBOX 360" -> "XBOX 360",
+    "MICROSOFT XBOX" -> "XBOX",
   )
 
   def from(listingDetails: ListingDetails): GameDetails = {
