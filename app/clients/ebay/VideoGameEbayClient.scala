@@ -25,6 +25,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "travel case", "carrying case", "just the case", "no case", "toy-con", "toycon", "toy con",
     "player generator", "pve official", "read description", "see description", "100k", "50k", "case box", "dlc",
     "pre-order", "preorder", "season pass", "steelbook", "ring fit", "lego dimensions", "controller",
+    "family membership", "12 months",
     "fifa 20(\\s+(\\w+|\\d+)){5,}", "fallout 76(\\s+(\\w+|\\d+)){5,}", "borderlands 3(\\s+(\\w+|\\d+)){5,}",
     "rocket league(\\s+(\\w+|\\d+)){5,}", "ark survival(\\s+(\\w+|\\d+)){5,}"
   ).mkString("^.*?(?i)(", "|", ").*$").r
