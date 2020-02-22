@@ -118,7 +118,8 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
         ebayItemSummary("7", name = """Borderlands 3 - (ps4) S3RV 80's Execute (anointed 50% cyro ase )(new takedown)"""),
         ebayItemSummary("8", name = """Borderlands 3 -(ps4) Redistributor(anointed 100% dam ase x 6 pack)(new takedown)"""),
         ebayItemSummary("9", name = """Borderlands 3 “Teething St4kbot” SMGdmg/+5GRENADE/JWD (Xbox One)"""),
-        ebayItemSummary("10", name = """Borderlands 3 Rain Firestorm Grenade Anointed. 25% Damage 6 Seconds (Xbox1)"""),
+        ebayItemSummary("10", name = """Borderlands 3 “Teething St4kbot” SMGdmg/+5GRENADE/JWD (Xbox One)"""),
+        ebayItemSummary("11", name = """call of duty pre-order bonus"""),
       )))
         .doReturn(IO.pure(List()))
         .doReturn(IO.pure(List()))
