@@ -56,7 +56,7 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
     }
 
     "map title with unusual format" in {
-      val listingDetails = testListing.copy(title = "(Xbox One) Tom Clancy's Call of Duty: Modern Warfare", properties = Map())
+      val listingDetails = testListing.copy(title = "(Xbox One) Tom Clancy's Call of Duty: Modern Warfare - VR VR", properties = Map())
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
