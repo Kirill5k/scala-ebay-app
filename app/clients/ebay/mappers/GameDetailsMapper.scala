@@ -8,9 +8,9 @@ private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
     "Used", "Brand new", "Factory Sealed", "Sealed", "Game new", "New and sealed", "new game", "Great Condition", "official", "great value", "game nuevo",
-    "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "nintendo", "blu-ray", "switch",
+    "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "nintendo", "blu-ray", "switch", "xbox 360", "xbox one",
     "day one edition", "day 1", "remastered", "Hits", "premium", "directors cut",
-    "Free post", "xbox one", "Uk pal", "Mirror", "currys",
+    "Free post", "pal game", "Uk pal", "Mirror", "currys",
     "Tom clancys",
     "reorderable",
     "video game for", "videogames", "videogame fasting",
