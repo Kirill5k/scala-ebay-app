@@ -21,7 +21,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
 
   private val LISTING_NAME_TRIGGER_WORDS = List(
     "digital download", "digital code", "digitalcode", "download code", "upgrade code", "game code", "style covers", "credits",
-    "coin", "skins", "bundle", "no game", "digital key", "download key", "cartridge only", "disc only", "game only",
+    "coin", "skins", "bundle", "no game", "digital key", "download key", "cartridge only", "disc only", "game only", "cover only",
     "travel case", "carrying case", "just the case", "no case", "toycon", "toy con", "dualshock",
     "player generator", "pve official", "read description", "see description", "100k", "50k", "case box", "dlc",
     "preorder", "season pass", "steelbook", "ring fit", "lego dimensions", "controller",
