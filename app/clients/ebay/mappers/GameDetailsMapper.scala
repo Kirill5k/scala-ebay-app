@@ -54,6 +54,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("é", "e")
       .replaceAll("(?i)(playerunknown)", "Player Unknown")
       .replaceAll("(?i)(littlebigplant)", "Little Big Planet")
+      .replaceAll("(?i)(farcry)", "Far Cry")
       .replaceAll(" +", " ")
       .replaceAll("(?i)( -| VR |- )", " ")
       .replaceFirst("(?i)(^-| VR$)", "")
