@@ -63,5 +63,13 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
       gameDetails.name must be (Some("Call of Duty Modern Warfare"))
       gameDetails.platform must be (Some("XBOX ONE"))
     }
+
+    "split pubg title" in {
+      val listingDetails = testListing.copy(title = "playerunknowns battlegrounds", properties = Map())
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("Player Unknowns battlegrounds"))
+    }
   }
 }

@@ -9,7 +9,7 @@ private[mappers] object GameDetailsMapper {
   private val TITLE_WORDS_FILTER = List(
     "Used", "Brand new", "Factory Sealed", "Sealed", "Game new", "New and sealed", "new game", "Great Condition", "official", "great value", "game nuevo",
     "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "nintendo", "blu-ray", "switch", "xbox 360", "xbox one",
-    "day one edition", "day 1", "remastered", "Hits", "premium", "directors cut",
+    "day one edition", "day 1", "remastered", "Hits", "premium", "directors cut", "ctr",
     "Free post", "pal game", "Uk pal", "Mirror", "currys",
     "Tom clancys",
     "reorderable",
@@ -52,6 +52,8 @@ private[mappers] object GameDetailsMapper {
       .replaceAll(TITLE_WORDS_FILTER, "")
       .replaceFirst("(?i)\\w+(?=\\s+edition) edition", "")
       .replaceAll("é", "e")
+      .replaceAll("(?i)(playerunknown)", "Player Unknown")
+      .replaceAll("(?i)(littlebigplant)", "Little Big Planet")
       .replaceAll(" +", " ")
       .replaceAll(" -| VR |- ", " ")
       .replaceFirst("^-| VR$", "")

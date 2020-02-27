@@ -1,11 +1,9 @@
 package clients.ebay.mappers
 
-import java.net.URI
 import java.time.Instant
 
 import clients.ebay.browse.EbayBrowseResponse.EbayItem
 import domain.{ItemDetails, ListingDetails}
-
 
 private[ebay] trait EbayItemMapper[T <: ItemDetails] {
   def toDomain(ebayItem: EbayItem): (T, ListingDetails)
