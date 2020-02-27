@@ -11,7 +11,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.13.1"
 
-lazy val circeVersion = "0.12.3"
+lazy val circeVersion = "0.13.0"
 lazy val mockitoVersion = "1.10.3"
 
 libraryDependencies ++= Seq(
@@ -24,6 +24,7 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-core" % circeVersion,
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
+  "io.circe" %% "circe-generic-extras" % circeVersion,
   "org.reactivemongo" %% "play2-reactivemongo" % "0.20.2-play28",
 
   "net.jodah" % "expiringmap" % "0.5.9",
