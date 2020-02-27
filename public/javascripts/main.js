@@ -3,17 +3,14 @@ const limit = 10000
 
 const reject = err => Promise.reject(new Error(err))
 
-const displayStats = games => {
-  const total = games.length;
-  const withoutResellPrice = games.filter(g => !g.resellPrice).length;
-  const withGoodPrice = games.filter(g => g.resellPrice && g.listingDetails.price < g.resellPrice.cash).length;
+const displayStats = stats => {
   const videoGamesStats = document.getElementById("video-games");
-  videoGamesStats.querySelectorAll(".badge")[0].innerHTML = total;
-  videoGamesStats.querySelectorAll(".badge")[1].innerHTML = withoutResellPrice;
-  videoGamesStats.querySelectorAll(".badge")[2].innerHTML = withGoodPrice;
+  videoGamesStats.querySelectorAll(".badge")[0].innerHTML = stats.total;
+  videoGamesStats.querySelectorAll(".badge")[1].innerHTML = stats.withoutResellPrice;
+  videoGamesStats.querySelectorAll(".badge")[2].innerHTML = stats.profitableForReselling;
 }
 
-fetch(`/api/video-games?limit=${limit}&from=${from}`)
-  .then(res => res.status == 200 ? res.json() : reject(`error getting video games: ${res.status}`))
+fetch(`/api/video-games/summary?from=${from}`)
+  .then(res => res.status == 200 ? res.json() : reject(`error getting video games status: ${res.status}`))
   .then(displayStats)
   .catch(err => console.error(err))
