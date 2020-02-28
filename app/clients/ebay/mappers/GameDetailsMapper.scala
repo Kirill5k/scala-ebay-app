@@ -45,7 +45,7 @@ private[mappers] object GameDetailsMapper {
   }
 
   private def mapName(listingDetails: ListingDetails): Option[String] = {
-    val title = listingDetails.properties.getOrElse("Game Name", listingDetails.title).replaceAll("[#,’'*()/|:.\\[\\]]", "")
+    val title = listingDetails.properties.getOrElse("Game Name", listingDetails.title).replaceAll("[&#,’'*()/|:.\\[\\]]", "")
     PLATFORMS_MATCH_REGEX.split(title)
       .headOption
       .filter(!_.isEmpty)

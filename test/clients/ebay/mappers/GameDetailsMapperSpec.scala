@@ -47,7 +47,7 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
     }
 
     "remove redundant words from title" in {
-      val listingDetails = testListing.copy(title = "\uD83D\uDC96 Call of Duty: Modern Warfareused * | Limited Edition - Remastered:  Game new (Xbox One) ", properties = Map())
+      val listingDetails = testListing.copy(title = "\uD83D\uDC96 Call of Duty: Modern Warfareused * | Limited Edition - Remastered: & Game new (Xbox One) ", properties = Map())
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
