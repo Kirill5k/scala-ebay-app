@@ -10,10 +10,10 @@ private[mappers] object GameDetailsMapper {
     "Used", "Brand new", "Factory Sealed", "Sealed", "Game new", "New and sealed", "new game", "Great Condition", "official", "great value", "game nuevo",
     "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "nintendo", "blu-ray", "switch", "xbox 360", "xbox one", "ubisoft",
     "day one edition", "day 1", "remastered", "Hits", "premium", "directors cut", "ctr", "original",
-    "Free post", "pal game", "Uk pal", "Mirror", "currys",
+    "Free Shipping", "Free post", "pal game", "Mirror", "currys",
     "Tom clancys",
-    "\\bpal\\b", "\\bvr\\b", "\\ben\\b", "\\beu\\b", "\\bedt\\b", "\\bsft\\b",
-    "reorderable",
+    "\\bpal\\b", "\\bvr\\b", "\\ben\\b", "\\beu\\b", "\\bedt\\b", "\\bsft\\b", "\\bUK\\b",
+    "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Amazing Value",
     "video game for", "videogames", "videogame fasting",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
