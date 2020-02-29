@@ -5,7 +5,7 @@ organization := "io.kirill"
 version := "1.0"
 
 herokuAppName in Compile := "scala-ebay-app"
-herokuJdkVersion in Compile := "11"
+herokuJdkVersion in Compile := "13"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
