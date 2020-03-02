@@ -5,7 +5,7 @@ import java.time.Instant
 import cats.effect.{ContextShift, IO}
 import cats.implicits._
 import domain.ApiClientError.DbError
-import domain.{ApiClientError, ResellableItem}
+import domain.ResellableItem
 import play.api.libs.json.{JsObject, Json, OFormat}
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.{Cursor, ReadConcern, ReadPreference}
@@ -48,11 +48,10 @@ trait ResellableItemRepository[D <: ResellableItem, E <: ResellableItemEntity] {
     findAllEntities(limit, from, to).map(_.map(entityMapper.toDomain))
 
   private def findAllEntities(limit: Option[Int], from: Option[Instant], to: Option[Instant]): IO[Seq[E]] = {
-    val selectors: List[(String, BSONDocument)] = List(from.map(postedAfterSelector), to.map(postedBeforeSelector)).flatten
-
+    val selectors = postedDateRangeSelector(from, to).fold(BSONDocument())(BSONDocument(_))
     toIO(itemCollection.flatMap { collection =>
       collection
-        .find(selector = BSONDocument(selectors), projection = Option.empty[JsObject])
+        .find(selector = selectors, projection = Option.empty[JsObject])
         .sort(Json.obj("listingDetails.datePosted" -> -1))
         .cursor[E](ReadPreference.primary)
         .collect[List](limit.getOrElse(-1), Cursor.FailOnError[List[E]]())
@@ -62,11 +61,8 @@ trait ResellableItemRepository[D <: ResellableItem, E <: ResellableItemEntity] {
   private def toIO[A](result: Future[A]): IO[A] =
     IO.fromFuture(IO(result)).handleErrorWith(e => IO.raiseError(DbError(s"error during db operation: ${e.getMessage}")))
 
-  private def postedAfterSelector(from: Instant): (String, BSONDocument) = {
-    "listingDetails.datePosted" -> BSONDocument("$gt" -> BSONString(from.toString))
-  }
-
-  private def postedBeforeSelector(to: Instant): (String, BSONDocument) = {
-    "listingDetails.datePosted" -> BSONDocument("$lte" -> BSONString(to.toString))
+  private def postedDateRangeSelector(from: Option[Instant], to: Option[Instant]): Option[(String, BSONDocument)] = {
+    val dateSelector = List(from.map(f => "$gte" -> BSONString(f.toString)), to.map(t => "$lt" -> BSONString(t.toString))).flatten
+    if (dateSelector.nonEmpty) Some("listingDetails.datePosted" -> BSONDocument(dateSelector)) else None
   }
 }
