@@ -78,6 +78,16 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
       }
     }
 
+    "find all video games posted before provided date" in {
+      val videoGameRepository = inject[VideoGameRepository]
+      val findAllResult = videoGameRepository.findAll(to = Some(Instant.now.minusSeconds(100)))
+
+
+      whenReady(findAllResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
+        items must be (List(videoGames(0)))
+      }
+    }
+
     "find all video games with limit" in {
       val videoGameRepository = inject[VideoGameRepository]
       val findAllResult = videoGameRepository.findAll(Some(1))

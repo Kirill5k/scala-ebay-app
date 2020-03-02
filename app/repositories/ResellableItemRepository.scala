@@ -44,21 +44,29 @@ trait ResellableItemRepository[D <: ResellableItem, E <: ResellableItemEntity] {
         .one(entity)
     }) *> IO.pure(())
 
-  def findAll(limit: Option[Int] = None, from: Option[Instant] = None): IO[Seq[D]] =
-    findAllEntities(limit, from).map(_.map(entityMapper.toDomain))
+  def findAll(limit: Option[Int] = None, from: Option[Instant] = None, to: Option[Instant] = None): IO[Seq[D]] =
+    findAllEntities(limit, from, to).map(_.map(entityMapper.toDomain))
 
-  private def findAllEntities(limit: Option[Int], from: Option[Instant]): IO[Seq[E]] =
+  private def findAllEntities(limit: Option[Int], from: Option[Instant], to: Option[Instant]): IO[Seq[E]] = {
+    val selectors: List[(String, BSONDocument)] = List(from.map(postedAfterSelector), to.map(postedBeforeSelector)).flatten
+
     toIO(itemCollection.flatMap { collection =>
       collection
-        .find(selector = from.fold(BSONDocument())(postedAfterSelector), projection = Option.empty[JsObject])
+        .find(selector = BSONDocument(selectors), projection = Option.empty[JsObject])
         .sort(Json.obj("listingDetails.datePosted" -> -1))
         .cursor[E](ReadPreference.primary)
         .collect[List](limit.getOrElse(-1), Cursor.FailOnError[List[E]]())
     })
+  }
 
   private def toIO[A](result: Future[A]): IO[A] =
     IO.fromFuture(IO(result)).handleErrorWith(e => IO.raiseError(DbError(s"error during db operation: ${e.getMessage}")))
 
-  private def postedAfterSelector(from: Instant): BSONDocument =
-    BSONDocument("listingDetails.datePosted" -> BSONDocument("$gte" -> BSONString(from.toString)))
+  private def postedAfterSelector(from: Instant): (String, BSONDocument) = {
+    "listingDetails.datePosted" -> BSONDocument("$gt" -> BSONString(from.toString))
+  }
+
+  private def postedBeforeSelector(to: Instant): (String, BSONDocument) = {
+    "listingDetails.datePosted" -> BSONDocument("$lte" -> BSONString(to.toString))
+  }
 }

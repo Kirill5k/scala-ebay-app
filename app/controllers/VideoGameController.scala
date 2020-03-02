@@ -21,12 +21,12 @@ class VideoGameController @Inject()(itemService: VideoGameService, override val 
 
   implicit val genDevConfig: Configuration = Configuration.default.withDiscriminator("_type")
 
-  def getAll(limit: Option[Int], from: Option[Instant]): Action[AnyContent] = Action.async {
-    toResponse(itemService.getLatest(limit, from).unsafeToFuture())
+  def getAll(limit: Option[Int], from: Option[Instant], to: Option[Instant]): Action[AnyContent] = Action.async {
+    toResponse(itemService.getLatest(limit, from, to).unsafeToFuture())
   }
 
-  def summary(from: Option[Instant]): Action[AnyContent] = Action.async {
-    toResponse(itemService.getLatest(None, from)
+  def summary(from: Option[Instant], to: Option[Instant]): Action[AnyContent] = Action.async {
+    toResponse(itemService.getLatest(None, from, to)
       .map(ResellableItemResponse.itemsSummary)
       .unsafeToFuture())
   }

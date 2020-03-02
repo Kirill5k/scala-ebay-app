@@ -30,8 +30,8 @@ trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: Resellab
   def save(item: I): IO[Unit] =
     itemRepository.save(item)
 
-  def getLatest(limit: Option[Int], from: Option[Instant]): IO[Seq[I]] =
-    itemRepository.findAll(limit, from)
+  def getLatest(limit: Option[Int], from: Option[Instant], to: Option[Instant]): IO[Seq[I]] =
+    itemRepository.findAll(limit, from, to)
 
   def isNew(item: I): IO[Boolean] =
     itemRepository.existsByUrl(item.listingDetails.url).map(!_)
