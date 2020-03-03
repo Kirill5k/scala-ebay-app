@@ -59,7 +59,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(super heroes)", "Super Heroes")
       .replaceAll(" +", " ")
       .replaceAll("(?i)( -|- )", " ")
-      .replaceFirst("^-", "")
+      .replaceFirst("(?i)(^-|^NEW|NEW$)", "")
       .trim()
       .some
   }
