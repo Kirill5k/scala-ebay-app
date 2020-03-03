@@ -27,7 +27,7 @@ class VideoGameController @Inject()(itemService: VideoGameService, override val 
 
   def summary(from: Option[Instant], to: Option[Instant]): Action[AnyContent] = Action.async {
     toResponse(itemService.getLatest(None, from, to)
-      .map(ResellableItemResponse.itemsSummary)
+      .map(ResellableItemResponse.resellableItemsSummaryResponse)
       .unsafeToFuture())
   }
 

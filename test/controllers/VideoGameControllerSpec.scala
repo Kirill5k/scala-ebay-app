@@ -49,7 +49,7 @@ class VideoGameControllerSpec extends PlaySpec with MockitoSugar with ArgumentMa
 
       status(itemsResponse) mustBe OK
       contentType(itemsResponse) mustBe Some("application/json")
-      contentAsString(itemsResponse) mustBe ("""{"total":3,"withoutResellPrice":1,"profitableForReselling":1,"_type":"ResellableItemsSummary"}""")
+      contentAsString(itemsResponse) mustBe ("""{"total":3,"unrecognized":{"total":1,"items":[{"name":"Battlefield 1 XBOX ONE","url":"https://www.ebay.co.uk/itm/battlefield-1"}]},"profitable":{"total":1,"items":[{"name":"super mario 3 XBOX ONE","url":"https://www.ebay.co.uk/itm/super-mario-3"}]},"_type":"ResellableItemsSummaryResponse"}""")
       verify(service).getLatest(None, Some(from), Some(to))
     }
 
