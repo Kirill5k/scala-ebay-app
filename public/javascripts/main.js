@@ -6,8 +6,8 @@ const reject = err => Promise.reject(new Error(err))
 const displayStats = stats => {
   const videoGamesStats = document.getElementById("video-games");
   videoGamesStats.querySelectorAll(".badge")[0].innerHTML = stats.total;
-  videoGamesStats.querySelectorAll(".badge")[1].innerHTML = stats.withoutResellPrice;
-  videoGamesStats.querySelectorAll(".badge")[2].innerHTML = stats.profitableForReselling;
+  videoGamesStats.querySelectorAll(".badge")[1].innerHTML = stats.unrecognized.total;
+  videoGamesStats.querySelectorAll(".badge")[2].innerHTML = stats.profitable.total;
 }
 
 fetch(`/api/video-games/summary?from=${from}`)
