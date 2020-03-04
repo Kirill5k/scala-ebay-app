@@ -79,5 +79,21 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
 
       gameDetails.name must be (Some("Wolfenstein The NEW Colosus"))
     }
+
+    "remove new from the end and beginning of title" in {
+      val listingDetails = testListing.copy(title = "NEW LEGO Marvels Avengers New", properties = Map())
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("LEGO Marvels Avengers"))
+    }
+
+    "remove PAL from title" in {
+      val listingDetails = testListing.copy(title = "PAL LEGO Marvels Avengers", properties = Map())
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("LEGO Marvels Avengers"))
+    }
   }
 }

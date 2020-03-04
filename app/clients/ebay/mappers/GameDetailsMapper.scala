@@ -15,6 +15,7 @@ private[mappers] object GameDetailsMapper {
     "\\bpal\\b", "\\bvr\\b", "\\ben\\b", "\\beu\\b", "\\bedt\\b", "\\bsft\\b", "\\bUK\\b",
     "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Amazing Value",
     "video game for", "videogames", "videogame fasting",
+    "NEW$", "^NEW",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 
@@ -59,7 +60,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(superheroes)", "Super Heroes")
       .replaceAll(" +", " ")
       .replaceAll("(?i)( -|- )", " ")
-      .replaceFirst("(?i)(^-|^NEW|NEW$)", "")
+      .replaceFirst("(?i)(^-)", "")
       .trim()
       .some
   }
