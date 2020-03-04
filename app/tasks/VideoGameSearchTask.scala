@@ -14,7 +14,7 @@ import scala.language.postfixOps
 class VideoGameSearchTask @Inject()(override val itemService: VideoGameService, actorSystem: ActorSystem)(implicit override val ex: ExecutionContext)
   extends ResellableItemFinder[VideoGame, GameDetails, VideoGameEntity] {
 
-  override protected def minMarginPercentage: Int = 0
+  override protected def minMarginPercentage: Int = 15
 
   actorSystem.scheduler.scheduleWithFixedDelay(initialDelay = 5 seconds, delay = 60 seconds) { () =>
     searchForCheapItems().compile.drain.unsafeRunSync
