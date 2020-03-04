@@ -10,7 +10,7 @@ private[mappers] object GameDetailsMapper {
     "Used", "Brand new", "Factory Sealed", "Sealed", "Game new", "New and sealed", "new game", "Great Condition", "official", "great value", "game nuevo",
     "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "nintendo", "blu-ray", "switch", "xbox 360", "xbox one", "ubisoft",
     "day one edition", "day 1", "remastered", "Hits", "premium", "directors cut", "ctr", "original",
-    "Free Shipping", "Free post", "pal game", "Mirror", "currys",
+    "fast free post", "fast and free p p", "Free Shipping", "Free post", "pal game", "Mirror", "currys",
     "Tom clancys",
     "\\bpal\\b", "\\bvr\\b", "\\ben\\b", "\\beu\\b", "\\bedt\\b", "\\bsft\\b", "\\bUK\\b",
     "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Amazing Value",
@@ -56,7 +56,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(playerunknown)", "Player Unknown")
       .replaceAll("(?i)(littlebigplanet)", "Little Big Planet")
       .replaceAll("(?i)(farcry)", "Far Cry")
-      .replaceAll("(?i)(super heroes)", "Super Heroes")
+      .replaceAll("(?i)(superheroes)", "Super Heroes")
       .replaceAll(" +", " ")
       .replaceAll("(?i)( -|- )", " ")
       .replaceFirst("(?i)(^-|^NEW|NEW$)", "")

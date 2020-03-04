@@ -21,14 +21,17 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
 
   private val LISTING_NAME_TRIGGER_WORDS = List(
     "digital download", "digital code", "digitalcode", "download code", "upgrade code", "game code", "style covers", "credits", "digital game", "game disc",
-    "coin", "skins", "bundle", "no game", "digital key", "download key", "cartridge only", "disc only", "game only", "cover only", "box only", "collectors box",
-    "travel case", "carrying case", "just the case", "no case", "toycon", "toy con", "dualshock", "efigs", "gamepad",
+    "coin", "skins", "bundle", "no game", "digital key", "download key", "collectors box",
+    "Software Only", "cartridge only", "disc only", "game only", "cover only", "box only",
+    "cover case", "carry case", "travel case", "carrying case", "just the case", "no case",
+    "toycon", "toy con", "dualshock", "efigs", "gamepad",
     "player generator", "pve official", "pve tek", "100k", "50k", "case box", "dlc",
     "preorder", "season pass", "steelbook", "ring fit", "lego dimensions", "controller",
     "family membership", "12 month", "dynamic theme",
     "read descr", "see desc","read post", "read post", "see details", "account",
-    "fifa 20(\\s+(\\w+|\\d+)){5,}", "fallout 76(\\s+(\\w+|\\d+)){5,}", "borderlands 3(\\s+(\\w+|\\d+)){5,}",
-    "rocket league(\\s+(\\w+|\\d+)){5,}", "ark survival(\\s+(\\w+|\\d+)){5,}"
+    "fifa 20(\\s+(\\w+|\\d+)){5,}", "fallout 76(\\s+(\\w+|\\d+)){5,}", "borderlands 3(\\s+(\\w+|\\d+)){5,}", "diablo 3(\\s+(\\w+|\\d+)){5,}",
+    "rocket league(\\s+(\\w+|\\d+)){5,}", "ark survival(\\s+(\\w+|\\d+)){5,}", "pokemon(\\s+(\\w+|\\d+)){6,}",
+    "((\\w+|\\d+)\\s+){3,}pokemon", "((\\w+|\\d+)\\s+){3,}rocket league"
   ).mkString("^.*?(?i)(", "|", ").*$").r
 
   override protected val categoryId: Int = 139973

@@ -13,6 +13,7 @@ scalaVersion := "2.13.1"
 
 lazy val circeVersion = "0.13.0"
 lazy val mockitoVersion = "1.10.3"
+lazy val reactiveMongoPlayVersion = "0.20.3-play28"
 
 libraryDependencies ++= Seq(
   guice,
@@ -25,7 +26,7 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
   "io.circe" %% "circe-generic-extras" % circeVersion,
-  "org.reactivemongo" %% "play2-reactivemongo" % "0.20.2-play28",
+  "org.reactivemongo" %% "play2-reactivemongo" % reactiveMongoPlayVersion,
 
   "net.jodah" % "expiringmap" % "0.5.9",
 
