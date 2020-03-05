@@ -12,7 +12,7 @@ private[mappers] object GameDetailsMapper {
     "day one edition", "day 1", "remastered", "Hits", "premium", "directors cut", "ctr", "original",
     "fast free post", "fast and free p p", "Free Shipping", "Free post", "pal game", "Mirror", "currys",
     "Tom clancys",
-    "\\bpal\\b", "\\bvr\\b", "\\ben\\b", "\\beu\\b", "\\bedt\\b", "\\bsft\\b", "\\bUK\\b",
+    "\\bpal\\b", "\\bvr\\b", "\\ben\\b", "\\beu\\b", "\\bedt\\b", "\\bsft\\b", "\\bUK\\b", "\\bsave s\\b",
     "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Amazing Value",
     "video game for", "videogames", "videogame fasting",
     "NEW$", "^NEW",
