@@ -89,7 +89,7 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
     }
 
     "remove PAL and save s from title" in {
-      val listingDetails = testListing.copy(title = "PAL LEGO Marvels Avengers save s", properties = Map())
+      val listingDetails = testListing.copy(title = "PAL LEGO Marvels Avengers Save £s", properties = Map())
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
