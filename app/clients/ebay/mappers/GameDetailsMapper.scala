@@ -7,12 +7,12 @@ import domain.ListingDetails
 private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
-    "Used", "Brand new", "Factory Sealed", "Sealed", "Game new", "New and sealed", "new game", "Great Condition", "official", "great value", "game nuevo",
+    "Used", "Brand new", "Factory Sealed", "New\\s+Sealed", "Sealed", "Game new", "New and sealed", "new game", "Great Condition", "official", "great value", "game nuevo", "Incredible Value",
     "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "nintendo", "blu-ray", "switch", "xbox 360", "xbox one", "ubisoft",
     "day one edition", "day 1", "remastered", "Hits", "premium", "directors cut", "ctr", "original",
     "fast free post", "fast and free p p", "Free Shipping", "Free post", "pal game", "Mirror", "currys",
     "Tom clancys",
-    "\\bpal\\b", "\\bvr\\b", "\\ben\\b", "\\beu\\b", "\\bedt\\b", "\\bsft\\b", "\\bUK\\b", "\\bsave s\\b", "\\bremake\\b",
+    "\\bpal\\b", "\\bvr\\b", "\\ben\\b", "\\beu\\b", "\\bedt\\b", "\\bnsw\\b", "\\bsft\\b", "\\bUK\\b", "\\bsave s\\b", "\\bremake\\b",
     "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Amazing Value",
     "video game for", "videogames", "videogame fasting",
     "NEW$", "^NEW",
@@ -46,7 +46,7 @@ private[mappers] object GameDetailsMapper {
   }
 
   private def mapName(listingDetails: ListingDetails): Option[String] = {
-    val title = listingDetails.properties.getOrElse("Game Name", listingDetails.title).replaceAll("[£&#,’'*()/|:.\\[\\]]", "")
+    val title = listingDetails.properties.getOrElse("Game Name", listingDetails.title).replaceAll("[!•£&#,’'*()/|:.\\[\\]]", "")
     PLATFORMS_MATCH_REGEX.split(title)
       .headOption
       .filter(!_.isEmpty)

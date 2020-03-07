@@ -95,5 +95,13 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
 
       gameDetails.name must be (Some("LEGO Marvels Avengers"))
     }
+
+    "remove other random characters" in {
+      val listingDetails = testListing.copy(title = "Death Stranding • New • Sealed •", properties = Map())
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("Death Stranding"))
+    }
   }
 }
