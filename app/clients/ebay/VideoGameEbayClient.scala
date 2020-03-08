@@ -25,7 +25,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "Software Only", "cartridge only", "disc only", "game only", "cover only", "box only",
     "cover case", "carry case", "travel case", "carrying case", "just the case", "no case",
     "toycon", "toy con", "dualshock", "efigs", "gamepad", "joycon", "joy con", "controller",
-    "player generator", "pve official", "pve tek", "100k", "50k", "case box", "dlc",
+    "player generator", "100k", "50k", "case box", "dlc", "pve",
     "preorder", "season pass", "steelbook", "ring fit", "lego dimensions", "minifigure",
     "family membership", "12 month", "dynamic theme",
     "read descr", "see desc","read post", "read post", "see details", "account",

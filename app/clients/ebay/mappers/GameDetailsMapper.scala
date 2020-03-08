@@ -15,7 +15,7 @@ private[mappers] object GameDetailsMapper {
     "\\bpal\\b", "\\bvr\\b", "\\ben\\b", "\\beu\\b", "\\bedt\\b", "\\bnsw\\b", "\\bsft\\b", "\\bUK\\b", "\\bsave s\\b", "\\bremake\\b",
     "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Amazing Value",
     "video game for", "videogames", "videogame fasting",
-    "NEW$", "^NEW",
+    "NEW$", "^NEW", "^Marvels",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 
