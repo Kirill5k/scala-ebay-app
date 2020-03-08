@@ -12,14 +12,14 @@ private[mappers] object GameDetailsMapper {
     "day one edition", "day 1", "remastered", "Hits", "premium", "directors cut", "ctr", "original", "dbl pk", "double pk", "dbl pack",
     "fast free post", "fast and free p p", "Free Shipping", "Free post", "pal game", "Mirror", "currys",
     "\\bTom clancys\\b", "\\bTom clancy\\b",
-    "\\bpal\\b", "\\bvr\\b", "\\ben\\b", "\\beu\\b", "\\bedt\\b", "\\bnsw\\b", "\\bsft\\b", "\\bUK\\b", "\\bsave s\\b", "\\bremake\\b",
+    "\\bpal\\b", "\\bvr\\b", "\\ben\\b", "\\beu\\b", "\\bedt\\b", "\\bnsw\\b", "\\bsft\\b", "\\bUK\\b", "\\bsave s\\b", "\\bremake\\b", "\\bhd\\b", "\\bremaster\\b",
     "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Amazing Value",
     "video game for", "videogames", "videogame fasting",
     "NEW$", "^NEW", "\\b^Marvels\\b", "\\b^Marvel\\b",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 
-  private val PLATFORMS_MATCH_REGEX = List("PS4", "PLAYSTATION 4", "NINTENDO SWITCH", "SWITCH", "XBOX ONE", "XBONE", "XBOX 360")
+  private val PLATFORMS_MATCH_REGEX = List("PS4", "PLAYSTATION 4", "NINTENDO SWITCH", "SWITCH", "XBOX ONE", "XBOX 1", "XBONE", "XBOX 360")
     .mkString("(?i)", "|", "").r
 
   private val PLATFORM_MAPPINGS: Map[String, String] = Map(
@@ -32,6 +32,7 @@ private[mappers] object GameDetailsMapper {
     "NINTENDO SWITCH" -> "SWITCH",
     "MICROSOFT XBOX ONE" -> "XBOX ONE",
     "XBONE" -> "XBOX ONE",
+    "XBOX 1" -> "XBOX ONE",
     "MICROSOFT XBOX 360" -> "XBOX 360",
     "MICROSOFT XBOX" -> "XBOX",
   )
