@@ -24,14 +24,14 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "coin", "skins", "bundle", "no game", "digital key", "download key", "collectors box",
     "Software Only", "cartridge only", "disc only", "game only", "cover only", "box only",
     "cover case", "carry case", "travel case", "carrying case", "just the case", "no case",
-    "toycon", "toy con", "dualshock", "efigs", "gamepad", "joycon", "joy con", "controller",
+    "toycon", "toy con", "dualshock", "efigs", "gamepad", "joycon", "joy con", "controller", "headset",
     "player generator", "100k", "50k", "case box", "dlc", "pve",
     "preorder", "season pass", "steelbook", "ring fit", "lego dimensions", "minifigure",
     "family membership", "12 month", "dynamic theme",
     "read descr", "see desc","read post", "read post", "see details", "account",
     "fifa 20(\\s+(\\w+|\\d+)){5,}", "fallout 76(\\s+(\\w+|\\d+)){5,}", "borderlands 3(\\s+(\\w+|\\d+)){5,}", "diablo 3(\\s+(\\w+|\\d+)){5,}",
     "rocket league(\\s+(\\w+|\\d+)){5,}", "ark survival(\\s+(\\w+|\\d+)){5,}", "pokemon(\\s+(\\w+|\\d+)){6,}",
-    "((\\w+|\\d+)\\s+){3,}pokemon", "((\\w+|\\d+)\\s+){3,}rocket league"
+    "((\\w+|\\d+)\\s+){3,}pokemon", "((\\w+|\\d+)\\s+){3,}rocket league", "((\\w+|\\d+)\\s+){3,}fallout 76"
   ).mkString("^.*?(?i)(", "|", ").*$").r
 
   override protected val categoryId: Int = 139973

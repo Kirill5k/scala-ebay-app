@@ -89,11 +89,11 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
     }
 
     "remove PAL and save s from title" in {
-      val listingDetails = testListing.copy(title = "PAL LEGO Marvels Avengers Save £s", properties = Map())
+      val listingDetails = testListing.copy(title = "Playstation 4/PAL-Rise Of The Tomb Raider NEW", properties = Map())
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      gameDetails.name must be (Some("LEGO Marvels Avengers"))
+      gameDetails.name must be (Some("Rise Of The Tomb Raider"))
     }
 
     "remove other random characters" in {
@@ -102,6 +102,14 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
       gameDetails.name must be (Some("Death Stranding"))
+    }
+
+    "remove edition from title" in {
+      val listingDetails = testListing.copy(title = "Call of Duty: Infinite Warfare -- Legacy Edition", properties = Map())
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("Call of Duty Infinite Warfare"))
     }
   }
 }
