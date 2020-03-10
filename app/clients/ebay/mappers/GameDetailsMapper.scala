@@ -9,10 +9,12 @@ private[mappers] object GameDetailsMapper {
   private val TITLE_WORDS_FILTER = List(
     "Used", "Brand new", "Factory Sealed", "New\\s+Sealed", "Sealed", "Game new", "New and sealed", "new game", "Great Condition", "official", "great value", "game nuevo", "Incredible Value",
     "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "nintendo", "blu-ray", "switch", "xbox 360", "xbox one", "ubisoft",
-    "day one edition", "day 1", "remastered", "Hits", "premium", "directors cut", "ctr", "original", "dbl pk", "double pk", "dbl pack",
+    "day one edition", "day one", "day 1", "remastered", "Hits", "premium", "directors cut", "ctr", "original", "dbl pk", "double pk", "dbl pack", "double pack",
     "fast free post", "fast and free p p", "Free Shipping", "Free post", "pal game", "Mirror", "currys",
     "\\bTom clancys\\b", "\\bTom clancy\\b",
-    "\\bpal\\b", "\\bvr\\b", "\\ben\\b", "\\beu\\b", "\\bedt\\b", "\\bnsw\\b", "\\bsft\\b", "\\bUK\\b", "\\bsave s\\b", "\\bremake\\b", "\\bhd\\b", "\\bremaster\\b",
+    "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bUK\\b",
+    "\\bns\\b", "\\bvr\\b", "\\bedt\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b",
+    "\\bremake\\b", "\\bhd\\b", "\\bremaster\\b",
     "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Amazing Value",
     "video game for", "videogames", "videogame fasting",
     "NEW$", "^NEW", "\\b^Marvels\\b", "\\b^Marvel\\b",
@@ -52,7 +54,7 @@ private[mappers] object GameDetailsMapper {
       .find(_.nonEmpty)
       .getOrElse(title)
       .replaceAll(TITLE_WORDS_FILTER, "")
-      .replaceFirst("(?i)\\w+(?=\\s+edition) edition", "")
+      .replaceFirst("(?i)\\w+(?=\\s+(edition|\\bed\\b)) (edition|\\bed\\b)", "")
       .replaceAll("é", "e")
       .replaceAll("(?i)(playerunknown)", "Player Unknown")
       .replaceAll("(?i)(littlebigplanet)", "Little Big Planet")

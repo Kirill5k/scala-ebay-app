@@ -26,7 +26,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "cover case", "carry case", "travel case", "carrying case", "just the case", "no case",
     "toycon", "toy con", "dualshock", "efigs", "gamepad", "joycon", "joy con", "controller", "headset", "\\bhdmi\\b",
     "player generator", "100k", "50k", "case box", "dlc", "pve",
-    "preorder", "season pass", "steelbook", "ring fit", "lego dimensions", "minifigure",
+    "preorder", "season pass", "steelbook", "ring fit", "lego dimensions", "minifigure", "collectable",
     "family membership", "12 month", "dynamic theme",
     "read descr", "see desc","read post", "read post", "see details", "account",
     "fifa 20(\\s+(\\w+|\\d+)){5,}", "fallout 76(\\s+(\\w+|\\d+)){5,}", "borderlands 3(\\s+(\\w+|\\d+)){5,}", "diablo 3(\\s+(\\w+|\\d+)){5,}",
