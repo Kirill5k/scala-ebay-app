@@ -121,7 +121,8 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
         ebayItemSummary("10", name = """Borderlands 3 “Teething St4kbot” SMGdmg/+5GRENADE/JWD (Xbox One)"""),
         ebayItemSummary("11", name = """call of duty pre-order bonus"""),
         ebayItemSummary("12", name = """All Shiny Max IV Battle Ready Eeveelutions Pokemon Sword Shield Nintendo Switch"""),
-        ebayItemSummary("13", name = """new shiny wheels rocket league XBOX""")
+        ebayItemSummary("13", name = """new shiny wheels rocket league XBOX"""),
+        ebayItemSummary("14", name = """Shiny 6IV Go Park Level 1 Timid Trace Gardevoir Sword/Shield Switch Master Ball""")
       )))
         .doReturn(IO.pure(List()))
         .doReturn(IO.pure(List()))

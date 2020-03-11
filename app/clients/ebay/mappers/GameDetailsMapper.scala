@@ -7,17 +7,18 @@ import domain.ListingDetails
 private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
-    "Used", "Brand new", "Factory Sealed", "New\\s+Sealed", "Sealed", "Game new", "New and sealed", "new game", "Great Condition", "official", "great value", "game nuevo", "Incredible Value",
+    "Used", "Brand new", "Factory Sealed", "New\\s+Sealed", "Sealed", "Game new", "New and sealed", "new game",
+    "Great Condition", "official", "great value", "game nuevo", "Incredible Value", "great prices",
     "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "nintendo", "blu-ray", "switch", "xbox 360", "xbox one", "ubisoft",
-    "day one edition", "day one", "day 1", "remastered", "Hits", "premium", "directors cut", "ctr", "original", "dbl pk", "double pk", "dbl pack", "double pack",
-    "fast free post", "fast and free p p", "Free Shipping", "Free post", "pal game", "Mirror", "currys",
+    "day one edition", "day one", "day 1 edition", "day 1", "remastered", "Hits", "premium", "directors cut", "ctr", "original", "dbl pk", "double pk", "dbl pack", "double pack",
+    "fast free post", "fast and free p p", "Free Shipping", "Free post", "pal game", "Mirror", "currys", "Highly Rated eBay Seller",
     "\\bTom clancys\\b", "\\bTom clancy\\b",
     "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bUK\\b",
     "\\bns\\b", "\\bvr\\b", "\\bedt\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b",
     "\\bremake\\b", "\\bhd\\b", "\\bremaster\\b",
     "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Amazing Value",
     "video game for", "videogames", "videogame fasting",
-    "NEW$", "^NEW", "\\b^Marvels\\b", "\\b^Marvel\\b",
+    "NEW$", "^NEW", "\\b^Marvels\\b",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 
@@ -35,6 +36,7 @@ private[mappers] object GameDetailsMapper {
     "MICROSOFT XBOX ONE" -> "XBOX ONE",
     "XBONE" -> "XBOX ONE",
     "XBOX 1" -> "XBOX ONE",
+    "XB1" -> "XBOX ONE",
     "MICROSOFT XBOX 360" -> "XBOX 360",
     "MICROSOFT XBOX" -> "XBOX",
   )
