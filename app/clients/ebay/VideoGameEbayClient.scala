@@ -26,7 +26,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "cover case", "carry case", "travel case", "carrying case", "just the case", "no case", "carry bag",
     "toycon", "toy con", "dualshock", "efigs", "gamepad", "joycon", "joy con", "controller", "headset", "\\bhdmi\\b", "\\busb\\b",
     "player generator", "100k", "50k", "case box", "dlc", "pve", "starter pack",
-    "preorder", "season pass", "steelbook", "ring fit", "lego dimensions", "minifigure", "collectable", "variety kit",
+    "preorder", "season pass", "steelbook", "ring fit", "lego dimensions", "minifigure", "collectable", "collectible", "variety kit",
     "family membership", "12 month", "dynamic theme",
     "read descr", "see desc","read post", "see detail", "read detail", "account",
     "phone case", "phone covers", "samsung", "huawei", "iphone",
