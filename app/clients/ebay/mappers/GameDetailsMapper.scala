@@ -10,7 +10,7 @@ private[mappers] object GameDetailsMapper {
     "Used", "Brand new", "Factory Sealed", "New\\s+Sealed", "Sealed", "Game new", "New and sealed", "new game",
     "Great Condition", "official", "great value", "game nuevo", "Incredible Value", "great prices",
     "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "nintendo", "blu-ray", "switch", "xbox 360", "xbox one", "ubisoft",
-    "day one edition", "day one", "day 1 edition", "day 1", "remastered", "Hits", "directors cut", "ctr", "original", "dbl pk", "double pk", "dbl pack", "double pack",
+    "day one edition", "day one", "day 1 edition", "day 1", "remastered", "directors cut", "ctr", "original", "dbl pk", "double pk", "dbl pack", "double pack",
     "fast free post", "fast and free p\\s+p", "Free Shipping", "Free post", "pal game", "Mirror", "currys", "Highly Rated eBay Seller",
     "\\bTom clancys\\b", "\\bTom clancy\\b",
     "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bUK\\b", "\\bsvgc\\b",
