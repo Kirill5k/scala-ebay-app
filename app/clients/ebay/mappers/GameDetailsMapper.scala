@@ -10,10 +10,10 @@ private[mappers] object GameDetailsMapper {
     "Used", "Brand new", "Factory Sealed", "New\\s+Sealed", "Sealed", "Game new", "New and sealed", "new game",
     "Great Condition", "official", "great value", "game nuevo", "Incredible Value", "great prices",
     "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "nintendo", "blu-ray", "switch", "xbox 360", "xbox one", "ubisoft",
-    "day one edition", "day one", "day 1 edition", "day 1", "remastered", "Hits", "premium", "directors cut", "ctr", "original", "dbl pk", "double pk", "dbl pack", "double pack",
+    "day one edition", "day one", "day 1 edition", "day 1", "remastered", "Hits", "directors cut", "ctr", "original", "dbl pk", "double pk", "dbl pack", "double pack",
     "fast free post", "fast and free p\\s+p", "Free Shipping", "Free post", "pal game", "Mirror", "currys", "Highly Rated eBay Seller",
     "\\bTom clancys\\b", "\\bTom clancy\\b",
-    "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bUK\\b",
+    "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bUK\\b", "\\bsvgc\\b",
     "\\bns\\b", "\\bvr\\b", "\\bedt\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b",
     "\\bremake\\b", "\\bhd\\b", "\\bremaster\\b",
     "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Amazing Value",
@@ -22,8 +22,9 @@ private[mappers] object GameDetailsMapper {
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 
-  private val PLATFORMS_MATCH_REGEX = List("PS4", "PLAYSTATION 4", "NINTENDO SWITCH", "SWITCH", "XBOX ONE", "XBOX 1", "XBONE", "XBOX 360")
-    .mkString("(?i)", "|", "").r
+  private val PLATFORMS_MATCH_REGEX = List(
+    "PS4", "PLAYSTATION 4", "NINTENDO SWITCH", "SWITCH", "XBOX ONE", "XBOX 1", "XBONE", "XBOX 360"
+  ).mkString("(?i)", "|", "").r
 
   private val PLATFORM_MAPPINGS: Map[String, String] = Map(
     "SONY PLAYSTATION 4" -> "PS4",
