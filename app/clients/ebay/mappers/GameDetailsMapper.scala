@@ -7,14 +7,14 @@ import domain.ListingDetails
 private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
-    "Used", "Brand new", "Factory Sealed", "New\\s+Sealed", "Sealed", "Game new", "New and sealed", "new game",
+    "Used", "Brand new", "Factory Sealed", "New\\s+Sealed", "Sealed", "Game new", "New and sealed", "new game", "very good",
     "Great Condition", "official", "great value", "game nuevo", "Incredible Value", "great prices",
-    "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "nintendo", "blu-ray", "switch", "xbox 360", "xbox one", "ubisoft",
+    "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "playstation", "nintendo", "blu-ray", "switch", "xbox 360", "xbox one", "ubisoft",
     "day one edition", "day one", "day 1 edition", "day 1", "remastered", "directors cut", "ctr", "original", "dbl pk", "double pk", "dbl pack", "double pack",
     "fast free post", "fast and free p\\s+p", "Free Shipping", "Free post", "pal game", "Mirror", "currys", "Highly Rated eBay Seller",
     "\\bTom clancys\\b", "\\bTom clancy\\b",
     "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bUK\\b", "\\bsvgc\\b",
-    "\\bns\\b", "\\bvr\\b", "\\bedt\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b",
+    "\\bns\\b", "\\bvr\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bhits\\b",
     "\\bremake\\b", "\\bhd\\b", "\\bremaster\\b",
     "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Amazing Value",
     "video game for", "videogames", "videogame fasting",
@@ -32,6 +32,7 @@ private[mappers] object GameDetailsMapper {
     "SONY PLAYSTATION 3" -> "PS3",
     "SONY PLAYSTATION 2" -> "PS2",
     "SONY PLAYSTATION 1" -> "PS1",
+    "SONY PLAYSTATION" -> "PS4",
     "PLAYSTATION 2" -> "PS2",
     "NINTENDO SWITCH" -> "SWITCH",
     "MICROSOFT XBOX ONE" -> "XBOX ONE",
@@ -57,7 +58,7 @@ private[mappers] object GameDetailsMapper {
       .find(_.nonEmpty)
       .getOrElse(title)
       .replaceAll(TITLE_WORDS_FILTER, "")
-      .replaceFirst("(?i)\\w+(?=\\s+(edition|\\bed\\b)) (edition|\\bed\\b)", "")
+      .replaceFirst("(?i)\\w+(?=\\s+(edition|\\bed\\b|\\bedt\\b)) (edition|\\bed\\b|\\bedt\\b)", "")
       .replaceAll("é", "e")
       .replaceAll("(?i)(playerunknown)", "Player Unknown")
       .replaceAll("(?i)(littlebigplanet)", "Little Big Planet")
