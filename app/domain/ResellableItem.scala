@@ -32,7 +32,7 @@ object ResellableItemOps {
       } yield s"""${if (isEnding) "ENDING" else "NEW"} "$itemSummary" - ebay: £$price, cex: £${rp.exchange}(${profitPercentage.intValue}%)/£${rp.cash} $url"""
   }
 
-  implicit class ResellableItemSyntax(val item: ResellableItem) extends AnyVal {
+  implicit class ResellableItemSyntax(private val item: ResellableItem) extends AnyVal {
     def notificationMessage: Option[String] = messageGenerator.generate(item)
   }
 }

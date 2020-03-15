@@ -26,7 +26,7 @@ private[ebay] object EbayItemMapper {
     }
   }
 
-  implicit class EbayItemMapperOps[T](val ebayItem: EbayItem) extends AnyVal {
+  implicit class EbayItemMapperOps[T](private val ebayItem: EbayItem) extends AnyVal {
     def as[T <: ItemDetails](implicit m: EbayItemMapper[T]): (T, ListingDetails) = m.toDomain(ebayItem)
   }
 
