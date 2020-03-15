@@ -10,10 +10,12 @@ private[mappers] object GameDetailsMapper {
     "Used", "Brand new", "Factory Sealed", "New\\s+Sealed", "Sealed", "Game new", "New and sealed", "new game", "very good",
     "Great Condition", "official", "great value", "game nuevo", "Incredible Value", "great prices",
     "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "playstation", "nintendo", "blu-ray", "switch", "xbox 360", "xbox one", "ubisoft",
-    "day one edition", "day one", "day 1 edition", "day 1", "remastered", "directors cut", "ctr", "original", "dbl pk", "double pk", "dbl pack", "double pack",
+    "game for the", "limited run games", "super rare games",
+    "day zero E", "day one edition", "day one", "day 1 edition", "day 1", "remastered", "directors cut", "ctr", "original", "english",
+    "dbl pk", "double pk", "dbl pack", "double pack",
     "fast free post", "fast and free p\\s+p", "Free Shipping", "Free post", "pal game", "Mirror", "currys", "Highly Rated eBay Seller",
     "\\bTom clancys\\b", "\\bTom clancy\\b",
-    "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bUK\\b", "\\bsvgc\\b",
+    "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bUK\\b", "\\bvgc\\b","\\bxb\\b",
     "\\bns\\b", "\\bvr\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bhits\\b",
     "\\bremake\\b", "\\bhd\\b", "\\bremaster\\b",
     "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Amazing Value",
@@ -23,7 +25,7 @@ private[mappers] object GameDetailsMapper {
   ).mkString("(?i)", "|", "")
 
   private val PLATFORMS_MATCH_REGEX = List(
-    "PS4", "PLAYSTATION 4", "NINTENDO SWITCH", "SWITCH", "XBOX ONE", "XBOX 1", "XBONE", "XBOX 360"
+    "PS4", "PLAYSTATION 4", "NINTENDO SWITCH", "SWITCH", "XBOX ONE", "XBOX 1", "XB1", "XBONE", "XBOX 360"
   ).mkString("(?i)", "|", "").r
 
   private val PLATFORM_MAPPINGS: Map[String, String] = Map(
@@ -68,7 +70,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(NierAutomata)", "Nier Automata")
       .replaceAll("(?i)(fifa 2020)", "FIFA 20")
       .replaceAll(" +", " ")
-      .replaceAll("(?i)( -|- )", " ")
+      .replaceAll("(?i)( -|- | –|– )", " ")
       .replaceFirst("(?i)(^-)", "")
       .trim()
       .some

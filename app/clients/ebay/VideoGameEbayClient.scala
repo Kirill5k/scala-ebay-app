@@ -21,15 +21,17 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
 
   private val LISTING_NAME_TRIGGER_WORDS = List(
     "digital download", "digital code", "digitalcode", "download code", "upgrade code", "game code", "style covers", "credits", "digital game", "game disc",
-    "coin", "skins", "bundle", "no game", "digital key", "download key", "collectors box",
+    "coin", "skins", "bundle", "no game", "digital key", "download key", "collectors box", "dutch import", "german version",
     "Software Only", "cartridge only", "cart only", "disc only", "game only", "cover only", "box only", "arabic",
-    "cover case", "carry case", "travel case", "carrying case", "just the case", "no case", "carry bag", "Storage Bag", "Hard Case", "case cover",
-    "toycon", "toy con", "dualshock", "efigs", "gamepad", "joycon", "joy con", "controller", "headset", "\\bhdmi\\b", "\\busb\\b", "\\bhdd\\b",
+    "cover case", "carry case", "travel case", "carrying case", "just the case", "no case", "carry bag", "Storage Bag", "Hard Case", "case cover", "storage case", "game case",
+    "grip stick", "sniper thumbs", "skin grip", "thumbsticks", "vault case", "grip combat",
+    "toycon", "toy con", "dualshock", "efigs", "gamepad", "joycon", "joy con", "controller", "headset", "\\bhdmi\\b", "\\busb\\b", "\\bhdd\\b", "dual shock", "dualshock",
     "player generator", "100k", "50k", "case box", "dlc", "pve", "starter pack",
     "preorder", "season pass", "steelbook", "ring fit", "lego dimensions", "minifigure", "collectable", "collectible", "variety kit",
     "family membership", "12 month", "dynamic theme",
     "read descr", "see desc","read post", "see detail", "read detail", "account",
     "phone case", "phone covers", "samsung", "huawei", "iphone",
+    "\\bhori\\b",
     "fifa 20(\\s+(\\w+|\\d+)){5,}", "fallout 76(\\s+(\\w+|\\d+)){5,}", "borderlands 3(\\s+(\\w+|\\d+)){5,}", "diablo 3(\\s+(\\w+|\\d+)){5,}",
     "rocket league(\\s+(\\w+|\\d+)){5,}", "ark survival(\\s+(\\w+|\\d+)){5,}", "pokemon(\\s+(\\w+|\\d+)){6,}",
     "((\\w+|\\d+)\\s+){3,}swordshield", "((\\w+|\\d+)\\s+){3,}pokemon", "((\\w+|\\d+)\\s+){3,}rocket league", "((\\w+|\\d+)\\s+){3,}fallout 76"
