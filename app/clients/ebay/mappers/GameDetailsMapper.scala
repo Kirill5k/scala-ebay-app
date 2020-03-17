@@ -10,7 +10,7 @@ private[mappers] object GameDetailsMapper {
     "Used", "Brand new", "Factory Sealed", "New\\s+Sealed", "Sealed", "Game new", "New and sealed", "new game", "very good",
     "Great Condition", "official", "great value", "game nuevo", "Incredible Value", "great prices",
     "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "playstation", "nintendo", "blu-ray", "switch", "xbox 360", "xbox one", "ubisoft",
-    "game for the", "limited run games", "super rare games",
+    "game for the", "game for", "limited run games", "super rare games",
     "day zero E", "day one edition", "day one", "day 1 edition", "day 1", "remastered", "directors cut", "ctr", "original", "english",
     "dbl pk", "double pk", "dbl pack", "double pack",
     "fast free post", "fast and free p\\s+p", "Free Shipping", "Free post", "pal game", "Mirror", "currys", "Highly Rated eBay Seller",
@@ -20,7 +20,7 @@ private[mappers] object GameDetailsMapper {
     "\\bremake\\b", "\\bhd\\b", "\\bremaster\\b",
     "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Amazing Value",
     "video game for", "videogames", "videogame fasting",
-    "NEW$", "^NEW", "\\b^Marvels\\b",
+    "NEW$", "^NEW", "\\bMarvels\\b",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 
@@ -69,6 +69,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(W2K)", "WWE 2k")
       .replaceAll("(?i)(NierAutomata)", "Nier Automata")
       .replaceAll("(?i)(fifa 2020)", "FIFA 20")
+      .replaceAll("(?i)(\\bnsane\\b)", "N Sane")
       .replaceAll(" +", " ")
       .replaceAll("(?i)( -|- | –|– )", " ")
       .replaceFirst("(?i)(^-)", "")
