@@ -78,9 +78,8 @@ private[mappers] object GameDetailsMapper {
   }
 
   private def mapPlatform(listingDetails: ListingDetails): Option[String] = {
-    listingDetails.properties.get("Platform")
-      .map(platform => platform.split(",|/")(0))
-      .orElse(PLATFORMS_MATCH_REGEX.findFirstIn(listingDetails.title))
+    PLATFORMS_MATCH_REGEX.findFirstIn(listingDetails.title)
+      .orElse(listingDetails.properties.get("Platform").map(_.split(",|/")(0)))
       .map(_.toUpperCase.trim)
       .map(platform => PLATFORM_MAPPINGS.getOrElse(platform, platform))
   }

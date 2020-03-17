@@ -35,6 +35,15 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
       gameDetails.genre must be (Some("Action"))
     }
 
+    "map platform from title even if it exists in properties" in {
+      val listingDetails = testListing.copy(properties = testListing.properties + ("Platform" -> "Xbox 360"))
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.platform must be (Some("XBOX ONE"))
+    }
+
+
     "get details from title if properties are missing" in {
       val listingDetails = testListing.copy(properties = Map())
 
