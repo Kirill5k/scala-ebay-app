@@ -28,7 +28,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "toycon", "toy con", "dualshock", "efigs", "gamepad", "joycon", "joy con", "controller",
     "headset", "\\bhdmi\\b", "\\busb\\b", "\\bhdd\\b", "dual shock", "dualshock", "nintendo labo",
     "player generator", "100k", "50k", "case box", "dlc", "pve", "starter pack",
-    "preorder", "season pass", "steelbook", "ring fit", "lego dimensions", "minifigure", "collectable", "collectible", "variety kit",
+    "preorder", "season pass", "steelbook", "steelbook", "ring fit", "lego dimensions", "minifigure", "collectable", "collectible", "variety kit",
     "family membership", "12 month", "dynamic theme",
     "read descr", "see desc","read post", "see detail", "read detail", "account",
     "phone case", "phone covers", "samsung", "huawei", "iphone",
