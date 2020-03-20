@@ -21,7 +21,8 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
 
   private val LISTING_NAME_TRIGGER_WORDS = List(
     "game (code|disc|key)", "(digital|upgrade|download|no) (game|code|key)",
-    "(Software|cartridge|cart|game|disc|cover|box) only",
+    "(software|cartridge|cart|game|disc|cover|box) only",
+    "(case|variety|accessories) kit",
     "(cover|carry|travel|carrying|just the|no|hard|storage|game) (case|bag)",
     "digital download", "digitalcode", "style covers", "credits",
     "coin", "skins", "collectors box", "dutch import", "german version", "soundtrack", "poster",
@@ -30,7 +31,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "toycon", "toy con", "dualshock", "efigs", "gamepad", "joycon", "joy con", "controller",
     "headset", "\\bhdmi\\b", "\\busb\\b", "\\bhdd\\b", "dual shock", "dualshock", "nintendo labo",
     "player generator", "100k", "50k", "case box", "dlc", "pve", "starter pack",
-    "preorder", "season pass", "steelbook", "steelbook", "ring fit", "lego dimensions", "minifigure", "collectable", "collectible", "variety kit",
+    "preorder", "season pass", "steelbook", "steelbook", "ring fit", "lego dimensions", "minifigure", "collectable", "collectible",
     "family membership", "12 month", "dynamic theme",
     "read descr", "see desc","read post", "see detail", "read detail", "account",
     "phone case", "phone covers", "samsung", "huawei", "iphone",
