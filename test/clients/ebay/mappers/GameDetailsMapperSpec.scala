@@ -129,13 +129,21 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
       gameDetails.name must be (Some("Call of Duty Infinite Warfare"))
     }
 
-    "remove HD from title" in {
-      val listingDetails = testListing.copy(title = "Assassins Creed - Rogue HD - XBOX 1 GAME NEUF", properties = Map())
+    "remove HD and double pack from title" in {
+      val listingDetails = testListing.copy(title = "Assassins Creed - Rogue HD - double pack - XBOX 1 GAME NEUF", properties = Map())
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
       gameDetails.name must be (Some("Assassins Creed  Rogue"))
       gameDetails.platform must be (Some("XBOX ONE"))
+    }
+
+    "remove day one edition from title" in {
+      val listingDetails = testListing.copy(title = "Assassins Creed - Rogue - day one edition - day 0 ed - day 1 E - day 1", properties = Map())
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("Assassins Creed  Rogue"))
     }
   }
 }
