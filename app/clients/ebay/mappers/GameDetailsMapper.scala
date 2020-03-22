@@ -22,6 +22,7 @@ private[mappers] object GameDetailsMapper {
     "NEW$", "^NEW", "\\bMarvels\\b",
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b))?",
+    "(legacy warfare|premium( online)?) (\\bed\\b|edition|\\bedt\\b)",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 

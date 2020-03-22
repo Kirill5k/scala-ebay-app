@@ -122,7 +122,7 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
     }
 
     "remove ed from title" in {
-      val listingDetails = testListing.copy(title = "Call of Duty: Infinite Warfare -- Legacy ed", properties = Map())
+      val listingDetails = testListing.copy(title = "Call of Duty: Infinite Warfare - premium edt -- Legacy ed", properties = Map())
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
@@ -130,7 +130,7 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
     }
 
     "remove HD and double pack from title" in {
-      val listingDetails = testListing.copy(title = "Assassins Creed - Rogue HD - double pack - XBOX 1 GAME NEUF", properties = Map())
+      val listingDetails = testListing.copy(title = "Assassins Creed - Rogue HD - double pack - premium online edition - XBOX 1 GAME NEUF", properties = Map())
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
