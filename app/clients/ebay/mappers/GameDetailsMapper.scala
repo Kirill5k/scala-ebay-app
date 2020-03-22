@@ -14,7 +14,7 @@ private[mappers] object GameDetailsMapper {
     "remastered", "directors cut", "ctr", "original", "english",
     "fast free post", "fast and free p\\s+p", "Free Shipping", "Free post", "pal game", "Mirror", "currys", "Highly Rated eBay Seller",
     "\\bTom clancys\\b", "\\bTom clancy\\b",
-    "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bes\\b", "\\bUK\\b", "\\bvgc\\b","\\bxb\\b",
+    "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bes\\b", "\\bUK\\b", "\\bvgc\\b","\\bxb\\b", "\\ban\\b",
     "\\bns\\b", "\\bvr\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bhits\\b",
     "\\bremake\\b", "\\bhd\\b", "\\bremaster\\b",
     "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Amazing Value",
@@ -22,7 +22,7 @@ private[mappers] object GameDetailsMapper {
     "NEW$", "^NEW", "\\bMarvels\\b",
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b))?",
-    "(legacy warfare|premium( online)?) (\\bed\\b|edition|\\bedt\\b)",
+    "(legacy warfare|premium( online)?|digital deluxe) (\\bed\\b|edition|\\bedt\\b)",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 
