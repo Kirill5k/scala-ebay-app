@@ -114,7 +114,7 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
     }
 
     "remove edition from title" in {
-      val listingDetails = testListing.copy(title = "Call of Duty: Infinite Warfare -- Legacy Edition", properties = Map())
+      val listingDetails = testListing.copy(title = "Call of Duty: Infinite Warfare -- Legacy pro Edition", properties = Map())
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
