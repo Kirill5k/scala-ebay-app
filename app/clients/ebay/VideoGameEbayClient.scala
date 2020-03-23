@@ -20,7 +20,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "itemLocationCountry:GB,"
 
   private val LISTING_NAME_TRIGGER_WORDS = List(
-    "game (code|disc|key|cart)", "(digital|upgrade|download|no) (game|code|key|download)",
+    "game (code|disc|key|cart)", "(unused|digital|upgrade|download|no) (game|code|key|download)",
     "(software|cartridge|cart|game|disc|cover|box) only",
     "(case|variety|accessories) (kit|box)",
     "(cover|carry|travel|carrying|just the|no|hard|storage|game|vault) (case|bag)",
@@ -29,13 +29,13 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "coin", "skins", "collectors box", "dutch import", "german version", "soundtrack", "poster",
     "arabic", "case cover",
     "grip stick", "sniper thumbs", "skin grip", "thumbsticks", "grip combat",
-    "toycon", "toy con", "dualshock", "efigs", "gamepad", "joycon", "joy con", "controller",
+    "toycon", "toy con", "dualshock", "efigs", "gamepad", "joycon", "joy con", "controller", "stand holder",
     "headset", "\\bhdmi\\b", "\\busb\\b", "\\bhdd\\b", "dual shock", "dualshock", "nintendo labo",
     "player generator", "100k", "50k", "dlc", "pve", "starter pack",
     "preorder", "season pass", "steelbook", "ring fit", "lego dimensions", "minifigure", "collectable", "collectible",
     "family membership", "12 month", "dynamic theme", "account",
     "phone case", "phone covers", "samsung", "huawei", "iphone",
-    "\\bhori\\b", "$best",
+    "\\bhori\\b",
     "fifa 20(\\s+(\\w+|\\d+)){5,}", "fallout 76(\\s+(\\w+|\\d+)){5,}", "borderlands 3(\\s+(\\w+|\\d+)){5,}", "diablo 3(\\s+(\\w+|\\d+)){5,}",
     "rocket league(\\s+(\\w+|\\d+)){5,}", "ark survival(\\s+(\\w+|\\d+)){5,}", "pokemon(\\s+(\\w+|\\d+)){6,}",
     "((\\w+|\\d+)\\s+){3,}swordshield", "((\\w+|\\d+)\\s+){3,}pokemon", "((\\w+|\\d+)\\s+){3,}rocket league", "((\\w+|\\d+)\\s+){3,}fallout 76"

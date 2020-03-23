@@ -19,7 +19,7 @@ private[mappers] object GameDetailsMapper {
     "\\bremake\\b", "\\bhd\\b", "\\bremaster\\b",
     "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Amazing Value",
     "video game for", "videogames", "videogame fasting",
-    "NEW$", "^NEW", "\\bMarvels\\b",
+    "NEW$", "^NEW", "\\bMarvels\\b", "$best",
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b))?",
     "(legacy( pro)?|premium( online)?|digital deluxe) (\\bed\\b|edition|\\bedt\\b)",
