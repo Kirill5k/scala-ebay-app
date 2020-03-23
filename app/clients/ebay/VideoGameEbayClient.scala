@@ -21,7 +21,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
 
   private val LISTING_NAME_TRIGGER_WORDS = List(
     "game (code|disc|key|cart)", "(unused|digital|upgrade|download|no) (game|code|key|download)",
-    "(software|cartridge|cart|game|disc|cover|box) only",
+    "(software|cartridge|cart|game|disc|cover|box|sleeve) only",
     "(case|variety|accessories) (kit|box)",
     "(cover|carry|travel|carrying|just the|no|hard|storage|game|vault) (case|bag)",
     "(read|see) (detail|desc|post)",
