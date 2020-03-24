@@ -87,7 +87,7 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers with Inspectors {
         "Call of Duty: Infinite Warfare HD - double pack - premium online edition - XBOX 1 GAME NEUF",
         "Call of Duty: Infinite Warfare - premium edt -- Legacy pro ed - elite edition",
         "Playstation 4/PAL-Call of Duty: Infinite Warfare NEW",
-        "Marvel's Call of Duty: Infinite Warfare • New • Sealed •",
+        "Marvel's Call of Duty: Infinite Warfare • new and factory Sealed •",
         "(Xbox One) Tom Clancy's Call of Duty: Infinite Warfare deluxe edition - VR vr NEW",
         "\uD83D\uDC96 Call of Duty: Infinite Warfareused * | Limited Edition - Remastered: & Game new (Xbox One) "
       )
