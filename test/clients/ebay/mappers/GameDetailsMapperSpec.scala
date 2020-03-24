@@ -5,7 +5,7 @@ import java.time.Instant
 import domain.ListingDetails
 import org.scalatest._
 
-class GameDetailsMapperSpec extends WordSpec with MustMatchers {
+class GameDetailsMapperSpec extends WordSpec with MustMatchers with Inspectors {
 
   val testListing = ListingDetails(
     "https://www.ebay.co.uk/itm/Call-of-Duty-Modern-Warfare-Xbox-One-/274204760218",
@@ -55,24 +55,6 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
       gameDetails.genre must be (None)
     }
 
-    "remove redundant words from title" in {
-      val listingDetails = testListing.copy(title = "\uD83D\uDC96 Call of Duty: Modern Warfareused * | Limited Edition - Remastered: & Game new (Xbox One) ", properties = Map())
-
-      val gameDetails = GameDetailsMapper.from(listingDetails)
-
-      gameDetails.name must be (Some("Call of Duty Modern Warfare"))
-      gameDetails.platform must be (Some("XBOX ONE"))
-    }
-
-    "map title with unusual format" in {
-      val listingDetails = testListing.copy(title = "(Xbox One) Tom Clancy's Call of Duty: Modern Warfare deluxe edition - VR vr NEW", properties = Map())
-
-      val gameDetails = GameDetailsMapper.from(listingDetails)
-
-      gameDetails.name must be (Some("Call of Duty Modern Warfare"))
-      gameDetails.platform must be (Some("XBOX ONE"))
-    }
-
     "split pubg title" in {
       val listingDetails = testListing.copy(title = "NEW playerunknowns battlegrounds pal PSVR Ultimate Evil Ed", properties = Map())
 
@@ -97,53 +79,23 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
       gameDetails.name must be (Some("LEGO Marvel Avengers"))
     }
 
-    "remove PAL and save s from title" in {
-      val listingDetails = testListing.copy(title = "Playstation 4/PAL-Rise Of The Tomb Raider NEW", properties = Map())
+    "remove rubbish words from title" in {
+      val titles = List(
+        "Call of Duty: Infinite Warfare - video game for the PLAYSTATION 4",
+        "Call of Duty: Infinite Warfare - Fast and Free shipping",
+        "Call of Duty: Infinite Warfare - day one edition - day 0 ed - day 1 E - day 1",
+        "Call of Duty: Infinite Warfare HD - double pack - premium online edition - XBOX 1 GAME NEUF",
+        "Call of Duty: Infinite Warfare - premium edt -- Legacy pro ed - elite edition",
+        "Playstation 4/PAL-Call of Duty: Infinite Warfare NEW",
+        "Marvel's Call of Duty: Infinite Warfare • New • Sealed •",
+        "(Xbox One) Tom Clancy's Call of Duty: Infinite Warfare deluxe edition - VR vr NEW",
+        "\uD83D\uDC96 Call of Duty: Infinite Warfareused * | Limited Edition - Remastered: & Game new (Xbox One) "
+      )
 
-      val gameDetails = GameDetailsMapper.from(listingDetails)
-
-      gameDetails.name must be (Some("Rise Of The Tomb Raider"))
-    }
-
-    "remove other random characters" in {
-      val listingDetails = testListing.copy(title = "Marvel's Spider-man • New • Sealed •", properties = Map())
-
-      val gameDetails = GameDetailsMapper.from(listingDetails)
-
-      gameDetails.name must be (Some("Spider-man"))
-    }
-
-    "remove edition from title" in {
-      val listingDetails = testListing.copy(title = "Call of Duty: Infinite Warfare -- Legacy pro Edition", properties = Map())
-
-      val gameDetails = GameDetailsMapper.from(listingDetails)
-
-      gameDetails.name must be (Some("Call of Duty Infinite Warfare"))
-    }
-
-    "remove ed from title" in {
-      val listingDetails = testListing.copy(title = "Call of Duty: Infinite Warfare - premium edt -- Legacy ed", properties = Map())
-
-      val gameDetails = GameDetailsMapper.from(listingDetails)
-
-      gameDetails.name must be (Some("Call of Duty Infinite Warfare"))
-    }
-
-    "remove HD and double pack from title" in {
-      val listingDetails = testListing.copy(title = "Assassins Creed - Rogue HD - double pack - premium online edition - XBOX 1 GAME NEUF", properties = Map())
-
-      val gameDetails = GameDetailsMapper.from(listingDetails)
-
-      gameDetails.name must be (Some("Assassins Creed  Rogue"))
-      gameDetails.platform must be (Some("XBOX ONE"))
-    }
-
-    "remove day one edition from title" in {
-      val listingDetails = testListing.copy(title = "Assassins Creed - Rogue - day one edition - day 0 ed - day 1 E - day 1", properties = Map())
-
-      val gameDetails = GameDetailsMapper.from(listingDetails)
-
-      gameDetails.name must be (Some("Assassins Creed  Rogue"))
+      forAll (titles) { title =>
+        val details = GameDetailsMapper.from(testListing.copy(title = title, properties = Map()))
+        details.name must be (Some("Call of Duty Infinite Warfare"))
+      }
     }
   }
 }
