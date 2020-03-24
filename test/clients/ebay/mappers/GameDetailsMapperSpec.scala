@@ -74,7 +74,7 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers {
     }
 
     "split pubg title" in {
-      val listingDetails = testListing.copy(title = "NEW playerunknowns battlegrounds pal PSVR", properties = Map())
+      val listingDetails = testListing.copy(title = "NEW playerunknowns battlegrounds pal PSVR Ultimate Evil Ed", properties = Map())
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 

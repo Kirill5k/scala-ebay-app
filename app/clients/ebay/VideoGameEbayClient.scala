@@ -36,9 +36,10 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "family membership", "12 month", "dynamic theme", "account",
     "phone case", "phone covers", "samsung", "huawei", "iphone",
     "\\bhori\\b",
-    "fifa 20(\\s+(\\w+|\\d+)){5,}", "fallout 76(\\s+(\\w+|\\d+)){5,}", "borderlands 3(\\s+(\\w+|\\d+)){5,}", "diablo 3(\\s+(\\w+|\\d+)){5,}",
-    "rocket league(\\s+(\\w+|\\d+)){5,}", "ark survival(\\s+(\\w+|\\d+)){5,}", "pokemon(\\s+(\\w+|\\d+)){6,}",
-    "((\\w+|\\d+)\\s+){3,}swordshield", "((\\w+|\\d+)\\s+){3,}pokemon", "((\\w+|\\d+)\\s+){3,}rocket league", "((\\w+|\\d+)\\s+){3,}fallout 76"
+    "ark survival(\\s+(\\w+|\\d+)){5,}",
+    "fifa 20(\\s+(\\w+|\\d+)){5,}", "fallout 76(\\s+(\\w+|\\d+)){5,}", "((\\w+|\\d+)\\s+){3,}fallout 76", "borderlands 3(\\s+(\\w+|\\d+)){5,}",
+    "((\\w+|\\d+)\\s+){1,}rocket league(\\s+(\\w+|\\d+)){2,}", "((\\w+|\\d+)\\s+){3,}rocket league", "rocket league(\\s+(\\w+|\\d+)){5,}",
+    "((\\w+|\\d+)\\s+){3,}swordshield", "((\\w+|\\d+)\\s+){3,}pokemon", "pokemon(\\s+(\\w+|\\d+)){6,}"
   ).mkString("^.*?(?i)(", "|", ").*$").r
 
   override protected val categoryId: Int = 139973

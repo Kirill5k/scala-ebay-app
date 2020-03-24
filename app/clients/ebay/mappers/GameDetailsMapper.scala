@@ -9,7 +9,7 @@ private[mappers] object GameDetailsMapper {
   private val TITLE_WORDS_FILTER = List(
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b))?",
-    "(legacy( pro)?|premium( online)?|(digital )?deluxe|standard) (\\bed\\b|edition|\\bedt\\b)",
+    "(legacy( pro)?|premium( online)?|(digital )?deluxe|standard|ultimate( evil)?) (\\bed\\b|edition|\\bedt\\b)",
     "Used", "Brand new", "Factory Sealed", "New\\s+Sealed", "Sealed", "Game new", "New and sealed", "new game", "very good", "unopened",
     "Great Condition", "official", "great value", "game nuevo", "Incredible Value", "great prices",
     "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "playstation", "nintendo", "blu-ray", "switch", "xbox 360", "xbox one", "ubisoft",
