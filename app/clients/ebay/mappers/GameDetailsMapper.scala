@@ -9,17 +9,18 @@ private[mappers] object GameDetailsMapper {
   private val TITLE_WORDS_FILTER = List(
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b))?",
-    "(legacy( pro)?|premium( online)?|(digital )?deluxe|standard|ultimate( evil)?) (\\bed\\b|edition|\\bedt\\b)",
+    "(game of the year|legacy( pro)?|premium( online)?|(digital )?deluxe|standard|ultimate( evil)?) (\\bed\\b|edition|\\bedt\\b)",
     "(fast (and )?)?free (shipping|post|delivery|p\\s+p)",
     "(video( )?)?game for( the)?",
     "(brand|game) new", "(new( and)?)?( factory)?\\s+sealed",
-    "(great|good|incredible) (condition|value|prices)",
-    "Used", "new game", "very good", "unopened",
-    "official", "game nuevo",
-    "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "playstation", "nintendo", "blu-ray", "switch", "xbox 360", "xbox one", "ubisoft",
+    "(great|good|incredible|excellent) (condition|value|prices)",
+    "Used", "new game", "very good", "unopened", "game nuevo",
+    "official", "blu-ray",
+    "ubisoft", "currys",
+    "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "playstation", "nintendo", "switch", "xbox 360", "xbox one", "\\bxbo\\b",
     "limited run games", "super rare games",
-    "remastered", "directors cut", "ctr", "original", "english", "deluxe", "standard",
-    "pal game", "Mirror", "currys", "Highly Rated eBay Seller",
+    "remastered", "directors cut", "ctr", "original", "english", "deluxe", "standard", "\\bgoty\\b","game of the year",
+    "pal game", "Mirror", "Highly Rated eBay Seller",
     "\\bTom clancy(s)?\\b",
     "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bes\\b", "\\bUK\\b", "\\bvgc\\b","\\bxb\\b", "\\ban\\b",
     "\\bns\\b", "\\bvr\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bhits\\b", "\\bdmc\\b",
@@ -61,7 +62,7 @@ private[mappers] object GameDetailsMapper {
   }
 
   private def mapName(listingDetails: ListingDetails): Option[String] = {
-    val title = listingDetails.properties.getOrElse("Game Name", listingDetails.title).replaceAll("[—“”!•£&#,’'*()/|:.\\[\\]]", "")
+    val title = listingDetails.properties.getOrElse("Game Name", listingDetails.title).replaceAll("[`—“”!•£&#,’'*()/|:.\\[\\]]", "")
     PLATFORMS_MATCH_REGEX.split(title)
       .find(_.nonEmpty)
       .getOrElse(title)
