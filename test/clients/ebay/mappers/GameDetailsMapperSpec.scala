@@ -83,7 +83,7 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers with Inspectors {
       val titles = List(
         "Call of Duty: Infinite Warfare - game of the year goty",
         "Call of Duty: Infinite Warfare - game of the year edition goty",
-        "Call of Duty: Infinite Warfare - video game for the PLAYSTATION 4",
+        "Call of Duty: Infinite Warfare - video game for the playstation vr PLAYSTATION 4",
         "Call of Duty: Infinite Warfare - video game for the PLAYSTATION 4",
         "Call of Duty: Infinite Warfare - Fast free post",
         "Call of Duty: Infinite Warfare - Fast and Free shipping",
