@@ -9,7 +9,7 @@ private[mappers] object GameDetailsMapper {
   private val TITLE_WORDS_FILTER = List(
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b))?",
-    "(game of the year|legacy( pro)?|premium( online)?|(digital )?deluxe|standard|ultimate( evil)?) (\\bed\\b|edition|\\bedt\\b)",
+    "(goty|game of the year|legacy( pro)?|premium( online)?|(digital )?deluxe|standard|ultimate( evil)?) (\\bed\\b|edition|\\bedt\\b)",
     "(fast\\s+(and )?)?free (shipping|post|delivery|p\\s+p)",
     "(video( )?)?game for( the)?( playstation)?( vr)?",
     "(brand|game) new", "(new( and)?)?( factory)?\\s+sealed",
@@ -25,12 +25,14 @@ private[mappers] object GameDetailsMapper {
     "\\bremake\\b", "\\bhd\\b",
     "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Highly Rated eBay Seller",
     "videogames", "videogame fasting",
-    "NEW$", "^NEW", "\\bMarvels\\b", "$best",
+    "NEW$", "^NEW", "\\bMarvels\\b", "$best", "$software",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 
   private val PLATFORMS_MATCH_REGEX = List(
-    "PS4", "PLAYSTATION 4", "NINTENDO SWITCH", "SWITCH", "XBOX ONE", "XBOX 1", "XB1", "XBONE", "XBOX 360"
+    "PS4", "PLAYSTATION 4",
+    "NINTENDO SWITCH", "SWITCH",
+    "XBOX ONE", "XBOX 1", "XB1", "XBONE", "X BOX ONE", "XBOX 360"
   ).mkString("(?i)", "|", "").r
 
   private val PLATFORM_MAPPINGS: Map[String, String] = Map(
@@ -44,6 +46,7 @@ private[mappers] object GameDetailsMapper {
     "NINTENDO SWITCH" -> "SWITCH",
     "MICROSOFT XBOX ONE" -> "XBOX ONE",
     "XBONE" -> "XBOX ONE",
+    "X BOX ONE" -> "XBOX ONE",
     "XBOX 1" -> "XBOX ONE",
     "XB1" -> "XBOX ONE",
     "MICROSOFT XBOX 360" -> "XBOX 360",
