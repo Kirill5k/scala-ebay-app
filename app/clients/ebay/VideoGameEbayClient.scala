@@ -33,7 +33,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "headset", "\\bhdmi\\b", "\\busb\\b", "\\bhdd\\b", "dual shock", "dualshock", "nintendo labo",
     "player generator", "100k", "50k", "dlc", "pve", "starter pack",
     "preorder", "season pass", "steelbook", "ring fit", "lego dimensions", "minifigure", "collectable", "collectible",
-    "family membership", "12 month", "dynamic theme", "account",
+    "family membership", "12 month", "dynamic theme", "account", "game(\\s+)?pass",
     "phone case", "phone covers", "samsung", "huawei", "iphone",
     "\\bhori\\b",
     "ark survival(\\s+(\\w+|\\d+)){5,}",

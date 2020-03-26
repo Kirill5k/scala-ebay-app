@@ -66,7 +66,7 @@ trait EbaySearchClient[A <: ItemDetails] {
       token <- ebayAuthClient.accessToken()
       items <- ebayBrowseClient.search(token, searchParams)
       goodItems = items.filter(isNew).filter(hasTrustedSeller).filter(removeUnwanted)
-      _ = log.info(s"search ${searchParams("q")} returned new ${goodItems.size} items (total - ${items.size})")
+      _ = log.info(s"search ${searchParams("q")} returned ${goodItems.size} new items (total - ${items.size})")
     } yield goodItems
 
   private def getCompleteItem(itemSummary: EbayItemSummary): IO[Option[EbayItem]] =
