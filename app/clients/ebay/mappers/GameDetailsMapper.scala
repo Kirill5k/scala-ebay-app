@@ -15,16 +15,17 @@ private[mappers] object GameDetailsMapper {
     "(brand|game) (new|neuf|nuevo)", "(new( and)?)?( factory)?\\s+sealed",
     "(great|(very )?good|incredible|excellent|amazing) (condition|value|prices)",
     "(super rare|limited run|new|pal) game(s)?",
+    "limited run( \\d+)?",
     "Used", "very good", "unopened", "reorderable", "Expertly Refurbished Product", "Quality guaranteed", "Highly Rated eBay Seller",
     "official", "remaster(ed)?", "directors cut", "ctr", "original", "english", "deluxe", "standard", "\\bgoty\\b", "game of the( year)?",
-    "ubisoft", "currys", "blu-ray", "for playstation vr", "bonus level",
+    "Warner Bros", "ubisoft", "currys", "blu-ray", "for playstation vr", "bonus level",
     "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "playstation", "nintendo", "switch", "xbox 360", "xbox one", "\\bxb(o)?\\b",
     "\\bTom clancy(s)?\\b", "\\bUK\\b( seller)?",
     "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b",
     "\\bns\\b", "\\bvr\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bhits\\b", "\\bdmc\\b",
     "\\bremake\\b", "\\bhd\\b",
     "videogames", "videogame fasting",
-    "NEW$", "^NEW", "\\bMarvels\\b", "$best", "$software",
+    "NEW$", "^NEW", "\\bMarvels\\b", "^best", "^software",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 

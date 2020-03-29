@@ -35,7 +35,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "preorder", "season pass", "steelbook", "ring fit", "lego dimensions", "minifigure", "collectable", "collectible",
     "family membership", "12 month", "dynamic theme", "account", "game(\\s+)?pass",
     "phone case", "phone covers", "samsung", "huawei", "iphone",
-    "\\bhori\\b",
+    "\\bhori\\b", "\\bDE\\b",
     "ark survival(\\s+(\\w+|\\d+)){5,}",
     "diablo 3(\\s+(\\w+|\\d+)){6,}",
     "fifa 20(\\s+(\\w+|\\d+)){5,}", "fallout 76(\\s+(\\w+|\\d+)){5,}", "((\\w+|\\d+)\\s+){3,}fallout 76", "borderlands 3(\\s+(\\w+|\\d+)){5,}",
