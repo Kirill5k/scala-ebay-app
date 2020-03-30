@@ -20,12 +20,12 @@ private[mappers] object GameDetailsMapper {
     "official", "remaster(ed)?", "directors cut", "ctr", "original", "english", "deluxe", "standard", "\\bgoty\\b", "game of the( year)?",
     "Warner Bros", "ubisoft", "currys", "blu-ray", "for playstation vr", "bonus level",
     "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "playstation", "nintendo", "switch", "xbox 360", "xbox one", "\\bxb(o)?\\b",
-    "\\bTom clancy(s)?\\b", "\\bUK\\b( seller)?",
+    "\\bTom clancy(s)?\\b", "\\bUK\\b( seller|version)?",
     "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b",
-    "\\bns\\b", "\\bvr\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bhits\\b", "\\bdmc\\b",
+    "\\bns\\b", "\\bvr\\b( compatible)?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bhits\\b", "\\bdmc\\b",
     "\\bremake\\b", "\\bhd\\b",
     "videogames", "videogame fasting",
-    "NEW$", "^NEW", "\\bMarvels\\b", "^best", "^software",
+    "NEW$", "^NEW", "\\bMarvels\\b", "^best", "^software", "^rare",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 
