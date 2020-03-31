@@ -14,6 +14,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
   implicit override protected val m: EbayItemMapper[GameDetails] = EbayItemMapper.gameDetailsMapper
 
   private val DEFAULT_SEARCH_FILTER = "conditionIds:{1000|1500|2000|2500|3000|4000|5000}," +
+    "itemLocationCountry:GB," +
     "deliveryCountry:GB," +
     "price:[0..100]," +
     "priceCurrency:GBP," +
