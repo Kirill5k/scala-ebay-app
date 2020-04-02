@@ -1,6 +1,5 @@
 package repositories
 
-import cats.effect.{ContextShift, IO}
 import domain.ResellableItem.VideoGame
 import javax.inject.Inject
 import play.api.libs.json.OFormat

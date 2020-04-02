@@ -23,7 +23,7 @@ trait ResellableItemFinder[I <: ResellableItem, D <: ItemDetails, E <: Resellabl
     itemService.getLatestFromEbay(15)
       .evalFilter(itemService.isNew)
       .evalMap(item => itemService.save(item) >> IO.pure(item))
-      .filter(isProfitableToResell)
+      .filter(item => item.itemDetails.isBundle || isProfitableToResell(item))
       .evalMap(item => itemService.sendNotification(item) >> IO.pure(item))
       .handleErrorWith { error =>
         logger.error(s"error obtaining new items from ebay: ${error.getMessage}", error)

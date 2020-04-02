@@ -14,26 +14,27 @@ object ResellableItem {
   final case class MobilePhone(itemDetails: PhoneDetails, listingDetails: ListingDetails, resellPrice: Option[ResellPrice]) extends ResellableItem
 }
 
-private[domain] trait NotificationMessageGenerator[A <: ResellableItem] {
-  def generate(item: A): Option[String]
-}
-
 object ResellableItemOps {
 
-  val messageGenerator = new NotificationMessageGenerator[ResellableItem] {
-    override def generate(item: ResellableItem): Option[String] =
+  implicit class ResellableItemSyntax(private val item: ResellableItem) extends AnyVal {
+
+    private def bundleMessage(itemSummary: String, price: BigDecimal): String =
+      s"""BUNDLE "$itemSummary" £$price"""
+
+    private def singleItemMessage(itemSummary: String, price: BigDecimal, resellPrice: ResellPrice): String = {
+      val profitPercentage = resellPrice.exchange * 100 / price - 100
+      s""""$itemSummary" - ebay: £$price, cex: £${resellPrice.exchange}(${profitPercentage.intValue}%)/£${resellPrice.cash}"""
+    }
+
+    def notificationMessage: Option[String] =
       for {
         itemSummary <- item.itemDetails.summary
-        rp <- item.resellPrice
         price = item.listingDetails.price
-        profitPercentage = rp.exchange * 100 / price - 100
-        isEnding = item.listingDetails.dateEnded.exists(_.minusSeconds(600).isBefore(Instant.now))
         url = item.listingDetails.url
-      } yield s"""${if (isEnding) "ENDING" else "NEW"} "$itemSummary" - ebay: £$price, cex: £${rp.exchange}(${profitPercentage.intValue}%)/£${rp.cash} $url"""
-  }
-
-  implicit class ResellableItemSyntax(private val item: ResellableItem) extends AnyVal {
-    def notificationMessage: Option[String] = messageGenerator.generate(item)
+        messageBody <- if (item.itemDetails.isBundle) Some(bundleMessage(itemSummary, price))
+                       else item.resellPrice.map(rp => singleItemMessage(itemSummary, price, rp))
+        isEnding = item.listingDetails.dateEnded.exists(_.minusSeconds(600).isBefore(Instant.now))
+      } yield s"""${if (isEnding) "ENDING" else "NEW"} $messageBody $url"""
   }
 }
 
