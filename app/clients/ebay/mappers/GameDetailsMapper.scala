@@ -22,7 +22,7 @@ private[mappers] object GameDetailsMapper {
     "Warner Bros", "ubisoft", "currys", "blu-ray", "for playstation vr", "bonus level",
     "playstation((\\s+)?\\d+)?", "xbox((\\s+)?(one|\\d+))?", "ps\\d+", "\\bxb(\\s+)?(one|\\d+)?\\b",
     "Microsoft", "Nintendo switch", "sony", "nintendo", "switch",
-    "\\bTom clancy(s)?\\b", "\\bUK\\b( seller|version)?", "Adventure Role( playing)?",
+    "\\bTom clancy(s)?\\b", "\\bUK\\b( seller|version|stock)?", "Adventure Role( playing)?",
     "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b",
     "\\bns\\b", "\\bvr\\b( compatible)?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bhits\\b", "\\bdmc\\b",
     "\\bremake\\b", "\\bhd\\b",
