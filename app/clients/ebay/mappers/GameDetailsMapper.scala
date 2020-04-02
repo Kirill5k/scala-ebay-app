@@ -38,7 +38,7 @@ private[mappers] object GameDetailsMapper {
   ).mkString("(?i)", "|", "").r
 
   private val BUNDLE_MATCH_REGEX = List(
-    "(new|multiple|PS4) games", "bundle", "job(\\s+)?lot"
+    "(new|multiple|PS4|xbox one) games", "bundle", "job(\\s+)?lot"
   ).mkString("(?i)", "|", "").r
 
   private val PLATFORM_MAPPINGS: Map[String, String] = Map(
