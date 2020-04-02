@@ -16,7 +16,7 @@ private[mappers] object GameDetailsMapper {
     "(great|(very )?good|incredible|excellent|amazing) (condition|value|prices)",
     "((super )?rare|limited run|(\\d+ )?new|pal) game(s)?( \\d+)?",
     "limited run( \\d+)?",
-    "Used", "very good", "unopened", "reorderable", "next day dispatch",
+    "Used", "very good", "unopened", "reorderable", "next day dispatch", "in stock( now)?",
     "Expertly Refurbished Product", "Quality guaranteed", "Highly Rated eBay Seller", "fully tested",
     "official", "remaster(ed)?", "directors cut", "ctr", "original", "english", "deluxe", "standard", "\\bgoty\\b", "game of the( year)?",
     "Warner Bros", "ubisoft", "currys", "blu-ray", "for playstation vr", "bonus level",
