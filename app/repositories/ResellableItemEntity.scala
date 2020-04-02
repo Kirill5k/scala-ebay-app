@@ -33,6 +33,6 @@ object ResellableItemEntity {
   }
   implicit val resellPriceFormat: OFormat[ResellPrice] = Json.format[ResellPrice]
   implicit val listingDetailsFormat: OFormat[ListingDetails] = Json.format[ListingDetails]
-  implicit val videoGameDetailsFormat: OFormat[GameDetails] = Json.format[GameDetails]
+  implicit val videoGameDetailsFormat: OFormat[GameDetails] = Json.using[Json.WithDefaultValues].format[GameDetails]
   implicit val videoGameFormat: OFormat[VideoGameEntity] = Json.format[VideoGameEntity]
 }
