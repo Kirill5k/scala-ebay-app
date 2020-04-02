@@ -2,7 +2,7 @@ package clients.ebay.mappers
 
 import java.time.Instant
 
-import domain.ListingDetails
+import domain.{Packaging, ListingDetails}
 import org.scalatest._
 
 class GameDetailsMapperSpec extends WordSpec with MustMatchers with Inspectors {
@@ -33,6 +33,25 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers with Inspectors {
       gameDetails.platform must be (Some("XBOX ONE"))
       gameDetails.releaseYear must be (Some("2019"))
       gameDetails.genre must be (Some("Action"))
+      gameDetails.packaging must be (Packaging.Single)
+      gameDetails.isBundle must be (false)
+    }
+
+    "map uncommon platform spellings" in {
+      val platforms = Map(
+        "PS4" -> "PS4",
+        "PLAYSTATION4" -> "PS4",
+        "PLAYSTATION 4" -> "PS4",
+        "PLAYSTATION 3" -> "PS3",
+        "XBONE" -> "XBOX ONE",
+        "XB ONE" -> "XBOX ONE",
+        "XB 1" -> "XBOX ONE"
+      )
+
+      forAll (platforms) { platform =>
+        val details = GameDetailsMapper.from(testListing.copy(title = s"Call of Duty: Infinite Warfare ${platform._1}", properties = Map()))
+        details.platform must be (Some(platform._2))
+      }
     }
 
     "map platform from title even if it exists in properties" in {
@@ -77,6 +96,17 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers with Inspectors {
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
       gameDetails.name must be (Some("LEGO Marvel Avengers"))
+    }
+
+    "map bundles" in {
+      val listingDetails = testListing.copy(title = "job lot 5 PS4 Games")
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("job lot 5 Games"))
+      gameDetails.platform must be (Some("PS4"))
+      gameDetails.packaging must be (Packaging.Bundle)
+      gameDetails.isBundle must be (true)
     }
 
     "remove rubbish words from title" in {

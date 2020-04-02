@@ -2,16 +2,16 @@ package clients.ebay.mappers
 
 import cats.implicits._
 import domain.ItemDetails.GameDetails
-import domain.ListingDetails
+import domain.{Packaging, ListingDetails}
 
 private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
+    "(video( )?)?game for( the)?( playstation)?(\\s+(vr|\\d+))?",
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b))?",
     "(goty|game of the year|legacy( pro)?|premium( online)?|(digital )?deluxe|standard|ultimate( evil)?) (\\bed\\b|edition|\\bedt\\b)",
     "(fast\\s+(and )?)?free(\\s+fast)? (pp|shipping|post|delivery|p\\s+p)",
-    "(video( )?)?game for( the)?( playstation)?( vr)?",
     "(brand|game) (new|neuf|nuevo)", "(new( and)?)?( factory)?\\s+sealed",
     "(great|(very )?good|incredible|excellent|amazing) (condition|value|prices)",
     "(super rare|limited run|new|pal) game(s)?",
@@ -20,8 +20,8 @@ private[mappers] object GameDetailsMapper {
     "Expertly Refurbished Product", "Quality guaranteed", "Highly Rated eBay Seller", "fully tested",
     "official", "remaster(ed)?", "directors cut", "ctr", "original", "english", "deluxe", "standard", "\\bgoty\\b", "game of the( year)?",
     "Warner Bros", "ubisoft", "currys", "blu-ray", "for playstation vr", "bonus level",
-    "Microsoft", "playstation 4", "Nintendo switch", "sony", "ps4", "playstation", "nintendo", "switch", "\\bxb(o)?\\b",
-    "xbox( one|360)?",
+    "playstation((\\s+)?\\d+)?", "xbox((\\s+)?(one|\\d+))?", "ps\\d+", "\\bxb(\\s+)?(one|\\d+)?\\b",
+    "Microsoft", "Nintendo switch", "sony", "nintendo", "switch",
     "\\bTom clancy(s)?\\b", "\\bUK\\b( seller|version)?",
     "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b",
     "\\bns\\b", "\\bvr\\b( compatible)?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bhits\\b", "\\bdmc\\b",
@@ -32,43 +32,51 @@ private[mappers] object GameDetailsMapper {
   ).mkString("(?i)", "|", "")
 
   private val PLATFORMS_MATCH_REGEX = List(
-    "PS4", "PLAYSTATION 4",
+    "PS4", "PLAYSTATION(\\s+)?(\\d+)",
     "NINTENDO SWITCH", "SWITCH",
-    "XBOX ONE", "XBOX 1", "XB1", "XBONE", "X BOX ONE", "XBOX 360"
+    "XB(OX)?(\\s+)?(ONE|\\d)", "XBOX 1", "XB1", "XBONE", "X BOX ONE", "XBOX 360"
+  ).mkString("(?i)", "|", "").r
+
+  private val BUNDLE_MATCH_REGEX = List(
+    "games", "bundle", "job(\\s+)?lot"
   ).mkString("(?i)", "|", "").r
 
   private val PLATFORM_MAPPINGS: Map[String, String] = Map(
     "SONY PLAYSTATION 4" -> "PS4",
     "PLAYSTATION 4" -> "PS4",
+    "PLAYSTATION4" -> "PS4",
     "SONY PLAYSTATION 3" -> "PS3",
+    "PLAYSTATION 3" -> "PS3",
     "SONY PLAYSTATION 2" -> "PS2",
+    "PLAYSTATION 2" -> "PS2",
     "SONY PLAYSTATION 1" -> "PS1",
     "SONY PLAYSTATION" -> "PS4",
-    "PLAYSTATION 2" -> "PS2",
     "NINTENDO SWITCH" -> "SWITCH",
     "MICROSOFT XBOX ONE" -> "XBOX ONE",
     "XBONE" -> "XBOX ONE",
     "X BOX ONE" -> "XBOX ONE",
     "XBOX 1" -> "XBOX ONE",
     "XB1" -> "XBOX ONE",
+    "XB 1" -> "XBOX ONE",
+    "XB ONE" -> "XBOX ONE",
     "MICROSOFT XBOX 360" -> "XBOX 360",
     "MICROSOFT XBOX" -> "XBOX",
   )
 
   def from(listingDetails: ListingDetails): GameDetails = {
+    val isBundle = BUNDLE_MATCH_REGEX.findFirstIn(listingDetails.title.withoutSpecialChars).isDefined
     GameDetails(
-      name = mapName(listingDetails),
+      name = if (isBundle) sanitizeTitle(listingDetails.title) else sanitizeTitle(listingDetails.properties.getOrElse("Game Name", listingDetails.title)),
       platform = mapPlatform(listingDetails),
       genre = mapGenre(listingDetails),
-      releaseYear = listingDetails.properties.get("Release Year")
+      releaseYear = listingDetails.properties.get("Release Year"),
+      packaging = if (isBundle) Packaging.Bundle else Packaging.Single
     )
   }
 
-  private def mapName(listingDetails: ListingDetails): Option[String] = {
-    val title = listingDetails.properties.getOrElse("Game Name", listingDetails.title).replaceAll("[`—“”!•£&#,’'*()/|:.\\[\\]]", "")
-    PLATFORMS_MATCH_REGEX.split(title)
-      .find(_.nonEmpty)
-      .getOrElse(title)
+  private def sanitizeTitle(title: String): Option[String] =
+    title
+      .withoutSpecialChars
       .replaceAll(TITLE_WORDS_FILTER, "")
       .replaceFirst("(?i)\\w+(?=\\s+(edition|\\bed\\b|\\bedt\\b)) (edition|\\bed\\b|\\bedt\\b)", "")
       .replaceAll("é", "e")
@@ -86,10 +94,9 @@ private[mappers] object GameDetailsMapper {
       .replaceFirst("(?i)(^-)", "")
       .trim()
       .some
-  }
 
   private def mapPlatform(listingDetails: ListingDetails): Option[String] = {
-    PLATFORMS_MATCH_REGEX.findFirstIn(listingDetails.title)
+    PLATFORMS_MATCH_REGEX.findFirstIn(listingDetails.title.withoutSpecialChars)
       .orElse(listingDetails.properties.get("Platform").map(_.split(",|/")(0)))
       .map(_.toUpperCase.trim)
       .map(platform => PLATFORM_MAPPINGS.getOrElse(platform, platform))
@@ -97,5 +104,9 @@ private[mappers] object GameDetailsMapper {
 
   private def mapGenre(listingDetails: ListingDetails): Option[String] = {
     listingDetails.properties.get("Genre").orElse(listingDetails.properties.get("Sub-Genre"))
+  }
+
+  implicit class StringOps(private val str: String) extends AnyVal {
+    def withoutSpecialChars: String = str.replaceAll("[`—“”!•£&#,’'*()|:.\\[\\]]", "").replaceAll("/", " ")
   }
 }

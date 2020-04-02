@@ -2,16 +2,18 @@ package domain
 
 import cats.implicits._
 
-sealed trait ItemDetailsType
+sealed trait Packaging
 
-object ItemDetailsType {
-  final case object Single extends ItemDetailsType
-  final case object Bundle extends ItemDetailsType
+object Packaging {
+  final case object Single extends Packaging
+  final case object Bundle extends Packaging
 }
 
 sealed trait ItemDetails {
-  def detailsType: ItemDetailsType
+  def packaging: Packaging
   def summary: Option[String]
+
+  def isBundle: Boolean = packaging == Packaging.Bundle
 }
 
 object ItemDetails {
@@ -23,7 +25,7 @@ object ItemDetails {
     storageCapacity: Option[String],
     network: Option[String],
     condition: Option[String],
-    detailsType: ItemDetailsType = ItemDetailsType.Single) extends ItemDetails {
+    packaging: Packaging = Packaging.Single) extends ItemDetails {
     val summary: Option[String] = List(make, model, storageCapacity, colour, network).sequence.map(_.mkString(" "))
   }
 
@@ -32,7 +34,7 @@ object ItemDetails {
     platform: Option[String],
     releaseYear: Option[String],
     genre: Option[String],
-    detailsType: ItemDetailsType = ItemDetailsType.Single) extends ItemDetails {
+    packaging: Packaging = Packaging.Single) extends ItemDetails {
     val summary: Option[String] = name.flatMap(n => platform.map(p => s"$n $p"))
   }
 

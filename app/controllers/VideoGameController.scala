@@ -3,7 +3,7 @@ package controllers
 import java.time.Instant
 
 import controllers.ErrorResponse.GeneralErrorResponse
-import domain.ItemDetailsType
+import domain.Packaging
 import io.circe._
 import io.circe.generic.extras.auto._
 import io.circe.generic.extras._
@@ -21,9 +21,9 @@ class VideoGameController @Inject()(itemService: VideoGameService, override val 
   extends BaseController {
 
   implicit val genDevConfig: Configuration = Configuration.default.withDiscriminator("_type")
-  implicit val encodeFoo: Encoder[ItemDetailsType] = {
-    case ItemDetailsType.Single => Json.fromString("single")
-    case ItemDetailsType.Bundle => Json.fromString("bundle")
+  implicit val encodeFoo: Encoder[Packaging] = {
+    case Packaging.Single => Json.fromString("single")
+    case Packaging.Bundle => Json.fromString("bundle")
   }
 
 

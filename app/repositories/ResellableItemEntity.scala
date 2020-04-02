@@ -1,7 +1,7 @@
 package repositories
 
 import domain.ItemDetails.GameDetails
-import domain.{ItemDetails, ItemDetailsType, ListingDetails, ResellPrice}
+import domain.{ItemDetails, Packaging, ListingDetails, ResellPrice}
 import reactivemongo.bson.BSONObjectID
 import reactivemongo.play.json._
 
@@ -21,13 +21,13 @@ object ResellableItemEntity {
 
   import play.api.libs.json._
 
-  implicit val itemDetailsFormat: Format[ItemDetailsType] = new Format[ItemDetailsType] {
-    override def reads(json: JsValue): JsResult[ItemDetailsType] = json.toString() match {
-      case "bundle" => JsSuccess(ItemDetailsType.Bundle)
-      case _ => JsSuccess(ItemDetailsType.Single)
+  implicit val itemDetailsFormat: Format[Packaging] = new Format[Packaging] {
+    override def reads(json: JsValue): JsResult[Packaging] = json.toString() match {
+      case "bundle" => JsSuccess(Packaging.Bundle)
+      case _ => JsSuccess(Packaging.Single)
     }
-    override def writes(detailsType: ItemDetailsType): JsString = detailsType match {
-      case ItemDetailsType.Bundle => JsString("bundle")
+    override def writes(packaging: Packaging): JsString = packaging match {
+      case Packaging.Bundle => JsString("bundle")
       case _ => JsString("single")
     }
   }
