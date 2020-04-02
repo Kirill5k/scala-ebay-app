@@ -22,8 +22,8 @@ private[mappers] object GameDetailsMapper {
     "Warner Bros", "ubisoft", "currys", "blu-ray", "for playstation vr", "bonus level",
     "playstation((\\s+)?\\d+)?", "xbox((\\s+)?(one|\\d+))?", "ps\\d+", "\\bxb(\\s+)?(one|\\d+)?\\b",
     "Microsoft", "Nintendo switch", "sony", "nintendo", "switch",
-    "\\bTom clancy(s)?\\b", "\\bUK\\b( seller|version)?",
-    "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b",
+    "\\bTom clancy(s)?\\b", "\\bUK\\b( seller|version)?", "Adventure Role( playing)?",
+    "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b",
     "\\bns\\b", "\\bvr\\b( compatible)?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bhits\\b", "\\bdmc\\b",
     "\\bremake\\b", "\\bhd\\b",
     "videogames", "videogame fasting",
@@ -42,25 +42,23 @@ private[mappers] object GameDetailsMapper {
   ).mkString("(?i)", "|", "").r
 
   private val PLATFORM_MAPPINGS: Map[String, String] = Map(
-    "SONY PLAYSTATION 4" -> "PS4",
-    "PLAYSTATION 4" -> "PS4",
+    "SONYPLAYSTATION4" -> "PS4",
     "PLAYSTATION4" -> "PS4",
-    "SONY PLAYSTATION 3" -> "PS3",
-    "PLAYSTATION 3" -> "PS3",
-    "SONY PLAYSTATION 2" -> "PS2",
-    "PLAYSTATION 2" -> "PS2",
-    "SONY PLAYSTATION 1" -> "PS1",
-    "SONY PLAYSTATION" -> "PS4",
-    "NINTENDO SWITCH" -> "SWITCH",
-    "MICROSOFT XBOX ONE" -> "XBOX ONE",
-    "XBONE" -> "XBOX ONE",
-    "X BOX ONE" -> "XBOX ONE",
-    "XBOX 1" -> "XBOX ONE",
+    "SONYPLAYSTATION3" -> "PS3",
+    "PLAYSTATION3" -> "PS3",
+    "SONYPLAYSTATION2" -> "PS2",
+    "PLAYSTATION2" -> "PS2",
+    "SONYPLAYSTATION1" -> "PS1",
+    "SONYPLAYSTATION" -> "PS4",
+    "NINTENDOSWITCH" -> "SWITCH",
+    "XBOX1" -> "XBOX ONE",
+    "XBOX360" -> "XBOX 360",
     "XB1" -> "XBOX ONE",
-    "XB 1" -> "XBOX ONE",
-    "XB ONE" -> "XBOX ONE",
-    "MICROSOFT XBOX 360" -> "XBOX 360",
-    "MICROSOFT XBOX" -> "XBOX",
+    "XBOXONE" -> "XBOX ONE",
+    "XBONE" -> "XBOX ONE",
+    "MICROSOFTXBOXONE" -> "XBOX ONE",
+    "MICROSOFTXBOX360" -> "XBOX 360",
+    "MICROSOFTXBOX" -> "XBOX",
   )
 
   def from(listingDetails: ListingDetails): GameDetails = {
@@ -99,6 +97,7 @@ private[mappers] object GameDetailsMapper {
     PLATFORMS_MATCH_REGEX.findFirstIn(listingDetails.title.withoutSpecialChars)
       .orElse(listingDetails.properties.get("Platform").map(_.split(",|/")(0)))
       .map(_.toUpperCase.trim)
+      .map(_.replaceAll(" ", ""))
       .map(platform => PLATFORM_MAPPINGS.getOrElse(platform, platform))
   }
 
