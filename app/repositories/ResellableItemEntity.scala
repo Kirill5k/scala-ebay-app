@@ -19,7 +19,6 @@ object ResellableItemEntity {
     listingDetails: ListingDetails,
     resellPrice: Option[ResellPrice]) extends ResellableItemEntity
 
-
   import play.api.libs.json._
 
   implicit val itemDetailsFormat: Format[ItemDetailsType] = new Format[ItemDetailsType] {

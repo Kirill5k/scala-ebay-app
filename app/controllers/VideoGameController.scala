@@ -3,6 +3,7 @@ package controllers
 import java.time.Instant
 
 import controllers.ErrorResponse.GeneralErrorResponse
+import domain.ItemDetailsType
 import io.circe._
 import io.circe.generic.extras.auto._
 import io.circe.generic.extras._
@@ -20,6 +21,11 @@ class VideoGameController @Inject()(itemService: VideoGameService, override val 
   extends BaseController {
 
   implicit val genDevConfig: Configuration = Configuration.default.withDiscriminator("_type")
+  implicit val encodeFoo: Encoder[ItemDetailsType] = {
+    case ItemDetailsType.Single => Json.fromString("single")
+    case ItemDetailsType.Bundle => Json.fromString("bundle")
+  }
+
 
   def getAll(limit: Option[Int], from: Option[Instant], to: Option[Instant]): Action[AnyContent] = Action.async {
     toResponse(itemService.getLatest(limit, from, to).unsafeToFuture())
