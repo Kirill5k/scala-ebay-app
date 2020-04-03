@@ -41,8 +41,8 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
       case Some(query) =>
         queryResellPrice(query)
       case None =>
-        log.warn(s"not enough details to query for resell price $itemDetails")
-        IO.pure(none[ResellPrice])
+        IO.delay(log.warn(s"not enough details to query for resell price $itemDetails")) *>
+          IO.pure(none[ResellPrice])
     }
 
   private def queryResellPrice(query: String): IO[Option[ResellPrice]] = {
