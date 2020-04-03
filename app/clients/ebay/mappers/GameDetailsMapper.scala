@@ -9,24 +9,24 @@ private[mappers] object GameDetailsMapper {
   private val TITLE_WORDS_FILTER = List(
     "(video( )?)?game for( the)?( playstation)?(\\s+(vr|\\d+))?",
     "(dbl|double|triple|twin) (pack|pk)",
-    "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b))?",
-    "(goty|game of the year|legacy( pro)?|premium( online)?|(digital )?deluxe|standard|ultimate( evil)?) (\\bed\\b|edition|\\bedt\\b)",
-    "(fast\\s+(and )?)?free(\\s+fast)? (pp|shipping|post|delivery|p\\s+p)",
+    "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b|edt))?",
+    "(ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|ultimate( evil)?) (collection|\\bed\\b|edition|\\bedt\\b)",
+    "(new\\s+)?(super( )?)?(free|fast)?(\\s+)?(and )?(super( )?)?(free|fast)( UK)? (shipping|post(age)?|delivery|p(\\s+)?p)",
     "(brand|game) (new|neuf|nuevo)", "(new( and)?)?( factory)?\\s+sealed",
     "(great|(very )?good|incredible|excellent|amazing) (condition|value|prices)",
-    "((super )?rare|limited run|(\\d+ )?new|pal) game(s)?( \\d+)?",
-    "limited run( \\d+)?",
-    "Used", "very good", "unopened", "reorderable", "next day dispatch", "in stock( now)?",
-    "Expertly Refurbished Product", "Quality guaranteed", "Highly Rated eBay Seller", "fully tested",
+    "((super )?rare|limited run|(\\d+ )?new|pal|great|boxed|full) game(s)?( \\d+)?",
+    "limited run( \\d+)?", "boxed( and)? complete( game)?", "box( )?set", "pre(-| )?owned",
+    "Used", "very good", "unopened", "reorderable", "next day dispatch", "in stock( now)?", "pre(\\s+)?release",
+    "Expertly Refurbished Product", "(quality|value) guaranteed", "Highly Rated eBay Seller", "fully tested", "from eBays biggest seller",
     "official", "remaster(ed)?", "directors cut", "ctr", "original", "english", "deluxe", "standard", "\\bgoty\\b", "game of the( year)?",
     "Warner Bros", "ubisoft", "currys", "blu-ray", "for playstation vr", "bonus level",
-    "playstation((\\s+)?\\d+)?", "xbox((\\s+)?(one|\\d+))?", "ps\\d+", "\\bxb(\\s+)?(one|\\d+)?\\b",
+    "playstation((\\s+)?\\d+)?", "xbox((\\s+)?(one|\\d+))?", "ps\\d+", "\\bxb(\\s+)?(o(ne)?|\\d+)?\\b",
     "Microsoft", "Nintendo switch", "sony", "nintendo", "switch",
     "\\bTom clancy(s)?\\b", "\\bUK\\b( (seller|version|stock))?", "Adventure Role( playing)?",
-    "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b",
+    "\\bpal\\b", "\\ben\\b", "\\beu\\b", "\\bfr\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b",
     "\\bns\\b", "\\bvr\\b( compatible)?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bhits\\b", "\\bdmc\\b",
     "\\bremake\\b", "\\bhd\\b",
-    "videogames", "videogame fasting",
+    "(the )?video(\\s+)?game", "videogames", "videogame fasting",
     "NEW$", "^NEW", "\\bMarvels\\b", "^best", "^software", "^rare",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
@@ -34,7 +34,7 @@ private[mappers] object GameDetailsMapper {
   private val PLATFORMS_MATCH_REGEX = List(
     "PS4", "PLAYSTATION(\\s+)?(\\d+)",
     "NINTENDO SWITCH", "SWITCH",
-    "XB(OX)?(\\s+)?(ONE|\\d)", "XBOX 1", "XB1", "XBONE", "X BOX ONE", "XBOX 360"
+    "XB(OX)?(\\s+)?(ONE|\\d+)", "XBOX 1", "XB1", "XBONE", "X BOX ONE", "XBOX 360"
   ).mkString("(?i)", "|", "").r
 
   private val BUNDLE_MATCH_REGEX = List(
@@ -76,7 +76,7 @@ private[mappers] object GameDetailsMapper {
     title
       .withoutSpecialChars
       .replaceAll(TITLE_WORDS_FILTER, "")
-      .replaceFirst("(?i)\\w+(?=\\s+(edition|\\bed\\b|\\bedt\\b)) (edition|\\bed\\b|\\bedt\\b)", "")
+      .replaceFirst("(?i)\\w+(?=\\s+(collection|edition|\\bed\\b|\\bedt\\b)) (collection|edition|\\bed\\b|\\bedt\\b)", "")
       .replaceAll("é", "e")
       .replaceAll("(?i)(playerunknown)", "Player Unknown")
       .replaceAll("(?i)(littlebigplanet)", "Little Big Planet")
