@@ -8,11 +8,11 @@ private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
     "(video( )?)?game for( the)?( playstation)?(\\s+(vr|\\d+))?",
-    "(playstation(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?",
+    "(playstation(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?(\\s+complete)?",
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b|edt))?",
     "(ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|ultimate( evil)?) (collection|\\bed\\b|edition|\\bedt\\b)",
-    "(new\\s+)?(super( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(free|fast|quick)( UK)? (shipping|post(age)?|delivery|p(\\s+)?p)",
+    "(new\\s+)?(super( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(free|fast|quick)( UK)? (dispatch|shipping|post(age)?|delivery|p(\\s+)?p)",
     "(brand|game) (new|neuf|nuevo)", "(new( and)?)?( factory)?\\s+sealed",
     "(great|(very )?good|incredible|excellent|amazing|mint) (condition|value|prices)",
     "((super )?rare|limited run|(\\d+ )?new|pal|great|boxed|full) game(s)?( \\d+)?",
@@ -27,7 +27,7 @@ private[mappers] object GameDetailsMapper {
     "\\bns\\b", "\\bvr\\b( compatible)?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bhits\\b", "\\bdmc\\b", "\\bBNIB\\b",
     "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b",
     "(the )?video(\\s+)?game(s)?( fasting)?",
-    "NEW$", "^NEW", "\\bMarvels\\b", "^best", "^software", "^rare",
+    "NEW$", "^NEW", "\\bMarvels\\b", "^best", "^software", "^rare", "very rare",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 
