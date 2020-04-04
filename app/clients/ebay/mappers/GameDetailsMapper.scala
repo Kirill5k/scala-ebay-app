@@ -8,6 +8,7 @@ private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
     "(video( )?)?game for( the)?( playstation)?(\\s+(vr|\\d+))?",
+    "(playstation(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+game)?(\\s+new)?",
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b|edt))?",
     "(ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|ultimate( evil)?) (collection|\\bed\\b|edition|\\bedt\\b)",
@@ -20,7 +21,6 @@ private[mappers] object GameDetailsMapper {
     "Expertly Refurbished Product", "(quality|value) guaranteed", "Highly Rated eBay Seller", "fully tested", "from eBays biggest seller",
     "(the )?official( game)?", "remaster(ed)?", "directors cut", "ctr", "original", "english", "deluxe", "standard", "\\bgoty\\b", "game of the( year)?",
     "Warner Bros", "ubisoft", "currys", "blu-ray", "for playstation vr", "bonus level",
-    "playstation(( )?\\d)?", "x( )?box(( )?(one|\\d+))?", "ps\\d", "\\bxb( )?(o(ne)?|\\d+)?\\b", "(nintendo )?switch",
     "Microsoft","sony", "nintendo", "square enix", "ea sport(s)?", "(bandai )?namco",
     "\\bTom clancy(s)?\\b", "\\bUK\\b( (seller|version|stock))?", "Adventure Role( playing)?",
     "\\bpal\\b", "\\ben\\b", "\\bnc\\b", "\\beu\\b", "\\bfr\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b",
