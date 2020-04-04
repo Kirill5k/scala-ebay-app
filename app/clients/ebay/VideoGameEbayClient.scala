@@ -22,7 +22,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
 
   private val LISTING_NAME_TRIGGER_WORDS = List(
     "game( )?(code|disc|key|cart)", "(unused|digital|upgrade|download|no)( )?(game|code|key|download)",
-    "(software|cartridge|cart|game|disc|cover|box|sleeve) only",
+    "(software|cartridge(s)?|cart|game|disc(s)?|cover|box|sleeve|book) only",
     "(case|variety|accessories|storage) (kit|box)",
     "(cover|carry|travel|carrying|just the|no|hard|storage|game|vault|phone|card|foreign)\\s+(pouch|case|bag)",
     "(read|see) (detail|desc|post)",
@@ -34,7 +34,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "headset", "\\bhdmi\\b", "\\busb\\b", "\\bhdd\\b", "dual shock", "dualshock", "nintendo labo",
     "player generator", "100k", "50k", "dlc", "pve", "starter pack", "fifa points", "million bells",
     "preorder", "season pass", "steelbook", "ring fit", "lego dimensions", "minifigure", "collectable", "collectible",
-    "family membership", "12 month", "dynamic theme", "themes", "account", "game(\\s+)?pass", "level boosting",
+    "family membership", "12 month", "dynamic theme", "themes", "account", "game(\\s+)?pass", "level boosting", "memory card",
     "samsung", "huawei", "iphone",
     "\\bhori\\b", "\\bDE\\b",
     "ark survival(\\s+(\\w+|\\d+)){5,}",
