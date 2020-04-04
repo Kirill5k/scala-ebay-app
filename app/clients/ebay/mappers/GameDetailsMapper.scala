@@ -8,7 +8,7 @@ private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
     "(video( )?)?game for( the)?( playstation)?(\\s+(vr|\\d+))?",
-    "(playstation(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+game)?(\\s+new)?",
+    "(playstation(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?",
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b|edt))?",
     "(ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|ultimate( evil)?) (collection|\\bed\\b|edition|\\bedt\\b)",
