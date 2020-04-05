@@ -27,7 +27,7 @@ private[mappers] object GameDetailsMapper {
     "\\bns\\b", "\\bvr\\b( compatible)?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bhits\\b", "\\bdmc\\b", "\\bBNIB\\b",
     "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b",
     "(the )?video(\\s+)?game(s)?( fasting)?",
-    "NEW$", "^NEW", "\\bMarvels\\b", "^best", "^software", "^rare", "very rare",
+    "NEW$", "^NEW", "\\bMarvels\\b", "^best", "^software", "very rare",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 
