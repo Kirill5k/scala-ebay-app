@@ -23,7 +23,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
   private val LISTING_NAME_TRIGGER_WORDS = List(
     "(demo|game)( )?(code|disc|key|cart)", "(unused|digital|upgrade|no)( )?(redeem )?(game|code|key)",
     "(software|cartridge(s)?|cart|game|disc(s)?|cover|box|sleeve|book) only",
-    "(case|variety|accessories|storage) (kit|box)",
+    "(case|variety|accessories|storage|charge) (kit|box)",
     "(cover|carry|travel|carrying|just the|no|hard|storage|game|vault|phone|card|foreign)\\s+(pouch|case|bag)",
     "(read|see) (detail|desc|post)", "(docking|charging) station", "download",
     "credits", "instant delivery", "official server", "damaged", "Option File",
