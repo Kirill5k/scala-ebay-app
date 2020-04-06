@@ -8,24 +8,24 @@ private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
     "(video( )?)?game for( the)?( playstation)?(\\s+(vr|\\d+))?",
-    "(playstation(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?(\\s+complete)?",
+    "(for )?(playstation(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?(\\s+complete)?(\\s+edition)?",
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b|edt))?",
     "(ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|ultimate( evil)?) (collection|\\bed\\b|edition|\\bedt\\b)",
-    "(new\\s+)?(super( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(free|fast|quick)( UK)? (dispatch|shipping|post(age)?|delivery|p(\\s+)?p)",
-    "(brand|game) (new|neuf|nuevo)", "(new( and)?)?( factory)?\\s+sealed",
+    "(new\\s+)?(super( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(free|fast|quick)( UK)?( (1st|2nd) class( signed)?)? (dispatch|shipping|post(age)?|delivery|p(\\s+)?p)",
+    "((brand )?new( and)?)?( factory)?\\s+((un)?sealed|unopened)", "(brand|game) (new|neuf|nuevo)",
     "(great|(very )?good|incredible|excellent|amazing|mint) (condition|value|prices)",
     "((super )?rare|limited run|(\\d+ )?new|pal|great|boxed|full) game(s)?( \\d+)?",
-    "limited run( \\d+)?", "boxed( and)? complete( game)?", "box( )?set", "pre(-| )?owned",
-    "Used", "very good", "unopened", "reorderable", "(same|next) day dispatch", "in stock( now)?", "pre(\\s+)?release",
+    "limited run( \\d+)?", "boxed( and)? complete( game)?", "box( )?set", "pre(-| )?owned", "compatible",
+    "Used", "very good", "reorderable", "(same|next) day dispatch", "in stock( now)?", "pre(\\s+)?release",
     "Expertly Refurbished Product", "(quality|value) guaranteed", "Highly Rated eBay Seller", "fully tested", "from eBays biggest seller",
     "(the )?official( game)?", "remaster(ed)?", "directors cut", "ctr", "original", "english", "deluxe", "standard", "\\bgoty\\b", "game of the( year)?",
-    "Warner Bros", "ubisoft", "currys", "blu-ray", "for playstation vr", "bonus level",
+    "Warner Bros", "ubisoft", "currys", "blu-ray", "for playstation vr", "bonus level", "roleplayng",
     "Microsoft","sony", "nintendo", "square enix", "ea sport(s)?", "(bandai )?namco",
     "\\bTom clancy(s)?\\b", "\\bUK\\b( (seller|version|stock))?", "Adventure Role( playing)?",
     "\\bpal\\b", "\\ben\\b", "\\bnc\\b", "\\beu\\b", "\\bfr\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b",
-    "\\bns\\b", "\\bvr\\b( compatible)?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bhits\\b", "\\bdmc\\b", "\\bBNIB\\b",
-    "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b",
+    "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "(greatest )?\\bhits\\b", "\\bdmc\\b", "\\bBNIB\\b",
+    "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b",
     "(the )?video(\\s+)?game(s)?( fasting)?",
     "NEW$", "^NEW", "\\bMarvels\\b", "^best", "^software", "very rare",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
@@ -106,6 +106,6 @@ private[mappers] object GameDetailsMapper {
   }
 
   implicit class StringOps(private val str: String) extends AnyVal {
-    def withoutSpecialChars: String = str.replaceAll("[`—“”!•£&#,’'*()|:.\\[\\]]", "").replaceAll("/", " ")
+    def withoutSpecialChars: String = str.replaceAll("[;`—“”!•£&#,’'*()|:.\\[\\]]", "").replaceAll("/", " ")
   }
 }

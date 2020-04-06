@@ -111,17 +111,20 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers with Inspectors {
 
     "remove rubbish words from title" in {
       val titles = List(
-        "Call of Duty: Infinite Warfare - game of the year goty",
+        "Call of Duty: Infinite Warfare - game of the year goty free and fast 1st class post",
+        "Call of Duty: Infinite Warfare - game of the year goty quick 1st class signed post",
         "Call of Duty: Infinite Warfare - game of the year edition goty",
         "Call of Duty: Infinite Warfare - video game for the playstation vr PLAYSTATION 4",
         "Call of Duty: Infinite Warfare - video game for the PLAYSTATION 4",
-        "Call of Duty: Infinite Warfare - new fast post",
-        "Call of Duty: Infinite Warfare - new Fast free post",
+        "Call of Duty: Infinite Warfare - new fast post vr required",
+        "Call of Duty: Infinite Warfare - new Fast free post for PS4 game",
         "Call of Duty: Infinite Warfare - super fast and superfree UK post",
         "Call of Duty: Infinite Warfare - Fast and Free shipping",
         "Call of Duty: Infinite Warfare - day one edition - day 0 ed - day 1 E - day 1",
         "Call of Duty: Infinite Warfare HD - double pack - premium online edition - XBOX 1 GAME",
         "Call of Duty: Infinite Warfare - premium edt -- Legacy pro ed - elite edition",
+        "Call of Duty: Infinite Warfare - brand new and sealed",
+        "Call of Duty: Infinite Warfare - new unopened",
         "BEST PS4 GAME Call of Duty: Infinite Warfare",
         "Limited run 170 Call of Duty: Infinite Warfare",
         "Playstation 4/PAL-Call of Duty: Infinite Warfare NEW",
