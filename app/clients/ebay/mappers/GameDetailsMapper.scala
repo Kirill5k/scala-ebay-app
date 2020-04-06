@@ -8,7 +8,8 @@ private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
     "(video( )?)?game for( the)?( playstation)?(\\s+(vr|\\d+))?",
-    "(for )?(playstation(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?(\\s+complete)?(\\s+edition)?",
+    "((greatest|playstation) )?\\bhits\\b",
+    "(for )?((sony )?playstation(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?(\\s+complete)?(\\s+edition)?",
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b|edt))?",
     "(ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|ultimate( evil)?) (collection|\\bed\\b|edition|\\bedt\\b)",
@@ -24,7 +25,7 @@ private[mappers] object GameDetailsMapper {
     "Microsoft","sony", "nintendo", "square enix", "ea sport(s)?", "(bandai )?namco",
     "\\bTom clancy(s)?\\b", "\\bUK\\b( (seller|version|stock))?", "Adventure Role( playing)?",
     "\\bpal\\b", "\\ben\\b", "\\bnc\\b", "\\beu\\b", "\\bfr\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b",
-    "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "(greatest )?\\bhits\\b", "\\bdmc\\b", "\\bBNIB\\b",
+    "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b",
     "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b",
     "(the )?video(\\s+)?game(s)?( fasting)?",
     "NEW$", "^NEW", "\\bMarvels\\b", "^best", "^software", "very rare",
