@@ -32,7 +32,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "sniper thumbs", "(game|skin) grip", "thumbsticks", "grip (combat|stick)", "leg strap",
     "toycon", "toy con", "dualshock", "efigs", "gamepad", "(joy|ring)(\\s+)?con", "controller", "stand holder", "SpaBag",
     "headset", "\\bhdmi\\b", "\\busb\\b", "\\bhdd\\b", "dual shock", "dualshock", "nintendo labo",
-    "player generator", "100k", "50k", "dlc", "pve", "starter pack", "fifa points", "million bells", "k eso",
+    "player generator", "100k", "50k", "\\bDL( )?C\\b", "pve", "starter pack", "fifa points", "million bells", "k eso",
     "pre(\\s+|-)?order", "season pass", "(steel|art)( )?book", "ring fit", "lego dimensions", "minifigure", "figure(s)? bundle", "collectable", "collectible",
     "family membership", "12 month", "dynamic theme", "themes", "account", "game(\\s+)?pass", "level boosting", "memory card",
     "samsung", "huawei", "iphone",
