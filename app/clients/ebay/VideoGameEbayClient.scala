@@ -25,7 +25,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "(software|cartridge(s)?|cart|game|disc(s)?|cover|box|sleeve|book) only",
     "(case|variety|accessories|storage|charge) (kit|box)",
     "(cover|carry|travel|carrying|just the|no|hard|storage|game|vault|phone|card|foreign|metal)\\s+(pouch|case|bag)",
-    "(read|see) (detail|desc|post)", "(docking|charging) station", "download",
+    "(read|see) (detail|desc|post)", "please read", "(docking|charging) station", "download",
     "credits", "instant delivery", "official server", "damaged", "Option File",
     "coin", "skins", "collectors box", "dutch import", "(german|promo|demo) (version|copy)", "soundtrack", "poster",
     "arabic", "(no|protective|case|silicone|phone|style) cover(s)?",
