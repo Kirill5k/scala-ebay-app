@@ -14,16 +14,17 @@ private[mappers] object GameDetailsMapper {
     "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b|edt))?",
     "(ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|ultimate( evil)?) (collection|\\bed\\b|edition|\\bedt\\b)",
     "(new\\s+)?(super( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(free|fast|quick|next day)( UK)?( (1st|2nd) class( signed)?)? (dispatch|shipping|post(age)?|delivery|p(\\s+)?p)",
-    "((brand )?new( and)?)?( factory)?\\s+((un)?sealed|unopened)", "(brand|game) (new|neuf|nuevo)",
+    "((brand )?new( and)?)?( factory)?\\s+((un)?sealed|unopened)", "(complete )?(brand|game) (new|neuf|nuevo)",
     "(great|(very )?good|incredible|excellent|amazing|mint) (condition|value|prices)",
     "((super )?rare|limited run|(\\d+ )?new|pal|great|boxed|full) game(s)?( \\d+)?",
     "limited run( \\d+)?", "(new )?boxed( and)? complete( game)?", "box( )?set", "pre(-| )?owned", "compatible",
     "Used", "very good", "reorderable", "(same|next) day dispatch", "in stock( now)?", "pre(\\s+)?release",
     "Expertly Refurbished Product", "(quality|value) guaranteed", "Highly Rated eBay Seller", "fully tested", "from eBays biggest seller",
     "(the )?official( game)?", "remaster(ed)?", "directors cut", "ctr", "original", "english", "deluxe", "standard", "\\bgoty\\b", "game of the( year)?",
-    "Warner Bros", "ubisoft", "currys", "blu-ray", "for playstation vr", "bonus level", "roleplayng",
+    "Warner Bros", "ubisoft", "currys", "blu-ray", "for playstation( )?vr", "bonus level",
     "Microsoft","sony", "nintendo", "square enix", "ea sport(s)?", "(bandai )?namco", "no scratches",
-    "\\bTom clancy(s)?\\b", "(\\bUK\\b|\\bEU\\b)( (seller|version|stock))?", "Adventure Role( playing)?",
+    "Adventure Role( playing)?", "roleplayng", "Strategy Management",
+    "\\bTom clancy(s)?\\b", "(\\bUK\\b|\\bEU\\b)( (new|only|seller|version|stock|import))?",
     "\\bpal\\b", "\\ben\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b",
     "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b",
@@ -77,7 +78,7 @@ private[mappers] object GameDetailsMapper {
     title
       .withoutSpecialChars
       .replaceAll(TITLE_WORDS_FILTER, "")
-      .replaceFirst("(?i)\\w+(?=\\s+(collection|edition|\\bed\\b|\\bedt\\b)) (collection|edition|\\bed\\b|\\bedt\\b)", "")
+      .replaceFirst("(?i)\\w+(?=\\s+(collection|edition|\\bed\\b|\\bed(i)?t(i)?\\b)) (collection|edition|\\bed\\b|\\bed(i)?t(i)?\\b)", "")
       .replaceAll("é", "e")
       .replaceAll("(?i)(playerunknown)", "Player Unknown")
       .replaceAll("(?i)(littlebigplanet)", "Little Big Planet")
@@ -107,6 +108,6 @@ private[mappers] object GameDetailsMapper {
   }
 
   implicit class StringOps(private val str: String) extends AnyVal {
-    def withoutSpecialChars: String = str.replaceAll("[?;`—“”!•£&#,’'*()|:.\\[\\]]", "").replaceAll("/", " ")
+    def withoutSpecialChars: String = str.replaceAll("[?_;`—“”!•£&#,’'*()|:.\\[\\]]", "").replaceAll("/", " ")
   }
 }

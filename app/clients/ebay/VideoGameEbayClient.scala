@@ -21,7 +21,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "itemLocationCountry:GB,"
 
   private val LISTING_NAME_TRIGGER_WORDS = List(
-    "(demo|game)( )?(code|disc|key|cart)", "(unused|digital|upgrade|no)( )?(redeem )?(game|code|key)",
+    "(demo|game)( )?(code|disc|key|cart|pass)", "(unused|digital|upgrade|no)( )?(redeem )?(game|code|key)",
     "(software|cartridge(s)?|cart|game|disc(s)?|cover|box|sleeve|book) only",
     "(case|variety|accessories|storage|charge) (kit|box)",
     "(cover|carry|travel|carrying|just the|no|hard|storage|game|vault|phone|card|foreign|metal)\\s+(pouch|case|bag)",
@@ -29,12 +29,12 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "credits", "instant delivery", "official server", "damaged", "Option File",
     "coin", "skins", "collectors box", "dutch import", "(german|promo|demo) (version|copy)", "soundtrack", "poster",
     "arabic", "(no|protective|case|silicone|phone|style) cover(s)?",
-    "sniper thumbs", "(game|skin) grip", "thumbsticks", "grip (combat|stick)", "leg strap",
-    "toycon", "toy con", "dualshock", "efigs", "gamepad", "(joy|ring)(\\s+)?con", "controller", "stand holder", "SpaBag",
-    "headset", "\\bhdmi\\b", "\\busb\\b", "\\bhdd\\b", "dual shock", "dualshock", "nintendo labo",
+    "sniper thumbs", "(game|skin) grip", "thumbsticks", "grip (combat|stick)", "leg strap", "Cleaning Cloth",
+    "dual( )?shock", "efigs", "gamepad", "(toy|joy|ring)(\\s+)?con", "controller", "stand holder", "memory card", "SpaBag",
+    "headset", "\\bhdmi\\b", "\\busb\\b", "\\bhdd\\b", "nintendo labo",
     "player generator", "100k", "50k", "\\bDL( )?C\\b", "pve", "starter pack", "fifa points", "million bells", "k eso",
     "pre(\\s+|-)?order", "season pass", "(steel|art)( )?book", "ring fit", "lego dimensions", "minifigure", "figure(s)? bundle", "collectable", "collectible",
-    "family membership", "12 month", "dynamic theme", "themes", "account", "game(\\s+)?pass", "level boosting", "memory card",
+    "family membership", "12 month", "dynamic theme", "themes", "account", "level boosting",
     "samsung", "huawei", "iphone",
     "\\bhori\\b", "\\bDE\\b",
     "ark survival(\\s+(\\w+|\\d+)){5,}",
