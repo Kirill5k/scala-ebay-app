@@ -29,7 +29,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "credits", "instant delivery", "official server", "damaged", "Option File",
     "coin", "skins", "collectors box", "dutch import", "(german|promo|demo) (version|copy)", "soundtrack", "poster",
     "arabic", "(no|protective|case|silicone|phone|style) cover(s)?",
-    "sniper thumbs", "(game|skin) grip", "thumbsticks", "grip (combat|stick)", "leg strap", "Cleaning Cloth",
+    "sniper thumbs", "(game|skin) grip", "thumbsticks", "grip (protector|combat|stick)", "leg strap", "Cleaning Cloth",
     "dual( )?shock", "efigs", "gamepad", "(toy|joy|ring)(\\s+)?con", "controller", "stand holder", "memory card", "SpaBag",
     "headset", "\\bhdmi\\b", "\\busb\\b", "\\bhdd\\b", "nintendo labo",
     "player generator", "100k", "50k", "\\bDL( )?C\\b", "pve", "starter pack", "fifa points", "million bells", "k eso",
