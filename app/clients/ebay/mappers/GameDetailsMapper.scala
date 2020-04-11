@@ -26,7 +26,7 @@ private[mappers] object GameDetailsMapper {
     "Adventure Role( playing)?", "roleplayng", "Strategy Management",
     "\\bTom clancy(s)?\\b", "(\\bUK\\b|\\bEU\\b)( (new|only|seller|version|stock|import))?",
     "\\bpal\\b", "\\ben\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b",
-    "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b",
+    "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b",
     "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b",
     "(the )?video(\\s+)?game(s)?( fasting)?",
     "NEW$", "^NEW", "\\bMarvels\\b", "^best", "^software", "very rare",
