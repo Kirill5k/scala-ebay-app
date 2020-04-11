@@ -22,9 +22,9 @@ trait ResellableItemFinder[I <: ResellableItem, D <: ItemDetails, E <: Resellabl
   def searchForCheapItems(): Stream[IO, I] =
     itemService.getLatestFromEbay(15)
       .evalFilter(itemService.isNew)
-      .evalMap(item => itemService.save(item) *> IO.pure(item))
+      .evalTap(itemService.save)
       .filter(isProfitableToResell)
-      .evalMap(item => itemService.sendNotification(item) *> IO.pure(item))
+      .evalTap(itemService.sendNotification)
       .handleErrorWith { error =>
         logger.error(s"error obtaining new items from ebay: ${error.getMessage}", error)
         Stream.empty

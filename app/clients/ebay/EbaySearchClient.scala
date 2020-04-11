@@ -48,7 +48,7 @@ trait EbaySearchClient[A <: ItemDetails] {
       .flatMap(x => Stream.apply(x: _*))
       .evalMap(getCompleteItem)
       .unNone
-      .evalMap(item => IO(itemsIds.put(item.itemId, "")) *> IO.pure(item))
+      .evalTap(item => IO(itemsIds.put(item.itemId, "")))
       .map(_.as[A])
       .handleErrorWith(switchAccountIfItHasExpired)
   }
