@@ -44,8 +44,8 @@ trait EbaySearchClient[A <: ItemDetails] {
 
     Stream.emits(searchQueries)
       .map(getSearchParams(filter, _))
-      .evalMap(searchForItems)
-      .flatMap(x => Stream.apply(x: _*))
+      .map(searchForItems)
+      .flatMap(Stream.evalSeq)
       .evalMap(getCompleteItem)
       .unNone
       .evalTap(item => IO(itemsIds.put(item.itemId, "")))
@@ -75,14 +75,13 @@ trait EbaySearchClient[A <: ItemDetails] {
       item <- ebayBrowseClient.getItem(token, itemSummary.itemId)
     } yield item
 
-  protected val hasTrustedSeller: EbayItemSummary => Boolean = itemSummary => {
-    for {
+  protected val hasTrustedSeller: EbayItemSummary => Boolean = itemSummary =>
+    (for {
       feedbackPercentage <- itemSummary.seller.feedbackPercentage
       if feedbackPercentage > MIN_FEEDBACK_PERCENT
       feedbackScore <- itemSummary.seller.feedbackScore
       if feedbackScore > MIN_FEEDBACK_SCORE
-    } yield ()
-  }.isDefined
+    } yield ()).isDefined
 
   protected val isNew: EbayItemSummary => Boolean =
     itemSummary => !itemsIds.containsKey(itemSummary.itemId)

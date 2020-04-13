@@ -77,7 +77,7 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
       whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { error =>
         error must be (List())
         videoGameSearchClient.itemsIds.isEmpty must be (true)
-        verify(authClient, times(1)).accessToken
+        verify(authClient, times(3)).accessToken
         verify(authClient, never).switchAccount
         verify(browseClient, times(1)).search(eqTo(accessToken), anyMap[String, String])
         verify(browseClient, never).getItem(any, any)
