@@ -12,12 +12,12 @@ private[mappers] object GameDetailsMapper {
     "(good )?(for )?((sony )?playstation(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?(\\s+complete)?(\\s+edition)?( 20\\d\\d)?( good)?",
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b|edt))?",
-    "(ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|ultimate( evil)?) (collection|\\bed\\b|edition|\\bedt\\b)",
+    "(ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|\\bultimate\\b( evil)?) (collection|\\bed\\b|edition|\\bedt\\b)",
     "(new\\s+)?(super( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(free|fast|quick|next day)( UK)?( (1st|2nd) class( signed)?)? (dispatch|shipping|post(age)?|delivery|p(\\s+)?p)",
     "((brand )?new( and)?)?( factory)?\\s+((un)?sealed|unopened)", "(complete )?(brand|game) (new|neuf|nuevo)",
     "(great|(very )?good|incredible|excellent|amazing|mint) (condition|value|prices)",
     "((super )?rare|limited run|(\\d+ )?new|pal|great|boxed|full) game(s)?( \\d+)?",
-    "limited run( \\d+)?", "(new )?boxed( and)? complete( game)?", "box( )?set", "pre(-| )?owned", "compatible",
+    "limited run( \\d+)?", "(new )?boxed( and)?\\s+complete( game)?", "box( )?set", "pre(-| )?owned", "compatible",
     "Used", "very good", "reorderable", "(same|next) day dispatch", "in stock( now)?", "pre(\\s+)?release", "played once", "best price",
     "Expertly Refurbished Product", "(quality|value) guaranteed", "Highly Rated eBay Seller", "fully tested", "from eBays biggest seller", "Order By 4pm",
     "(the )?official( game)?", "remaster(ed)?", "directors cut", "ctr", "original", "english", "deluxe", "standard", "\\bgoty\\b", "game of the( year)?",
@@ -25,11 +25,11 @@ private[mappers] object GameDetailsMapper {
     "Microsoft","sony", "nintendo", "square enix", "ea sport(s)?", "(bandai )?namco", "no scratches",
     "Adventure Role( playing)?", "roleplayng", "Strategy Management",
     "\\bTom clancy(s)?\\b", "(\\bUK\\b|\\bEU\\b)( (new|only|seller|version|stock|import))?",
-    "\\bpal\\b", "\\ben\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b",
+    "\\bpal\\b", "\\ben\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b", "\\bRPG\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b",
     "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b",
     "(the )?video(\\s+)?game(s)?( fasting)?",
-    "NEW$", "^NEW", "\\bMarvels\\b", "^best", "^software", "very rare",
+    "NEW$", "^SEALED", "^NEW", "\\bMarvels\\b", "^best", "^software", "very rare",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
   ).mkString("(?i)", "|", "")
 
