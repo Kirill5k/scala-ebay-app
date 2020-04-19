@@ -12,7 +12,7 @@ private[mappers] object GameDetailsMapper {
     "(good )?(for )?((sony )?playstation(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?(\\s+complete)?(\\s+edition)?( 20\\d\\d)?( good)?",
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b|edt))?",
-    "(ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|\\bultimate\\b( evil)?) (collection|\\bed\\b|edition|\\bedt\\b)",
+    "(ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|\\bultimate\\b( evil)?) (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)",
     "(new\\s+)?(super( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(free|fast|quick|next day)( UK)?( (1st|2nd) class( signed)?)? (dispatch|shipping|post(age)?|delivery|p(\\s+)?p)",
     "((brand )?new( and)?)?( factory)?\\s+((un)?sealed|unopened)", "(complete )?(brand|game) (new|neuf|nuevo)",
     "(great|(very )?good|incredible|excellent|amazing|mint) (condition|value|prices)",
@@ -23,14 +23,15 @@ private[mappers] object GameDetailsMapper {
     "remaster(ed)?", "directors cut", "ctr", "original", "english", "deluxe", "standard", "\\bgoty\\b", "game of the( year)?",
     "Warner Bros", "ubisoft", "currys", "blu-ray", "for playstation( )?vr", "bonus level",
     "Microsoft","sony", "nintendo", "square enix", "ea sport(s)?", "(bandai )?namco", "no scratches",
-    "\\bTom clancy(s)?\\b", "(\\bUK\\b|\\bEU\\b)( (new|only|seller|version|stock|import))?",
-    "\\bRPG\\b( game)?", "role( )?playng( game)?", "Adventure Role( playing)?", "Strategy Management",
+    "\\bTom clancy(s)?\\b", "(\\bUK\\b|\\bEU\\b)(( |-)(new|only|seller|version|stock|import))?",
+    "\\bRPG\\b( game)?", "role( )?playng( game)?", "Adventure Role( playing)?", "Strategy (combat|Management)", "tactical shooter", "action adventure( game)?",
     "\\bpal\\b", "\\ben\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b",
     "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b",
     "(the )?(official )?video(\\s+)?game(s)?( fasting)?",
     "NEW$", "^SEALED", "^NEW", "\\bMarvels\\b", "^best", "^software", "very rare",
-    "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
+    "[^\\p{L}\\p{N}\\p{P}\\p{Z}]",
+    "\\d{6,}"
   ).mkString("(?i)", "|", "")
 
   private val PLATFORMS_MATCH_REGEX = List(
@@ -78,7 +79,7 @@ private[mappers] object GameDetailsMapper {
     title
       .withoutSpecialChars
       .replaceAll(TITLE_WORDS_FILTER, "")
-      .replaceFirst("(?i)\\w+(?=\\s+(collection|edition|\\bed\\b|\\bed(i)?t(i)?\\b)) (collection|edition|\\bed\\b|\\bed(i)?t(i)?\\b)", "")
+      .replaceFirst("(?i)\\w+(?=\\s+(collection|edition|\\be(d)?(i)?(t)?(i)?\\b)) (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)", "")
       .replaceAll("é", "e")
       .replaceAll("(?i)(playerunknown)", "Player Unknown")
       .replaceAll("(?i)(littlebigplanet)", "Little Big Planet")

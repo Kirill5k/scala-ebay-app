@@ -24,7 +24,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "(demo|game)( )?(code|disc|key|cart|pass)", "(cd|unused|digital|upgrade|no)( )?(redeem )?(game|code|key)",
     "(software|cartridge(s)?|cart|game|disc(s)?|cover|box|sleeve|book) only",
     "(case|variety|accessories|storage|charge|robot) (kit|box)",
-    "(replacement|cover|carry|travel|carrying|just the|no|hard|storage|game|vault|phone|card|foreign|metal)\\s+(pouch|case|bag)",
+    "(replacement|cover|carry|travel|carrying|just the|no|hard|storage|game|vault|phone|card|foreign|metal|protective)\\s+(pouch|case|bag)",
     "(read|see) (detail|desc|post)", "please read", "(docking|charging) (station|stand)", "download",
     "credits", "instant delivery", "official server", "damaged", "Option File",
     "coin", "skins", "collectors box", "dutch import", "(german|promo|demo) (version|copy)", "soundtrack", "poster",
@@ -44,7 +44,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "fallout 76(\\s+(\\w+|\\d+)){5,}", "((\\w+|\\d+)\\s+){3,}fallout 76", "fallout(?s).* (plan|50|100|steel|leed|stimpack|power|cap|armo)",
     "fifa(?s).* (milli|gener|player|gold|point)",
     "borderlands 3(\\s+(\\w+|\\d+)){5,}",
-    "((\\w+|\\d+)\\s+){1,}rocket league(\\s+(\\w+|\\d+)){2,}", "((\\w+|\\d+)\\s+){3,}rocket league", "rocket league(\\s+(\\w+|\\d+)){5,}",
+    "rocket(?s).* (decal)", "((\\w+|\\d+)\\s+){1,}rocket league(\\s+(\\w+|\\d+)){2,}", "((\\w+|\\d+)\\s+){3,}rocket league",
     "((\\w+|\\d+)\\s+){3,}swordshield", "((\\w+|\\d+)\\s+){3,}pokemon", "pokemon(\\s+(\\w+|\\d+)){6,}"
   ).mkString("^.*?(?i)(", "|", ").*$").r
 
