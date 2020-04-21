@@ -79,7 +79,7 @@ private[mappers] object GameDetailsMapper {
     title
       .withoutSpecialChars
       .replaceAll(TITLE_WORDS_FILTER, "")
-      .replaceFirst("(?i)\\w+(?=\\s+(collection|edition|\\be(d)?(i)?(t)?(i)?\\b)) (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)", "")
+      .replaceFirst("(?i)\\w+(?=\\s+(collection|\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b)) (collection|\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b)", "")
       .replaceAll("é", "e")
       .replaceAll("(?i)(playerunknown)", "Player Unknown")
       .replaceAll("(?i)(littlebigplanet)", "Little Big Planet")
