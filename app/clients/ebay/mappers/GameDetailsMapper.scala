@@ -15,7 +15,7 @@ private[mappers] object GameDetailsMapper {
     "(ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|\\bultimate\\b( evil)?) (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)",
     "((1st|2nd) class )?(new\\s+)?(super( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(free|fast|quick|next day)( UK)?( (1st|2nd) class( signed)?)? (dispatch|shipping|post(age)?|delivery|p(\\s+)?p)",
     "((brand )?new( and)?)?( factory)?\\s+((un)?sealed|unopened|shrinkwrapped)", "(complete )?(brand|game) (new|neuf|nuevo)",
-    "(great|(very )?good|incredible|excellent|amazing|mint) (condition|value|prices)",
+    "(great|(very )?good|incredible|excellent|amazing|mint|superb) (condition|value|prices)",
     "((super )?rare|limited run|(\\d+ )?new|pal|great|boxed|full) game(s)?( \\d+)?",
     "limited run( \\d+)?", "(new )?boxed( and)?\\s+complete( game)?", "box( )?set", "pre(-| )?owned", "compatible", "inc manual",
     "Used", "very good", "reorderable", "(same|next) day dispatch", "sent same day", "in stock( now)?", "pre(\\s+)?release", "played once", "best price",
@@ -25,8 +25,8 @@ private[mappers] object GameDetailsMapper {
     "Microsoft","sony", "nintendo", "square enix", "ea sport(s)?", "(bandai )?namco", "no scratches",
     "\\bTom clancy(s)?\\b", "(\\bUSA\\b|\\bUK\\b|\\bEU\\b)(( |-)(new|only|seller|version|stock|import))?",
     "\\bRPG\\b( game)?", "role( )?playng( game)?", "Adventure Role( playing)?", "Strategy (combat|Management)",
-    "tactical shooter", "action (adventure|fighting)( game)?", "fps shooter( game)?",
-    "\\bpal\\b", "\\ben\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b",
+    "tactical shooter", "action (adventure|fighting)( game)?", "fps( survival)? shooter( game)?",
+    "\\bpal\\b", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b",
     "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b",
     "(the )?(official )?video(\\s+)?game(s)?( fasting)?",
@@ -80,7 +80,7 @@ private[mappers] object GameDetailsMapper {
     title
       .withoutSpecialChars
       .replaceAll(TITLE_WORDS_FILTER, "")
-      .replaceFirst("(?i)\\w+(?=\\s+(collection|\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b)) (collection|\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b)", "")
+      .replaceFirst("(?i)\\w+(?=\\s+(coll(ection)?|\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b)) (coll(ection)?|\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b)", "")
       .replaceAll("é", "e")
       .replaceAll("(?i)(playerunknown)", "Player Unknown")
       .replaceAll("(?i)(littlebigplanet)", "Little Big Planet")
