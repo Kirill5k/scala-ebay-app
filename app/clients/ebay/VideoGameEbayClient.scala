@@ -40,7 +40,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "\\bhori\\b", "\\bDE\\b", "ID59z", "\\bemail\\b",
     "ark survival(\\s+(\\w+|\\d+)){5,}",
     "diablo 3(\\s+(\\w+|\\d+)){6,}", "fortnite",
-    "villager(?s).*animal crossing", "animal crossing(?s).* (diy|recipe|fossil|dino|egg|gold)",
+    "villager(?s).*animal crossing", "animal crossing(?s).* (bell|million|diy|recipe|fossil|dino|egg|gold)",
     "gta(?s).* (money|online|million)",
     "fallout 76(\\s+(\\w+|\\d+)){5,}", "((\\w+|\\d+)\\s+){3,}fallout 76", "fallout(?s).* (plan|50|100|steel|leed|stimpack|power|cap|armo)",
     "fifa(?s).* (money|milli|gener|player|gold|point)",

@@ -12,18 +12,18 @@ private[mappers] object GameDetailsMapper {
     "(good )?(for )?((sony )?playstation(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?(\\s+complete)?(\\s+edition)?( 20\\d\\d)?( good)?",
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (\\bE\\b|edition|\\bed\\b|edt))?",
-    "(ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|\\bultimate\\b( evil)?) (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)",
-    "((1st|2nd) class )?(new\\s+)?(super( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(free|fast|quick|next day)( UK)?( (1st|2nd) class( signed)?)?( UK)? (dispatch|shipping|post(age)?|delivery|p(\\s+)?p)",
+    "(coll|ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|\\bultimate\\b( evil)?) (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)",
+    "((1st|2nd) class )?(new\\s+)?(super( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(free|fast|quick|next day|tracked)( UK)?( (1st|2nd) class( signed)?)?( UK)? (dispatch|shipping|post(age)?|delivery|p(\\s+)?p)",
     "((brand )?new( and)?)?( factory)?\\s+((un)?sealed|unopened|shrinkwrapped)", "(complete )?(brand|game) (new|neuf|nuevo)",
     "(great|(very )?good|incredible|excellent|amazing|mint|superb) (condition|value|prices)",
-    "((super )?rare|limited run|(\\d+ )?new|pal|great|boxed|full) game(s)?( \\d+)?",
+    "((super )?rare|limited run|(\\d+ )?new|pal|great|boxed|full) game(s)?( \\d+)?", "1st class post",
     "limited run( \\d+)?", "(new )?boxed( and)?\\s+complete( game)?", "box( )?set", "pre(-| )?owned", "compatible", "inc manual",
     "Used", "very good", "reorderable", "(same|next) day dispatch", "sent same day", "in stock( now)?", "pre(\\s+)?release", "played once", "best price",
     "Expertly Refurbished Product", "(quality|value) guaranteed", "Highly Rated eBay Seller", "fully tested", "from eBays biggest seller", "Order By 4pm",
     "remaster(ed)?", "directors cut", "\\bctr\\b", "original", "english", "deluxe", "standard", "\\bgoty\\b", "game of the( year)?", "multi-language",
     "Warner Bros", "ubisoft", "currys", "blu-ray", "for playstation( )?vr", "bonus level", "psvr required",
     "Microsoft","sony", "electronic arts", "nintendo", "square enix", "ea sport(s)?", "(bandai )?namco", "no scratches",
-    "\\bTom clancy(s)?\\b", "(\\bUS(A)?\\b|\\bUK\\b|\\bEU\\b)(( |-)(new|only|seller|version|stock|import))?",
+    "\\bTom clancy(s)?\\b", "(\\bUS?\\b|\\bUK\\b|\\bEU\\b)(( |-)(new|only|seller|version|stock|import))?",
     "\\bRPG\\b( game)?", "role( )?playng( game)?", "Adventure Role( playing)?", "Strategy (combat|Management)",
     "tactical shooter", "action (adventure|fighting)( game)?", "fps( survival)? shooter( game)?", "fighting multi( |-)?player( game)?",
     "\\bpal\\b", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b",
@@ -80,7 +80,7 @@ private[mappers] object GameDetailsMapper {
     title
       .withoutSpecialChars
       .replaceAll(TITLE_WORDS_FILTER, "")
-      .replaceFirst("(?i)\\w+(?=\\s+(coll(ection)?|\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b)) (coll(ection)?|\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b)", "")
+      .replaceFirst("(?i)\\w+(?=\\s+(\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)) (\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)", "")
       .replaceAll("é", "e")
       .replaceAll("(?i)(playerunknown)", "Player Unknown")
       .replaceAll("(?i)(littlebigplanet)", "Little Big Planet")
