@@ -7,26 +7,25 @@ import domain.{Packaging, ListingDetails}
 private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
-    "(video( )?)?game for( the)?( playstation)?(\\s+(vr|\\d+))?", "for playstation( )?vr", "psvr required",
+    "(video( )?)?game for( the)?( playstation)?(\\s+(vr|\\d+))?", "for playstation(\\s+)?vr", "psvr required",
     "((greatest|playstation) )?\\bhits\\b",
     "(good )?(for )?((sony )?playstation(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?(\\s+complete)?(\\s+edition)?( 20\\d\\d)?( good)?",
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (edition|\\be(d)?(i)?(t)?(i)?\\b))?",
     "(1st|2nd|first) class( signed)?",
-    "(eu|coll(ector(s)?)?|ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|ultimat(?s).*) (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)",
+    "(eu|coll(ector(s)?)?|ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|ultimat(?s).*) (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
     "(new\\s+)?(super( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(free|fast|quick|(next|same) day|tracked|speedy)(?s).* (dispatch|shipping|post(age)?|delivery|p(\\s+)?p)",
     "((brand )?new(?s).*)?((factory |un)?sealed|unopened|shrinkwrapped)", "(complete )?(brand|game) (new|neuf|nuevo)",
     "(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb) (condition|value|prices)",
     "(new )?((super )?rare|limited run|(\\d+ )?new|pal|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?",
-    "limited run( \\d+)?", "box( )?set", "pre(-| )?owned", "compatible", "inc manual",
+    "limited run( \\d+)?", "box( )?set", "pre(-| )?owned", "compatible", "inc manual", "complete with(?s).*$",
     "Used", "very good", "reorderable", "sent same day", "in stock( now)?", "pre(\\s+)?release", "played once", "best price",
     "Expertly Refurbished Product", "(quality|value) guaranteed", "Highly Rated eBay Seller", "fully tested", "from eBays biggest seller", "Order By 4pm",
     "remaster(ed)?", "directors cut", "\\bctr\\b", "original", "english", "deluxe", "standard", "\\bgoty\\b", "(action )?game of the( year)?", "multi-language",
     "Warner Bros", "ubisoft", "currys", "blu-ray", "bonus level",
     "Microsoft","sony", "electronic arts", "nintendo", "square enix", "ea sport(s)?", "(bandai )?namco", "no scratches",
     "\\bTom clancy(s)?\\b", "(\\bUSA\\b|\\bUK\\b|\\bEU\\b|genuine)(( |-)(new|only|seller|version|stock|import))?",
-    "\\bRPG\\b( game)?", "(adventure )?role( )?playing( game)?", "Strategy (combat|Management)", "(adventure )?survival horror( game)?",
-    "(fps)?( survival|tactial)? shooter( game)?", "action (adventure|fighting)( game)?", "fighting multi( |-)?player( game)?",
+    "(tactical|3rd-person|rpg|fps|survival|action|role|fighting)(?s).* game",
     "\\bpal\\b", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvgc\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b",
     "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b",
@@ -81,7 +80,7 @@ private[mappers] object GameDetailsMapper {
     title
       .withoutSpecialChars
       .replaceAll(TITLE_WORDS_FILTER, "")
-      .replaceFirst("(?i)\\w+(?=\\s+(\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)) (\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)", "")
+      .replaceFirst("(?i)\\w+(?=\\s+(\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)) (\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)(?s).*$", "")
       .replaceAll("é", "e")
       .replaceAll("(?i)(playerunknown)", "Player Unknown")
       .replaceAll("(?i)(littlebigplanet)", "Little Big Planet")
