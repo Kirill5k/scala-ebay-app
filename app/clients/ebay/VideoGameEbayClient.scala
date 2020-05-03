@@ -23,7 +23,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
   private val LISTING_NAME_TRIGGER_WORDS = List(
     "(demo|game)( )?(code|disc|key|cart|pass)", "(cd|unused|digital|upgrade|no)( )?(redeem )?(game|code|key)",
     "(software|cartridge(s)?|cart|game|disc(s)?|cover|box|sleeve|book|cd) only",
-    "(case|variety|accessor(ies|y)|storage|charge|robot) (set|kit|box)",
+    "(case|variety|accessor(ies|y)|storage|charge|robot) (set|kit|box)", "no dis(c|k)",
     "(replacement|cover|carry|travel|carrying|just the|no|hard|storage|game|vault|phone|card|foreign|metal|protective)\\s+(pouch|case|bag)",
     "(read|see) (detail|desc|post)", "please(?s).*read", "read(?s).*please", "(docking|charging) (station|stand)", "download",
     "credits", "instant delivery", "official server", "damaged", "Option File", "offline", "unlock all",
@@ -37,7 +37,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "membership", "subscription card", "12 month", "dynamic theme", "themes", "account",
     "level boosting", "gamer score", "power( )?level", "trophy service", "platinum trophy",
     "samsung", "huawei", "iphone",
-    "(german|promo|demo|french|japan(ese)?|dutch|spanish) (import|item|disc|vers|copy)", "arabic", "slovakian", "czech",
+    "(german|promo(tional)?|demo|french|japan(ese)?|dutch|spanish) (import|item|disc|vers|copy)", "arabic", "slovakian", "czech",
     "\\bhori\\b", "\\bDE\\b", "ID59z", "\\bemail\\b",
     "ark survival(\\s+(\\w+|\\d+)){5,}",
     "diablo 3(\\s+(\\w+|\\d+)){6,}", "fortnite",
@@ -45,8 +45,8 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "gta(?s).* (money|online|million)",
     "fallout 76(\\s+(\\w+|\\d+)){5,}", "((\\w+|\\d+)\\s+){3,}fallout 76", "fallout(?s).* (plan|50|100|steel|leed|stimpack|power|cap|armo|recipe|gun)",
     "fifa(?s).* (team|money|milli|gener|player|gold|point)",
-    "borderlands 3(\\s+(\\w+|\\d+)){5,}", "borderlands(?s).* (money|mod)",
-    "rocket(?s).* (decal|wheel|goal|explos)", "((\\w+|\\d+)\\s+){1,}rocket league(\\s+(\\w+|\\d+)){2,}", "((\\w+|\\d+)\\s+){3,}rocket league",
+    "borderlands 3(\\s+(\\w+|\\d+)){5,}", "borderlands(?s).* (cash|x50|legendary|money|mod)",
+    "rocket(?s).* (rare|crate|decal|wheel|goal|explos)", "((\\w+|\\d+)\\s+){1,}rocket league(\\s+(\\w+|\\d+)){2,}", "((\\w+|\\d+)\\s+){3,}rocket league",
     "((\\w+|\\d+)\\s+){3,}swordshield", "((\\w+|\\d+)\\s+){3,}pokemon", "pokemon(\\s+(\\w+|\\d+)){6,}"
   ).mkString("^.*?(?i)(", "|", ").*$").r
 

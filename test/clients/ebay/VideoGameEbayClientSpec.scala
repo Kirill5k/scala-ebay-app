@@ -129,7 +129,8 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
         ebayItemSummary("18", name = """fifa 2020 million 100 point XBOX"""),
         ebayItemSummary("19", name = """animal crossing dinosaur recipe card"""),
         ebayItemSummary("20", name = """fallout 76 5000 caps"""),
-        ebayItemSummary("21", name = """Shiny 6IV Go Park Level 1 Timid Trace Gardevoir Sword/Shield Switch Master Ball""")
+        ebayItemSummary("21", name = """borderlands 4 promotional copy"""),
+        ebayItemSummary("22", name = """Shiny 6IV Go Park Level 1 Timid Trace Gardevoir Sword/Shield Switch Master Ball""")
       )))
         .doReturn(IO.pure(List()))
         .doReturn(IO.pure(List()))
