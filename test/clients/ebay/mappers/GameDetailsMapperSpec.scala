@@ -126,7 +126,7 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers with Inspectors {
         "Call of Duty: Infinite Warfare - brand new and factory sealed",
         "Call of Duty: Infinite Warfare - complete e free 1st class uk postage",
         "Call of Duty: Infinite Warfare the official videogame - new unopened",
-        "BEST PS4 GAME Call of Duty: Infinite Warfare EU-Import factory sealed next day dispatch",
+        "BEST PS4 GAME Call of Duty: Infinite Warfare EU-Import factory sealed next day dispatch free",
         "300076206 Limited run 170 Call of Duty: Infinite Warfare new boxed and complete game",
         "Playstation 4/PAL-Call of Duty: Infinite Warfare NEW",
         "Marvel's Call of Duty: Infinite Warfare • new and factory Sealed •",
