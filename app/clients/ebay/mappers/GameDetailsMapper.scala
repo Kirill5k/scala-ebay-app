@@ -14,7 +14,7 @@ private[mappers] object GameDetailsMapper {
     "day (one|1|zero|0)( (edition|\\be(d)?(i)?(t)?(i)?\\b))?(?s).*$",
     "(1st|2nd|first) class( signed)?",
     "(eu|coll(ector(s)?)?|ltd|goty|(action )?game of the year|legacy( pro)?|limited|premium( online)?|(digital )?deluxe|standard|ultimat(?s).*) (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
-    "(new\\s+)?(super( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(free|fast|quick|(next|same) day|tracked|speedy)(?s).* (dispatch|shipping|post(age)?|delivery|p(\\s+)?p)",
+    "(new\\s+)?(super( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(free|fast|quick|(next|same) day|tracked|speedy)(?s).* (dispatch|shipping|post(age)?|delivery|p(\\s+)?p)( free)?",
     "((brand )?new(?s).*)?((factory |un)?sealed|unopened|shrinkwrapped)", "(complete )?(brand|game) (new|neuf|nuevo)",
     "(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working) (condition|value|prices)",
     "(new )?((super )?rare|limited run|(\\d+ )?new|pal|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?",
@@ -101,7 +101,7 @@ private[mappers] object GameDetailsMapper {
     PLATFORMS_MATCH_REGEX.findFirstIn(listingDetails.title.withoutSpecialChars)
       .orElse(listingDetails.properties.get("Platform").map(_.split(",|/")(0)))
       .map(_.toUpperCase.trim)
-      .map(_.replaceAll(" ", ""))
+      .map(_.replaceAll(" |-", ""))
       .map(platform => PLATFORM_MAPPINGS.getOrElse(platform, platform))
   }
 
