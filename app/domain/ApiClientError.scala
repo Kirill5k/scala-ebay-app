@@ -9,7 +9,6 @@ import scala.concurrent.Future
 
 sealed trait ApiClientError extends Throwable {
   def message: String
-
   override def getMessage: String = message
 }
 
