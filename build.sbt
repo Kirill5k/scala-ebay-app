@@ -14,6 +14,7 @@ scalaVersion := "2.13.1"
 lazy val circeVersion = "0.13.0"
 lazy val mockitoVersion = "1.10.3"
 lazy val reactiveMongoPlayVersion = "0.20.3-play28"
+lazy val sttpVersion = "2.1.1"
 
 libraryDependencies ++= Seq(
   guice,
@@ -22,6 +23,11 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-core" % "2.1.0",
   "org.typelevel" %% "cats-effect" % "2.1.1",
   "co.fs2" %% "fs2-core" % "2.2.2",
+
+  "com.softwaremill.sttp.client" %% "core" % sttpVersion,
+  "com.softwaremill.sttp.client" %% "circe" % sttpVersion,
+  "com.softwaremill.sttp.client" %% "async-http-client-backend-cats" % sttpVersion,
+
   "io.circe" %% "circe-core" % circeVersion,
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,

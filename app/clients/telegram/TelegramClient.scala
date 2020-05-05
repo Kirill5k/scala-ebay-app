@@ -8,12 +8,12 @@ import javax.inject.Inject
 import play.api.http.Status
 import play.api.libs.ws.WSClient
 import play.api.{Configuration, Logger}
+import resources.CatsSttpBackend
+import sttp.client._
+import sttp.client.circe._
+import sttp.model.MediaType
 
-import scala.concurrent.ExecutionContext
-
-class TelegramClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
-  private implicit val cs: ContextShift[IO] = IO.contextShift(ex)
-
+class TelegramClient @Inject()(config: Configuration, catsSttpBackend: CatsSttpBackend) {
   import domain.ResellableItemOps._
   private val log: Logger = Logger(getClass)
 
@@ -33,6 +33,9 @@ class TelegramClient @Inject()(config: Configuration, client: WSClient)(implicit
     sendMessage(telegramConfig.mainChannelId, message)
 
   def sendMessage(channelId: String, message: String): IO[Unit] = {
+    basicRequest
+      .get(uri"${telegramConfig.baseUri}/v1/me")
+
     val response = client
       .url(s"${telegramConfig.baseUri}${telegramConfig.messagePath}")
       .withQueryStringParameters("chat_id" -> channelId, "text" -> message)
