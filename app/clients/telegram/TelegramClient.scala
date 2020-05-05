@@ -6,10 +6,10 @@ import domain.{ApiClientError, ResellableItem}
 import javax.inject.Inject
 import play.api.http.Status
 import play.api.{Configuration, Logger}
-import resources.SttpBackendResource
+import resources.{CatsSttpBackendResource, SttpBackendResource}
 import sttp.client._
 
-class TelegramClient @Inject()(config: Configuration, catsSttpBackend: SttpBackendResource[IO]) {
+class TelegramClient @Inject()(config: Configuration, catsSttpBackendResource: SttpBackendResource[IO]) {
   import domain.ResellableItemOps._
   private val log: Logger = Logger(getClass)
 
@@ -29,7 +29,7 @@ class TelegramClient @Inject()(config: Configuration, catsSttpBackend: SttpBacke
     sendMessage(telegramConfig.mainChannelId, message)
 
   def sendMessage(channelId: String, message: String): IO[Unit] =
-    catsSttpBackend.get.use { implicit b =>
+    catsSttpBackendResource.get.use { implicit b =>
       basicRequest
         .get(uri"${telegramConfig.baseUri}/bot${telegramConfig.botKey}/sendMessage?chat_id=$channelId&message=$message")
         .send()

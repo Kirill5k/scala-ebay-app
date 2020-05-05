@@ -32,7 +32,7 @@ trait PlayWithMongoSpec extends PlaySpec with GuiceOneAppPerSuite with Injecting
 
   override def fakeApplication = new GuiceApplicationBuilder()
     .configure("ebay.credentials" -> List())
-    .configure("telegram.messagePath" -> "/bot-1/sendMessage")
+    .configure("telegram.botKey" -> "bot-1")
     .configure("telegram.mainChannelId" -> "c-main")
     .configure("telegram.secondaryChannelId" -> "c-secondary")
     .configure("mongodb.uri" -> "mongodb://localhost:12345/mongo-test")
