@@ -7,11 +7,16 @@ import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend
 
 import scala.concurrent.ExecutionContext
 
+
+trait SttpBackendResource[F[_]] {
+  val get: Resource[F, SttpBackend[F, Nothing, NothingT]]
+}
+
 @Singleton
-final class CatsSttpBackend @Inject()(implicit private val ec: ExecutionContext) {
+final class CatsSttpBackendResource @Inject()(implicit private val ec: ExecutionContext) extends SttpBackendResource[IO] {
 
   implicit private val cs: ContextShift[IO] = IO.contextShift(ec)
 
-  val backendResource: Resource[IO, SttpBackend[IO, Nothing, NothingT]] =
+  val get: Resource[IO, SttpBackend[IO, Nothing, NothingT]] =
     Resource.make(AsyncHttpClientCatsBackend[IO]())(_.close())
 }

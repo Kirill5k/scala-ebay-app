@@ -2,15 +2,14 @@ package clients.telegram
 
 import cats.effect.IO
 import cats.implicits._
-import domain.ApiClientError._
-import domain.ResellableItem
+import domain.{ApiClientError, ResellableItem}
 import javax.inject.Inject
 import play.api.http.Status
 import play.api.{Configuration, Logger}
-import resources.CatsSttpBackend
+import resources.SttpBackendResource
 import sttp.client._
 
-class TelegramClient @Inject()(config: Configuration, catsSttpBackend: CatsSttpBackend) {
+class TelegramClient @Inject()(config: Configuration, catsSttpBackend: SttpBackendResource[IO]) {
   import domain.ResellableItemOps._
   private val log: Logger = Logger(getClass)
 
@@ -30,13 +29,13 @@ class TelegramClient @Inject()(config: Configuration, catsSttpBackend: CatsSttpB
     sendMessage(telegramConfig.mainChannelId, message)
 
   def sendMessage(channelId: String, message: String): IO[Unit] =
-    catsSttpBackend.backendResource.use { implicit b =>
+    catsSttpBackend.get.use { implicit b =>
       basicRequest
         .get(uri"${telegramConfig.baseUri}/bot${telegramConfig.botKey}/sendMessage?chat_id=$channelId&message=$message")
         .send()
         .flatMap { r =>
           if (Status.isSuccessful(r.code.code)) IO.pure(())
-          else IO.raiseError(HttpError(r.code.code, s"error sending message to telegram channel $channelId: ${r.statusText}"))
+          else IO.raiseError(ApiClientError.HttpError(r.code.code, s"error sending message to telegram channel $channelId: ${r.code}"))
         }
     }
 }
