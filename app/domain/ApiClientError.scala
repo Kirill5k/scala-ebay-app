@@ -4,6 +4,7 @@ import java.io.IOException
 
 import cats.effect.{ContextShift, IO}
 import play.api.libs.json.JsResultException
+import sttp.client.DeserializationError
 
 import scala.concurrent.Future
 
@@ -21,6 +22,8 @@ object ApiClientError {
   final case class NotEnoughDetailsError(message: String) extends ApiClientError
 
   def recoverFromHttpCallFailure: PartialFunction[Throwable, ApiClientError] = {
+    case DeserializationError(body, error) =>
+      JsonParsingError(s"error parsing json: $error")
     case parsingError: JsResultException =>
       JsonParsingError(s"error parsing json: ${parsingError.getMessage}")
     case networkingError: IOException =>

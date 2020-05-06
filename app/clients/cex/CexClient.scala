@@ -2,34 +2,28 @@ package clients.cex
 
 import java.util.concurrent.TimeUnit
 
-
-import cats.effect.{ContextShift, IO}
+import cats.effect.IO
 import cats.implicits._
 import domain.{ApiClientError, ItemDetails, ResellPrice}
-import domain.ApiClientError._
+import io.circe.generic.auto._
 import javax.inject.{Inject, Singleton}
-import play.api.{Configuration, Logger}
-import play.api.http.HeaderNames
-import play.api.http.Status._
-import play.api.libs.ws.WSClient
-
-import scala.concurrent.ExecutionContext
-import CexSearchResponse._
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
+import play.api.{Configuration, Logger}
+import resources.SttpBackendResource
+import sttp.client._
+import sttp.client.circe._
+import sttp.model.{HeaderNames, MediaType, StatusCode}
 
 @Singleton
-class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
-  private implicit val cs: ContextShift[IO] = IO.contextShift(ex)
+class CexClient @Inject()(config: Configuration, catsSttpBackendResource: SttpBackendResource[IO]) {
+  import CexClient._
 
   private val log: Logger = Logger(getClass)
 
   private val cexConfig = config.get[CexConfig]("cex")
-  private val searchRequest = client
-    .url(s"${cexConfig.baseUri}${cexConfig.searchPath}")
-    .addHttpHeaders(HeaderNames.ACCEPT -> "application/json")
-    .addHttpHeaders(HeaderNames.CONTENT_TYPE -> "application/json")
 
-  private[cex] val searchResultsCache = ExpiringMap.builder()
+  private[cex] val searchResultsCache = ExpiringMap
+    .builder()
     .expirationPolicy(ExpirationPolicy.CREATED)
     .expiration(24, TimeUnit.HOURS)
     .build[String, Option[ResellPrice]]()
@@ -46,25 +40,31 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
     }
 
   private def queryResellPrice(query: String): IO[Option[ResellPrice]] = {
-    val response = searchRequest.withQueryStringParameters("q" -> query).get()
-      .map { res =>
-        res.status match {
-          case status if isSuccessful(status) =>
-            res.body[Either[ApiClientError, CexSearchResponse]].map(getMinResellPrice(query))
-          case TOO_MANY_REQUESTS =>
-            log.error(s"too many requests to cex")
-            none[ResellPrice].asRight[ApiClientError]
-          case status => HttpError(status, s"error sending request to cex: ${res.statusText}").asLeft
+    catsSttpBackendResource.get.use { implicit b =>
+      basicRequest
+        .get(uri"${cexConfig.baseUri}/v3/boxes?q=${query}")
+        .contentType(MediaType.ApplicationJson)
+        .header(HeaderNames.Accept, MediaType.ApplicationJson.toString())
+        .response(asJson[CexSearchResponse])
+        .send()
+        .flatMap { r =>
+          r.code match {
+            case status if status.isSuccess =>
+              IO.fromEither(r.body.map(getMinResellPrice(query)).left.map(ApiClientError.recoverFromHttpCallFailure))
+            case StatusCode.TooManyRequests =>
+              IO(log.error(s"too many requests to cex")) *>
+                IO.pure(none[ResellPrice])
+            case status =>
+              IO(log.error(s"error sending price query to cex: ${r.body} ${r}")) *>
+                IO.raiseError(ApiClientError.HttpError(status.code, s"error sending request to cex: $status"))
+          }
         }
-      }
-      .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
-
-    ApiClientError.fromFutureErrorToIO(response)
+    }
   }
 
   private def getMinResellPrice(query: String)(searchResponse: CexSearchResponse): Option[ResellPrice] = {
     val resellPrice = for {
-      data <- searchResponse.response.data
+      data     <- searchResponse.response.data
       cheapest <- data.boxes.minByOption(_.exchangePrice)
     } yield ResellPrice(BigDecimal.valueOf(cheapest.cashPrice), BigDecimal.valueOf(cheapest.exchangePrice))
 
@@ -73,4 +73,26 @@ class CexClient @Inject() (config: Configuration, client: WSClient)(implicit ex:
 
     resellPrice
   }
+}
+
+object CexClient {
+  final case class SearchResult(
+      boxId: String,
+      boxName: String,
+      categoryName: String,
+      sellPrice: Double,
+      exchangePrice: Double,
+      cashPrice: Double
+  )
+
+  final case class SearchResults(
+      boxes: Seq[SearchResult],
+      totalRecords: Int,
+      minPrice: Double,
+      maxPrice: Double
+  )
+
+  final case class SearchResponse(data: Option[SearchResults])
+
+  final case class CexSearchResponse(response: SearchResponse)
 }

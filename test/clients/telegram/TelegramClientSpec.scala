@@ -1,23 +1,18 @@
 package clients.telegram
 
-import cats.effect.{ContextShift, IO, Resource}
+import cats.effect.IO
+import clients.SttpClientSpec
 import domain.ApiClientError._
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.play.PlaySpec
 import play.api.Configuration
-import resources.SttpBackendResource
-import sttp.client
+import sttp.client.Response
 import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend
 import sttp.client.testing.SttpBackendStub
-import sttp.client.{NothingT, Response, SttpBackend}
 import sttp.model.{Method, StatusCode}
 
-import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class TelegramClientSpec extends PlaySpec with ScalaFutures {
-  implicit val cs: ContextShift[IO] = IO.contextShift(ExecutionContext.Implicits.global)
+class TelegramClientSpec extends SttpClientSpec {
 
   val telegramConfig        = Map("baseUri"            -> "http://telegram.com", "botKey" -> "BOT-KEY", "mainChannelId" -> "m1", "secondaryChannelId" -> "s1")
   val config: Configuration = Configuration("telegram" -> telegramConfig)
@@ -30,7 +25,8 @@ class TelegramClientSpec extends PlaySpec with ScalaFutures {
       val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
-          case r if isGoingTo(r, Method.GET, "telegram.com", List("botBOT-KEY", "sendMessage"), Map("chat_id" -> "m1", "text" -> message)) =>
+          case r
+              if isGoingTo(r, Method.GET, "telegram.com", List("botBOT-KEY", "sendMessage"), Map("chat_id" -> "m1", "text" -> message)) =>
             Response.ok("success")
           case _ => throw new RuntimeException()
         }
@@ -48,7 +44,8 @@ class TelegramClientSpec extends PlaySpec with ScalaFutures {
       val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
-          case r if isGoingTo(r, Method.GET, "telegram.com", List("botBOT-KEY", "sendMessage"), Map("chat_id" -> "m1", "text" -> message)) =>
+          case r
+              if isGoingTo(r, Method.GET, "telegram.com", List("botBOT-KEY", "sendMessage"), Map("chat_id" -> "m1", "text" -> message)) =>
             Response.ok("success")
           case _ => throw new RuntimeException()
         }
@@ -66,8 +63,9 @@ class TelegramClientSpec extends PlaySpec with ScalaFutures {
       val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
-          case r if isGoingTo(r, Method.GET, "telegram.com", List("botBOT-KEY", "sendMessage"), Map("chat_id" -> "m1", "text" -> message)) =>
-            Response.apply("fail", StatusCode.BadRequest)
+          case r
+              if isGoingTo(r, Method.GET, "telegram.com", List("botBOT-KEY", "sendMessage"), Map("chat_id" -> "m1", "text" -> message)) =>
+            Response("fail", StatusCode.BadRequest)
           case _ => throw new RuntimeException()
         }
 
@@ -79,21 +77,5 @@ class TelegramClientSpec extends PlaySpec with ScalaFutures {
         sent must be(Left(HttpError(400, "error sending message to telegram channel m1: 400")))
       }
     }
-  }
-
-  def isGoingTo(
-      req: client.Request[_, _],
-      method: Method,
-      host: String,
-      paths: Seq[String] = Nil,
-      params: Map[String, String] = Map.empty
-  ): Boolean =
-    req.uri.host == host && (paths.isEmpty || req.uri.path == paths) && req.method == method && req.uri.params.toMap
-      .toSet[(String, String)]
-      .subsetOf(params.toSet)
-
-  def sttpCatsBackend(testingBackend: SttpBackendStub[IO, Nothing]): SttpBackendResource[IO] = new SttpBackendResource[IO] {
-    override val get: Resource[IO, SttpBackend[IO, Nothing, NothingT]] =
-      Resource.liftF(IO.pure(testingBackend))
   }
 }

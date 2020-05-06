@@ -6,7 +6,7 @@ import domain.{ApiClientError, ResellableItem}
 import javax.inject.Inject
 import play.api.http.Status
 import play.api.{Configuration, Logger}
-import resources.{CatsSttpBackendResource, SttpBackendResource}
+import resources.SttpBackendResource
 import sttp.client._
 
 class TelegramClient @Inject()(config: Configuration, catsSttpBackendResource: SttpBackendResource[IO]) {
