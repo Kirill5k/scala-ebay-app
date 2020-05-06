@@ -35,7 +35,9 @@ class TelegramClient @Inject()(config: Configuration, catsSttpBackendResource: S
         .send()
         .flatMap { r =>
           if (Status.isSuccessful(r.code.code)) IO.pure(())
-          else IO.raiseError(ApiClientError.HttpError(r.code.code, s"error sending message to telegram channel $channelId: ${r.code}"))
+          else
+            IO(log.error(s"error sending message to telegram: ${r.body} ${r}")) *>
+              IO.raiseError(ApiClientError.HttpError(r.code.code, s"error sending message to telegram channel $channelId: ${r.code}"))
         }
     }
 }
