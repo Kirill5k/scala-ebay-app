@@ -35,7 +35,7 @@ class CexClient @Inject()(config: Configuration, catsSttpBackendResource: SttpBa
       case Some(query) =>
         queryResellPrice(query)
       case None =>
-        IO.delay(log.warn(s"not enough details to query for resell price $itemDetails")) *>
+        IO(log.warn(s"not enough details to query for resell price $itemDetails")) *>
           IO.pure(none[ResellPrice])
     }
 
@@ -55,7 +55,7 @@ class CexClient @Inject()(config: Configuration, catsSttpBackendResource: SttpBa
               IO(log.error(s"too many requests to cex")) *>
                 IO.pure(none[ResellPrice])
             case status =>
-              IO(log.error(s"error sending price query to cex: ${r.body} ${r}")) *>
+              IO(log.error(s"error sending price query to cex: $status\n${r.body.fold(_.body, _.toString)}")) *>
                 IO.raiseError(ApiClientError.HttpError(status.code, s"error sending request to cex: $status"))
           }
         }
