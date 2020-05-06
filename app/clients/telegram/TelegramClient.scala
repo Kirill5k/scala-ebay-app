@@ -31,7 +31,7 @@ class TelegramClient @Inject()(config: Configuration, catsSttpBackendResource: S
   def sendMessage(channelId: String, message: String): IO[Unit] =
     catsSttpBackendResource.get.use { implicit b =>
       basicRequest
-        .get(uri"${telegramConfig.baseUri}/bot${telegramConfig.botKey}/sendMessage?chat_id=$channelId&message=$message")
+        .get(uri"${telegramConfig.baseUri}/bot${telegramConfig.botKey}/sendMessage?chat_id=$channelId&text=$message")
         .send()
         .flatMap { r =>
           if (Status.isSuccessful(r.code.code)) IO.pure(())
