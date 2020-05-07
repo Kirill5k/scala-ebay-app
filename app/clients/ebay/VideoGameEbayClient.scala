@@ -45,7 +45,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "gta(?s).* (money|online|million)",
     "fallout 76(\\s+(\\w+|\\d+)){5,}", "((\\w+|\\d+)\\s+){3,}fallout 76", "fallout(?s).* (plan|50|100|steel|leed|stimpack|power|cap|armo|recipe|gun)",
     "fifa(?s).* (team|money|milli|gener|player|gold|point)",
-    "borderlands 3(\\s+(\\w+|\\d+)){5,}", "borderlands(?s).* (cash|x50|legendary|money|mod)",
+    "borderlands 3(\\s+(\\w+|\\d+)){5,}", "borderlands(?s).* (lvl|cash|x50|legendary|money|mod)",
     "rocket(?s).* (rare|crate|decal|wheel|goal|explos)", "((\\w+|\\d+)\\s+){1,}rocket league(\\s+(\\w+|\\d+)){2,}", "((\\w+|\\d+)\\s+){3,}rocket league",
     "((\\w+|\\d+)\\s+){3,}swordshield", "((\\w+|\\d+)\\s+){3,}pokemon", "pokemon(\\s+(\\w+|\\d+)){6,}"
   ).mkString("^.*?(?i)(", "|", ").*$").r

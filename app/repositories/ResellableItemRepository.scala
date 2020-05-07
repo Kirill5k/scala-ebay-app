@@ -33,7 +33,7 @@ trait ResellableItemRepository[D <: ResellableItem, E <: ResellableItemEntity] {
     toIO(itemCollection.flatMap { collection =>
       collection
         .withReadPreference(ReadPreference.primary)
-        .count(Some(Json.obj("listingDetails.url" -> listingUrl.toString)), None, 0, None, ReadConcern.Available)
+        .count(Some(Json.obj("listingDetails.url" -> listingUrl)), None, 0, None, ReadConcern.Available)
         .map(_ > 0)
     })
 
