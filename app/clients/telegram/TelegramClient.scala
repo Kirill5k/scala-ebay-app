@@ -2,18 +2,18 @@ package clients.telegram
 
 import cats.effect.IO
 import cats.implicits._
+import common.config.AppConfig
+import common.resources.SttpBackendResource
 import domain.{ApiClientError, ResellableItem}
 import javax.inject.Inject
-import play.api.http.Status
-import play.api.{Configuration, Logger}
-import resources.SttpBackendResource
+import play.api.Logger
 import sttp.client._
 
-class TelegramClient @Inject()(config: Configuration, catsSttpBackendResource: SttpBackendResource[IO]) {
+class TelegramClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) {
   import domain.ResellableItemOps._
   private val log: Logger = Logger(getClass)
 
-  private val telegramConfig = config.get[TelegramConfig]("telegram")
+  private val telegramConfig = AppConfig.load().telegram
 
   def sendMessageToMainChannel(item: ResellableItem): IO[Unit] =
     IO.pure(item.notificationMessage).flatMap {

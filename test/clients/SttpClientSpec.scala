@@ -3,7 +3,7 @@ package clients
 import cats.effect.{ContextShift, IO, Resource}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
-import resources.SttpBackendResource
+import common.resources.SttpBackendResource
 import sttp.client
 import sttp.client.{NothingT, SttpBackend}
 import sttp.client.testing.SttpBackendStub

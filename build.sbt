@@ -14,6 +14,7 @@ scalaVersion := "2.13.1"
 
 libraryDependencies ++= Seq(
   guice,
+  pureconfigCore,
   catsCore,
   catsEffect,
   fs2Core,
@@ -33,4 +34,4 @@ libraryDependencies ++= Seq(
   embeddedMongo % Test
 )
 
-routesImport ++= Seq("binders.QueryStringBinders._", "java.time.Instant")
+routesImport ++= Seq("common.binders.QueryStringBinders._", "java.time.Instant")

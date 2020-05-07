@@ -14,9 +14,6 @@ import scala.language.postfixOps
 
 class TelegramClientSpec extends SttpClientSpec {
 
-  val telegramConfig        = Map("baseUri"            -> "http://telegram.com", "botKey" -> "BOT-KEY", "mainChannelId" -> "m1", "secondaryChannelId" -> "s1")
-  val config: Configuration = Configuration("telegram" -> telegramConfig)
-
   val message = "lorem ipsum dolor sit amet"
 
   "TelegramClient" should {
@@ -31,7 +28,7 @@ class TelegramClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val telegramClient = new TelegramClient(config, sttpCatsBackend(testingBackend))
+      val telegramClient = new TelegramClient(sttpCatsBackend(testingBackend))
 
       val result = telegramClient.sendMessageToMainChannel(message)
 
@@ -50,7 +47,7 @@ class TelegramClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val telegramClient = new TelegramClient(config, sttpCatsBackend(testingBackend))
+      val telegramClient = new TelegramClient(sttpCatsBackend(testingBackend))
 
       val result = telegramClient.sendMessageToMainChannel(message)
 
@@ -69,7 +66,7 @@ class TelegramClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val telegramClient = new TelegramClient(config, sttpCatsBackend(testingBackend))
+      val telegramClient = new TelegramClient(sttpCatsBackend(testingBackend))
 
       val result = telegramClient.sendMessageToMainChannel(message)
 

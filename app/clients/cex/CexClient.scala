@@ -4,23 +4,24 @@ import java.util.concurrent.TimeUnit
 
 import cats.effect.IO
 import cats.implicits._
+import common.config.AppConfig
 import domain.{ApiClientError, ItemDetails, ResellPrice}
 import io.circe.generic.auto._
 import javax.inject.{Inject, Singleton}
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 import play.api.{Configuration, Logger}
-import resources.SttpBackendResource
+import common.resources.SttpBackendResource
 import sttp.client._
 import sttp.client.circe._
 import sttp.model.{HeaderNames, MediaType, StatusCode}
 
 @Singleton
-class CexClient @Inject()(config: Configuration, catsSttpBackendResource: SttpBackendResource[IO]) {
+class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) {
   import CexClient._
 
   private val log: Logger = Logger(getClass)
 
-  private val cexConfig = config.get[CexConfig]("cex")
+  private val cexConfig = AppConfig.load().cex
 
   private[cex] val searchResultsCache = ExpiringMap
     .builder()

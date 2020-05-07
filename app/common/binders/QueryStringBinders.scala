@@ -1,4 +1,4 @@
-package binders
+package common.binders
 
 import java.time.{Instant, LocalDate, ZoneOffset}
 

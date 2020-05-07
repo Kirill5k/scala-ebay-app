@@ -2,22 +2,22 @@ package clients.ebay.browse
 
 import cats.effect.IO
 import cats.implicits._
-import clients.ebay.EbayConfig
 import clients.ebay.browse.EbayBrowseResponse._
+import common.config.AppConfig
+import common.resources.SttpBackendResource
 import domain.ApiClientError
 import domain.ApiClientError._
 import io.circe.generic.auto._
 import javax.inject._
-import play.api.{Configuration, Logger}
-import resources.SttpBackendResource
+import play.api.Logger
 import sttp.client._
 import sttp.client.circe._
 import sttp.model.{HeaderNames, MediaType, StatusCode}
 
 @Singleton
-private[ebay] class EbayBrowseClient @Inject()(config: Configuration, catsSttpBackendResource: SttpBackendResource[IO]) {
+private[ebay] class EbayBrowseClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) {
   private val log: Logger = Logger(getClass)
-  private val ebayConfig = config.get[EbayConfig]("ebay")
+  private val ebayConfig = AppConfig.load().ebay
 
   def search(accessToken: String, queryParams: Map[String, String]): IO[Seq[EbayItemSummary]] =
     catsSttpBackendResource.get.use { implicit b =>

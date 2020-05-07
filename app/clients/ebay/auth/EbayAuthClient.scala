@@ -2,24 +2,24 @@ package clients.ebay.auth
 
 import cats.effect.IO
 import cats.implicits._
-import clients.ebay.EbayConfig
+import common.config.AppConfig
+import common.resources.SttpBackendResource
 import domain.ApiClientError
 import domain.ApiClientError._
 import io.circe.generic.auto._
 import io.circe.parser._
 import javax.inject._
-import play.api.{Configuration, Logger}
-import resources.SttpBackendResource
+import play.api.Logger
 import sttp.client._
 import sttp.client.circe._
 import sttp.model.{HeaderNames, MediaType}
 
 @Singleton
-private[ebay] class EbayAuthClient @Inject()(config: Configuration, catsSttpBackendResource: SttpBackendResource[IO]) {
+private[ebay] class EbayAuthClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) {
   import EbayAuthClient._
 
   private val log: Logger = Logger(getClass)
-  private val ebayConfig = config.get[EbayConfig]("ebay")
+  private val ebayConfig = AppConfig.load().ebay
 
   private val expiredToken: IO[Left[AuthError, Nothing]] = IO.pure(Left(AuthError("authentication with ebay is required")))
 

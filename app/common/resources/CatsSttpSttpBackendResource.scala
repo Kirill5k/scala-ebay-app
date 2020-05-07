@@ -1,4 +1,4 @@
-package resources
+package common.resources
 
 import cats.effect.{ContextShift, IO, Resource}
 import com.google.inject.ImplementedBy

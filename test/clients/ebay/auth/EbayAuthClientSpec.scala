@@ -3,7 +3,6 @@ package clients.ebay.auth
 import cats.effect.IO
 import clients.SttpClientSpec
 import domain.ApiClientError._
-import play.api.Configuration
 import sttp.client
 import sttp.client.Response
 import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend
@@ -14,10 +13,6 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 class EbayAuthClientSpec extends SttpClientSpec {
-
-  val ebayCredentials = List(Map("clientId" -> "id-1", "clientSecret" -> "secret-1"), Map("clientId" -> "id-2", "clientSecret" -> "secret-2"))
-  val ebayConfig = Map("baseUri" -> "http://ebay.com", "authPath" -> "/auth", "searchPath" -> "/search", "itemPath" -> "/item", "credentials" -> ebayCredentials)
-  val config: Configuration = Configuration("ebay" -> ebayConfig)
 
   "EbayAuthClient" should {
 
@@ -30,7 +25,7 @@ class EbayAuthClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val ebayAuthClient = new EbayAuthClient(config, sttpCatsBackend(testingBackend))
+      val ebayAuthClient = new EbayAuthClient(sttpCatsBackend(testingBackend))
       val accessToken = ebayAuthClient.accessToken()
 
       whenReady(accessToken.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { token =>
@@ -45,7 +40,7 @@ class EbayAuthClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val ebayAuthClient = new EbayAuthClient(config, sttpCatsBackend(testingBackend))
+      val ebayAuthClient = new EbayAuthClient(sttpCatsBackend(testingBackend))
       ebayAuthClient.authToken = IO.pure(Right(EbayAuthToken("test-token", 7200)))
 
       val accessToken = ebayAuthClient.accessToken()
@@ -64,7 +59,7 @@ class EbayAuthClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val ebayAuthClient = new EbayAuthClient(config, sttpCatsBackend(testingBackend))
+      val ebayAuthClient = new EbayAuthClient(sttpCatsBackend(testingBackend))
       ebayAuthClient.switchAccount()
       val accessToken = ebayAuthClient.accessToken()
 
@@ -83,7 +78,7 @@ class EbayAuthClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val ebayAuthClient = new EbayAuthClient(config, sttpCatsBackend(testingBackend))
+      val ebayAuthClient = new EbayAuthClient(sttpCatsBackend(testingBackend))
       ebayAuthClient.authToken = IO.pure(Right(EbayAuthToken("test-token", 0)))
       val accessToken = ebayAuthClient.accessToken()
 
@@ -101,7 +96,7 @@ class EbayAuthClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val ebayAuthClient = new EbayAuthClient(config, sttpCatsBackend(testingBackend))
+      val ebayAuthClient = new EbayAuthClient(sttpCatsBackend(testingBackend))
       val accessToken = ebayAuthClient.accessToken()
 
       whenReady(accessToken.attempt.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { token =>

@@ -4,7 +4,6 @@ import cats.effect.IO
 import clients.SttpClientSpec
 import domain.ApiClientError._
 import domain.{ResellPrice, VideoGameBuilder}
-import play.api.Configuration
 import sttp.client
 import sttp.client.Response
 import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend
@@ -15,9 +14,6 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 class CexClientSpec extends SttpClientSpec {
-
-  val cexConfig             = Map("baseUri"       -> "http://cex.com", "searchPath" -> "/search")
-  val config: Configuration = Configuration("cex" -> cexConfig)
 
   val queryString = "super mario 3 XBOX ONE"
 
@@ -33,7 +29,7 @@ class CexClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val cexClient = new CexClient(config, sttpCatsBackend(testingBackend))
+      val cexClient = new CexClient(sttpCatsBackend(testingBackend))
 
       val result = cexClient.findResellPrice(gameDetails)
 
@@ -53,7 +49,7 @@ class CexClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val cexClient = new CexClient(config, sttpCatsBackend(testingBackend))
+      val cexClient = new CexClient(sttpCatsBackend(testingBackend))
 
       val result = cexClient.findResellPrice(gameDetails)
 
@@ -72,7 +68,7 @@ class CexClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val cexClient = new CexClient(config, sttpCatsBackend(testingBackend))
+      val cexClient = new CexClient(sttpCatsBackend(testingBackend))
 
       val result = cexClient.findResellPrice(gameDetails.copy(name = None))
 
@@ -91,7 +87,7 @@ class CexClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val cexClient = new CexClient(config, sttpCatsBackend(testingBackend))
+      val cexClient = new CexClient(sttpCatsBackend(testingBackend))
 
       val result = cexClient.findResellPrice(gameDetails)
 
@@ -110,7 +106,7 @@ class CexClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val cexClient = new CexClient(config, sttpCatsBackend(testingBackend))
+      val cexClient = new CexClient(sttpCatsBackend(testingBackend))
 
       val result = cexClient.findResellPrice(gameDetails)
 
@@ -129,7 +125,7 @@ class CexClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val cexClient = new CexClient(config, sttpCatsBackend(testingBackend))
+      val cexClient = new CexClient(sttpCatsBackend(testingBackend))
 
       val result = cexClient.findResellPrice(gameDetails)
 

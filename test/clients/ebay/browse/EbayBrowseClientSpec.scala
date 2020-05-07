@@ -14,10 +14,6 @@ import scala.language.postfixOps
 
 class EbayBrowseClientSpec extends SttpClientSpec {
 
-  val ebayCredentials = List(Map("clientId" -> "id-1", "clientSecret" -> "secret-1"), Map("clientId" -> "id-2", "clientSecret" -> "secret-2"))
-  val ebayConfig = Map("baseUri" -> "http://ebay.com", "authPath" -> "/auth", "searchPath" -> "/search", "itemPath" -> "/item", "credentials" -> ebayCredentials)
-  val config: Configuration = Configuration("ebay" -> ebayConfig)
-
   val accessToken = "access-token"
   val itemId = "item-id-1"
   val searchQueryParams = Map("q" -> "iphone")
@@ -33,7 +29,7 @@ class EbayBrowseClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val ebaySearchClient = new EbayBrowseClient(config, sttpCatsBackend(testingBackend))
+      val ebaySearchClient = new EbayBrowseClient(sttpCatsBackend(testingBackend))
       val foundItems = ebaySearchClient.search(accessToken, searchQueryParams)
 
       whenReady(foundItems.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
@@ -50,7 +46,7 @@ class EbayBrowseClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val ebaySearchClient = new EbayBrowseClient(config, sttpCatsBackend(testingBackend))
+      val ebaySearchClient = new EbayBrowseClient(sttpCatsBackend(testingBackend))
       val foundItems = ebaySearchClient.search(accessToken, searchQueryParams)
 
       whenReady(foundItems.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
@@ -67,7 +63,7 @@ class EbayBrowseClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val ebaySearchClient = new EbayBrowseClient(config, sttpCatsBackend(testingBackend))
+      val ebaySearchClient = new EbayBrowseClient(sttpCatsBackend(testingBackend))
       val result = ebaySearchClient.search(accessToken, searchQueryParams)
 
       whenReady(result.attempt.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { error =>
@@ -84,7 +80,7 @@ class EbayBrowseClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val ebaySearchClient = new EbayBrowseClient(config, sttpCatsBackend(testingBackend))
+      val ebaySearchClient = new EbayBrowseClient(sttpCatsBackend(testingBackend))
       val itemResult = ebaySearchClient.getItem(accessToken, itemId)
 
       whenReady(itemResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { item =>
@@ -101,7 +97,7 @@ class EbayBrowseClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val ebaySearchClient = new EbayBrowseClient(config, sttpCatsBackend(testingBackend))
+      val ebaySearchClient = new EbayBrowseClient(sttpCatsBackend(testingBackend))
       val itemResult = ebaySearchClient.getItem(accessToken, itemId)
 
       whenReady(itemResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { item =>
@@ -118,7 +114,7 @@ class EbayBrowseClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val ebaySearchClient = new EbayBrowseClient(config, sttpCatsBackend(testingBackend))
+      val ebaySearchClient = new EbayBrowseClient(sttpCatsBackend(testingBackend))
       val result = ebaySearchClient.getItem(accessToken, itemId)
 
       whenReady(result.attempt.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { error =>
@@ -135,7 +131,7 @@ class EbayBrowseClientSpec extends SttpClientSpec {
           case _ => throw new RuntimeException()
         }
 
-      val ebaySearchClient = new EbayBrowseClient(config, sttpCatsBackend(testingBackend))
+      val ebaySearchClient = new EbayBrowseClient(sttpCatsBackend(testingBackend))
       val itemResult = ebaySearchClient.getItem(accessToken, itemId)
 
       whenReady(itemResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
