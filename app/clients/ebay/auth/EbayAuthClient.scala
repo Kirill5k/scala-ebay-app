@@ -1,30 +1,25 @@
 package clients.ebay.auth
 
+import cats.effect.IO
 import cats.implicits._
-import cats.effect.{ContextShift, IO}
 import clients.ebay.EbayConfig
-import javax.inject._
-import play.api.http.{HeaderNames, Status}
-import play.api.libs.ws.{WSAuthScheme, WSClient}
-import play.api.Configuration
-
-import scala.concurrent.{ExecutionContext, Future}
-import EbayAuthResponse._
 import domain.ApiClientError
 import domain.ApiClientError._
+import io.circe.generic.auto._
+import io.circe.parser._
+import javax.inject._
+import play.api.{Configuration, Logger}
+import resources.SttpBackendResource
+import sttp.client._
+import sttp.client.circe._
+import sttp.model.{HeaderNames, MediaType}
 
 @Singleton
-private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
-  private implicit val cs: ContextShift[IO] = IO.contextShift(ex)
+private[ebay] class EbayAuthClient @Inject()(config: Configuration, catsSttpBackendResource: SttpBackendResource[IO]) {
+  import EbayAuthClient._
 
+  private val log: Logger = Logger(getClass)
   private val ebayConfig = config.get[EbayConfig]("ebay")
-
-  private val authRequest = client
-    .url(s"${ebayConfig.baseUri}${ebayConfig.authPath}")
-    .addHttpHeaders(HeaderNames.ACCEPT -> "application/json")
-    .addHttpHeaders(HeaderNames.CONTENT_TYPE -> "application/x-www-form-urlencoded")
-
-  private val authRequestBody = Map("scope" -> List("https://api.ebay.com/oauth/api_scope"), "grant_type" -> List("client_credentials"))
 
   private val expiredToken: IO[Left[AuthError, Nothing]] = IO.pure(Left(AuthError("authentication with ebay is required")))
 
@@ -34,7 +29,7 @@ private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSCl
   def accessToken(): IO[String] = {
     authToken = for {
       currentToken <- authToken
-      validToken <- if (currentToken.exists(_.isValid)) IO.pure(currentToken) else IO.fromFuture(IO(authenticate()))
+      validToken <- if (currentToken.exists(_.isValid)) IO.pure(currentToken) else authenticate()
     } yield validToken
     authToken.flatMap(_.fold(IO.raiseError, IO.pure)).map(_.token)
   }
@@ -44,20 +39,32 @@ private[ebay] class EbayAuthClient @Inject()(config: Configuration, client: WSCl
     authToken = expiredToken
   }
 
-  private def authenticate(): Future[Either[ApiClientError, EbayAuthToken]] = {
-    val credentials = ebayConfig.credentials(currentAccountIndex)
-    authRequest
-      .withAuth(credentials.clientId, credentials.clientSecret, WSAuthScheme.BASIC)
-      .post(authRequestBody)
-      .map { res =>
-        if (Status.isSuccessful(res.status))
-          res.body[Either[ApiClientError, EbayAuthSuccessResponse]].map(s => EbayAuthToken(s.access_token, s.expires_in))
-        else
-          res.body[Either[ApiClientError, EbayAuthErrorResponse]].flatMap(toApiClientError(res.status))
-      }
-      .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
-  }
+  private def authenticate(): IO[Either[ApiClientError, EbayAuthToken]] =
+    catsSttpBackendResource.get.use { implicit b =>
+      val credentials = ebayConfig.credentials(currentAccountIndex)
+      basicRequest
+        .header(HeaderNames.Accept, MediaType.ApplicationJson.toString())
+        .contentType(MediaType.ApplicationXWwwFormUrlencoded)
+        .auth.basic(credentials.clientId, credentials.clientSecret)
+        .post(uri"${ebayConfig.baseUri}/identity/v1/oauth2/token")
+        .body(Map("scope" -> "https://api.ebay.com/oauth/api_scope", "grant_type" -> "client_credentials"))
+        .response(asJson[EbayAuthSuccessResponse])
+        .send()
+        .flatMap { r =>
+          r.body match {
+            case Right(token) =>
+              IO.pure(Right(EbayAuthToken(token.access_token, token.expires_in)))
+            case Left(error) =>
+              val message = decode[EbayAuthErrorResponse](error.body)
+                .fold(_ => error.body, e => s"${e.error}: ${e.error_description}")
+              IO(log.error(s"error authenticating with ebay ${r.code}: $message")) *>
+                IO.pure(Left(ApiClientError.HttpError(r.code.code, s"error authenticating with ebay: ${message}")))
+          }
+        }
+    }
+}
 
-  private def toApiClientError[A](status: Int)(authError: EbayAuthErrorResponse): Either[ApiClientError, A] =
-    HttpError(status, s"error authenticating with ebay: ${authError.error}-${authError.error_description}").asLeft
+object EbayAuthClient {
+  final case class EbayAuthSuccessResponse(access_token: String, expires_in: Long, token_type: String)
+  final case class EbayAuthErrorResponse(error: String, error_description: String)
 }

@@ -1,69 +1,69 @@
 package clients.ebay.browse
 
-import cats.effect.{ContextShift, IO}
+import cats.effect.IO
 import cats.implicits._
 import clients.ebay.EbayConfig
 import clients.ebay.browse.EbayBrowseResponse._
-import domain.ApiClientError._
 import domain.ApiClientError
+import domain.ApiClientError._
+import io.circe.generic.auto._
 import javax.inject._
-import play.api.Configuration
-import play.api.http.HeaderNames
-import play.api.http.Status._
-import play.api.libs.ws.{WSClient, WSRequest}
-
-import scala.concurrent.ExecutionContext
+import play.api.{Configuration, Logger}
+import resources.SttpBackendResource
+import sttp.client._
+import sttp.client.circe._
+import sttp.model.{HeaderNames, MediaType, StatusCode}
 
 @Singleton
-private[ebay] class EbayBrowseClient @Inject()(config: Configuration, client: WSClient)(implicit ex: ExecutionContext) {
-  private implicit val cs: ContextShift[IO] = IO.contextShift(ex)
-
+private[ebay] class EbayBrowseClient @Inject()(config: Configuration, catsSttpBackendResource: SttpBackendResource[IO]) {
+  private val log: Logger = Logger(getClass)
   private val ebayConfig = config.get[EbayConfig]("ebay")
 
-  private val defaultHeaders = Map(
-    HeaderNames.CONTENT_TYPE -> "application/json",
-    HeaderNames.ACCEPT -> "application/json",
-    "X-EBAY-C-MARKETPLACE-ID" -> "EBAY_GB"
-  ).toList
-
-  def search(accessToken: String, queryParams: Map[String, String]): IO[Seq[EbayItemSummary]] = {
-    val searchResponse = request(s"${ebayConfig.baseUri}${ebayConfig.searchPath}", accessToken)
-      .withQueryStringParameters(queryParams.toList: _*)
-      .get()
-      .map { res =>
-        res.status match {
-          case status if isSuccessful(status) =>
-            res.body[Either[ApiClientError, EbayBrowseResult]].map(_.itemSummaries.getOrElse(List()))
-          case status =>
-            res.body[Either[ApiClientError, EbayErrorResponse]].flatMap(toApiClientError(status))
+  def search(accessToken: String, queryParams: Map[String, String]): IO[Seq[EbayItemSummary]] =
+    catsSttpBackendResource.get.use { implicit b =>
+      basicRequest
+        .header("X-EBAY-C-MARKETPLACE-ID", "EBAY_GB")
+        .header(HeaderNames.Accept, MediaType.ApplicationJson.toString())
+        .contentType(MediaType.ApplicationJson)
+        .auth.bearer(accessToken)
+        .get(uri"${ebayConfig.baseUri}/buy/browse/v1/item_summary/search?$queryParams")
+        .response(asJson[EbayBrowseResult])
+        .send()
+        .flatMap { r =>
+          r.code match {
+            case status if status.isSuccess =>
+              IO.fromEither(r.body.map(_.itemSummaries.getOrElse(List())))
+            case StatusCode.TooManyRequests | StatusCode.Forbidden | StatusCode.Unauthorized =>
+              IO.raiseError(AuthError(s"ebay account has expired: ${r.code}"))
+            case status =>
+              IO(log.error(s"error sending search request to ebay: $status\n${r.body.fold(_.body, _.toString)}")) *>
+                IO.raiseError(ApiClientError.HttpError(status.code, s"error sending request to ebay search api: $status"))
+          }
         }
-      }
-      .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
-    ApiClientError.fromFutureErrorToIO(searchResponse)
-  }
+    }
 
-  def getItem(accessToken: String, itemId: String): IO[Option[EbayItem]] = {
-    val getItemResponse = request(s"${ebayConfig.baseUri}${ebayConfig.itemPath}/$itemId", accessToken)
-      .get()
-      .map { res =>
-        res.status match {
-          case status if isSuccessful(status) => res.body[Either[ApiClientError, EbayItem]].map(_.some)
-          case NOT_FOUND => none[EbayItem].asRight[ApiClientError]
-          case status => res.body[Either[ApiClientError, EbayErrorResponse]].flatMap(toApiClientError(status))
+  def getItem(accessToken: String, itemId: String): IO[Option[EbayItem]] =
+    catsSttpBackendResource.get.use { implicit b =>
+      basicRequest
+        .header("X-EBAY-C-MARKETPLACE-ID", "EBAY_GB")
+        .header(HeaderNames.Accept, MediaType.ApplicationJson.toString())
+        .contentType(MediaType.ApplicationJson)
+        .auth.bearer(accessToken)
+        .get(uri"${ebayConfig.baseUri}/buy/browse/v1/item/$itemId")
+        .response(asJson[EbayItem])
+        .send()
+        .flatMap { r =>
+          r.code match {
+            case status if status.isSuccess =>
+              IO.fromEither(r.body.map(_.some))
+            case StatusCode.NotFound =>
+              IO.pure(None)
+            case StatusCode.TooManyRequests | StatusCode.Forbidden | StatusCode.Unauthorized =>
+              IO.raiseError(AuthError(s"ebay account has expired: ${r.code}"))
+            case status =>
+              IO(log.error(s"error getting item from ebay: $status\n${r.body.fold(_.body, _.toString)}")) *>
+                IO.raiseError(ApiClientError.HttpError(status.code, s"error getting item from ebay search api: $status"))
+          }
         }
-      }
-      .recover(ApiClientError.recoverFromHttpCallFailure.andThen(_.asLeft))
-    ApiClientError.fromFutureErrorToIO(getItemResponse)
-  }
-
-  private def request(url: String, accessToken: String): WSRequest =
-    client.url(url).addHttpHeaders(defaultHeaders: _*).addHttpHeaders(HeaderNames.AUTHORIZATION -> s"Bearer $accessToken")
-
-  private def toApiClientError[A](status: Int)(ebayErrorResponse: EbayErrorResponse): Either[ApiClientError, A] = status match {
-    case TOO_MANY_REQUESTS | FORBIDDEN | UNAUTHORIZED => AuthError(s"ebay account has expired: $status").asLeft[A]
-    case _ => ebayErrorResponse.errors.headOption
-      .fold(status.toString)(_.message)
-      .asLeft[A]
-      .leftMap(e => HttpError(status, s"error sending request to ebay search api: $e"))
-  }
+    }
 }

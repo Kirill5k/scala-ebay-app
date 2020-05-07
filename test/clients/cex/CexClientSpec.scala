@@ -5,6 +5,7 @@ import clients.SttpClientSpec
 import domain.ApiClientError._
 import domain.{ResellPrice, VideoGameBuilder}
 import play.api.Configuration
+import sttp.client
 import sttp.client.Response
 import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend
 import sttp.client.testing.SttpBackendStub
@@ -27,11 +28,10 @@ class CexClientSpec extends SttpClientSpec {
       val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
-          case r if isGoingTo(r, Method.GET, "cex.com", List("v3", "boxes"), Map("q" -> queryString)) =>
+          case r if isPriceQueryRequest(r) =>
             Response.ok(json("cex/search-success-response.json"))
           case _ => throw new RuntimeException()
         }
-
 
       val cexClient = new CexClient(config, sttpCatsBackend(testingBackend))
 
@@ -48,7 +48,7 @@ class CexClientSpec extends SttpClientSpec {
       val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
-          case r if isGoingTo(r, Method.GET, "cex.com", List("v3", "boxes"), Map("q" -> queryString)) =>
+          case r if isPriceQueryRequest(r) =>
             Response.ok(json("cex/search-noresults-response.json"))
           case _ => throw new RuntimeException()
         }
@@ -67,7 +67,7 @@ class CexClientSpec extends SttpClientSpec {
       val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
-          case r if isGoingTo(r, Method.GET, "cex.com", List("v3", "boxes"), Map("q" -> queryString)) =>
+          case r if isPriceQueryRequest(r) =>
             Response.ok(json("cex/search-noresults-response.json"))
           case _ => throw new RuntimeException()
         }
@@ -86,7 +86,7 @@ class CexClientSpec extends SttpClientSpec {
       val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
-          case r if isGoingTo(r, Method.GET, "cex.com", List("v3", "boxes"), Map("q" -> queryString)) =>
+          case r if isPriceQueryRequest(r) =>
             Response.ok(json("cex/search-unexpected-response.json"))
           case _ => throw new RuntimeException()
         }
@@ -105,7 +105,7 @@ class CexClientSpec extends SttpClientSpec {
       val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
-          case r if isGoingTo(r, Method.GET, "cex.com", List("v3", "boxes"), Map("q" -> queryString)) =>
+          case r if isPriceQueryRequest(r) =>
             Response(json("cex/search-error-response.json"), StatusCode.BadRequest)
           case _ => throw new RuntimeException()
         }
@@ -124,7 +124,7 @@ class CexClientSpec extends SttpClientSpec {
       val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
-          case r if isGoingTo(r, Method.GET, "cex.com", List("v3", "boxes"), Map("q" -> queryString)) =>
+          case r if isPriceQueryRequest(r) =>
             Response(json("cex/search-error-response.json"), StatusCode.TooManyRequests)
           case _ => throw new RuntimeException()
         }
@@ -138,5 +138,8 @@ class CexClientSpec extends SttpClientSpec {
         cexClient.searchResultsCache.isEmpty must be(true)
       }
     }
+
+    def isPriceQueryRequest(req: client.Request[_, _]): Boolean =
+      isGoingTo(req, Method.GET, "cex.com", List("v3", "boxes"), Map("q" -> queryString))
   }
 }

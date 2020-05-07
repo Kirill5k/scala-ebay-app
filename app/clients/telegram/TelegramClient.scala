@@ -34,10 +34,12 @@ class TelegramClient @Inject()(config: Configuration, catsSttpBackendResource: S
         .get(uri"${telegramConfig.baseUri}/bot${telegramConfig.botKey}/sendMessage?chat_id=$channelId&text=$message")
         .send()
         .flatMap { r =>
-          if (Status.isSuccessful(r.code.code)) IO.pure(())
-          else
-            IO(log.error(s"error sending message to telegram: ${r.code}\n${r.body.fold[String](_, _)}")) *>
-              IO.raiseError(ApiClientError.HttpError(r.code.code, s"error sending message to telegram channel $channelId: ${r.code}"))
+          r.body match {
+            case Right(_) => IO.pure(())
+            case Left(error) =>
+              IO(log.error(s"error sending message to telegram: ${r.code}\n$error")) *>
+                IO.raiseError(ApiClientError.HttpError(r.code.code, s"error sending message to telegram channel $channelId: ${r.code}"))
+          }
         }
     }
 }

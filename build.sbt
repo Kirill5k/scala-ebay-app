@@ -18,7 +18,6 @@ lazy val sttpVersion = "2.1.1"
 
 libraryDependencies ++= Seq(
   guice,
-  ws,
 
   "org.typelevel" %% "cats-core" % "2.1.0",
   "org.typelevel" %% "cats-effect" % "2.1.1",
