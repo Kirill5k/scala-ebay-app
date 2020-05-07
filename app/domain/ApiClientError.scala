@@ -31,7 +31,4 @@ object ApiClientError {
     case error: Throwable =>
       InternalError(s"unexpected error during http call: ${error.getMessage}")
   }
-
-  def fromFutureErrorToIO[A](futureError: Future[Either[ApiClientError, A]])(implicit cs: ContextShift[IO]): IO[A] =
-    IO.fromFuture(IO(futureError)).flatMap(_.fold(IO.raiseError, IO.pure))
 }
