@@ -6,7 +6,7 @@ object Dependencies {
     lazy val pureconfig        = "0.12.3"
     lazy val circe             = "0.13.0"
     lazy val mockito           = "1.10.3"
-    lazy val reactiveMongoPlay = "0.20.3-play28"
+    lazy val reactiveMongoPlay = "0.20.10-play28"
     lazy val sttp              = "2.1.1"
   }
 
@@ -28,7 +28,7 @@ object Dependencies {
 
     lazy val expiringMap = "net.jodah" % "expiringmap" % "0.5.9"
 
-    lazy val scalatestPlay    = "org.scalatestplus.play" %% "scalatestplus-play"       % "5.0.0"
+    lazy val scalatestPlay    = "org.scalatestplus.play" %% "scalatestplus-play"       % "5.1.0"
     lazy val mockitoCore      = "org.mockito"            %% "mockito-scala"            % Versions.mockito
     lazy val mockitoScalatest = "org.mockito"            %% "mockito-scala-scalatest"  % Versions.mockito
     lazy val embeddedMongo    = "de.flapdoodle.embed"    % "de.flapdoodle.embed.mongo" % "2.2.0"
