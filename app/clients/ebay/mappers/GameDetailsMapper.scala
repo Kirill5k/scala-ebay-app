@@ -29,7 +29,7 @@ private[mappers] object GameDetailsMapper {
     "\\bpal\\b", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c)?\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b",
     "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b",
-    "(the )?(official )?\\bvideo( )?g(ame(s)?)?\\b( fasting)?",
+    "(the )?(official )?\\bvideo( )?g(a)?(me(s)?)?\\b( fasting)?",
     "\\bMarvels\\b", "^\\bMARVEL\\b", "^SALE", "NEW$", "^SEALED", "^NEW", "^best", "^software", "very rare", "rare$", "official$", "bargain$",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]",
     "\\d{6,}"
