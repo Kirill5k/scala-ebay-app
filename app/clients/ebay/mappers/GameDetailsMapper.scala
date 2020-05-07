@@ -14,7 +14,7 @@ private[mappers] object GameDetailsMapper {
     "day (one|1|zero|0)( (edition|\\be(d)?(i)?(t)?(i)?\\b))?(?s).*$",
     "(\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of the|legacy( pro)?|limited|premium|(digital )?deluxe|standard|ultimat)(?s).* (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
     "(new\\s+)?(super( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(free|fast|quick|(next|same) day|tracked|speedy)(?s).* (dispatch|shipping|post(age)?|delivery|p(\\s+)?p).*$",
-    "(1st|2nd|first) class.*$", "complete with(?s).*$",
+    "(1st|2nd|first) class.*$", "complete with(?s).*$", "exclusive to(?s).*$",
     "((brand )?new(?s).*)?((factory |un)?sealed|unopened|shrinkwrapped)", "(complete )?(brand|game) (new|neuf|nuevo)",
     "(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working) (condition|value|prices)", "disc (mint|vgc)",
     "(new )?((super )?rare|limited run|(\\d+ )?new|pal|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?",
