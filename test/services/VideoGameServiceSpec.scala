@@ -8,14 +8,15 @@ import domain.VideoGameBuilder
 import domain.ResellableItem.VideoGame
 import fs2.Stream
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
-import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import repositories.VideoGameRepository
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class VideoGameServiceSpec extends WordSpec with MustMatchers with ScalaFutures with MockitoSugar with ArgumentMatchersSugar {
+class VideoGameServiceSpec extends AnyWordSpec with Matchers with ScalaFutures with MockitoSugar with ArgumentMatchersSugar {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   val videoGame = VideoGameBuilder.build("super mario 3")

@@ -3,10 +3,11 @@ package clients.ebay.mappers
 import clients.ebay.browse.EbayBrowseResponse._
 import domain.ItemDetails._
 import domain.ListingDetails
-import org.scalatest._
 import clients.ebay.mappers.EbayItemMapper._
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class EbayItemMapperSpec extends WordSpec with MustMatchers {
+class EbayItemMapperSpec extends AnyWordSpec with Matchers {
 
   val videoGameEbayItem = EbayItem(
     "item-1",

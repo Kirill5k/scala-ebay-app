@@ -2,10 +2,12 @@ package clients.ebay.mappers
 
 import java.time.Instant
 
-import domain.{Packaging, ListingDetails}
-import org.scalatest._
+import domain.{ListingDetails, Packaging}
+import org.scalatest.Inspectors
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class GameDetailsMapperSpec extends WordSpec with MustMatchers with Inspectors {
+class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
 
   val testListing = ListingDetails(
     "https://www.ebay.co.uk/itm/Call-of-Duty-Modern-Warfare-Xbox-One-/274204760218",
@@ -113,6 +115,7 @@ class GameDetailsMapperSpec extends WordSpec with MustMatchers with Inspectors {
       val titles = List(
         "Call of Duty: Infinite Warfare - game of the year goty free and fast 1st class post",
         "Call of Duty: Infinite Warfare - game of the year goty quick 1st class signed post for playstation vr",
+        "Call of Duty: Infinite Warfare - good for sony playstati",
         "Call of Duty: Infinite Warfare - game of the year edition goty",
         "Call of Duty: Infinite Warfare - video game for the playstation vr PLAYSTATION 4 2015",
         "Call of Duty: Infinite Warfare - video game for the PLAYSTATION 4",

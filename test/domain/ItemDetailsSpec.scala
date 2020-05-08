@@ -1,8 +1,10 @@
 package domain
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class ItemDetailsSpec extends WordSpec with MustMatchers {
+
+class ItemDetailsSpec extends AnyWordSpec with Matchers {
   "A VideoGame" should {
     val game = VideoGameBuilder.build("super mario 3", platform = "SWITCH")
 

@@ -1,16 +1,17 @@
 package common
 
 import common.config.AppConfig
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class ConfigSpec extends WordSpec with Matchers {
+class ConfigSpec extends AnyWordSpec with Matchers {
 
   "AppConfig" should {
 
     "load itself from application.conf file" in {
       val config = AppConfig.load()
 
-      config should not be (null)
+      config must not be (null)
     }
   }
 }

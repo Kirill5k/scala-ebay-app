@@ -34,7 +34,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "headset", "\\bhdmi\\b", "\\busb\\b", "\\bhdd\\b", "(nintendo|switch) labo", "steering wheel", "wristband", "horipad", "power supply",
     "100k", "50k", "\\bDL( )?C\\b", "pve", "starter pack", "k eso", "gift toy", "pad pro",
     "pre(\\s+|-)?(order|sale)", "season pass", "(steel|art)( )?book", "ring fit", "lego dimension", "minifigure", "figure(s)? bundle", "collectable", "collectible",
-    "membership", "(subscription|gift)( |-)?card", "12 month", "dynamic theme", "themes", "account",
+    "membership", "(subscription|gift)( |-)?card", "12 month", "dynamic theme", "themes", "account", "achievement pack",
     "level boosting", "gamer score", "power( )?level", "trophy service", "platinum trophy",
     "samsung", "huawei", "iphone",
     "(asian|korea(n)?|german|promo(tional)?|demo|french|jap(an)?(ese)?|dutch|spanish) (import|item|disc|vers|copy)", "arabic", "slovakian", "czech",

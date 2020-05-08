@@ -1,8 +1,10 @@
 package domain
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class ResellableItemSpec extends WordSpec with MustMatchers {
+
+class ResellableItemSpec extends AnyWordSpec with Matchers {
   import ResellableItemOps._
 
   "A VideoGame" should {

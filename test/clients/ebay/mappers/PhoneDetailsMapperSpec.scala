@@ -4,9 +4,10 @@ import java.net.URI
 import java.time.Instant
 
 import domain.ListingDetails
-import org.scalatest._
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class PhoneDetailsMapperSpec extends WordSpec with MustMatchers {
+class PhoneDetailsMapperSpec extends AnyWordSpec with Matchers {
 
   val testListing = ListingDetails(
     "https://www.ebay.co.uk/itm/Call-of-Duty-Modern-Warfare-Xbox-One-/274204760218",
