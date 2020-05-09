@@ -22,7 +22,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
 
   private val LISTING_NAME_TRIGGER_WORDS = List(
     "(demo|game)( )?(code|disc|key|cart|pass)", "(cd|unused|digital|upgrade|no)( )?(redeem )?(game|code|key)",
-    "(software|cartridge(s)?|cart|game|disc(s)?|cover|box|sleeve|book|cd) only",
+    "(software|cartridge(s)?|cart|game|disk|disc(s)?|cover|box|sleeve|book|cd) only",
     "(case|variety|accessor(ies|y)|storage|charge|robot) (set|kit|box)", "no dis(c|k)",
     "(replacement|cover|carry|travel|carrying|just the|no|hard|storage|game|vault|phone|card|foreign|metal|protective)\\s+(pouch|case|bag)",
     "(read|see) (detail|desc|post)", "please(?s).*read", "read(?s).*please", "(docking|charging) (station|stand)", "download",
@@ -32,8 +32,8 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "sniper thumbs", "(game|skin|thumb) grip", "thumb( )?stick", "(screen|grip) (protector|combat|stick)", "leg strap", "Cleaning Cloth",
     "dual( )?(shock|charge)", "efigs", "gamepad", "(toy|joy|ring)(\\s+)?con", "controller", "stand holder", "memory card", "SpaBag", "keyring",
     "headset", "\\bhdmi\\b", "\\busb\\b", "\\bhdd\\b", "(nintendo|switch) labo", "steering wheel", "wristband", "horipad", "power supply",
-    "100k", "50k", "\\bDL( )?C\\b", "pve", "starter pack", "k eso", "gift toy", "pad pro",
-    "pre(\\s+|-)?(order|sale)", "season pass", "(steel|art)( )?book", "ring fit", "lego dimension", "minifigure", "figure(s)? bundle", "collectable", "collectible",
+    "100k", "50k", "\\bDL( )?C\\b", "pve", "starter (pack|bundle|kit)", "figure(s)? bundle", "k eso", "gift toy", "pad pro",
+    "pre(\\s+|-)?(order|sale)", "season pass", "(steel|art)( )?book", "ring fit", "lego dimension", "(game|mini)( )?figure", "collectable", "collectible",
     "membership", "(subscription|gift)( |-)?card", "12 month", "dynamic theme", "themes", "account", "achievement pack",
     "level boosting", "gamer score", "power( )?level", "trophy service", "platinum trophy",
     "samsung", "huawei", "iphone",
@@ -45,7 +45,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "gta(?s).* (money|online|million)",
     "fallout 76(\\s+(\\w+|\\d+)){5,}", "((\\w+|\\d+)\\s+){3,}fallout 76", "fallout(?s).* (plan|50|100|steel|leed|stimpack|power|cap|armo|recipe|gun)",
     "fifa(?s).* (team|money|milli|gener|player|gold|point)",
-    "borderlands 3(\\s+(\\w+|\\d+)){5,}", "borderlands(?s).* (lvl|cash|x50|legendary|money|mod)",
+    "borderlands 3(\\s+(\\w+|\\d+)){5,}", "borderlands(?s).* (mayhem|lvl|cash|x50|legendary|money|mod)",
     "rocket(?s).* (rare|crate|decal|wheel|goal|explos)", "((\\w+|\\d+)\\s+){1,}rocket league(\\s+(\\w+|\\d+)){2,}", "((\\w+|\\d+)\\s+){3,}rocket league",
     "((\\w+|\\d+)\\s+){3,}swordshield", "((\\w+|\\d+)\\s+){3,}pokemon", "pokemon(\\s+(\\w+|\\d+)){6,}"
   ).mkString("^.*?(?i)(", "|", ").*$").r
