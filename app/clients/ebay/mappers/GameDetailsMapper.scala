@@ -25,7 +25,7 @@ private[mappers] object GameDetailsMapper {
     "Warner Bros", "ubisoft", "currys", "blu-ray", "bonus level",
     "Microsoft","sony", "electronic arts", "nintendo", "square enix", "ea sport(s)?", "(bandai )?namco", "no scratches",
     "\\bTom clancy(s)?\\b", "(\\bUSA\\b|\\bUK\\b|\\bEU\\b|genuine)(( |-)(new|only|seller|version|stock|import))?",
-    "(console single|tactical|3rd-person|rpg|fps|survival|action|role|fighting)(?s).* game( new)?",
+    "(adventure|console single|tactical|3rd-person|rpg|fps|survival|action|role|fighting)(?s).* game( new)?",
     "\\bpal\\b", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c)?\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b",
     "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b",
