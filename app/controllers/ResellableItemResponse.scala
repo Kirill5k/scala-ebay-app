@@ -5,7 +5,7 @@ import domain.ResellableItem
 sealed trait ResellableItemResponse
 
 object ResellableItemResponse {
-  final case class ItemSummary(name: Option[String], url: String)
+  final case class ItemSummary(name: Option[String], url: String, price: BigDecimal)
   final case class ItemsSummary(total: Int, items: Seq[ItemSummary])
   final case class ResellableItemsSummaryResponse(total: Int, unrecognized: ItemsSummary, profitable: ItemsSummary) extends ResellableItemResponse
 
@@ -16,5 +16,5 @@ object ResellableItemResponse {
   }
 
   private def toItemsSummary(items: Seq[ResellableItem]): ItemsSummary =
-    ItemsSummary(items.size, items.map(i => ItemSummary(i.itemDetails.summary, i.listingDetails.url)))
+    ItemsSummary(items.size, items.map(i => ItemSummary(i.itemDetails.summary, i.listingDetails.url, i.listingDetails.price)))
 }
