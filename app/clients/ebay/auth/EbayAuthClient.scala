@@ -12,7 +12,7 @@ import javax.inject._
 import play.api.Logger
 import sttp.client._
 import sttp.client.circe._
-import sttp.model.{HeaderNames, MediaType}
+import sttp.model.{HeaderNames, MediaType, StatusCode}
 
 @Singleton
 private[ebay] class EbayAuthClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) {
@@ -35,6 +35,7 @@ private[ebay] class EbayAuthClient @Inject()(catsSttpBackendResource: SttpBacken
   }
 
   def switchAccount(): Unit = {
+    log.warn("switching ebay account")
     currentAccountIndex = if (currentAccountIndex + 1 < ebayConfig.credentials.length) currentAccountIndex + 1 else 0
     authToken = expiredToken
   }
@@ -58,7 +59,8 @@ private[ebay] class EbayAuthClient @Inject()(catsSttpBackendResource: SttpBacken
               val message = decode[EbayAuthErrorResponse](error.body)
                 .fold(_ => error.body, e => s"${e.error}: ${e.error_description}")
               IO(log.error(s"error authenticating with ebay ${r.code}: $message")) *>
-                IO.pure(Left(ApiClientError.HttpError(r.code.code, s"error authenticating with ebay: ${message}")))
+                (if (r.code == StatusCode.TooManyRequests) IO(switchAccount()) *> authenticate()
+                else IO.pure(Left(ApiClientError.HttpError(r.code.code, s"error authenticating with ebay: $message"))))
           }
         }
     }
@@ -66,5 +68,7 @@ private[ebay] class EbayAuthClient @Inject()(catsSttpBackendResource: SttpBacken
 
 object EbayAuthClient {
   final case class EbayAuthSuccessResponse(access_token: String, expires_in: Long, token_type: String)
+
+
   final case class EbayAuthErrorResponse(error: String, error_description: String)
 }

@@ -7,7 +7,7 @@ import sttp.client
 import sttp.client.Response
 import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend
 import sttp.client.testing.SttpBackendStub
-import sttp.model.{MediaType, Method, StatusCode}
+import sttp.model.{Header, HeaderNames, MediaType, Method, StatusCode}
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -101,6 +101,25 @@ class EbayAuthClientSpec extends SttpClientSpec {
 
       whenReady(accessToken.attempt.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { token =>
         token must be (Left(HttpError(400, "error authenticating with ebay: unsupported_grant_type: grant type in request is not supported by the authorization server")))
+      }
+    }
+
+    "switch account when 429 received" in {
+      val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
+        .stub[IO]
+        .whenRequestMatchesPartial {
+          case r if isAuthRequest(r) && r.headers.contains(Header(HeaderNames.Authorization, "Basic aWQtMTpzZWNyZXQtMQ==")) =>
+            Response(json("ebay/auth-error-response.json"), StatusCode.TooManyRequests)
+          case r if isAuthRequest(r) && r.headers.contains(Header(HeaderNames.Authorization, "Basic aWQtMjpzZWNyZXQtMg==")) =>
+            Response.ok(json("ebay/auth-success-response.json"))
+          case _ => throw new RuntimeException()
+        }
+
+      val ebayAuthClient = new EbayAuthClient(sttpCatsBackend(testingBackend))
+      val accessToken = ebayAuthClient.accessToken()
+
+      whenReady(accessToken.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { token =>
+        token must be ("KTeE7V9J5VTzdfKpn/nnrkj4+nbtl/fDD92Vctbbalh37c1X3fvEt7u7/uLZ93emB1uu/i5eOz3o8MfJuV7288dzu48BEAAA==")
       }
     }
 
