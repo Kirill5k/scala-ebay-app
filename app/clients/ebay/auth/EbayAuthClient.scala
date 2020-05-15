@@ -46,7 +46,7 @@ private[ebay] class EbayAuthClient @Inject()(catsSttpBackendResource: SttpBacken
       basicRequest
         .header(HeaderNames.Accept, MediaType.ApplicationJson.toString())
         .contentType(MediaType.ApplicationXWwwFormUrlencoded)
-        .auth.basic(credentials.clientId, credentials.clientSecret)
+        .auth.basic(credentials.clientId.trim, credentials.clientSecret.trim)
         .post(uri"${ebayConfig.baseUri}/identity/v1/oauth2/token")
         .body(Map("scope" -> "https://api.ebay.com/oauth/api_scope", "grant_type" -> "client_credentials"))
         .response(asJson[EbayAuthSuccessResponse])

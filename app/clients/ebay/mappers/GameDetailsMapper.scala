@@ -25,7 +25,7 @@ private[mappers] object GameDetailsMapper {
     "remaster(ed)?", "directors cut", "\\bctr\\b", "original", "english", "deluxe", "standard", "\\bgoty\\b", "(action )?game of the( year)?", "multi-language",
     "Warner Bros", "ubisoft", "currys", "blu-ray", "bonus level",
     "Microsoft","sony", "electronic arts", "nintendo", "square enix", "ea sport(s)?", "(bandai )?namco", "no scratches",
-    "\\bTom clancy(s)?\\b", "(\\bUK\\b|\\bEU\\b|genuine)(( |-)(new|only|seller|version|stock|import))?",
+    "\\bTom clancy(s)?\\b", "(\\bUK\\b|\\bEU\\b|genuine|european)(( |-)(new|only|seller|version|stock|import))?",
     "(adventure|console single|tactical|3rd-person|rpg|fps|survival|action|role|fighting)(?s).* game(?s).*",
     "\\bpal\\b( game)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c)?\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b", "\\bRPVG\\b", "\\bG2VG\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b",
