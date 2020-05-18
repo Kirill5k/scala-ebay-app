@@ -94,8 +94,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(witcher iii)", "witcher 3")
       .replaceAll("(?i)(\\bnsane\\b)", "N Sane")
       .replaceAll(" +", " ")
-      .replaceAll("(?i)( -|- | –|– )", " ")
-      .replaceFirst("(?i)(^-|-$)", "")
+      .replaceAll("-", "")
       .trim()
       .some
 

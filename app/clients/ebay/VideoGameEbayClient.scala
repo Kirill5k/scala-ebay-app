@@ -34,7 +34,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "headset", "\\bhdmi\\b", "\\busb\\b", "\\bhdd\\b", "(nintendo|switch) labo", "steering wheel", "wristband", "horipad", "power supply",
     "100k", "50k", "\\bDL( )?C\\b", "pve", "starter (set|pack|bundle|kit)", "figure(s)? bundle", "k eso", "gift toy", "pad pro",
     "pre(\\s+|-)?(order|sale)", "season pass", "(steel|art)( )?book", "ring fit", "lego dimension", "(game|mini)( )?figure", "collectable", "collectible",
-    "membership", "(subscription|gift)( |-)?card", "12 month", "dynamic theme", "themes", "account", "achievement pack",
+    "membership", "(subscription|gift)( |-)?card", "12 month", "(wallpaper|dynamic) theme", "themes", "account", "achievement pack",
     "level boosting", "gamer score", "power( )?level", "trophy service", "platinum trophy",
     "samsung", "huawei", "iphone",
     "(asian|korea(n)?|german|promo(tional)?|demo|french|jap(an)?(ese)?|dutch|spanish|us(a)?) (import|item|disc|vers|copy)", "arabic", "slovakian", "czech",
@@ -46,7 +46,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "fallout 76(\\s+(\\w+|\\d+)){5,}", "((\\w+|\\d+)\\s+){3,}fallout 76", "fallout(?s).* (shot|flame|armo|plan|50|100|steel|leed|stimpack|power|cap|armo|recipe|gun)",
     "fifa(?s).* (team|money|milli|gener|player|gold|point)",
     "borderlands 3(\\s+(\\w+|\\d+)){5,}", "borderlands(?s).* (mayhem|lvl|cash|x50|legendary|money|mod)",
-    "rocket(?s).* (rare|crate|decal|wheel|goal|explos)", "((\\w+|\\d+)\\s+){1,}rocket league(\\s+(\\w+|\\d+)){2,}", "((\\w+|\\d+)\\s+){3,}rocket league",
+    "rocket(?s).* (inventor|rare|crate|decal|wheel|goal|explos)", "((\\w+|\\d+)\\s+){1,}rocket league(\\s+(\\w+|\\d+)){2,}", "((\\w+|\\d+)\\s+){3,}rocket league",
     "((\\w+|\\d+)\\s+){3,}swordshield", "((\\w+|\\d+)\\s+){3,}pokemon", "pokemon(\\s+(\\w+|\\d+)){6,}"
   ).mkString("^.*?(?i)(", "|", ").*$").r
 
