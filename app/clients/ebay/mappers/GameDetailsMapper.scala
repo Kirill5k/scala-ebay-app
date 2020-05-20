@@ -7,7 +7,7 @@ import domain.{Packaging, ListingDetails}
 private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
-    "(?<=[\\w\\s\\d]{15})(playstation|ps4|xbox one|nintendo switch)(?s).*",
+    "(?<=[\\w\\s\\d]{12})((sony )?playstation|ps4|(microsoft )?xbox (1|one)|nintendo switch)(?s).*",
     "(video( )?)?game for( the)?( playstation)?(\\s+(vr|\\d+))?", "for playstation(\\s+)?vr", "psvr required",
     "((greatest|playstation) )?\\bhits\\b",
     "(good )?(for )?((sony )?playst(a)?(t)?(i)?(o)?(n)?(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?(\\s+complete)?(\\s+edition)?( 20\\d\\d)?( good)?",
@@ -93,8 +93,8 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(fifa 2020)", "FIFA 20")
       .replaceAll("(?i)(witcher iii)", "witcher 3")
       .replaceAll("(?i)(\\bnsane\\b)", "N Sane")
+      .replaceAll("-", " ")
       .replaceAll(" +", " ")
-      .replaceAll("-", "")
       .trim()
       .some
 
