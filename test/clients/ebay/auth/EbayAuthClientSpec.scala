@@ -1,6 +1,7 @@
 package clients.ebay.auth
 
 import cats.effect.IO
+import cats.effect.concurrent.Ref
 import clients.SttpClientSpec
 import domain.ApiClientError._
 import sttp.client
@@ -41,7 +42,7 @@ class EbayAuthClientSpec extends SttpClientSpec {
         }
 
       val ebayAuthClient = new EbayAuthClient(sttpCatsBackend(testingBackend))
-      ebayAuthClient.authToken = IO.pure(Right(EbayAuthToken("test-token", 7200)))
+      ebayAuthClient.authTokenRef = Ref.of(Right(EbayAuthToken("test-token", 7200)))
 
       val accessToken = ebayAuthClient.accessToken()
 
@@ -79,7 +80,7 @@ class EbayAuthClientSpec extends SttpClientSpec {
         }
 
       val ebayAuthClient = new EbayAuthClient(sttpCatsBackend(testingBackend))
-      ebayAuthClient.authToken = IO.pure(Right(EbayAuthToken("test-token", 0)))
+      ebayAuthClient.authTokenRef = Ref.of(Right(EbayAuthToken("test-token", 0)))
       val accessToken = ebayAuthClient.accessToken()
 
       whenReady(accessToken.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { token =>
