@@ -7,7 +7,7 @@ import domain.{Packaging, ListingDetails}
 private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
-    "(?<=[\\w\\s\\d]{12})((sony )?playstation|ps4|(microsoft )?xbox (1|one)|nintendo switch)(?s).*",
+    "(?<=[\\w\\s\\d]{12})(new )?((sony )?playstation|ps4|(microsoft )?xbox (1|one)|nintendo switch)(?s).*",
     "(video( )?)?game for( the)?( playstation)?(\\s+(vr|\\d+))?", "for playstation(\\s+)?vr", "psvr required",
     "(gold )?((greatest|playstation) )?\\bhits\\b",
     "(good )?(for )?((sony )?playst(a)?(t)?(i)?(o)?(n)?(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?(\\s+complete)?(\\s+edition)?( 20\\d\\d)?( good)?",
@@ -20,7 +20,7 @@ private[mappers] object GameDetailsMapper {
     "(complete )?(brand|game) (new|neuf|nuevo)",
     "(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used) (working order|condition|value|prices)", "disc (mint|vgc)",
     "(new )?((super )?rare|limited run|(\\d+ )?new|pal|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?",
-    "limited run( \\d+)?", "box( )?set", "pre(-| )?owned", "compatible", "inc manual",
+    "limited run( \\d+)?", "box( )?set", "pre(-| )?owned", "compatible", "inc manual", "physical copy",
     "Used", "very good", "reorderable", "sent same day", "in stock( now)?", "pre(\\s+)?release", "played once", "best price",
     "Expertly Refurbished Product", "(quality|value) guaranteed", "Highly Rated eBay Seller", "fully tested", "from eBays biggest seller", "Order By 4pm",
     "remaster(ed)?", "directors cut", "\\bctr\\b", "original", "english", "deluxe", "standard", "\\bgoty\\b", "(action )?game of the( year)?", "multi(-| )?lang(uage)?( in game)?",
@@ -29,7 +29,7 @@ private[mappers] object GameDetailsMapper {
     "\\bTom clancy(s)?\\b", "(\\bUK\\b|\\bEU\\b|genuine|european)(( |-)(new|only|seller|version|stock|import))?",
     "(adventure|console single|tactical|3rd-person|rpg|fps|survival|action|role|fighting)(?s).* game(?s).*",
     "\\bpal\\b( game)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c)?\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b", "\\bRPVG\\b", "\\bG2VG\\b",
-    "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b",
+    "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b",
     "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b",
     "(the )?(official )?(gold )?\\bvide(o)?( )?g(a)?(me)?(s)?\\b( fasting)?",
     "\\bMarvels\\b", "^\\bMARVEL\\b", "^SALE", "NEW$", "^BOXED", "^SALE", "^SEALED", "^NEW", "^best", "^software", "very rare", "rare$", "official$", "bargain$",
