@@ -37,7 +37,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "membership", "(subscription|gift)( |-)?card", "12 month", "(wallpaper|dynamic) theme", "themes", "account", "achievement pack",
     "level boosting", "gamer score", "power( )?level", "trophy service", "platinum trophy",
     "samsung", "huawei", "iphone", "sandisk",
-    "(asian|korea(n)?|german|promo(tional)?|demo|french|jap(an)?(ese)?|dutch|spanish|us(a)?|digital) (import|item|disc|vers|copy)", "arabic", "slovakian", "czech",
+    "(hungarian|scandinavian|asian|korea(n)?|german|promo(tional)?|demo|french|jap(an)?(ese)?|dutch|spanish|us(a)?|digital) (import|item|disc|vers|copy)", "arabic", "slovakian", "czech",
     "\\bhori\\b", "\\bDE\\b", "ID59z", "\\bemail\\b",
     "ark survival(\\s+(\\w+|\\d+)){5,}",
     "diablo 3(\\s+(\\w+|\\d+)){6,}", "fortnite",
