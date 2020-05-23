@@ -1,3 +1,4 @@
+import Dependencies.Libraries.{catsCore, catsEffect, circeCore, circeExtras, circeGeneric, circeParser, embeddedMongo, expiringMap, fs2Core, mockitoCore, mockitoScalatest, pureconfigCore, reactiveMongoPlay, scalatestPlay, sttpCats, sttpCirce, sttpCore}
 import sbt._
 
 object Dependencies {
@@ -33,4 +34,27 @@ object Dependencies {
     lazy val mockitoScalatest = "org.mockito"            %% "mockito-scala-scalatest"  % Versions.mockito
     lazy val embeddedMongo    = "de.flapdoodle.embed"    % "de.flapdoodle.embed.mongo" % "2.2.0"
   }
+
+  val core = Seq(
+    pureconfigCore,
+    catsCore,
+    catsEffect,
+    fs2Core,
+    sttpCore,
+    sttpCats,
+    sttpCirce,
+    circeCore,
+    circeGeneric,
+    circeParser,
+    circeExtras,
+    reactiveMongoPlay,
+    expiringMap
+  )
+
+  val test = Seq(
+    scalatestPlay % Test,
+    mockitoCore % Test,
+    mockitoScalatest % Test,
+    embeddedMongo % Test
+  )
 }
