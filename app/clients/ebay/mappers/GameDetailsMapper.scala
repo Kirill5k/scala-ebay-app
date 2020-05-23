@@ -18,7 +18,7 @@ private[mappers] object GameDetailsMapper {
     "(1st|2nd|first) class.*$", "complete (with|case)(?s).*$", "exclusive to(?s).*$", "with (case|manual)(?s).*$", "(the )?disc (is|in)(?s).*$",
     "((brand )?new(?s).*)?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
     "(complete )?(brand|game) (new|neuf|nuevo)",
-    "(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect) (condition|value|prices)", "disc (mint|vgc)",
+    "(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used) (working order|condition|value|prices)", "disc (mint|vgc)",
     "(new )?((super )?rare|limited run|(\\d+ )?new|pal|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?",
     "limited run( \\d+)?", "box( )?set", "pre(-| )?owned", "compatible", "inc manual",
     "Used", "very good", "reorderable", "sent same day", "in stock( now)?", "pre(\\s+)?release", "played once", "best price",
