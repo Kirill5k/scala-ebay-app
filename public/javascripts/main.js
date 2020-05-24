@@ -10,18 +10,18 @@ const displayStats = stats => {
 }
 
 const setLastUpdatedTime = lastGame => {
-    const dateString = lastGame.listingDetails.datePosted;
+    const dateString = lastGame[0].listingDetails.datePosted;
     const date = new Date(dateString);
     const videoGamesStats = document.getElementById("video-games");
     videoGamesStats.querySelector(".card-footer").innerHTML = `Last updated at ${date.toLocaleTimeString()}`;
 }
 
 fetch(`/api/video-games/summary?from=${from}`)
-    .then(res => res.status == 200 ? res.json() : reject(`error getting video games stats: ${res.status}`))
+    .then(res => res.status === 200 ? res.json() : reject(`error getting video games stats: ${res.status}`))
     .then(displayStats)
     .catch(err => console.error(err));
 
 fetch('/api/video-games?limit=1')
-    .then(res => res.status == 200 ? res.json() : reject(`error getting video game: ${res.status}`))
+    .then(res => res.status === 200 ? res.json() : reject(`error getting video game: ${res.status}`))
     .then(setLastUpdatedTime)
     .catch(err => console.error(err));
