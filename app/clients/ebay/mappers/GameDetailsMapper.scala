@@ -19,10 +19,10 @@ private[mappers] object GameDetailsMapper {
     "((brand )?new(?s).*)?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
     "(complete )?(brand|game) (new|neuf|nuevo)",
     "(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used) (working order|condition|value|prices)", "disc (mint|vgc)",
-    "(new )?((super )?rare|limited run|(\\d+ )?new|pal|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?",
+    "(new )?((super )?rare|limited run|(\\d+ )?new|pal|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?( new)?",
     "limited run( \\d+)?", "box( )?set", "pre(-| )?owned", "compatible", "inc manual", "physical copy",
     "Used", "very good", "reorderable", "sent same day", "in stock( now)?", "pre(\\s+)?release", "played once", "best price",
-    "Expertly Refurbished Product", "(quality|value) guaranteed", "Highly Rated eBay Seller", "fully tested", "from eBays biggest seller", "Order By 4pm",
+    "Expertly Refurbished Product", "(quality|value) guaranteed", "Highly Rated eBay Seller", "fully (working|tested)", "from eBays biggest seller", "Order By 4pm",
     "remaster(ed)?", "directors cut", "\\bctr\\b", "original", "english", "deluxe", "standard", "\\bgoty\\b", "(action )?game of the( year)?", "multi(-| )?lang(uage)?( in game)?",
     "Warner Bros", "ubisoft", "currys", "blu-ray", "bonus level",
     "Microsoft","sony", "electronic arts", "nintendo", "square enix", "ea sport(s)?", "(bandai )?namco", "no scratches",
@@ -92,7 +92,9 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(NierAutomata)", "Nier Automata")
       .replaceAll("(?i)(fifa 2020)", "FIFA 20")
       .replaceAll("(?i)(witcher iii)", "witcher 3")
+      .replaceAll("(?i)(diablo 3)", "diablo iii")
       .replaceAll("(?i)(\\bnsane\\b)", "N Sane")
+      .replaceAll("(?i)(\\bcod\\b)", "Call of Duty")
       .replaceAll("-", " ")
       .replaceAll(" +", " ")
       .trim()
