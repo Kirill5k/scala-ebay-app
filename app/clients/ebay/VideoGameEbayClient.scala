@@ -22,7 +22,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
 
   private val LISTING_NAME_TRIGGER_WORDS = List(
     "(demo|game)( )?(code|disc|key|cart|pass)", "(cd|unused|digital|upgrade|no)( )?(redeem )?(game|code|key)",
-    "(software|cartridge(s)?|cart|game|disk|disc(s)?|cover|box|sleeve|book|cd|collection) only",
+    "(software|cartridge(s)?|cart|game|disk|disc(s)?|cover|box|sleeve|book|cd|collection|add( |-)on pack) only",
     "(case|variety|accessor(ies|y)|storage|charge|robot) (set|kit|box)", "no dis(c|k)",
     "(replacement|cover|carry|travel|carrying|just the|no|hard|storage|game|vault|phone|card|foreign|metal|protective)\\s+(pouch|case|bag)",
     "(read|see) (detail|desc|post)", "please(?s).*read", "read(?s).*please", "(docking|charging) (station|stand)", "download",
@@ -46,8 +46,8 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "gta(?s).* (money|online|million)",
     "(cod|of duty)(?s).* (unlock|warzone)",
     "fallout 76(\\s+(\\w+|\\d+)){5,}", "((\\w+|\\d+)\\s+){3,}fallout 76",
-    "(vamp|uniform|plan|blueprint|suit|outfit|shot|flame|armo|50|100|steel|leed|stimpack|power|cap|armo|recipe|gun)(?s).*fallout",
-    "fallout(?s).* (vamp|uniform|plan|blueprint|suit|outfit|shot|flame|armo|50|100|steel|leed|stimpack|power|cap|armo|recipe|gun)",
+    "(coat|x5|vamp|uniform|plan|blueprint|suit|outfit|shot|flame|armo|50|100|steel|leed|stimpack|power|cap|armo|recipe|gun)(?s).*fallout",
+    "fallout(?s).* (coat|x5|vamp|uniform|plan|blueprint|suit|outfit|shot|flame|armo|50|100|steel|leed|stimpack|power|cap|armo|recipe|gun)",
     "fifa(?s).* (team|money|milli|gener|player|gold|point)",
     "borderlands 3(\\s+(\\w+|\\d+)){5,}", "borderlands(?s).* (mayhem|lvl|cash|x50|legendary|money|mod)",
     "rocket(?s).* (fire|import|trade|inventor|rare|crate|decal|wheel|goal|explos)", "((\\w+|\\d+)\\s+){1,}rocket league(\\s+(\\w+|\\d+)){2,}", "((\\w+|\\d+)\\s+){3,}rocket league",
