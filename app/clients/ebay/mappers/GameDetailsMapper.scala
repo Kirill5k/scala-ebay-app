@@ -21,7 +21,7 @@ private[mappers] object GameDetailsMapper {
     "(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used) (working order|condition|value|prices)", "disc (mint|vgc)",
     "(new )?((super )?rare|limited run|(\\d+ )?new|pal|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?( new)?",
     "limited run( \\d+)?", "box( )?set", "pre(-| )?owned", "compatible", "inc manual", "physical copy",
-    "Used", "very good", "reorderable", "sent same day", "in stock( now)?", "pre(\\s+)?release", "played once", "best price",
+    "used( good)?( game)?", "very good", "reorderable", "sent same day", "in stock( now)?", "pre(\\s+)?release", "played once", "best price",
     "Expertly Refurbished Product", "(quality|value) guaranteed", "Highly Rated eBay Seller", "fully (working|tested)", "from eBays biggest seller", "Order By 4pm",
     "remaster(ed)?", "directors cut", "\\bctr\\b", "original", "english", "deluxe", "standard", "\\bgoty\\b", "(action )?game of the( year)?", "multi(-| )?lang(uage)?( in game)?",
     "Warner Bros", "ubisoft", "currys", "blu-ray", "bonus level", "Console Exclusive",
@@ -30,7 +30,7 @@ private[mappers] object GameDetailsMapper {
     "(single player|adventure|console single|tactical|3rd-person|rpg|fps|survival|action|role|fighting)(?s).* game(?s).*",
     "\\bpal\\b( game)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c)?\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b", "\\bRPVG\\b", "\\bG2VG\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b",
-    "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b",
+    "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b",
     "(the )?(official )?(gold )?\\bvide(o)?( )?g(a)?(me)?(s)?\\b( fasting)?",
     "\\bMarvels\\b", "^\\bMARVEL\\b", "^SALE", "NEW$", "^BOXED", "^SALE", "^SEALED", "^NEW", "^best", "^software", "very rare", "rare$", "official$", "bargain$",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]",
@@ -94,6 +94,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(witcher iii)", "witcher 3")
       .replaceAll("(?i)(diablo 3)", "diablo iii")
       .replaceAll("(?i)(\\bnsane\\b)", "N Sane")
+      .replaceAll("(?i)(ww2|ww11)", "wwii")
       .replaceAll("(?i)(\\bcod\\b)", "Call of Duty")
       .replaceAll("-|:", " ")
       .replaceAll(" +", " ")
