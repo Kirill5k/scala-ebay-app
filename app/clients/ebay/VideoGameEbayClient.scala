@@ -35,7 +35,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "100k", "50k", "\\bDL( )?C\\b", "pve", "starter (set|pack|bundle|kit)", "figure(s)? bundle", "k eso", "gift toy", "pad pro", "cable pack",
     "pre(\\s+|-)?(order|sale)", "season pass", "(steel|art)( )?book", "(game|mini)( )?figure", "collectable", "collectible",
     "membership", "(subscription|gift)( |-)?card", "12 month", "(wallpaper|dynamic) theme", "themes", "account", "achievement pack",
-    "level boosting", "gamer score", "power( )?level", "trophy service", "platinum trophy",
+    "level boosting", "gamer score", "power( )?level", "trophy service", "platinum trophy", "arcade mini",
     "samsung", "huawei", "iphone", "sandisk", "server", "boosting",
     "(hungarian|scandinavian|asian|korea(n)?|german|promo(tional)?|demo|french|jap(an)?(ese)?|dutch|spanish|us(a)?|digital) (box|import|item|disc|vers|copy)", "arabic", "slovakian", "czech",
     "\\bhori\\b", "\\bDE\\b", "ID59z", "\\bemail\\b",
