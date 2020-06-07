@@ -26,7 +26,7 @@ private[mappers] object GameDetailsMapper {
     "remaster(ed)?", "directors cut", "\\bctr\\b", "original", "english", "deluxe", "standard", "\\bgoty\\b", "(action )?game of the( year)?", "multi(-| )?lang(uage)?( in game)?",
     "Warner Bros", "ubisoft", "currys", "blu-ray", "bonus level", "Console Exclusive", "playable on", "Definitive Experience",
     "Microsoft","sony", "electronic arts", "nintendo", "square enix", "ea sport(s)?", "(bandai )?namco", "no scratches",
-    "Take( |-)?Two( Interactive)?", "2k games", "Bethesda( Softworks)?",
+    "Take( |-)?Two( Interactive)?", "2k games", "Bethesda( Softworks)?", "Hideo Kojima",
     "\\bTom clancy(s)?\\b", "(\\bUK\\b|\\bEU\\b|genuine|european)(( |-)(new|only|seller|version|stock|import))?",
     "(single player|adventure|console single|tactical|3rd-person|rpg|fps|survival|action|role|fighting)(?s).* game(?s).*",
     "\\bpal\\b( game)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c)?\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b", "\\bRPVG\\b", "\\bG2VG\\b",

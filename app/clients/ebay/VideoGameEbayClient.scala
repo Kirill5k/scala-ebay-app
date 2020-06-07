@@ -56,7 +56,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
   ).mkString("^.*?(?i)(", "|", ").*$").r
 
   override protected val categoryId: Int = 139973
-  override protected val searchQueries: List[String] = List("PS4", "XBOX ONE", "SWITCH")
+  override protected val searchQueries: List[String] = List("PS3", "PS4", "XBOX ONE", "SWITCH")
 
   override protected val newlyListedSearchFilterTemplate: String = DEFAULT_SEARCH_FILTER + "buyingOptions:{FIXED_PRICE},itemStartDate:[%s]"
 
