@@ -105,7 +105,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      gameDetails.name must be (Some("job lot 5 Games"))
+      gameDetails.name must be (Some("job lot 5"))
       gameDetails.platform must be (Some("PS4"))
       gameDetails.packaging must be (Packaging.Bundle)
       gameDetails.isBundle must be (true)
