@@ -32,7 +32,7 @@ private[mappers] object GameDetailsMapper {
     "\\bpal\\b( game)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c)?\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b", "\\bRPVG\\b", "\\bG2VG\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b",
     "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b",
-    "(the )?(official )?(gold )?\\bvide(o)?( )?g(a)?(me)?(s)?\\b( fasting)?", "the official game", "official$",
+    "(the )?(official )?(gold )?\\bvide(o)?( )?g(a)?(me)?(s)?\\b( fasting)?", "the official game", "official$", "(video)?game(s)?",
     "\\bMarvels\\b", "^\\bMARVEL\\b", "^SALE", "NEW$", "^BOXED", "^SALE", "^SEALED", "^NEW", "^best", "^software", "very rare", "rare$", "bargain$", "mint$",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]",
     "\\d{6,}"
