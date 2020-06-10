@@ -3,18 +3,16 @@ package clients.ebay
 import cats.effect.IO
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
-import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary, ItemImage, ItemPrice, ItemProperty, ItemSeller, ItemShippingOption, ShippingCost}
+import clients.ebay.browse.EbayBrowseResponse._
 import domain.ApiClientError.{AuthError, HttpError}
 import domain.ItemDetails.GameDetails
+import org.mockito.ArgumentMatchersSugar
 import org.mockito.captor.ArgCaptor
-import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.play.PlaySpec
+import org.mockito.scalatest.AsyncMockitoSugar
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AsyncWordSpec
 
-import scala.concurrent.duration._
-import scala.language.postfixOps
-
-class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSugar with ArgumentMatchersSugar {
+class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMockitoSugar with ArgumentMatchersSugar {
   val accessToken = "access-token"
 
   "VideoGameSearchClient" should {
@@ -28,14 +26,14 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
-        items must be (List())
+      itemsResponse.compile.toList.unsafeToFuture().map { items =>
         verify(authClient, times(4)).accessToken
         verify(browseClient, times(4)).search(eqTo(accessToken), searchParamsCaptor)
         searchParamsCaptor.values.map(_("q")) must contain allOf ("PS3", "PS4", "XBOX ONE", "SWITCH")
         searchParamsCaptor.value("limit") must be ("200")
         searchParamsCaptor.value("category_ids") must be ("139973")
         searchParamsCaptor.value("filter") must startWith ("conditionIds:%7B1000|1500|2000|2500|3000|4000|5000%7D,itemLocationCountry:GB,deliveryCountry:GB,price:[0..100],priceCurrency:GBP,itemLocationCountry:GB,buyingOptions:%7BFIXED_PRICE%7D,itemStartDate:[")
+        items must be (List())
       }
     }
 
@@ -46,7 +44,6 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
       when(authClient.accessToken).thenReturn(IO.pure(accessToken))
       when(browseClient.getItem(any, any)).thenReturn(IO.pure(None))
 
-
       doReturn(IO.pure(List()))
         .doReturn(IO.pure(List(ebayItemSummary("1"))))
         .doReturn(IO.pure(List()))
@@ -55,13 +52,13 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { error =>
-        error must be (List())
+      itemsResponse.compile.toList.unsafeToFuture().map { error =>
         videoGameSearchClient.itemsIds.isEmpty must be (true)
         verify(authClient, times(5)).accessToken
         verify(authClient, times(1)).switchAccount
         verify(browseClient, times(4)).search(eqTo(accessToken), anyMap[String, String])
         verify(browseClient).getItem(accessToken, "1")
+        error must be (List())
       }
     }
 
@@ -77,13 +74,13 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { error =>
-        error must be (List())
+      itemsResponse.compile.toList.unsafeToFuture().map { error =>
         videoGameSearchClient.itemsIds.isEmpty must be (true)
         verify(authClient, times(4)).accessToken
         verify(authClient, never).switchAccount
         verify(browseClient, times(1)).search(eqTo(accessToken), anyMap[String, String])
         verify(browseClient, never).getItem(any, any)
+        error must be (List())
       }
     }
 
@@ -99,12 +96,12 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
-        items must be (List())
+      itemsResponse.compile.toList.unsafeToFuture().map { items =>
         videoGameSearchClient.itemsIds.isEmpty must be (true)
         verify(authClient, times(4)).accessToken
         verify(browseClient, times(4)).search(eqTo(accessToken), anyMap[String, String])
         verify(browseClient, never).getItem(any, any)
+        items must be (List())
       }
     }
 
@@ -142,9 +139,9 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
-        items must be (List())
+      itemsResponse.compile.toList.unsafeToFuture().map { items =>
         videoGameSearchClient.itemsIds.isEmpty must be (true)
+        items must be (List())
       }
     }
 
@@ -165,12 +162,12 @@ class VideoGameEbayClientSpec extends PlaySpec with ScalaFutures with MockitoSug
 
       val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
 
-      whenReady(itemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
-        items.map(_._1) must be (List(GameDetails(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action"))))
+      itemsResponse.compile.toList.unsafeToFuture().map { items =>
         videoGameSearchClient.itemsIds.containsKey("item-3") must be (true)
         verify(authClient, times(8)).accessToken
         verify(browseClient, times(4)).search(eqTo(accessToken), anyMap[String, String])
         verify(browseClient, times(4)).getItem(eqTo(accessToken), any)
+        items.map(_._1) must be (List(GameDetails(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action"))))
       }
     }
   }
