@@ -16,7 +16,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
   private val DEFAULT_SEARCH_FILTER = "conditionIds:{1000|1500|2000|2500|3000|4000|5000}," +
     "itemLocationCountry:GB," +
     "deliveryCountry:GB," +
-    "price:[0..100]," +
+    "price:[0..90]," +
     "priceCurrency:GBP," +
     "itemLocationCountry:GB,"
 
@@ -56,7 +56,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
   ).mkString("^.*?(?i)(", "|", ").*$").r
 
   override protected val categoryId: Int = 139973
-  override protected val searchQueries: List[String] = List("PS3", "PS4", "XBOX ONE", "SWITCH")
+  override protected val searchQueries: List[String] = List("PS3", "PS4", "XBOX ONE", "SWITCH", "XBOX 360")
 
   override protected val newlyListedSearchFilterTemplate: String = DEFAULT_SEARCH_FILTER + "buyingOptions:{FIXED_PRICE},itemStartDate:[%s]"
 
