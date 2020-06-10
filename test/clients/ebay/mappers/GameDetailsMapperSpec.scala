@@ -42,12 +42,16 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
     "map uncommon platform spellings" in {
       val platforms = Map(
         "PS4" -> "PS4",
+        "PS2" -> "PS2",
+        "PS5" -> "PS5",
         "PLAYSTATION4" -> "PS4",
         "PLAYSTATION 4" -> "PS4",
         "PLAYSTATION 3" -> "PS3",
         "XBONE" -> "XBOX ONE",
         "XB ONE" -> "XBOX ONE",
-        "XB 1" -> "XBOX ONE"
+        "XB 1" -> "XBOX ONE",
+        "XB360" -> "XBOX 360",
+        "XBOX 360" -> "XBOX 360",
       )
 
       forAll (platforms) { platform =>

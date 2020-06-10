@@ -7,7 +7,7 @@ import domain.{Packaging, ListingDetails}
 private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
-    "(?<=.{12})(new )?((sony )?playstation|ps4|(microsoft )?xbox (1|one)|nintendo switch)(?s).*",
+    "(?<=.{12})(new )?((sony )?playstation|ps(4|3)|(microsoft )?xbox (1|one|360)|nintendo switch)(?s).*",
     "(video( )?)?game for( the)?( playstation)?(\\s+(vr|\\d+))?", "for playstation(\\s+)?vr", "psvr required",
     "(gold )?((greatest|playstation) )?\\bhits\\b",
     "(good )?(for )?((sony )?playst(a)?(t)?(i)?(o)?(n)?(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?(\\s+complete)?(\\s+edition)?( 20\\d\\d)?( good)?",
@@ -39,9 +39,9 @@ private[mappers] object GameDetailsMapper {
   ).mkString("(?i)", "|", "")
 
   private val PLATFORMS_MATCH_REGEX = List(
-    "PS4", "PS3", "PS2", "PLAYSTATION(\\s+)?(\\d)",
+    "PS\\d", "PLAYSTATION(\\s+)?(\\d)",
     "NINTENDO SWITCH", "SWITCH",
-    "XB(OX)?(\\s+)?(ONE|\\d+)", "XBOX 1", "XB1", "XBONE", "X BOX ONE", "XBOX 360"
+    "XB(OX)?(\\s+)?(ONE|\\d+)"
   ).mkString("(?i)", "|", "").r
 
   private val BUNDLE_MATCH_REGEX = List(
@@ -61,6 +61,7 @@ private[mappers] object GameDetailsMapper {
     "XBOX1" -> "XBOX ONE",
     "XBOX360" -> "XBOX 360",
     "XB1" -> "XBOX ONE",
+    "XB360" -> "XBOX 360",
     "XBOXONE" -> "XBOX ONE",
     "XBONE" -> "XBOX ONE",
     "MICROSOFTXBOXONE" -> "XBOX ONE",
