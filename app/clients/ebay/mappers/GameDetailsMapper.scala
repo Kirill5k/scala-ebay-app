@@ -10,12 +10,12 @@ private[mappers] object GameDetailsMapper {
     "(?<=.{12})(new )?((sony )?playstation|ps(4|3)|(microsoft )?xbox (1|one|360)|nintendo switch)(?s).*",
     "(video( )?)?game for( the)?( playstation)?(\\s+(vr|\\d+))?", "for playstation(\\s+)?vr", "psvr required",
     "(gold )?((greatest|playstation) )?\\bhits\\b",
-    "(good )?(for )?((sony )?playst(a)?(t)?(i)?(o)?(n)?(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?(\\s+complete)?(\\s+edition)?( 20\\d\\d)?( good)?",
+    "(good )?(for )?((sony )?playst(a)?(t)?(i)?(o)?(n)?(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?(\\s+complete)?(\\s+edition)?( 20\\d\\d)?",
     "(dbl|double|triple|twin) (pack|pk)",
     "day (one|1|zero|0)( (edition|\\be(d)?(i)?(t)?(i)?\\b))?(?s).*$",
     "((\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of the|legacy( pro)?|(un)?limited|premium|(digital )?deluxe|standard|ultimat)(?s).* (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
     "(the )?(new\\s+)?(super|cheap( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(prompt|free|fast|quick|(next|same) day|tracked|speedy)(?s).* (dispatch|shipping|post(age)?|delivery|p(\\s+)?p).*$",
-    "(1st|2nd|first) class.*$", "complete (with|case)(?s).*$", "exclusive to(?s).*$", "with (case|manual)(?s).*$", "(the )?disc (is|in)(?s).*$",
+    "(1st|2nd|first) class.*$", "complete (with|case)(?s).*$", "exclusive to(?s).*$", "with (map|case|manual)(?s).*$", "(the )?disc(s)? (are|is|in)(?s).*$",
     "((brand )?new(?s).*)?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
     "(complete )?(brand|game) (new|neuf|nuevo)", "\\d+th anniversary",
     "(in )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used) (working order|condition|value|prices)", "disc (mint|vgc)",
@@ -31,7 +31,7 @@ private[mappers] object GameDetailsMapper {
     "(single player|adventure|console single|tactical|3rd-person|rpg|fps|survival|action|role|fighting)(?s).* game(?s).*",
     "\\bpal\\b( game)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c)?\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b", "\\bRPVG\\b", "\\bG2VG\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b",
-    "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bVGC\\b",
+    "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bVGC\\b", "\\bAMP\\b",
     "(the )?(official )?(gold )?\\bvide(o)?( )?g(a)?(me)?(s)?\\b( fasting)?", "the official game", "official$", "(video)?game(s)?",
     "\\bMarvels\\b", "^\\bMARVEL\\b", "^SALE", "NEW$", "^BOXED", "^SALE", "^SEALED", "^NEW", "^best", "^software", "very rare", "rare$", "bargain$", "mint$",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]",
@@ -98,6 +98,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(\\bnsane\\b)", "N Sane")
       .replaceAll("(?i)(ww2|ww11)", "wwii")
       .replaceAll("(?i)(\\bcod\\b)", "Call of Duty")
+      .replaceAll("(?i)(\\bIIII\\b)", "4")
       .replaceAll("-|:", " ")
       .replaceAll(" +", " ")
       .trim()

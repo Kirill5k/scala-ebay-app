@@ -117,6 +117,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
 
     "remove rubbish words from title" in {
       val titles = List(
+        "Call of Duty-Infinite Warfare xbox 360 blah blah blah",
         "Call of Duty - Infinite Warfare playstation 4 blah blah blah",
         "Call of Duty: Infinite Warfare 20th anniversary",
         "Call of Duty: Infinite Warfare 20th anniversary edition",
