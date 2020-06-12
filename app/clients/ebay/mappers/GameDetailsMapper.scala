@@ -7,7 +7,7 @@ import domain.{Packaging, ListingDetails}
 private[mappers] object GameDetailsMapper {
 
   private val TITLE_WORDS_FILTER = List(
-    "(?<=.{12})(new )?((sony )?playstation|ps\\d|(microsoft )?xbox (1|one|360)|nintendo switch)(?s).*",
+    "(?<=.{12})(new )?((sony )?playstation|ps\\d|(microsoft )?xbox (1|one|360)|nintendo switch|(nintendo )?\\bwii( u)?\\b)(?s).*",
     "(video( )?)?game for( the)?( playstation)?(\\s+(vr|\\d+))?", "for playstation(\\s+)?vr", "psvr required",
     "(gold )?((greatest|playstation) )?\\bhits\\b",
     "(good )?(for )?((sony )?playst(a)?(t)?(i)?(o)?(n)?(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?switch)(\\s+\\bgame\\b)?(\\s+new)?(\\s+complete)?(\\s+edition)?( 20\\d\\d)?",
@@ -32,7 +32,7 @@ private[mappers] object GameDetailsMapper {
     "\\bpal\\b( game)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c)?\\b", "\\ban\\b", "\\bpegi( \\d+)?\\b", "\\bLTD\\b", "\\bRPVG\\b", "\\bG2VG\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b",
     "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bVGC\\b", "\\bAMP\\b", "\\bOUVG\\b", "\\bFYVG\\b",
-    "(the )?(official )?(gold )?\\bvide(o)?( )?g(a)?(me)?(s)?\\b( fasting)?", "the official game", "official$", "(video)?game(s)?", "esssentials",
+    "(the )?(official )?(gold )?\\bvide(o)?( )?g(a)?(me)?(s)?\\b( fasting)?", "the official game", "official$", "(video)?game(s)?", "esssentials", "classic(s)?",
     "\\bMarvels\\b", "^\\bMARVEL\\b", "^SALE", "NEW$", "^BOXED", "^SALE", "^SEALED", "^NEW", "^best", "^software", "very rare", "rare$", "bargain$", "mint$",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]",
     "\\d{6,}"
@@ -40,12 +40,12 @@ private[mappers] object GameDetailsMapper {
 
   private val PLATFORMS_MATCH_REGEX = List(
     "PS\\d", "PLAYSTATION(\\s+)?(\\d)",
-    "NINTENDO SWITCH", "SWITCH",
+    "NINTENDO SWITCH", "SWITCH", "WII U", "WII",
     "XB(OX)?(\\s+)?(ONE|\\d+)"
   ).mkString("(?i)", "|", "").r
 
   private val BUNDLE_MATCH_REGEX = List(
-    "(new|multiple|PS4|xbox one) games", "bundle", "job(\\s+)?lot"
+    "(new|multiple|PS4|PS3|xbox one|switch|wii( u)?) games", "bundle", "job(\\s+)?lot"
   ).mkString("(?i)", "|", "").r
 
   private val PLATFORM_MAPPINGS: Map[String, String] = Map(
@@ -68,6 +68,8 @@ private[mappers] object GameDetailsMapper {
     "MICROSOFTXBOX360" -> "XBOX 360",
     "MICROSOFTXBOX" -> "XBOX",
     "XBOX" -> "XBOX",
+    "WIIU" -> "WII U",
+    "WII" -> "WII"
   )
 
   def from(listingDetails: ListingDetails): GameDetails = {
