@@ -61,9 +61,9 @@ private[ebay] class EbayAuthClient @Inject()(catsSttpBackendResource: SttpBacken
             case Left(error) =>
               val message = decode[EbayAuthErrorResponse](error.body)
                 .fold(_ => error.body, e => s"${e.error}: ${e.error_description}")
-              IO(log.error(s"error authenticating with ebay ${r.code}: $message")) *>
-                (if (r.code == StatusCode.TooManyRequests) IO(switchAccount()) *> authenticate()
-                 else IO.pure(Left(ApiClientError.HttpError(r.code.code, s"error authenticating with ebay: $message"))))
+              IO(log.error(s"error authenticating with ebay ${r.code}: $message (cid - ${credentials.clientId})")) *>
+                (if (r.code == StatusCode.TooManyRequests || r.code == StatusCode.Unauthorized) IO(switchAccount()) *> authenticate()
+                else IO.pure(Left(ApiClientError.HttpError(r.code.code, s"error authenticating with ebay: $message"))))
           }
         }
     }
