@@ -68,6 +68,14 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       gameDetails.platform must be (Some("XBOX ONE"))
     }
 
+    "only map WII title from complete words" in {
+      val listingDetails = testListing.copy(title = s"Call of Duty WWII PS4", properties = Map())
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("Call of Duty WWII"))
+      gameDetails.platform must be (Some("PS4"))
+    }
 
     "get details from title if properties are missing" in {
       val listingDetails = testListing.copy(properties = Map())
@@ -138,7 +146,9 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         "Call of Duty: Infinite Warfare (Day One Edition) [Ge VideoGames Amazing Value]",
         "Call of Duty: Infinite Warfare - complete e free 1st class uk postage",
         "Call of Duty: Infinite Warfare the official videogame - new unopened",
+        "Call of Duty: Infinite Warfare for microsoft xbox one",
         "Call of Duty: Infinite Warfare VideoGames",
+        "Call of Duty: Infinite Warfare The game",
         "BEST PS4 GAME Call of Duty: Infinite Warfare EU-Import factory sealed next day dispatch free",
         "300076206 Limited run 170 Call of Duty: Infinite Warfare new boxed and complete game",
         "Playstation 4/PAL-Call of Duty: Infinite Warfare NEW",

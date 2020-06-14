@@ -37,7 +37,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "pre(\\s+|-)?(order|sale)", "season pass", "(steel|art)( )?book", "(game|mini)( )?figure", "collectable", "collectible",
     "membership", "(subscription|gift)( |-)?card", "12 month", "(wallpaper|dynamic) theme", "themes", "account", "achievement pack",
     "(xp|level|lvl) boost", "gamer score", "power( )?level", "trophy service", "platinum trophy", "arcade mini",
-    "samsung", "huawei", "iphone", "sandisk", "server",
+    "samsung", "huawei", "iphone", "sandisk", "server", "wireless",
     "(hungarian|scandinavian|asian|korea(n)?|german|promo(tional)?|demo|french|jap(an)?(ese)?|dutch|italian|spanish|us(a)?|digital) (pack|box|import|item|disc|vers|copy)", "arabic", "slovakian", "czech",
     "\\bhori\\b", "\\bDE\\b", "ID59z", "\\bemail\\b",
     "ark survival(\\s+(\\w+|\\d+)){5,}",
