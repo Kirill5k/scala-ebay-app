@@ -127,7 +127,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       val titles = List(
         "Call of Duty-Infinite Warfare xbox 360 blah blah blah",
         "Call of Duty - Infinite Warfare playstation 4 blah blah blah",
-        "Call of Duty: Infinite Warfare 20th anniversary",
+        "Call of Duty: Infinite Warfare 20th anniversary FUVG",
         "Call of Duty: Infinite Warfare 20th anniversary edition",
         "Call of Duty: Infinite Warfare - game of the year goty free and fast 1st class post",
         "Call of Duty: Infinite Warfare - game of the year goty quick 1st class signed post for playstation vr",

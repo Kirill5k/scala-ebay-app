@@ -8,17 +8,18 @@ private[mappers] object GameDetailsMapper {
 
   private val PRIMARY_TITLE_WORDS_REPLACEMENTS = List(
     "(?<=.{12})(new )?((sony )?playstation|ps\\d|(microsoft )?xbox (1|one|360)|nintendo switch|(nintendo )?\\bwii( u)?\\b)(?s).*",
-    "(good )?(for )?(sony |microsoft )?(playst(a)?(t)?(i)?(o)?(n)?(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?(switch|\\bwii( u)?\\b))(\\s+new)?( 20\\d\\d)?",
+    "((very )?good )?(for )?(sony |microsoft )?(playst(a)?(t)?(i)?(o)?(n)?(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?(switch|\\bwii( u)?\\b))(\\s+new)?( 20\\d\\d)?",
     "for (the )?playstation(\\s+)?vr", "(psvr|kinect) required",
     "(gold )?((greatest|playstation) )?\\bhits\\b",
     "day (one|1|zero|0)( (edition|\\be(d)?(i)?(t)?(i)?\\b))?(?s).*$",
-    "((\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of the|legacy( pro)?|(un)?limited|premium|(digital )?deluxe|standard|ultimat)(?s).* (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
-    "(dbl|double|triple|twin) (pack|pk)",
+    "(classic(s)?|(\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of the|legacy( pro)?|(un)?limited|premium|(digital )?deluxe|standard|ultimat)(?s).* (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
+    "(dbl|double|triple|twin|expansion) (pack|pk)",
     "(the )?(new\\s+)?(super|cheap( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(prompt|free|fast|quick|(next|same) day|tracked|speedy)(?s).* (dispatch|shipping|post(age)?|delivery|p(\\s+)?p).*$",
-    "(1st|2nd|first) class.*$", "complete (with|case)(?s).*$", "exclusive to(?s).*$", "(with|no|missing) (map|case|manual)(?s).*$", "(the )?disc(s)? (are|is|in)(?s).*$",
+    "(1st|2nd|first) class.*$", "(boxed|complete) (with|case)(?s).*$", "exclusive to(?s).*$", "(with|no|missing) (map|case|manual)(?s).*$", "(the )?disc(s)? (are|is|in)(?s).*$",
     "((brand )?new(?s).*)?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
     "(new )?((super )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?( new)?",
-    "(in )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used) (working order|condition|value|prices)",
+    "(in )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used) (good|working order|condition|value|prices)",
+    "(single player|adventure|console single|tactical|3rd-person|rpg|fps|survival|action|role|fighting)(?s).* game(?s).*",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]",
     "\\d{6,}"
   ).mkString("(?i)", "|", "")
@@ -34,11 +35,10 @@ private[mappers] object GameDetailsMapper {
     "Microsoft","sony", "electronic arts", "nintendo", "square enix", "ea sport(s)?", "(bandai )?namco", "no scratches",
     "Take( |-)?Two( Interactive)?", "2k games", "Bethesda( Softworks)?", "Hideo Kojima", "Highly Rated", "James Camerons",
     "\\bTom clancy(s)?\\b", "(\\bUK\\b|\\bEU\\b|genuine|european)(( |-)(new|only|seller|version|stock|import))?",
-    "(single player|adventure|console single|tactical|3rd-person|rpg|fps|survival|action|role|fighting)(?s).* game(?s).*",
-    "\\bpal\\b( game)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c)?\\b", "\\ban\\b", "\\bLTD\\b", "\\bRPVG\\b", "\\bG2VG\\b",
+    "\\bpal\\b", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b",
-    "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bVGC\\b", "\\bAMP\\b", "\\bOUVG\\b", "\\bFYVG\\b", "\\bRPG\\b",
-    "official$", "esssentials", "classic(s)?",
+    "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b",
+    "official$", "esssentials", "classic(s)?", "boxed complete",
     "\\bMarvels\\b", "^\\bMARVEL\\b", "^SALE", "NEW$", "^BOXED", "^SALE", "^SEALED", "^NEW", "^best", "^software", "very rare", "rare$", "bargain$", "mint$",
   ).mkString("(?i)", "|", "")
 
@@ -104,8 +104,9 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(witcher iii)", "witcher 3")
       .replaceAll("(?i)(diablo 3)", "diablo iii")
       .replaceAll("(?i)(\\bnsane\\b)", "N Sane")
-      .replaceAll("(?i)(ww2|ww11)", "wwii")
+      .replaceAll("(?i)(\\bww2|ww11\\b)", "wwii")
       .replaceAll("(?i)(\\bcod\\b)", "Call of Duty")
+      .replaceAll("(?i)(\\bgta\\b)", "Grand Theft Auto ")
       .replaceAll("(?i)(\\bIIII\\b)", "4")
       .replaceAll("(?i)((the|\\ba\\b)? Telltale( game)?( series)?)", " Telltale")
       .replaceAll("-|:", " ")
@@ -126,6 +127,6 @@ private[mappers] object GameDetailsMapper {
   }
 
   implicit class StringOps(private val str: String) extends AnyVal {
-    def withoutSpecialChars: String = str.replaceAll("[?_;`—“”!•£&#,’'*()|.\\[\\]]", "").replaceAll("/", " ")
+    def withoutSpecialChars: String = str.replaceAll("[?_;`—–“”!•£&#,’'*()|.\\[\\]]", "").replaceAll("/", " ")
   }
 }
