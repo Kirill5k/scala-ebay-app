@@ -25,7 +25,7 @@ private[mappers] object GameDetailsMapper {
   ).mkString("(?i)", "|", "")
 
   private val SECONDARY_TITLE_WORDS_REPLACEMENTS = List(
-    "(the )?((action|official|console|gold) )?(video( )?)?game(s)?( (of the year|for( the)?))?",
+    "(the )?((action|official|console|gold) )?(video( )?)?game(s)?( (console|of the year|for( the)?))?",
     "(complete )?(brand|game) (new|neuf|nuevo)", "\\bpegi( \\d+)?\\b(?s).*$", "\\d+th anniversary", "disc (mint|vgc)",
     "limited run( \\d+)?", "box( )?set", "pre(-| )?(owned|enjoyed)", "compatible", "inc manual", "physical copy", "steel( )?box",
     "used( good)?( game)?", "very good", "reorderable", "sent same day", "in stock( now)?", "pre(\\s+)?release", "played once", "best price",
