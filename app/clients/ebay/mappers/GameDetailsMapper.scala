@@ -9,7 +9,7 @@ private[mappers] object GameDetailsMapper {
   private val PRIMARY_TITLE_WORDS_REPLACEMENTS = List(
     "(?<=.{12})(new )?((sony )?playstation|ps\\d|(microsoft )?xbox (1|one|360)|nintendo switch|(nintendo )?\\bwii( u)?\\b)(?s).*",
     "((very )?good )?(for )?(sony |microsoft )?(playst(a)?(t)?(i)?(o)?(n)?(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?(switch|\\bwii( u)?\\b))( edition)?(\\s+new)?( 20\\d\\d)?",
-    "for (the )?playstation(\\s+)?vr", "(psvr|kinect) required",
+    "for (the )?playstation(\\s+)?vr", "(ps( )?vr|kinect) required",
     "(gold )?((greatest|playstation) )?\\bhits\\b",
     "day (one|1|zero|0)( (edition|\\be(d)?(i)?(t)?(i)?\\b))?(?s).*$",
     "(classic(s)?|(\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of the|legacy( pro)?|(un)?limited|premium|(digital )?deluxe|standard|ultimat)(?s).* (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
@@ -38,7 +38,7 @@ private[mappers] object GameDetailsMapper {
     "\\bpal\\b( \\d+)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b",
     "\\bremake\\b", "\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b",
-    "official$", "esssentials", "classic(s)?", "boxed complete",
+    "official$", "essentials", "classic(s)?", "boxed complete",
     "\\bMarvels\\b", "^\\bMARVEL\\b", "^SALE", "NEW$", "^BOXED", "^SALE", "^SEALED", "^NEW", "^best", "^software", "very rare", "rare$", "bargain$", "mint$",
   ).mkString("(?i)", "|", "")
 
@@ -127,6 +127,6 @@ private[mappers] object GameDetailsMapper {
   }
 
   implicit class StringOps(private val str: String) extends AnyVal {
-    def withoutSpecialChars: String = str.replaceAll("[?_;`—–“”!•£&#,’'*()|.\\[\\]]", "").replaceAll("/", " ")
+    def withoutSpecialChars: String = str.replaceAll("[{}?_;`—–“”!•£&#,’'*()|.\\[\\]]", "").replaceAll("/", " ")
   }
 }
