@@ -52,6 +52,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         "XB 1" -> "XBOX ONE",
         "XB360" -> "XBOX 360",
         "XBOX 360" -> "XBOX 360",
+        "X BOX ONE" -> "XBOX ONE",
       )
 
       forAll (platforms) { platform =>
@@ -130,6 +131,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         "Call of Duty: Infinite Warfare 20th anniversary FUVG",
         "Call of Duty: Infinite Warfare classic edition foo",
         "Call of Duty: Infinite Warfare classics edition foo",
+        "Call of Duty: Infinite Warfare PAL #1099",
         "Call of Duty: Infinite Warfare 20th anniversary edition",
         "Call of Duty: Infinite Warfare - game of the year goty free and fast 1st class post",
         "Call of Duty: Infinite Warfare - game of the year goty quick 1st class signed post for playstation vr",
