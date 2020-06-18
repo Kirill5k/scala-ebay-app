@@ -26,13 +26,13 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
 
   "GameDetailsMapper" should {
 
-    "get details from properties if they are present" in {
-      val listingDetails = testListing.copy()
+    "get details from properties if they are present except for platform and title" in {
+      val listingDetails = testListing.copy(title = "Call of Duty Modern Warfare 2 PS4")
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      gameDetails.name must be (Some("Call of Duty Modern Warfare"))
-      gameDetails.platform must be (Some("XBOX ONE"))
+      gameDetails.name must be (Some("Call of Duty Modern Warfare 2"))
+      gameDetails.platform must be (Some("PS4"))
       gameDetails.releaseYear must be (Some("2019"))
       gameDetails.genre must be (Some("Action"))
       gameDetails.packaging must be (Packaging.Single)
