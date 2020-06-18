@@ -153,6 +153,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         "Call of Duty: Infinite Warfare for microsoft xbox one",
         "Call of Duty: Infinite Warfare VideoGames",
         "Call of Duty: Infinite Warfare The game",
+        "Call of Duty            Infinite            Warfare            ",
         "BEST PS4 GAME Call of Duty: Infinite Warfare EU-Import factory sealed next day dispatch free",
         "300076206 Limited run 170 Call of Duty: Infinite Warfare new boxed and complete game",
         "Playstation 4/PAL-Call of Duty: Infinite Warfare NEW",
