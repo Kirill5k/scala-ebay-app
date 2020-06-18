@@ -80,7 +80,7 @@ private[mappers] object GameDetailsMapper {
   def from(listingDetails: ListingDetails): GameDetails = {
     val isBundle = BUNDLE_MATCH_REGEX.findFirstIn(listingDetails.title.withoutSpecialChars).isDefined
     GameDetails(
-      name = if (isBundle) sanitizeTitle(listingDetails.title) else sanitizeTitle(listingDetails.properties.getOrElse("Game Name", listingDetails.title)),
+      name = sanitizeTitle(listingDetails.title),
       platform = mapPlatform(listingDetails),
       genre = mapGenre(listingDetails),
       releaseYear = listingDetails.properties.get("Release Year"),
@@ -109,6 +109,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(\\bcod\\b)", "Call of Duty")
       .replaceAll("(?i)(\\bgta\\b)", "Grand Theft Auto ")
       .replaceAll("(?i)(\\bIIII\\b)", "4")
+      .replaceAll("(?i)(\\bGW\\b)", "Garden Warfare ")
       .replaceAll("(?i)((the|\\ba\\b)? Telltale( game)?( series)?)", " Telltale")
       .replaceAll("-|:", " ")
       .replaceAll(" +", " ")
