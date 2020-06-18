@@ -35,10 +35,10 @@ private[mappers] object GameDetailsMapper {
     "Expertly Refurbished Product", "(quality|value) guaranteed", "eBay Seller", "fully (working|tested)", "from eBays biggest seller", "Order By 4pm",
     "remaster(ed)?", "directors cut", "\\bctr\\b", "original", "english", "deluxe", "standard", "\\bgoty\\b", "multi(-| )?lang(uage)?( in game)?",
     "blu-ray", "bonus level", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "official$", "essentials", "classic(s)?", "boxed complete",
-    "(\\bUK\\b|\\bEU\\b|genuine|european)(( |-)(new|only|seller|version|stock|import))?", "For age(s)? \\d+(\\+)?", "complete",
+    "(\\bUK\\b|\\bEU\\b|genuine|european)(( |-)(new|only|seller|version|stock|import))?", "For age(s)? \\d+(\\+)?", "complete", "must see",
     "\\bpal\\b(\\s+\\d+)?( version)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c| condition)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b",
-    "\\bremake\\b", "(ultra )?\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b",
+    "\\bremake\\b", "(ultra )?\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b", "\\bPG(13)?\\b",
     "\\bMarvels\\b", "^\\bMARVEL\\b", "^SALE", "NEW$", "^BOXED", "^SALE", "^(NEW\\s+)?(and )?SEALED", "^NEW", "^best", "^software", "very rare", "rare$", "bargain$", "mint$"
   ).mkString("(?i)", "|", "")
 
@@ -110,6 +110,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(\\bcod\\b)", "Call of Duty ")
       .replaceAll("(?i)(\\bgta\\b)", "Grand Theft Auto ")
       .replaceAll("(?i)(\\bMGS\\b)", "Metal Gear Solid ")
+      .replaceAll("(?i)(\\bRainbow 6\\b)", "Rainbow Six ")
       .replaceAll("(?i)(\\bIIII\\b)", "4")
       .replaceAll("(?i)(\\bGW\\b)", "Garden Warfare ")
       .replaceAll("(?i)((the|\\ba\\b)? Telltale(\\s+series)?)", " Telltale")
@@ -132,6 +133,6 @@ private[mappers] object GameDetailsMapper {
   }
 
   implicit class StringOps(private val str: String) extends AnyVal {
-    def withoutSpecialChars: String = str.replaceAll("[~+\"{}?_;`—–“”!•£&#,’'*()|.\\[\\]]", "").replaceAll("/", " ")
+    def withoutSpecialChars: String = str.replaceAll("[@~+\"{}?_;`—–“”!•£&#,’'*()|.\\[\\]]", "").replaceAll("/", " ")
   }
 }
