@@ -19,7 +19,7 @@ private[mappers] object GameDetailsMapper {
     "((brand )?new(?s).*)?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
     "(new )?((super )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?( new)?",
     "(in )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used) (good|working order|condition|value|prices)",
-    "(single player|adventure|console single|tactical|3rd-person|rpg|fps|survival|action|role|fighting)(?s).* game(?s).*",
+    "\\b(single player|adventure|console single|tactical|3rd-person|rpg|fps|survival|action|role|fighting)\\b(?s).* game(?s).*",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]",
     "\\d{6,}"
   ).mkString("(?i)", "|", "")
@@ -45,7 +45,7 @@ private[mappers] object GameDetailsMapper {
   private val PLATFORMS_MATCH_REGEX = List(
     "PS\\d", "PLAYSTATION(\\s+)?(\\d)",
     "NINTENDO SWITCH", "SWITCH", "\\bWII U\\b", "\\bWII\\b",
-    "X( )?B(OX)?(\\s+)?(ONE|\\d+)"
+    "X( )?B(OX)?(\\s+)?(ONE|\\d+)", "X360"
   ).mkString("(?i)", "|", "").r
 
   private val BUNDLE_MATCH_REGEX = List(
@@ -66,6 +66,7 @@ private[mappers] object GameDetailsMapper {
     "XBOX360" -> "XBOX 360",
     "XB1" -> "XBOX ONE",
     "XB360" -> "XBOX 360",
+    "X360" -> "XBOX 360",
     "XBOXONE" -> "XBOX ONE",
     "XBONE" -> "XBOX ONE",
     "MICROSOFTXBOXONE" -> "XBOX ONE",

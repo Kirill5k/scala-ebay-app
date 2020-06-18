@@ -34,7 +34,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "dual( )?(shock|charge)", "efigs", "gamepad", "(toy|joy|ring)(\\s+)?con", "controller", "stand holder", "memory card", "SpaBag", "keyring",
     "headset", "\\bhdmi\\b", "\\busb\\b", "\\bhdd\\b", "(nintendo|switch) labo", "steering wheel", "wristband", "horipad", "power supply", "tv tuner",
     "100k", "50k", "\\bDL( )?C\\b", "pve", "starter (set|pack|bundle|kit)", "figure(s)? bundle", "k eso", "gift toy", "pad pro", "cable pack", "dvd player",
-    "pre(\\s+|-)?(order|sale)", "season pass", "(steel|art)( )?book", "(game|mini)( )?figure", "collectable", "collectible",
+    "pre(\\s+|-)?(order|sale)", "season pass", "(steel|art)( )?book", "(game|mini)( )?figure", "collectable", "collectible", "remote control",
     "membership", "(subscription|gift)( |-)?card", "12 month", "(wallpaper|dynamic) theme", "themes", "account", "achievement pack",
     "(xp|level|lvl) boost", "gamer score", "power( )?level", "trophy service", "platinum trophy", "arcade mini",
     "samsung", "huawei", "iphone", "sandisk", "server", "wireless",
