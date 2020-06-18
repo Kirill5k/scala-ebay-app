@@ -21,7 +21,7 @@ private[mappers] object GameDetailsMapper {
     "(in )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used|tested) (good|(working )?order|condition|value|prices)",
     "\\b(single player|adventure|console single|tactical|3rd-person|rpg|fps|survival|action|role|(wrestling )?fighting)\\b(?s).* game(?s).*",
     "Warner Bros", "ubisoft", "currys", "Take( |-)?Two( Interactive)?", "2k games", "James Camerons", "\\bTom clancy(s)?\\b",
-    "Bethesda(s)?( Softworks)?", "Hideo Kojima", "(bandai )?namco", "rockstar games", "James Bond", "Activision", "Peter Jacksons",
+    "Bethesda(s)?( Softworks)?", "Hideo Kojima", "(bandai )?namco", "rockstar games", "James Bond", "Activision", "Peter Jacksons", "Naughty Dog",
     "Microsoft", "sony", "electronic arts", "nintendo", "square enix", "ea sport(s)?", "(?<=.{12})",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]",
     "\\d{6,}"
@@ -112,7 +112,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(\\bMGS\\b)", "Metal Gear Solid ")
       .replaceAll("(?i)(\\bIIII\\b)", "4")
       .replaceAll("(?i)(\\bGW\\b)", "Garden Warfare ")
-      .replaceAll("(?i)((the|\\ba\\b)? Telltale( game)?( series)?)", " Telltale")
+      .replaceAll("(?i)((the|\\ba\\b)? Telltale(\\s+series)?)", " Telltale")
       .replaceAll("-|:", " ")
       .replaceAll(" +", " ")
       .trim()
@@ -132,6 +132,6 @@ private[mappers] object GameDetailsMapper {
   }
 
   implicit class StringOps(private val str: String) extends AnyVal {
-    def withoutSpecialChars: String = str.replaceAll("[{}?_;`—–“”!•£&#,’'*()|.\\[\\]]", "").replaceAll("/", " ")
+    def withoutSpecialChars: String = str.replaceAll("[\"{}?_;`—–“”!•£&#,’'*()|.\\[\\]]", "").replaceAll("/", " ")
   }
 }

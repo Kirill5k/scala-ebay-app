@@ -69,6 +69,15 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       gameDetails.platform must be (Some("XBOX ONE"))
     }
 
+    "map telltale game series to simply telltale" in {
+      val listingDetails = testListing.copy(title = "Minecraft A Telltale Game Series", properties = Map())
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("Minecraft Telltale"))
+    }
+
+
     "only map WII title from complete words" in {
       val listingDetails = testListing.copy(title = s"Call of Duty WWII PS4", properties = Map())
 
