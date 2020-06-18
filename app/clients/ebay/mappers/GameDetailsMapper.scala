@@ -7,7 +7,7 @@ import domain.{Packaging, ListingDetails}
 private[mappers] object GameDetailsMapper {
 
   private val PRIMARY_TITLE_WORDS_REPLACEMENTS = List(
-    "(?<=.{12})(new )?((sony )?playstation|ps\\d|(microsoft )?xbox (1|one|360)|nintendo switch|(nintendo )?\\bwii( u)?\\b)(?s).*",
+    "(?<=.{12})(new )?(\\b(for|(playable )?on)\\b )?((sony )?playstation|ps\\d|(microsoft )?xbox (1|one|360)|nintendo switch|(nintendo )?\\bwii( u)?\\b)(?s).*",
     "((very )?good )?(\\b(for|(playable )?on)\\b )?(sony |microsoft )?(playst(a)?(t)?(i)?(o)?(n)?(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?(switch|\\bwii( u)?\\b))( edition)?(\\s+new)?( 20\\d\\d)?",
     "for (the )?playstation(\\s+)?vr", "(ps( )?vr|kinect) (required|compatible)",
     "(gold )?((greatest|playstation) )?\\bhits\\b",
@@ -19,7 +19,7 @@ private[mappers] object GameDetailsMapper {
     "(?<=.{12})((brand )?new(?s).*)?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
     "(new )?((super )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?( new)?",
     "(in )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used|tested) (good|working order|condition|value|prices)",
-    "\\b(single player|adventure|console single|tactical|3rd-person|rpg|fps|survival|action|role|fighting)\\b(?s).* game(?s).*",
+    "\\b(single player|adventure|console single|tactical|3rd-person|rpg|fps|survival|action|role|(wrestling )?fighting)\\b(?s).* game(?s).*",
     "Warner Bros", "ubisoft", "currys", "Take( |-)?Two( Interactive)?", "2k games", "James Camerons", "\\bTom clancy(s)?\\b",
     "Bethesda(s)?( Softworks)?", "Hideo Kojima", "(bandai )?namco", "rockstar games", "James Bond", "Activision", "Peter Jacksons",
     "Microsoft", "sony", "electronic arts", "nintendo", "square enix", "ea sport(s)?", "(?<=.{12})",
@@ -35,7 +35,7 @@ private[mappers] object GameDetailsMapper {
     "Expertly Refurbished Product", "(quality|value) guaranteed", "eBay Seller", "fully (working|tested)", "from eBays biggest seller", "Order By 4pm",
     "remaster(ed)?", "directors cut", "\\bctr\\b", "original", "english", "deluxe", "standard", "\\bgoty\\b", "multi(-| )?lang(uage)?( in game)?",
     "blu-ray", "bonus level", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "official$", "essentials", "classic(s)?", "boxed complete",
-    "(\\bUK\\b|\\bEU\\b|genuine|european)(( |-)(new|only|seller|version|stock|import))?", "For ages \\d+(+)?",
+    "(\\bUK\\b|\\bEU\\b|genuine|european)(( |-)(new|only|seller|version|stock|import))?", "For age(s)? \\d+(\\+)?",
     "\\bpal\\b(\\s+\\d+)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b",
     "\\bremake\\b", "(ultra )?\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b",
