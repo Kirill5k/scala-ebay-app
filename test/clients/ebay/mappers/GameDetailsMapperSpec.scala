@@ -158,7 +158,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         "Call of Duty: Infinite Warfare - premium edt -- Legacy pro ed - elite edition with some bonuses",
         "Call of Duty: Infinite Warfare - brand new and factory sealed",
         "Call of Duty: Infinite Warfare (Day One Edition) [Ge VideoGames Amazing Value]",
-        "Call of Duty: Infinite Warfare - complete e free 1st class uk postage",
+        "Call of Duty: Infinite Warfare - complete free 1st class uk postage",
         "Call of Duty: Infinite Warfare the official videogame - new unopened",
         "Call of Duty: Infinite Warfare for microsoft xbox one",
         "Call of Duty: Infinite Warfare VideoGames",
