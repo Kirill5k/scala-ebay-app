@@ -11,7 +11,7 @@ class EbayItemMapperSpec extends AnyWordSpec with Matchers {
 
   val videoGameEbayItem = EbayItem(
     "item-1",
-    "call of duty modern warfare xbox one 2019",
+    "Call of Duty Modern Warfare xbox one 2019",
     Some("call of duty modern warfare xbox one 2019. Condition is New. Game came as part of bundle and not wanted. Never playes. Dispatched with Royal Mail 1st Class Large Letter."),
     None,
     "Video Games & Consoles|Video Games",
@@ -69,7 +69,7 @@ class EbayItemMapperSpec extends AnyWordSpec with Matchers {
 
       listingDetails must be(ListingDetails(
         "https://www.ebay.co.uk/itm/call-of-duty-modern-warfare-xbox-one-2019-/333474293066",
-        "call of duty modern warfare xbox one 2019",
+        "Call of Duty Modern Warfare xbox one 2019",
         Some("call of duty modern warfare xbox one 2019. Condition is New. Game came as part of bundle and not wanted. Never playes. Dispatched with Royal Mail 1st Class Large Letter."),
         None,
         Some("https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg"),
@@ -95,7 +95,7 @@ class EbayItemMapperSpec extends AnyWordSpec with Matchers {
 
       listingDetails must be(ListingDetails(
         "https://www.ebay.co.uk/itm/call-of-duty-modern-warfare-xbox-one-2019-/333474293066",
-        "call of duty modern warfare xbox one 2019",
+        "Call of Duty Modern Warfare xbox one 2019",
         Some("call of duty modern warfare xbox one 2019. Condition is New. Game came as part of bundle and not wanted. Never playes. Dispatched with Royal Mail 1st Class Large Letter."),
         None,
         Some("https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg"),
