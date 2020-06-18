@@ -16,7 +16,7 @@ private[mappers] object GameDetailsMapper {
     "(dbl|double|triple|twin|expansion) (pack|pk)",
     "(the )?(new\\s+)?(super|cheap( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(prompt|free|fast|quick|(next|same) day|tracked|speedy)(?s).* (dispatch|shipping|post(age)?|delivery|p(\\s+)?p).*$",
     "(1st|2nd|first) class.*$", "(boxed|complete) (with|case)(?s).*$", "exclusive to(?s).*$", "(with|no|missing) (map|case|manual)(?s).*$", "(the )?disc(s)? (are|is|in)(?s).*$",
-    "((brand )?new(?s).*)?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
+    "(?<=.{12})((brand )?new(?s).*)?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
     "(new )?((super )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?( new)?",
     "(in )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used) (good|working order|condition|value|prices)",
     "\\b(single player|adventure|console single|tactical|3rd-person|rpg|fps|survival|action|role|fighting)\\b(?s).* game(?s).*",
