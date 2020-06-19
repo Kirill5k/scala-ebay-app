@@ -152,7 +152,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         "Call of Duty: Infinite Warfare - game of the year edition goty",
         "Call of Duty: Infinite Warfare - video game for the playstation vr PLAYSTATION 4 2015",
         "Call of Duty: Infinite Warfare - video game for the PLAYSTATION 4",
-        "Call of Duty: Infinite Warfare - new fast post vr required",
+        "Call of Duty: Infinite Warfare - new fast post vr required (foo-bar)",
         "Call of Duty: Infinite Warfare - new Fast free post for PS4 game 2020",
         "Call of Duty: Infinite Warfare - super fast and superfree UK post",
         "Call of Duty: Infinite Warfare - Fast and Free shipping complete with manual and book",

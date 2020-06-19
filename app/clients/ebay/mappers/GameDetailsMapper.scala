@@ -41,7 +41,7 @@ private[mappers] object GameDetailsMapper {
     "\\bpal\\b(\\s+\\d+)?( version)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c| condition)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b", "\\bUE\b",
     "\\bremake\\b", "(ultra )?\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b", "\\bPG(13)?\\b",
-    "\\bDVD\\b", "\\bAND\\b",
+    "\\bDVD\\b", "\\bAND\\b", "\\bNTSC\\b", "\\bWi1\\b",
     "\\bMarvels\\b", "^\\bMARVEL\\b", "^SALE", "NEW$", "^BOXED", "^SALE", "^NEW", "^best", "^software", "^unopened", "very rare", "rare$", "bargain$", "mint$",
     "complete"
   ).mkString("(?i)", "|", "")
