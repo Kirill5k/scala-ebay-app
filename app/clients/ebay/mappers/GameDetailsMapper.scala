@@ -21,24 +21,25 @@ private[mappers] object GameDetailsMapper {
     "(new )?((super )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?( new)?",
     "(in )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used|tested) (good|(working )?order|condition|value|prices)",
     "(?<=.{20})\\b(single player|adventure|console single|tactical|3rd-person|rpg|fps|survival|action|racing|role|(wrestling )?fighting)\\b(?s).* game(?s).*",
-    "Warner Bros", "ubisoft", "currys", "Take( |-)?Two( Interactive)?", "2k games", "James Camerons", "\\bTom clancy(s)?\\b",
+    "Warner Bros", "ubisoft", "currys", "Take( |-)?Two( Interactive)?", "(EA|2k) (sports|games)", "James Camerons", "\\bTom clancy(s)?\\b",
     "Bethesda(s)?( Softworks)?", "Hideo Kojima", "(bandai )?namco", "rockstar games", "James Bond", "Activision", "Peter Jacksons", "Naughty Dog",
-    "Microsoft", "sony", "electronic arts", "nintendo", "square enix", "ea sport(s)?", "Dreamworks", "EA Games", "Disney Pixar", "WB Games",
+    "Microsoft", "sony", "electronic arts", "nintendo", "square enix", "Dreamworks", "Disney Pixar", "WB Games",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]",
     "\\d{6,}"
   ).mkString("(?i)", "|", "")
 
   private val SECONDARY_TITLE_WORDS_REPLACEMENTS = List(
+    "Strategy Combat",
     "(the )?((action|official|console|gold|kids) )?(video( )?)?game(s)?( (console|of the year|for( the)?))?", "nuevo",
-    "\\bpegi( \\d+)?\\b(?s).*$", "\\d+th anniversary", "disc (mint|vgc)", "platinum", "brand new", "\\bID\\d+\\w", "18\\s+years",
+    "\\bpegi( \\d+)?\\b(?s).*$", "\\d+th anniversary", "disc( mint)?", "platinum", "brand new", "\\bID\\d+\\w", "18\\s+years",
     "limited run( \\d+)?", "box( )?set", "pre(-| )?(owned|enjoyed)", "compatible", "inc manual", "physical copy", "steel( )?box", "no scratches",
-    "used( good)?( game)?", "very good", "reorderable", "sent same day", "in stock( now)?", "pre(\\s+)?release", "played once", "best price",
+    "used( good)?( game)?", "very good", "reorderable", "sent same day", "in stock( now)?", "pre(\\s+)?release", "played once", "best price", "Special Reserve",
     "Expertly Refurbished Product", "(quality|value) guaranteed", "eBay Seller", "fully (working|tested)", "from eBays biggest seller", "Order By 4pm",
     "remaster(ed)?", "directors cut", "\\bctr\\b", "original", "english", "deluxe", "standard", "\\bgoty\\b", "multi(-| )?lang(uage)?( in game)?",
     "blu-ray", "bonus level", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "official$", "essentials", "classic(s)?", "boxed complete",
     "(\\bUK\\b|\\bEU\\b|genuine|european)(( |-)(new|only|seller|version|stock|import))?", "For age(s)? \\d+(\\+)?", "complete", "must see",
     "\\bpal\\b(\\s+\\d+)?( version)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c| condition)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b",
-    "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b",
+    "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b", "\\bUE\b",
     "\\bremake\\b", "(ultra )?\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b", "\\bPG(13)?\\b",
     "\\bMarvels\\b", "^\\bMARVEL\\b", "^SALE", "NEW$", "^BOXED", "^SALE", "^NEW", "^best", "^software", "very rare", "rare$", "bargain$", "mint$"
   ).mkString("(?i)", "|", "")

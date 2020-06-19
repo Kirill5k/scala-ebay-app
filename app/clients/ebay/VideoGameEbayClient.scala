@@ -29,7 +29,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "(read|see) (detail|desc|post)", "please(?s).*read", "read(?s).*please", "(docking|charging) (station|stand)", "download",
     "credits", "instant delivery", "official server", "damaged", "Option File", "offline", "unlock all",
     "coin", "skins", "collectors box", "soundtrack", "poster", "protection accessor", "PLAYSTAND",
-    "(no|protective|case|silicone|phone|style) cover(s)?", "promotional game", "starter pack",
+    "(no|protective|case|silicone|phone|style) cover(s)?", "promotional game", "starter pack", "Microphone",
     "sniper thumbs", "(game|skin|thumb) grip", "thumb( )?stick", "(screen|grip) (protector|combat|stick)", "leg strap", "Cleaning Cloth",
     "dual( )?(shock|charge)", "efigs", "gamepad", "(toy|joy|ring)(\\s+)?con", "controller", "stand holder", "memory card", "SpaBag", "keyring",
     "headset", "\\bhdmi\\b", "\\busb\\b", "\\bhdd\\b", "(nintendo|switch) labo", "steering wheel", "wristband", "horipad", "power supply", "tv tuner",
