@@ -99,7 +99,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
     }
 
     "split pubg title" in {
-      val listingDetails = testListing.copy(title = "NEW playerunknowns battlegrounds pal PSVR Ultimate Evil Ed", properties = Map())
+      val listingDetails = testListing.copy(title = "NEW Playerunknowns battlegrounds pal PSVR Ultimate Evil Ed", properties = Map())
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
