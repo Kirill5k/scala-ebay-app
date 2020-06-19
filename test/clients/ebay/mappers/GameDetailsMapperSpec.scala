@@ -79,7 +79,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
 
 
     "only map WII title from complete words" in {
-      val listingDetails = testListing.copy(title = s"Call of Duty WWII PS4", properties = Map())
+      val listingDetails = testListing.copy(title = s"COD WWII for Sony Playstation 4", properties = Map())
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
@@ -147,6 +147,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         "New & Sealed Call of Duty: Infinite Warfare PAL #1099",
         "Call of Duty: Infinite Warfare 20th anniversary edition",
         "Playstation 4 (PS4) Limited Run #62 - Call of Duty: Infinite Warfare",
+        "Limited Run #197: Call of Duty: Infinite Warfare Brigadier Edition (PS4 LRG)",
         "Call of Duty: Infinite Warfare - game of the year goty free and fast 1st class post",
         "Call of Duty: Infinite Warfare - game of the year goty quick 1st class signed post for playstation vr",
         "Call of Duty: Infinite Warfare - good for sony playstati",
