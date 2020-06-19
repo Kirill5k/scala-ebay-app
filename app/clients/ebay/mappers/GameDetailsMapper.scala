@@ -10,7 +10,7 @@ private[mappers] object GameDetailsMapper {
     "^((NEW|BNIB)\\s+)?(and )?SEALED",
     "(?<=.{12})(new )?(\\b(for( the)?|(playable )?on)\\b )?((sony )?playstation|(?<!(Playstation(?s).*))ps\\d|(microsoft )?xbox (1|one|360)|nintendo switch|(nintendo )?\\bwii( u)?\\b)(?s).*",
     "((very )?good )?(\\b(for|(playable )?on)\\b )?(sony |microsoft )?(playst(a)?(t)?(i)?(o)?(n)?(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?(switch|\\bwii( u)?\\b))( edition)?(\\s+new)?( 20\\d\\d)?",
-    "for (the )?playstation(\\s+)?vr", "(ps( )?(vr|move)|kinect) (required|compatible)",
+    "for (the )?playstation(\\s+)?vr", "((ps( )?)?(vr|move)|kinect) (required|compatible)",
     "(gold )?((greatest|playstation) )?\\bhits\\b",
     "day (one|1|zero|0)( (edition|\\be(d)?(i)?(t)?(i)?\\b))?(?s).*$",
     "(atlas|platinum|complete|standard|std|classic(s)?|(\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of the|legacy( pro)?|(un)?limited|premium|(digital )?deluxe|standard|ultimat)(?s).* (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
@@ -30,7 +30,7 @@ private[mappers] object GameDetailsMapper {
 
   private val SECONDARY_TITLE_WORDS_REPLACEMENTS = List(
     "Strategy Combat",
-    "(the )?((action|official|console|gold|kids) )?(video( )?)?game(s)?( (console|of the year|for( the)?))?", "nuevo",
+    "(the )?((action|official|console|gold|kids)(?s).*)?(video( )?)?game(s)?( (console|of the year|for( the)?))?", "nuevo",
     "\\bpegi( \\d+)?\\b(?s).*$", "\\d+th anniversary", "disc( mint)?", "platinum", "brand new", "\\bID\\d+\\w", "18\\s+years",
     "limited run( \\d+)?", "box( )?set", "pre(-| )?(owned|enjoyed)", "compatible", "inc manual", "physical copy", "steel( )?box", "no scratches",
     "used( good)?( game)?", "very good", "reorderable", "sent same day", "in stock( now)?", "pre(\\s+)?release", "played once", "best price", "Special Reserve",
@@ -41,7 +41,7 @@ private[mappers] object GameDetailsMapper {
     "\\bpal\\b(\\s+\\d+)?( version)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c| condition)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b", "\\bUE\b",
     "\\bremake\\b", "(ultra )?\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b", "\\bPG(13)?\\b",
-    "\\bMarvels\\b", "^\\bMARVEL\\b", "^SALE", "NEW$", "^BOXED", "^SALE", "^NEW", "^best", "^software", "very rare", "rare$", "bargain$", "mint$"
+    "\\bMarvels\\b", "^\\bMARVEL\\b", "^SALE", "NEW$", "^BOXED", "^SALE", "^NEW", "^best", "^software", "^unopened", "very rare", "rare$", "bargain$", "mint$"
   ).mkString("(?i)", "|", "")
 
   private val PLATFORMS_MATCH_REGEX = List(
