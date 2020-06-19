@@ -141,6 +141,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         "Call of Duty: Infinite Warfare 20th anniversary FUVG ID7274z",
         "Call of Duty: Infinite Warfare classic edition foo",
         "3307216096665BC Call of Duty: Infinite Warfare BRAND NEW SEALED",
+        "3307216096665BC Call of Duty: Infinite Warfare new and sealed",
         "Call of Duty: Infinite Warfare classics edition foo",
         "New & Sealed Call of Duty: Infinite Warfare PAL #1099",
         "Call of Duty: Infinite Warfare 20th anniversary edition",
