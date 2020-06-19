@@ -79,7 +79,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
 
 
     "only map WII title from complete words" in {
-      val listingDetails = testListing.copy(title = s"COD WWII for Sony Playstation 4", properties = Map())
+      val listingDetails = testListing.copy(title = s"COD WWII Sony Playstation 4", properties = Map())
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
