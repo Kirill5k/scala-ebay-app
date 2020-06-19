@@ -6,9 +6,12 @@ import domain.{Packaging, ListingDetails}
 
 private[mappers] object GameDetailsMapper {
 
-  private val PRIMARY_TITLE_WORDS_REPLACEMENTS = List(
+  private val LEVEL1_TITLE_WORDS_REPLACEMENTS = List(
     "(?<=.{12})(new )?(\\b(for( the)?|(playable )?on)\\b )?((sony )?play( )?station|(?<!(Playstation(?s).*))ps\\d|(microsoft )?xbox (1|one|360)|nintendo switch|(nintendo )?\\bwii( u)?\\b)(?s).*",
-    "^((NEW|BNIB)\\s+)?(and )?SEALED",
+    "^((NEW|BNIB)\\s+)?(and )?SEALED"
+  ).mkString("(?i)", "|", "")
+
+  private val LEVEL2_TITLE_WORDS_REPLACEMENTS = List(
     "((very )?good )?(\\b(for|(playable )?on)\\b )?(sony |microsoft )?(play( )?st(a)?(t)?(i)?(o)?(n)?(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?(switch|\\bwii( u)?\\b))( edition)?(\\s+new)?( 20\\d\\d)?",
     "for (the )?playstation(\\s+)?vr", "((ps( )?)?(vr|move)|kinect) (required|compatible)",
     "(gold )?((greatest|playstation) )?\\bhits\\b",
@@ -28,8 +31,8 @@ private[mappers] object GameDetailsMapper {
     "\\d{6,}(\\w+)?"
   ).mkString("(?i)", "|", "")
 
-  private val SECONDARY_TITLE_WORDS_REPLACEMENTS = List(
-    "Strategy Combat",
+  private val LEVEL3_TITLE_WORDS_REPLACEMENTS = List(
+    "Strategy Combat", "First Person Shooter",
     "(the )?((action|official|console|gold|kids)(?s).*)?(video( )?)?game(s)?( (boxed|console|of the year|for( the)?))?", "nuevo",
     "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "disc( mint)?", "platinum", "brand new", "\\bID\\d+\\w", "18\\s+years",
     "limited run( \\d+)?", "box( )?set", "pre(-| )?(owned|enjoyed)", "compatible", "physical copy", "steel( )?box", "no scratches", "instructions included",
@@ -37,7 +40,7 @@ private[mappers] object GameDetailsMapper {
     "Expertly Refurbished Product", "(quality|value) guaranteed", "eBay Seller", "fully (working|tested)", "from eBays biggest seller", "Order By 4pm", "Ultimate Fighting Championship",
     "remaster(ed)?", "directors cut", "\\bctr\\b", "original", "english", "deluxe", "standard", "\\bgoty\\b", "multi(-| )?lang(uage)?( in game)?", "freepost",
     "blu-ray", "bonus level", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "official$", "essentials", "classic(s)?", "boxed complete",
-    "(\\bUK\\b|\\bEU\\b|genuine|european)(( |-)(new|only|seller|version|stock|import))?", "For age(s)? \\d+(\\+)?", "must see",
+    "(\\bUK\\b|\\bEU\\b|genuine|european)(( |-)(new|only|seller|version|stock|import))?", "For age(s)? \\d+(\\+)?", "must see", "see pics",
     "\\bpal\\b(\\s+\\d+)?( version)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c| condition)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b",
     "\\bns\\b", "\\bvr\\b( (compatible|required))?", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNIB\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b", "\\bUE\b",
     "\\bremake\\b", "(ultra )?\\bhd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b", "\\bPG(13)?\\b",
@@ -95,8 +98,9 @@ private[mappers] object GameDetailsMapper {
   private def sanitizeTitle(title: String): Option[String] =
     title
       .withoutSpecialChars
-      .replaceAll(PRIMARY_TITLE_WORDS_REPLACEMENTS, "")
-      .replaceAll(SECONDARY_TITLE_WORDS_REPLACEMENTS, "")
+      .replaceAll(LEVEL1_TITLE_WORDS_REPLACEMENTS, "")
+      .replaceAll(LEVEL2_TITLE_WORDS_REPLACEMENTS, "")
+      .replaceAll(LEVEL3_TITLE_WORDS_REPLACEMENTS, "")
       .replaceFirst("(?i)(the )?\\w+(?=\\s+(\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)) (\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)(?s).*$", "")
       .replaceAll("é", "e")
       .replaceAll("(?i)playerunknown", "Player Unknown")
