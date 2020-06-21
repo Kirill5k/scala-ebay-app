@@ -133,7 +133,15 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       gameDetails.isBundle must be (true)
     }
 
-    "remove rubbish words from title" in {
+    "quick test" in {
+      val listingDetails = testListing.copy(title = "New & Sealed Nintendo Switch Game Call of Duty: Infinite Warfare")
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("Call of Duty Infinite Warfare"))
+    }
+
+    "remove noise words from title" in {
       val titles = List(
         "Call of Duty-Infinite Warfare xbox 360 blah blah blah",
         "Call of Duty - Infinite Warfare playstation 4 blah blah blah",
@@ -145,6 +153,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         "3307216096665BC Call of Duty: Infinite Warfare new and sealed",
         "Call of Duty: Infinite Warfare classics edition foo",
         "*Brand New and Sealed* Call of Duty: Infinite Warfare",
+        "New & Sealed Nintendo Switch Game Call of Duty: Infinite Warfare",
         "New & Sealed Call of Duty: Infinite Warfare PAL #1099",
         "Call of Duty: Infinite Warfare 20th anniversary edition",
         "Playstation 4 (PS4) Limited Run #62 - Call of Duty: Infinite Warfare",

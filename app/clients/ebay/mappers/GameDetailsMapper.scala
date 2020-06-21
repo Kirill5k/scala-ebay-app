@@ -7,23 +7,22 @@ import domain.{Packaging, ListingDetails}
 private[mappers] object GameDetailsMapper {
 
   private val LEVEL1_TITLE_WORDS_REPLACEMENTS = List(
-    "^(\\s)?(((brand )?NEW|BNIB)\\s+)?(and )?SEALED",
-    "(?<=.{12})((new|rare|(very )?good) )?(\\b(for( the)?|(playable )?on)\\b )?((sony )?play( )?station|(?<!(Playstation(?s).*))ps\\d|(microsoft )?xbox (1|one|360)|nintendo switch|(nintendo )?\\bwii( u)?\\b)(?s).*"
+    "(?<=.{12})((new|rare|(very )?good) )?(\\b(for( the)?|(playable )?on)\\b )?((sony )?play( )?station|(?<!(Playstation(?s).*))ps\\d|(microsoft )?xbox (1|one|360)|nintendo switch|(nintendo )?\\bwii( u)?\\b)(?s).*",
+    "(gold )?((greatest|playstation) )?\\bhits\\b",
+    "day (one|1|zero|0)( (edition|\\be(d)?(i)?(t)?(i)?\\b))?(?s).*$",
+    "(\\bHD\b|exclusive|limited collectors|definitive|atlas|platinum|complete|standard|std|classic(s)?|(\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of the|legacy( pro)?|unlimited|premium|(digital )?deluxe|ultimat)(?s).* (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
+    "(the )?((new|pristine|inc)\\s+)?(super|cheap( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(prompt|free|fast|quick|(next|same) day|tracked|speedy|worldwide)(?s).* (dispatch|ship(ping)?|post(age)?|delivery|p(\\s+)?p).*$",
+    "(?<=.{12})((brand\\s+)?new(?s).*)?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
+    "(?<=.{20})\\b(single player|Family Fun|(kids )?adventure|console single|tactical|3rd-person|rpg|fps|survival|action|racing|role|wrestling|fighting)\\b(?s).* game(?s).*"
   ).mkString("(?i)", "|", "")
 
   private val LEVEL2_TITLE_WORDS_REPLACEMENTS = List(
     "((new|rare) )?((very )?good )?(\\b(for|(playable )?on)\\b )?(sony |microsoft )?(play( )?st(a)?(t)?(i)?(o)?(n)?(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?(switch|\\bwii( u)?\\b))( (edition|version))?(\\s+new)?( 20\\d\\d)?",
     "for (the )?playstation(\\s+)?vr", "((ps( )?)?(vr|move)|kinect) (required|compatible)",
-    "(gold )?((greatest|playstation) )?\\bhits\\b",
-    "day (one|1|zero|0)( (edition|\\be(d)?(i)?(t)?(i)?\\b))?(?s).*$",
-    "(\\bHD\b|exclusive|limited collectors|definitive|atlas|platinum|complete|standard|std|classic(s)?|(\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of the|legacy( pro)?|unlimited|premium|(digital )?deluxe|ultimat)(?s).* (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
     "(dbl|double|triple|twin|expansion) (pack|pk)",
-    "(the )?((new|pristine|inc)\\s+)?(super|cheap( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(prompt|free|fast|quick|(next|same) day|tracked|speedy|worldwide)(?s).* (dispatch|ship(ping)?|post(age)?|delivery|p(\\s+)?p).*$",
     "(1st|2nd|first) class.*$", "(boxed|complete) (with|case)(?s).*$", "exclusive to(?s).*$", "((comes )?with|no|missing|inc(ludes|luding)?) (booklet|original|instructions|box|map|case|manual)(?s).*$", "(the )?disc(s)? (are|is|in)(?s).*$",
-    "(?<=.{12})((brand\\s+)?new(?s).*)?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
     "(new )?(((very|super) )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?( new)?",
     "(in )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used|(fully )?tested|immaculate) (working|good|(working )?order|cond(ition)?|value|prices)",
-    "(?<=.{20})\\b(single player|Family Fun|(kids )?adventure|console single|tactical|3rd-person|rpg|fps|survival|action|racing|role|wrestling|fighting)\\b(?s).* game(?s).*",
     "Warner Bros", "ubisoft", "currys", "Take( |-)?(Two|2)( Interactive)?", "(EA|2k) (music|sports|games)", "James Camerons", "\\bTom clancy(s)?\\b",
     "Bethesda(s)?( Softworks)?", "Hideo Kojima", "(bandai )?namco", "rockstar games", "James Bond", "Activision", "Peter Jacksons", "Naughty Dog",
     "Microsoft( 20\\d\\d)?", "sony", "electronic arts", "nintendo", "square enix", "Dreamworks", "Disney Pixar", "WB Games", "Bend Studio",
@@ -50,12 +49,12 @@ private[mappers] object GameDetailsMapper {
   ).mkString("(?i)", "|", "")
 
   private val EDGE_WORDS_REPLACEMENTS = List(
-    "^\\bMARVEL\\b", "^SALE", "NEW$", "^BOXED", "^SALE", "^NEW", "^best", "^software", "^unopened", "rare$", "^rare",
+    "^(\\s)?(((brand )?NEW|BNIB)\\s+)?(and )?SEALED",
+    "^\\bMARVEL\\b", "^SALE", "NEW$", "^BOXED", "^SALE", "^NEW", "^best", "^software", "un( |-)?opened$", "rare$", "^rare",
     "bargain$", "mint$", "\\bfor\\b$", "premium$", "very$", "\\bLIMITED\\b$", "tested$"
   ).mkString("(?i)", "|", "")
 
   private val PLATFORMS_MATCH_REGEX = List(
-
     "PS\\d", "PLAYSTATION(\\s+)?(\\d)",
     "NINTENDO SWITCH", "SWITCH", "\\bWII U\\b", "\\bWII\\b",
     "X( )?B(OX)?(\\s+)?(ONE|\\d+)", "X360", "XBOX"
@@ -104,6 +103,7 @@ private[mappers] object GameDetailsMapper {
   private def sanitizeTitle(title: String): Option[String] =
     title
       .withoutSpecialChars
+      .replaceAll(EDGE_WORDS_REPLACEMENTS, "")
       .replaceAll(LEVEL1_TITLE_WORDS_REPLACEMENTS, "")
       .replaceAll(LEVEL2_TITLE_WORDS_REPLACEMENTS, "")
       .replaceAll(LEVEL3_TITLE_WORDS_REPLACEMENTS, "")
