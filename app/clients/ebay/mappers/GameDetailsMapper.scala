@@ -7,20 +7,20 @@ import domain.{Packaging, ListingDetails}
 private[mappers] object GameDetailsMapper {
 
   private val LEVEL1_TITLE_WORDS_REPLACEMENTS = List(
-    "(?<=.{12})((new|rare|(very )?good) )?(\\b(for( the)?|(playable )?on)\\b )?((sony )?play( )?station|(?<!(Playstation(?s).*))ps\\d|(microsoft )?xbox (1|one|360)|nintendo switch|(nintendo )?\\bwii( u)?\\b)(?s).*",
+    "(?<=.{12})((new|rare|(very )?good) )?(\\b(for( the)?|((only|playable) )?on)\\b )?((sony )?play( )?station|(?<!(Playstation(?s).*))ps\\d|(microsoft )?xbox (1|one|360)|nintendo switch|(nintendo )?\\bwii( u)?\\b)(?s).*",
     "(gold )?((greatest|playstation) )?\\bhits\\b",
     "day (one|1|zero|0)( (edition|\\be(d)?(i)?(t)?(i)?\\b))?(?s).*$",
-    "(\\bHD\b|exclusive|limited collectors|definitive|atlas|platinum|complete|standard|std|classic(s)?|(\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of the|legacy( pro)?|unlimited|premium|(digital )?deluxe|ultimat)(?s).* (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
+    "(\\bHD\b|exclusive|special|limited collectors|definitive|atlas|platinum|complete|standard|std|classic(s)?|(\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of the|legacy( pro)?|unlimited|premium|(digital )?deluxe|ultimat)(?s).* (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
     "(the )?((new|pristine|inc)\\s+)?(super|cheap( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(prompt|free|fast|quick|(next|same) day|tracked|speedy|worldwide)(?s).* (dispatch|ship(ping)?|post(age)?|delivery|p(\\s+)?p).*$",
     "(?<=.{12})((brand\\s+)?new(?s).*)?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
     "(?<=.{20})\\b(single player|Family Fun|((kids|fun) )?adventure|console single|tactical|3rd-person|rpg|fps|survival|action|racing|role|wrestling|fighting)\\b(?s).* game(?s).*"
   ).mkString("(?i)", "|", "")
 
   private val LEVEL2_TITLE_WORDS_REPLACEMENTS = List(
-    "((new|rare) )?((very )?good )?(\\b(for|(playable )?on)\\b )?(sony |microsoft )?(play( )?st(a)?(t)?(i)?(o)?(n)?(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?(switch|\\bwii( u)?\\b))( (edition|version))?(\\s+new)?( 20\\d\\d)?",
+    "((new|rare) )?((very )?good )?(\\b(for|((only|playable) )?on)\\b )?(sony |microsoft )?(play( )?st(a)?(t)?(i)?(o)?(n)?(( )?\\d)?|x( )?box(( )?(one|\\d+))?|ps\\d|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?(switch|\\bwii( u)?\\b))( (edition|version))?(\\s+new)?( 20\\d\\d)?",
     "for (the )?playstation(\\s+)?vr", "((ps( )?)?(vr|move)|kinect) (required|compatible)",
     "(dbl|double|triple|twin|expansion) (pack|pk)",
-    "(1st|2nd|first) class.*$", "(boxed|complete) (with|case)(?s).*$", "exclusive to(?s).*$", "((comes )?with|no|missing|inc(ludes|luding)?) (booklet|original|instructions|box|map|case|manual)(?s).*$", "(the )?disc(s)? (are|is|in)(?s).*$",
+    "(1st|2nd|first) class.*$", "(boxed|complete) (with|case)(?s).*$", "exclusive to(?s).*$", "((comes )?with|no|missing|plus|inc(ludes|luding)?) (booklet|original|instructions|box|map|case|manual)(?s).*$", "(the )?disc(s)? (are|is|in)(?s).*$",
     "(new )?(((very|super) )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?( new)?",
     "(in )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used|(fully )?tested|immaculate|fantastic) (working|good|(working )?order|cond(ition)?|value|prices)",
     "Warner Bros", "ubisoft", "currys", "Take( |-)?(Two|2)( Interactive)?", "(EA|2k) (music|sports|games)", "James Camerons", "\\bTom clancy(s)?\\b",
@@ -31,7 +31,7 @@ private[mappers] object GameDetailsMapper {
   ).mkString("(?i)", "|", "")
 
   private val LEVEL3_TITLE_WORDS_REPLACEMENTS = List(
-    "Strategy Combat", "(First Person|FPS) Shooter", "soccer football",
+    "Strategy Combat", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?",
     "(the )?((action|official|console|gold|kids|children)(?s).*)?(video( )?)?game(s)?( (good|boxed|console|of the year))?( 20\\d\\d)?", "nuevo",
     "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(2 )?disc(s)?( mint)?", "platinum", "brand new", "\\bID\\d+\\w", "18\\s+years",
     "limited run( \\d+)?", "box( )?set", "pre(-| )?(owned|enjoyed)", "compatible", "physical copy", "steel( )?box", "no scratches", "instructions included",
