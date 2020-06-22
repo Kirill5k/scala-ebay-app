@@ -134,7 +134,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
     }
 
     "quick test" in {
-      val listingDetails = testListing.copy(title = "New & Sealed Nintendo Switch Game Call of Duty: Infinite Warfare")
+      val listingDetails = testListing.copy(title = "Call of Duty: Infinite Warfare fast free delivery")
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
@@ -156,7 +156,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         "New & Sealed Nintendo Switch Game Call of Duty: Infinite Warfare",
         "New & Sealed Call of Duty: Infinite Warfare PAL #1099",
         "Call of Duty: Infinite Warfare 20th anniversary edition",
-        "Playstation 4 (PS4) Limited Run #62 - Call of Duty: Infinite Warfare",
+        "Playstation 4 (PS4) Limited Run #62 - Call of Duty: Infinite Warfare fast and free delivery",
         "Limited Run #197: Call of Duty: Infinite Warfare Brigadier Edition (PS4 LRG)",
         "Sealed Call of Duty: Infinite Warfare - game of the year goty free and fast 1st class post",
         "Call of Duty: Infinite Warfare - game of the year goty quick 1st class signed post for playstation vr",
