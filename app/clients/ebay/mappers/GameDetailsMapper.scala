@@ -34,7 +34,7 @@ private[mappers] object GameDetailsMapper {
   private val LEVEL3_TITLE_WORDS_REPLACEMENTS = List(
     "Strategy Combat", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "golf sports",
     "(the )?(\\b(action|official|console|gold|kids|children)\\b(?s).*)?(video( )?)?game(s)?( (good|boxed|console|of the year))?( 20\\d\\d)?", "nuevo",
-    "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(2 )?disc(s)?( mint)?", "platinum", "brand new", "\\bID\\d+\\w", "18\\s+years",
+    "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(\\d )?disc(s)?( mint)?", "platinum", "brand new", "\\bID\\d+\\w", "18\\s+years",
     "limited run( \\d+)?", "box( )?set", "pre(-| )?(owned|enjoyed)", "compatible", "physical copy", "steel( )?box", "no scratches", "instructions included",
     "((barely|condition|never) )?used(( very)? good)?( (game|condition))?", "very good", "reorderable", "sent same day", "in stock( now)?", "pre(\\s+)?release", "played once", "best price", "Special Reserve",
     "Expertly Refurbished Product", "(quality|value) guaranteed", "eBay Seller", "fully (working|tested)", "from eBays biggest seller", "Order By 4pm", "Ultimate Fighting Championship",
@@ -53,7 +53,7 @@ private[mappers] object GameDetailsMapper {
     "^(\\s)?(((brand )?NEW|BNIB)\\s+)?(and )?SEALED",
     "^\\bMARVEL\\b", "^SALE", "(brand )?new$", "^BOXED", "^SALE", "^NEW", "^best", "^software", "un( |-)?opened$", "rare$", "^rare",
     "^bargain","bargain$", "mint$", "\\bfor\\b$", "premium$", "\\bvery\\b$", "\\bLIMITED\\b$", "tested$", "\\bON\\b$", "\\bBY\\b$",
-    "boxed$"
+    "boxed$", "brand$"
   ).mkString("(?i)", "|", "")
 
   private val PLATFORMS_MATCH_REGEX = List(
