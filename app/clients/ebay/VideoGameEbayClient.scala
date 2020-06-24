@@ -22,7 +22,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
 
   private val LISTING_NAME_TRIGGER_WORDS = List(
     "(rune|perk|skill|(e)?xp(erience)?) (stats|points)",
-    "(demo|game)( )?(code|disc|key|cart|pass)", "(access|cd|unused|digital|upgrade|no)( )?(redeem )?(game|code|key)",
+    "(demo|game)( )?(code|disc|key|cart|pass)", "(store|access|cd|unused|digital|upgrade|no)( )?(redeem )?(game|code|key)",
     "(software|cartridge(s)?|cart|game|disk|disc(s)?|cover|box|sleeve|book|cd|collection|manual) only",
     "(case|variety|accessor(ies|y)|storage|charge|robot) (set|kit|box)", "no dis(c|k)", "Season( \\d)? Pass",
     "(canvas|replacement|cover|carry|travel|carrying|just( the)?|no|hard|storage|game|vault|phone|card|foreign|metal|protective)\\s+(pouch|case|bag)",
@@ -38,7 +38,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "membership", "(subscription|gift)( |-)?card", "12 month", "(wallpaper|dynamic) theme", "themes", "account", "achievement pack",
     "(xp|level|lvl) boost", "gamer score", "power( )?level", "trophy service", "platinum trophy", "arcade mini",
     "samsung", "huawei", "iphone", "sandisk", "server", "wireless",
-    "(hungarian|scandinavian|asian|korea(n)?|german|promo(tional)?|starter|demo|french|jap(an)?(ese)?|dutch|italian|spanish|us(a)?|digital|nordic) (cover|pack|box|import|item|disc|vers|copy)", "arabic", "slovakian", "czech",
+    "(hungarian|scandinavian|asian|korea(n)?|german|promo(tional)?|starter|demo|french|jap(an)?(ese)?|dutch|italian|spanish|us(a)?|digital|nordic) (release|cover|pack|box|import|item|disc|vers|copy)", "arabic", "slovakian", "czech",
     "\\bhori\\b", "\\bDE\\b", "ID59z", "\\bemail\\b",
     "ark survival(\\s+(\\w+|\\d+)){5,}",
     "diablo 3(\\s+(\\w+|\\d+)){6,}", "fortnite",
