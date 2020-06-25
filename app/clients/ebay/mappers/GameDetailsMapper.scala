@@ -13,7 +13,8 @@ private[mappers] object GameDetailsMapper {
     "(\\bHD\\b|exclusive|special|limited collectors|definitive|atlas|platinum|complete|standard|std|classic(s)?|(\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of the|legacy( pro)?|unlimited|premium|(digital )?deluxe|ultimat)(?s).* (collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
     "(the )?((new|pristine|inc)\\s+)?(super|cheap( )?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(prompt|free|fast|quick|(next|same) day|tracked|speedy|worldwide)(?s).*(dispatch|ship(ping)?|post(age)?|delivery|p(\\s+)?p).*$",
     "(?<=.{20})((brand\\s+)?new(?s).*)?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
-    "(?<=.{20})\\b(single player|Family Fun|((kids|fun) )?adventure|console single|tactical|3rd-person|rpg|fps|survival|action|racing|role|wrestling|fighting)\\b(?s).* game(?s).*"
+    "(?<=.{20})\\b(single player|Family Fun|((kids|fun) )?adventure|console single|tactical|3rd-person|rpg|fps|survival|action|racing|role|wrestling|fighting)\\b(?s).* game(?s).*",
+    "(?<=\\b\\d\\b )20\\d\\d"
   ).mkString("(?i)", "|", "")
 
   private val LEVEL2_TITLE_WORDS_REPLACEMENTS = List(
@@ -46,7 +47,7 @@ private[mappers] object GameDetailsMapper {
     "\\bremake\\b", "(ultra )?\\b(u)?hd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b", "\\bPG(13)?\\b",
     "\\bDVD\\b", "\\bAND\\b", "\\bNTSC\\b", "\\bWi1\\b", "\\bMarvels\\b",
     "\\bMarvels\\b", "NEW$", "very rare",
-    "complete", "very rare"
+    "complete( (instructions|package))?", "very rare"
   ).mkString("(?i)", "|", "")
 
   private val EDGE_WORDS_REPLACEMENTS = List(
@@ -110,7 +111,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll(LEVEL1_TITLE_WORDS_REPLACEMENTS, "")
       .replaceAll(LEVEL2_TITLE_WORDS_REPLACEMENTS, "")
       .replaceAll(LEVEL3_TITLE_WORDS_REPLACEMENTS, "")
-      .replaceFirst("(?i)(?<=.{5})(the )?\\w+(?=\\s+(\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)) (\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)(?s).*$", "")
+      .replaceFirst("(?i)(?<=.{10})(the )?\\w+(?=\\s+(\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)) (\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)(?s).*$", "")
       .replaceAll("é", "e")
       .replaceAll("(?i)playerunknown", "Player Unknown")
       .replaceAll("(?i)(littlebigplanet)", "Little Big Planet")

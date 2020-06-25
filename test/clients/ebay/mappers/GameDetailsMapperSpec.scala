@@ -134,11 +134,19 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
     }
 
     "quick test" in {
-      val listingDetails = testListing.copy(title = "Call of Duty: Infinite Warfare fast free delivery")
+      val listingDetails = testListing.copy(title = "F1 2015")
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      gameDetails.name must be (Some("Call of Duty Infinite Warfare"))
+      gameDetails.name must be (Some("F1 2015"))
+    }
+
+    "remove year from title if it is preceded with a number" in {
+      val listingDetails = testListing.copy(title = "Call of Duty: Infinite Warfare 2 2019")
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("Call of Duty Infinite Warfare 2"))
     }
 
     "remove noise words from title" in {
