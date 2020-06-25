@@ -32,7 +32,7 @@ private[mappers] object GameDetailsMapper {
   ).mkString("(?i)", "|", "")
 
   private val LEVEL3_TITLE_WORDS_REPLACEMENTS = List(
-    "Strategy Combat", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "golf sports",
+    "Strategy Combat", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "golf sports", "Adventure role playing",
     "(the )?(\\b(action|official|console|gold|kids|children)\\b(?s).*)?(video( )?)?game(s)?( (good|boxed|console|of the year))?( 20\\d\\d)?", "nuevo",
     "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(\\d )?disc(s)?( mint)?", "platinum", "brand new", "\\bID\\d+\\w", "18\\s+years",
     "limited run( \\d+)?", "box( )?set", "pre(-| )?(owned|enjoyed)", "compatible", "physical copy", "steel( )?box", "no scratches", "instructions included",

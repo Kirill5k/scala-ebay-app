@@ -22,7 +22,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
 
   private val LISTING_NAME_TRIGGER_WORDS = List(
     "(rune|perk|skill|(e)?xp(erience)?) (stats|points)",
-    "(demo|game)( )?(code|disc|key|cart|pass)", "(store|access|cd|unused|digital|upgrade|no)( )?(redeem )?(game|code|key)",
+    "(demo|game)( )?(code|disc|key|cart|pass)", "(store|reservation|access|cd|unused|digital|upgrade|no)( )?(redeem )?(game|code|key)",
     "(software|cartridge(s)?|cart|game|disk|disc(s)?|cover|box|sleeve|book|cd|collection|manual) only",
     "(case|variety|accessor(ies|y)|storage|charge|robot) (set|kit|box)", "no dis(c|k)", "Season( \\d)? Pass",
     "(canvas|replacement|cover|carry|travel|carrying|just( the)?|no|hard|storage|game|vault|phone|card|foreign|metal|protective)\\s+(pouch|case|bag)",
