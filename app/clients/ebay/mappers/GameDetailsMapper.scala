@@ -45,7 +45,7 @@ private[mappers] object GameDetailsMapper {
     "\\bpal\\b(\\s+\\d+)?( version)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c| condition)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b",
     "\\bns\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNI(B|P)\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b", "\\bUE\\b",
     "\\bremake\\b", "(ultra )?\\b(u)?hd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b", "\\bPG(13)?\\b",
-    "\\bDVD\\b", "\\bAND\\b", "\\bNTSC\\b", "\\bWi1\\b", "\\bMarvels\\b",
+    "\\bDVD\\b", "\\bAND\\b", "\\bNTSC\\b", "\\bWi1\\b", "\\bMarvels\\b", "\\bENG\\b",
     "\\bMarvels\\b", "NEW$", "very rare",
     "complete( (instructions|package))?", "very rare"
   ).mkString("(?i)", "|", "")
@@ -54,7 +54,7 @@ private[mappers] object GameDetailsMapper {
     "^(\\s)?(((brand )?NEW|BNIB)\\s+)?(and )?SEALED",
     "^\\bMARVEL\\b", "^SALE", "(brand )?new$", "^BOXED", "^SALE", "^NEW", "^best", "^software", "un( |-)?opened$", "rare$", "^rare",
     "^bargain","bargain$", "mint$", "\\bfor\\b$", "premium$", "\\bvery\\b$", "\\bLIMITED\\b$", "tested$", "\\bON\\b$", "\\bBY\\b$",
-    "boxed$", "brand$"
+    "boxed$", "brand$", "sealed$"
   ).mkString("(?i)", "|", "")
 
   private val PLATFORMS_MATCH_REGEX = List(
