@@ -23,7 +23,7 @@ private[mappers] object GameDetailsMapper {
     "(dbl|double|triple|twin|expansion|combo)( )?(pack|pk)",
     "(1st|2nd|first) class.*$", "(boxed|complete) (\\bin\\b|with|case)(?s).*$", "exclusive to(?s).*$", "((comes )?with|in original|no|missing|plus|inc(ludes|luding)?) (booklet|original|instructions|box|map|case|manual)(?s).*$", "(the )?disc(s)? (are|is|in)(?s).*$",
     "(new )?(((very|super) )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?( new)?",
-    "(in )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used|(fully )?tested|immaculate|fantastic) (dis(c|k)?|working|good|(working )?order|cond(ition)?|value|prices)",
+    "(in )?(near )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used|(fully )?tested|immaculate|fantastic) (dis(c|k)?|working|good|(working )?order|cond(ition)?|value|prices)",
     "(\\bUK\\b|\\bEU\\b|genuine|european|platinum)(( |-)(release|new|only|seller|version|stock|import))?",
     "Warner Bros", "ubisoft", "currys", "Take( |-)?(Two|2)( Interactive)?", "(EA|2k) (dice|music|sports|games)", "James Camerons", "\\bTom clancy(s)?\\b",
     "Bethesda(s)?( Softworks)?", "Hideo Kojima", "(bandai )?namco", "rockstar games", "James Bond", "Activision", "Peter Jacksons", "Naughty Dog", "Marvel(s)",
@@ -39,10 +39,10 @@ private[mappers] object GameDetailsMapper {
     "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(\\d|both)?( )?(disc(s)?|cd(s)?)( (set|mint))?", "platinum", "brand new", "\\bID\\d+\\w", "18\\s+years",
     "limited run( \\d+)?", "box( )?set", "pre(-| )?(owned|enjoyed)", "compatible", "physical copy", "steel( )?box", "no scratches", "(manual|instructions) included",
     "((barely|condition|never) )?(un)?used(( very)? good)?( (game|condition))?", "very good", "reorderable", "(posted|sent) same day", "in stock( now)?", "pre(\\s+)?release", "played once", "best price", "Special Reserve",
-    "Expertly Refurbished Product", "(quality|value) guaranteed", "eBay Seller", "fully (working|tested)", "from eBays biggest seller", "Order By 4pm", "Ultimate Fighting Championship",
+    "Expertly Refurbished Product", "(quality|value) guaranteed", "(trusted|eBay|best|from ebays biggest) Seller(s)?", "fully (working|tested)", "Order By 4pm", "Ultimate Fighting Championship",
     "remaster(ed)?", "directors cut", "\\bctr\\b", "original", "english", "deluxe", "standard", "\\bgoty\\b", "mult(i)?(-| )?lang(uage)?( in game)?", "freepost",
     "blu-ray", "bonus level", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "official$", "essentials", "classic(s)?", "boxed( and)? (complete|manual)",
-    "For age(s)? \\d+(\\+)?", "must see", "see pics", "Best Seller(s)?", "Backwards Compatible",
+    "For age(s)? \\d+(\\+)?", "must see", "see pics", "Backwards Compatible", "with bonus content",
     "\\bpal\\b(\\s+\\d+)?( version)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c| condition)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b",
     "\\bns\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNI(B|P)\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b", "\\bUE\\b",
     "\\bremake\\b", "(ultra )?\\b(u)?hd\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b", "\\bPG(13)?\\b",
@@ -54,7 +54,7 @@ private[mappers] object GameDetailsMapper {
   private val EDGE_WORDS_REPLACEMENTS = List(
     "^(\\s)?(((brand )?NEW|BNIB|Factory)\\s+)?(and )?SEALED",
     "^SALE", "(brand )?new$", "^BOXED", "^SALE", "^NEW", "^best", "^software", "un( |-)?opened$", "rare$", "^rare",
-    "^bargain","bargain$", "mint$", "\\bfor\\b$", "premium$", "\\bvery\\b$", "\\bLIMITED\\b$", "tested$", "\\bON\\b$", "\\bBY\\b$",
+    "^bargain","bargain$", "mint$", "\\bfor\\b$", "premium$", "\\bvery\\b$", "\\bLIMITED\\b$", "(un)?tested$", "\\bON\\b$", "\\bBY\\b$",
     "boxed$", "brand$"
   ).mkString("(?i)", "|", "")
 
