@@ -119,7 +119,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      gameDetails.name must be (Some("LEGO Marvel Avengers"))
+      gameDetails.name must be (Some("LEGO Avengers"))
     }
 
     "map bundles" in {
