@@ -149,12 +149,21 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       gameDetails.name must be (Some("Call of Duty Infinite Warfare 2"))
     }
 
+    "remove VR from title if it is followed by PSVR" in {
+      val listingDetails = testListing.copy(title = "Call of Duty: Infinite Warfare VR PSVR")
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("Call of Duty Infinite Warfare PSVR"))
+    }
+
     "remove noise words from title" in {
       val titles = List(
         "Call of Duty-Infinite Warfare xbox 360 blah blah blah",
         "Call of Duty - Infinite Warfare playstation 4 blah blah blah",
         "Call of Duty - Infinite Warfare - Sony PS4 blah blah blah",
         "Playstation 4 - PS4 - Call of Duty: Infinite Warfare In Working Order",
+        "Playstation 4 PS4 game Call of Duty: Infinite Warfare",
         "Call of Duty: Infinite Warfare 20th anniversary FUVG ID7274z",
         "Call of Duty: Infinite Warfare classic edition foo",
         "3307216096665BC Call of Duty: Infinite Warfare BRAND NEW SEALED",
