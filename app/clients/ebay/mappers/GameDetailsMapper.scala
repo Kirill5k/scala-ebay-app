@@ -23,7 +23,7 @@ private[mappers] object GameDetailsMapper {
     "(dbl|double|triple|twin|expansion|combo)( )?(pack|pk)",
     "(1st|2nd|first) class.*$", "(fully )?(boxed|complete) (\\bin\\b|with|case)(?s).*$", "exclusive to(?s).*$", "((supplied|comes) )?(with(out)?|\\bw(\\s+)?(o)?\\b|in original|no|missing|plus|inc(ludes|luding)?) (booklet|original|instructions|box|map|case|manual)(?s).*$", "(the )?disc(s)? (are|is|in)(?s).*$",
     "(new )?(((very|super) )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?( new)?",
-    "(in )?(near )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used|(fully )?tested|lovely|immaculate|fantastic|fair)(?s).*(dis(c|k)?|working|good|(working )?order|cond(ition)?|value|prices)",
+    "(in )?(near )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used|(fully )?tested|lovely|immaculate|fantastic|fair|\\bV\\b)(?s).*(dis(c|k)?|working|good|(working )?order|cond(ition)?|value|prices)",
     "(\\bUK\\b|\\bEU\\b|genuine|european|platinum)(( |-)(release|new|only|seller|version|stock|import))?",
     "Warner Bros", "ubisoft", "currys", "Take( |-)?(Two|2)( Interactive)?", "(EA|2k) (dice|music|sports|games)", "James Camerons", "\\bTom clancy(s)?\\b",
     "Bethesda(s)?( Softworks)?", "Hideo Kojima", "(bandai )?namco", "rockstar games", "James Bond", "Activision", "Peter Jacksons", "Naughty Dog", "Marvel(s)?",
@@ -35,7 +35,7 @@ private[mappers] object GameDetailsMapper {
 
   private val LEVEL3_TITLE_WORDS_REPLACEMENTS = List(
     "Strategy\\s+Combat", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "golf sports", "Adventure role playing",
-    "Sport (basketball|football)", "football soccer",
+    "Sport (basketball|football)", "football soccer", "Action Adventure( Open World)?",
     "(the )?(\\b(action|official|console|gold|kids|children)\\b(?s).*)?(video( )?)?game(s)?( (series|good|boxed|console|of the year))?( 20\\d\\d)?", "nuevo",
     "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(\\d|both)?( )?(disc(s)?|cd(s)?)( (set|mint))?", "platinum", "brand new( sealed)?", "\\bID\\d+\\w", "18\\s+years",
     "limited run( \\d+)?", "box( )?set", "pre(-| )?(owned|enjoyed)", "compatible", "physical copy", "steel( )?box", "no scratches", "(manual|instructions) included",
@@ -131,6 +131,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(\\bgta\\b)", "Grand Theft Auto ")
       .replaceAll("(?i)(\\bMGS\\b)", "Metal Gear Solid ")
       .replaceAll("(?i)(\\bRainbow 6\\b)", "Rainbow Six ")
+      .replaceAll("(?i)(\\bLEGO Star Wars III\\b)", "LEGO Star Wars 3 ")
       .replaceAll("(?i)(\\bIIII\\b)", "4")
       .replaceAll("(?i)(\\bGW\\b)", "Garden Warfare ")
       .replaceAll("(?i)(\\bGW2\\b)", "Garden Warfare 2")
