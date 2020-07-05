@@ -122,6 +122,14 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       gameDetails.name must be (Some("LEGO Avengers"))
     }
 
+    "keep word 'ultimate' if it is too far from 'edition'" in {
+      val listingDetails = testListing.copy(title = "Marvel Ultimate Alliance 3: The Black Order - Standard Edition")
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("Ultimate Alliance 3 The Black Order"))
+    }
+
     "map bundles" in {
       val listingDetails = testListing.copy(title = "job lot 5 PS4 Games")
 
