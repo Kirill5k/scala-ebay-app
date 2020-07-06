@@ -141,12 +141,26 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       gameDetails.isBundle must be (true)
     }
 
-    "quick test" in {
-      val listingDetails = testListing.copy(title = "F1 2015")
+    "remove chars with code -1" in {
+      val listingDetails = testListing.copy(title = "MINECRAFT XBOX 360 EDITION ")
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      gameDetails.name must be (Some("F1 2015"))
+      println(gameDetails.name.get.toCharArray.toList)
+      println(gameDetails.name.get.toCharArray.map(_.asDigit).toList)
+
+      gameDetails.name must be (Some("MINECRAFT"))
+    }
+
+    "quick test" in {
+      val listingDetails = testListing.copy(title = "MINECRAFT XBOX 360 EDITION ")
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      println(gameDetails.name.get.toCharArray.toList)
+      println(gameDetails.name.get.toCharArray.map(_.asDigit).toList)
+
+      gameDetails.name must be (Some("MINECRAFT"))
     }
 
     "remove year from title if it is preceded with a number" in {
