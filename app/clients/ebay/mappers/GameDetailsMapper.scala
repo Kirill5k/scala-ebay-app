@@ -14,7 +14,7 @@ private[mappers] object GameDetailsMapper {
     "(?<=.{5})(the )?((new|pristine|inc)\\s+)?(super|cheap(\\s+)?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(prompt|free|fast|quick|(next|same) day|tracked|speedy|worldwide)(?s).*(dispatch|ship(ping)?|post(age)?|delivery|p(\\s+)?p).*$",
     "(?<=.{15})((brand\\s+)?new.{0,15})?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
     "(?<=.{15})\\b(single player|Family Fun|((kids|fun) )?adventure|console single|tactical|3rd-person|rpg|fps|survival|(kids )?action|racing|role|wrestling|fighting|multi\\s+player)\\b.{0,15}game(?s).*",
-    "(?<=\\b\\d+\\b)\\s+20\\d\\d", "(?<=\\b2k\\d\\d\\b)\\s+20\\d\\d", "\\bVR\\b(?= PSVR)"
+    "(?<=\\b\\d+\\b)\\s+20\\d\\d", "(?<=\\b2k\\d\\d\\b)\\s+20\\d\\d", "\\bVR\\b(?= PSVR)", "(?<=FIFA) soccer", "(?<=WWE) wrestling"
   ).mkString("(?i)", "|", "")
 
   private val LEVEL2_TITLE_WORDS_REPLACEMENTS = List(
@@ -44,11 +44,11 @@ private[mappers] object GameDetailsMapper {
     "remaster(ed)?", "directors cut", "\\bctr\\b", "original", "english", "deluxe", "standard", "\\bgoty\\b", "mult(i)?(-| )?lang(uage)?(s)?( in game)?", "(fast|free)( )?(dispatch|post)", "fast free",
     "blu-ray", "bonus level", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "official$", "essentials", "classic(s)?( hit(s)?)?", "boxed(?s).*(complete|manual)",
     "For age(s)? \\d+(\\+)?", "must see", "see pics", "Backwards Compatible", "with bonus content", "Refurbished", "manual",
-    "\\bpal\\b(\\s+\\d+)?( version)?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c| condition)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b",
+    "\\bpal\\b(\\s+\\d+)?( (format|version))?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c| condition)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b",
     "\\bns\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNI(B|P)\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b", "\\bUE\\b",
     "\\bremake\\b( 20\\d\\d)?", "(ultra )?\\b(u)?hd(r)?\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b", "\\bPG(13)?\\b",
     "\\bDVD\\b", "\\bAND\\b", "\\bNTSC\\b", "\\bWi1\\b", "\\bENG\\b", "\\bVGWO\\b", "\\bFPS\\b", "\\bVR\\b", "\\bSRG(\\d+)?\\b", "\\bEA\\b", "\\bGC\\b",
-    "SEALED$", "NEW$", "very rare",
+    "SEALED$", "NEW$", "very rare", "award winning",
     "(100\\s+)?(fully )?complete( (instructions|package))?"
   ).mkString("(?i)", "|", "")
 
