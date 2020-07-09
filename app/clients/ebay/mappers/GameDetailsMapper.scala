@@ -21,7 +21,7 @@ private[mappers] object GameDetailsMapper {
     "for (the )?playstation(\\s+)?vr", "((ps( )?)?(vr|move)|kinect) (required|compatible)",
     "((new|rare) )?((very )?good )?(\\b(for|((only|playable|plays) )?on)\\b )?(the )?(sony |microsoft )?(play( )?st(a)?(t)?(i)?(o)?(n)?(( )?\\d)?|x( )?box(( |-)?(one|\\d+))?|\\bps\\d\\b|\\bxb( )?(o(ne)?|\\d+)?\\b|(nintendo )?(switch|\\bwii( u)?\\b))( (edition|version))?(\\s+new)?((\\s+)?20\\d\\d)?",
     "(dbl|double|triple|twin|expansion|combo)( )?(pack|pk)",
-    "(1st|2nd|first) class.*$", "(fully )?(boxed|complete) (\\bin\\b|with|case)(?s).*$", "exclusive to(?s).*$", "((supplied|comes) )?(with(out)?|\\bw(\\s+)?(o)?\\b|in original|no|missing|plus|inc(ludes|luding)?) (booklet|original|instructions|box|map|case|manual)(?s).*$", "(the )?disc(s)? (are|is|in)(?s).*$",
+    "(1st|2nd|first) class.*$", "(fully )?(boxed|complete) (\\bin\\b|with|case)(?s).*$", "exclusive to(?s).*$", "((supplied|comes) )?(with(out)?|\\bw(\\s+)?(o)?\\b|in original|no|missing|plus|inc(l)?(udes|uding)?) (booklet|original|instructions|box|map|case|manual)(?s).*$", "(the )?disc(s)? (are|is|in)(?s).*$",
     "(new )?(fully )?(((very|super) )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?( new)?",
     "(in )?(near )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|working|perfect|used|(fully )?tested|lovely|immaculate|fantastic|fair|\\bV\\b)(?s).*(dis(c|k)?|working|good|(working )?order|cond(ition)?|value|prices)",
     "(\\bUK\\b|\\bEU\\b|genuine|european|platinum)(( |-)(release|new|only|seller|version|stock|import))?",
@@ -36,7 +36,7 @@ private[mappers] object GameDetailsMapper {
   private val LEVEL3_TITLE_WORDS_REPLACEMENTS = List(
     "Strategy\\s+Combat", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "(auto|golf) sports", "Adventure role playing",
     "Sport (basketball|football)", "football soccer", "Action Adventure( Open World)?", "(adventure )?survival horros",
-    "(the )?(\\b(action|official|console|gold|kids|children)\\b.{0,15})?(video( )?)?game(s)?( (series|good|boxed|console|of the year))?( 20\\d\\d)?", "nuevo",
+    "(the )?(\\b(action|hit|official|console|gold|kids|children)\\b.{0,15})?(video( )?)?game(s)?( (for kids|series|good|boxed|console|of the year))?( 20\\d\\d)?", "nuevo",
     "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(\\d|both)?( )?(disc(s)?|cd(s)?)( (set|mint))?", "platinum", "brand new( sealed)?( 20\\d\\d)?", "\\bID\\d+\\w", "18\\s+years",
     "limited run( \\d+)?", "box( )?set", "pre(-|\\s+)?(owned|enjoyed|loved)", "compatible", "physical copy", "steel( )?box", "no scratches", "(manual|instructions) included",
     "((barely|condition|never) )?(un)?used(( very)? good)?( (game|condition))?", "very good", "reorderable", "(posted|sent) same day", "in stock( now)?", "pre(\\s+)?release", "played once", "best price", "Special Reserve",
@@ -47,7 +47,7 @@ private[mappers] object GameDetailsMapper {
     "\\bpal\\b(\\s+\\d+)?( (format|version))?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c| condition)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b",
     "\\bns\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNI(B|P)\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b", "\\bUE\\b",
     "\\bremake\\b( 20\\d\\d)?", "(ultra )?\\b(u)?hd(r)?\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b", "\\bPG(13)?\\b",
-    "\\bDVD\\b", "\\bAND\\b", "\\bNTSC\\b", "\\bWi1\\b", "\\bENG\\b", "\\bVGWO\\b", "\\bFPS\\b", "\\bVR\\b", "\\bSRG(\\d+)?\\b", "\\bEA\\b", "\\bGC\\b", "\\bCIB\\b",
+    "\\bDVD\\b", "\\bAND\\b", "\\bNTSC\\b", "\\bWi1\\b", "\\bENG\\b", "\\bVGWO\\b", "\\bFPS\\b", "\\bVR\\b( version)?", "\\bSRG(\\d+)?\\b", "\\bEA\\b", "\\bGC\\b", "\\bCIB\\b",
     "SEALED$", "NEW$", "very rare", "award winning",
     "(100\\s+)?(fully )?complete( (instructions|package))?"
   ).mkString("(?i)", "|", "")
@@ -56,7 +56,7 @@ private[mappers] object GameDetailsMapper {
     "^(\\s)?(((brand )?NEW|BNIB|Factory)\\s+)?(and )?SEALED( in Packaging)?",
     "^SALE", "(brand )?new$", "^BOXED", "^SALE", "^NEW", "^best", "^software", "un( |-)?opened$", "rare$", "^rare",
     "^bargain","bargain$", "mint$", "\\bfor\\b( the)?$", "premium$", "\\bvery\\b$", "\\bLIMITED\\b$", "(un)?tested$", "\\bON\\b$", "\\bBY\\b$",
-    "boxed$", "brand$", "good$"
+    "boxed$", "brand$", "good$", "excellent$", "immaculate$"
   ).mkString("(?i)", "|", "")
 
   private val PLATFORMS_MATCH_REGEX = List(
