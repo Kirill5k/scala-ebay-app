@@ -152,6 +152,17 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       gameDetails.name must be (Some("MINECRAFT"))
     }
 
+    "map gta to full title" in {
+      val listingDetails = testListing.copy(title = "GTA5")
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      println(gameDetails.name.get.toCharArray.toList)
+      println(gameDetails.name.get.toCharArray.map(_.asDigit).toList)
+
+      gameDetails.name must be (Some("Grand Theft Auto 5"))
+    }
+
     "quick test" in {
       val listingDetails = testListing.copy(title = "MINECRAFT XBOX 360 EDITION ")
 
