@@ -103,7 +103,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      gameDetails.name must be (Some("Player Unknowns battlegrounds PSVR"))
+      gameDetails.name must be (Some("Player Unknowns battlegrounds"))
     }
 
     "leave new in the middle of title" in {
@@ -171,12 +171,36 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       gameDetails.name must be (Some("Call of Duty Infinite Warfare 2"))
     }
 
-    "remove VR from title if it is followed by PSVR" in {
+    "remove year after number" in {
+      val listingDetails = testListing.copy(title = "FIFA 19 2019")
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("FIFA 19"))
+    }
+
+    "remove year after 2k17" in {
+      val listingDetails = testListing.copy(title = "WWE 2k17 2019")
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("WWE 2k17"))
+    }
+
+    "remove wrestling after 2k17 title" in {
+      val listingDetails = testListing.copy(title = "WWE 2k17 Wrestling")
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("WWE 2k17"))
+    }
+
+    "remove VR and PSVR from title" in {
       val listingDetails = testListing.copy(title = "Call of Duty: Infinite Warfare VR PSVR")
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      gameDetails.name must be (Some("Call of Duty Infinite Warfare PSVR"))
+      gameDetails.name must be (Some("Call of Duty Infinite Warfare"))
     }
 
     "remove noise words from title" in {
