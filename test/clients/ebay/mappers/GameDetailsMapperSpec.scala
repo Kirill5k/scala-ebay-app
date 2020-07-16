@@ -271,5 +271,18 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         details.name must be (Some("Call of Duty Infinite Warfare"))
       }
     }
+
+    "remove roman numbers followed by digit" in {
+      val titles = Map(
+        "Call of Duty Black Ops iii 3" -> "Call of Duty Black Ops iii",
+        "Call of Duty Black Ops iv 4" -> "Call of Duty Black Ops iv",
+        "Call of Duty Black Ops ii 2" -> "Call of Duty Black Ops ii"
+      )
+
+      forAll (titles) { case (title, expected) =>
+        val details = GameDetailsMapper.from(testListing.copy(title = title, properties = Map()))
+        details.name must be (Some(expected))
+      }
+    }
   }
 }

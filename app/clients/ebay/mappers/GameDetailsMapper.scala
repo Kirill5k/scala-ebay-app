@@ -14,7 +14,9 @@ private[mappers] object GameDetailsMapper {
     "(?<=.{5})(the )?((new|pristine|inc)\\s+)?(super|cheap(\\s+)?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(prompt|free|fast|quick|(next|same) day|tracked|speedy|worldwide)(?s).*(dispatch|ship(ping)?|post(age)?|delivery|p(\\s+)?p).*$",
     "(?<=.{15})((brand\\s+)?new.{0,15})?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
     "(?<=.{15})\\b(hack\\s+slash|single player|Family Fun|((kids|fun) )?adventure|console single|tactical|3rd-person|rpg|fps|survival|(kids )?action|(kids )?racing|role|wrestling|fighting|multi(\\s+|-)?player)\\b.{0,20}game(?s).*",
-    "(?<=\\b(2k)?\\d+)(\\s+| - )(20\\d\\d|wrestling|basketball)(?s).*", "(?<=FIFA) soccer", "(?<=WWE) wrestling"
+    "(?<=\\b(2k)?\\d+)(\\s+| - )(20\\d\\d|wrestling|basketball|footbal|formula one)(?s).*",
+    "(?<=FIFA) (soccer|football)", "(?<=WWE) wrestling",
+    "(?<=\\b[iv]{1,4}\\b) \\d"
   ).mkString("(?i)", "|", "")
 
   private val LEVEL2_TITLE_WORDS_REPLACEMENTS = List(
@@ -25,7 +27,7 @@ private[mappers] object GameDetailsMapper {
     "(new )?(fully )?(((very|super) )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?( new)?",
     "(in )?(near )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|(full )?working|perfect|used|(fully )?tested|lovely|immaculate|fantastic|fair|\\bV\\b)(?s).*(dis(c|k)?|working( perfectly)?|good|(working )?order|cond(ition)?|value|prices)",
     "(\\bUK\\b|\\bEU\\b|genuine|european|platinum)(( |-)(release|new|only|seller|version|stock|import))?",
-    "Warner Bros", "ubisoft", "currys", "Take( |-)?(Two|2)( Interactive)?", "(EA|2k) (dice|music|sports|games)", "James Camerons", "\\bTom clancy(s)?\\b", "gamecube",
+    "Warner Bros", "ubisoft", "currys", "Take( |-)?(Two|2)( Interactive)?", "(EA|2k) (dice|music|sport(s)?|games)", "James Camerons", "\\bTom clancy(s)?\\b", "gamecube",
     "Bethesda(s)?( Softworks)?", "Hideo Kojima", "(bandai )?namco", "rockstar games", "James Bond", "Activision", "Peter Jacksons", "Naughty Dog", "Marvel(s)?", "\\bTHQ\\b",
     "Microsoft( 20\\d\\d)?", "sony", "(by )?electronic arts", "nintendo", "square enix", "Dreamworks", "Disneys", "Disney Pixar(s)?", "WB Games", "Bend Studio", "LucasArt(s)?",
     "Insomniac(s)?",
