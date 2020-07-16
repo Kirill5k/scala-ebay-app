@@ -29,7 +29,7 @@ private[mappers] object GameDetailsMapper {
     "(\\bUK\\b|\\bEU\\b|genuine|european|platinum)(( |-)(release|new|only|seller|version|stock|import))?",
     "Warner Bros", "ubisoft", "currys", "Take( |-)?(Two|2)( Interactive)?", "(EA|2k) (dice|music|sport(s)?|games)", "James Camerons", "\\bTom clancy(s)?\\b", "gamecube",
     "Bethesda(s)?( Softworks)?", "Hideo Kojima", "(bandai )?namco", "rockstar games", "James Bond", "Activision", "Peter Jacksons", "Naughty Dog", "Marvel(s)?", "\\bTHQ\\b",
-    "Microsoft( 20\\d\\d)?", "sony", "(by )?electronic arts", "nintendo", "square enix", "Dreamworks", "Disneys", "Disney Pixar(s)?", "WB Games", "Bend Studio", "LucasArt(s)?",
+    "Microsoft( 20\\d\\d)?", "sony", "(by )?electronic arts", "nintendo( \\d+)?", "square enix", "Dreamworks", "Disneys", "Disney Pixar(s)?", "WB Games", "Bend Studio", "LucasArt(s)?",
     "Insomniac(s)?",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]",
     "\\d{5,}(\\w+)?", "\\d{3,}\\s+\\d{4,}"
@@ -37,7 +37,7 @@ private[mappers] object GameDetailsMapper {
 
   private val LEVEL3_TITLE_WORDS_REPLACEMENTS = List(
     "Strategy\\s+Combat", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "(auto|golf) sports", "Adventure role playing",
-    "Sport (basketball|football)", "football soccer", "Action Adventure( Open World)?", "(adventure )?survival horros",
+    "Sport\\s+(basketball|football)", "football soccer", "Action Adventure( Open World)?", "(adventure )?survival horros", "fighting multiplayer",
     "(the )?(\\b(action|hit|official|console|gold|kids|children)\\b.{0,15})?(video( )?)?game(s)?( (for kids|series|good|boxed|console|of the year))?( 20\\d\\d)?", "nuevo",
     "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(\\d|both)?( )?(disc(s)?|cd(s)?)( (set|mint))?", "platinum", "brand new( sealed)?( 20\\d\\d)?", "\\bID\\d+\\w", "18\\s+years",
     "limited run( \\d+)?", "box( )?set", "pre(-|\\s+)?(owned|enjoyed|loved)", "compatible", "physical copy", "steel( )?box", "no scratches", "(manual|instructions) included",
