@@ -15,7 +15,7 @@ private[mappers] object GameDetailsMapper {
     "(?<=.{15})((brand\\s+)?new.{0,15})?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
     "(?<=.{15})\\b(hack\\s+slash|single player|Family Fun|basketball|((kids|fun) )?adventure|console single|tactical|3rd-person|rpg|fps|survival|(kids )?action|(kids )?racing|role|wrestling|fighting|multi(\\s+|-)?player)\\b.{0,20}game(?s).*",
     "(?<=\\b(2k)?\\d+)(\\s+| - )(20\\d\\d|wrestling|basketball|footbal|formula one)(?s).*",
-    "(?<=FIFA) (soccer|football)", "(?<=WWE) wrestling",
+    "(?<=FIFA) (soccer|football)", "(?<=WWE) wrestling", "(?<=F1) (Formula 1)",
     "(?<=\\b[iv]{1,4}\\b) \\d"
   ).mkString("(?i)", "|", "")
 
