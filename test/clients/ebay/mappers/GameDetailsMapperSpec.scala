@@ -17,7 +17,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
     Some("https://i.ebayimg.com/images/g/PW4AAOSweS5eHsrk/s-l1600.jpg"),
     List("FIXED_PRICE"),
     Some("boris999"),
-    BigDecimal.valueOf(10),
+    BigDecimal(10),
     "USED",
     Instant.now,
     None,
