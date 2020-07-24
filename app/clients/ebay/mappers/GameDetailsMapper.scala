@@ -8,7 +8,7 @@ private[mappers] object GameDetailsMapper {
 
   private val LEVEL1_TITLE_WORDS_REPLACEMENTS = List(
     "(gold )?((greatest|playstation|ps) )?\\bhits\\b( range)?", "nintendo selects",
-    "(?<=.{12})((new|rare|(very )?good) )?(\\b(for|((only|playable|plays) )?on)\\b )?(the )?((sony )?play( )?station( )?(\\d|one)|(?<!(Playstation(?s).*))\\bPS\\d\\b|(microsoft )?xbox( |-)(1|one|360)|nintendo switch|(nintendo )?\\bwii( u)?\\b)(?s).*",
+    "(?<=.{12})((new|rare|(very )?good) )?(\\b(for|((only|playable|plays) )?on)\\b )?(the )?((sony )?play( )?station( )?(\\d|one)|(?<!(Playstation(?s).*))\\bPS\\d\\b|(microsoft )?xbox( |-)(1|one|360)|nintendo switch|(nintendo )?(?<!(\\bwii\\b(?s).*))\\bwii( u)?\\b)(?s).*",
     "day (one|1|zero|0)( (edition|\\be(d)?(i)?(t)?(i)?\\b))?(?s).*$",
     "(the )?(\\bHD\\b|essential|exclusive|special|limited collectors|definitive|atlas|platinum|complete|standard|std|classic(s)?|(\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of the|legacy( pro)?|(un)?limited|premium|(digital )?deluxe|(\\w+)?ultimat).{0,20}(collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
     "(?<=.{5})(the )?((new|pristine|inc)\\s+)?(super|cheap(\\s+)?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(prompt|free|fast|quick|(next|same) day|tracked|speedy|worldwide)(?s).*(dispatch|ship(ping)?|post(age)?|delivery|p(\\s+)?p).*$",
@@ -16,7 +16,7 @@ private[mappers] object GameDetailsMapper {
     "(?<=.{15})\\b(hack\\s+slash|single player|Family Fun|basketball|((kids|fun) )?adventure|console single|tactical|3rd-person|rpg|fps|survival|(kids )?action|(kids )?racing|role|wrestling|fighting|multi(\\s+|-)?player)\\b.{0,20}game(?s).*",
     "(?<=\\b(2k)?\\d+)(\\s+| - )(20\\d\\d|wrestling|basketball|footbal|formula)(?s).*",
     "(?<=FIFA) (soccer|football)", "(?<=WWE) wrestling", "(?<=F1) (Formula 1)",
-    "(?<=\\b20\\d\\d)(\\s+| - )(formula)(?s).*",
+    "(?<=\\b20\\d\\d)(\\s+| - )(version|formula)(?s).*",
     "(?<=\\b[iv]{1,4}\\b) \\d"
   ).mkString("(?i)", "|", "")
 
@@ -40,7 +40,7 @@ private[mappers] object GameDetailsMapper {
     "Strategy\\s+Combat", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "(auto|golf) sports", "Adventure\\s+role playing",
     "Sport\\s+(basketball|football)", "football soccer", "Action Adventure( Open World)?", "(adventure )?survival horros", "fighting multiplayer",
     "(the )?(\\b(action|hit|official|console|gold|kids|children)\\b.{0,15})?(video( )?)?game(s)?( (for kids|series|good|boxed|console|of the year))?( 20\\d\\d)?", "nuevo",
-    "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(\\d|both)?( )?(disc(s)?|cd(s)?)( (set|mint))?", "platinum", "brand new( sealed)?( 20\\d\\d)?", "\\bID\\d+\\w", "18\\s+years",
+    "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(\\d|both)?( )?(disc(s)?|cd(s)?)( (set|mint))?", "platinum", "brand new( sealed)?( in packaging)?( 20\\d\\d)?", "\\bID\\d+\\w", "18\\s+years",
     "limited run( \\d+)?", "box( )?set", "pre(-|\\s+)?(owned|enjoyed|loved)", "compatible", "physical copy", "steel( )?box", "no scratches", "(manual|instructions) included", "100\\s+ebayer",
     "((barely|condition|never) )?(un)?used(( very)? good)?( (game|condition))?", "very good", "reorderable", "(posted|sent) same day", "in stock( now)?", "pre(\\s+)?release", "(only )?played once", "best price", "Special Reserve",
     "Expertly Refurbished Product", "(quality|value) guaranteed", "(trusted|eBay|best|from ebays biggest) Seller(s)?", "fully (working|tested)", "Order By 4pm", "Ultimate Fighting Championship",
