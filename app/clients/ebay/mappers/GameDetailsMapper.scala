@@ -21,10 +21,10 @@ private[mappers] object GameDetailsMapper {
   ).mkString("(?i)", "|", "")
 
   private val LEVEL2_TITLE_WORDS_REPLACEMENTS = List(
-    "for (the )?playstation(\\s+)?vr", "((ps( )?)?(vr|move)|kinect) (required|compatible)",
+    "for (the )?playstation(\\s+)?vr", "((ps( )?)?(vr|move)|kinect) (needed|required|compatible)",
     "((new|rare) )?((very )?good )?(\\b(for|((only|playable|plays) )?on)\\b )?(the )?(sony |microsoft )?(play( )?st(a)?(t)?(i)?(o)?(n)?(( )?(\\d|one))?|x( )?b(ox)?(( |-)?(live|one|\\d+))?|\\bps\\d\\b|(nintendo )?(switch|\\bwii( u)?\\b))( (edition|version))?(\\s+new)?((\\s+)?20\\d\\d)?",
-    "(dbl|double|triple|twin|expansion|combo)( )?(pack|pk)", "New in Cellophane",
-    "(1st|2nd|first) class.*$", "(fully )?(boxed|complete) (\\bin\\b|with|case)(?s).*$", "exclusive to(?s).*$", "((supplied|comes) )?(with(out)?|\\bw(\\s+)?(o)?\\b|in original|no|missing|plus|has|inc(l)?(udes|uding)?) (booklet|original|instructions|box|map|case|manual)(?s).*$", "(the )?disc(s)? (are|is|in)(?s).*$",
+    "(dbl|double|triple|twin|expansion|combo)( )?(pack|pk)", "new in (cellophane|packaging)",
+    "(1st|2nd|first) class.*$", "(fully )?(boxed|complete) (\\bin\\b|with|case)(?s).*$", "exclusive to(?s).*$", "((supplied|comes) )?(with(out)?|\\bw(\\s+)?(o)?\\b|in original|no|missing|plus|has|inc(l)?(udes|uding)?) (booklet|original|instruction|box|map|case|manual)(?s).*$", "(the )?disc(s)? (are|is|in)(?s).*$",
     "(new )?(fully )?(((very|super) )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)?\\s+complete) game(s)?( \\d+)?( new)?",
     "(in )?(near )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|(full )?working|perfect|used|(fully )?tested|lovely|immaculate|fantastic|fair|\\bV\\b)(?s).*(dis(c|k)?|working( perfectly)?|good|(working )?order|cond(ition)?|value|prices)",
     "(\\bUK\\b|\\bEU\\b|genuine|european|platinum|original)(( |-)(release|new|only|seller|version|stock|import))?",
@@ -40,7 +40,7 @@ private[mappers] object GameDetailsMapper {
     "Strategy\\s+Combat", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "(auto|golf) sports", "Adventure\\s+role playing",
     "Sport\\s+(basketball|football)", "football soccer", "Action Adventure( Open World)?", "(adventure )?survival horros", "fighting multiplayer",
     "(the )?(\\b(action|hit|official|console|gold|kids|children)\\b.{0,15})?(video( )?)?game(s)?( (for kids|series|good|boxed|console|of the year))?( 20\\d\\d)?", "nuevo",
-    "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(\\d|both)?( )?(disc(s)?|cd(s)?)( (set|mint))?", "platinum", "brand new( sealed)?( in packaging)?( 20\\d\\d)?", "\\bID\\d+\\w", "18\\s+years",
+    "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(\\d|both)?( )?(disc(s)?|cd(s)?)( (set|mint))?", "platinum", "(sealed )?brand new( sealed)?( in packaging)?( 20\\d\\d)?", "\\bID\\d+\\w", "18\\s+years",
     "limited run( \\d+)?", "box( )?set", "pre(-|\\s+)?(owned|enjoyed|loved)", "compatible", "physical copy", "steel( )?box", "no scratches", "(manual|instructions) included", "100\\s+ebayer",
     "((barely|condition|never) )?(un)?used(( very)? good)?( (game|condition))?", "very good", "reorderable", "(posted|sent) same day", "in stock( now)?", "pre(\\s+)?release", "(only )?played once", "best price", "Special Reserve",
     "Expertly Refurbished Product", "(quality|value) guaranteed", "(trusted|eBay|best|from ebays biggest) Seller(s)?", "fully (working|tested)", "Order By 4pm", "Ultimate Fighting Championship",
@@ -48,11 +48,11 @@ private[mappers] object GameDetailsMapper {
     "blu-ray", "bonus level", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "essentials", "classic(s)?( hit(s)?)?", "boxed(?s).*(complete|manual)",
     "\\b(For )?age(s)? \\d+\\b", "must see", "see pics", "Backwards Compatible", "with bonus content", "Refurbished", "manual", "\\brated \\d+\\b",
     "\\bpal\\b(\\s+\\d+)?( (format|version))?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c| condition)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b",
-    "\\bns\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNI(B|P)\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b", "\\bUE\\b",
+    "\\bns\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNI(B|P)\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b", "\\bUE\\b", "\\bBN\\b",
     "\\bremake\\b( 20\\d\\d)?", "(ultra )?\\b(u)?hd(r)?\\b", "\\b4k\\b", "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b", "\\bPG(13)?\\b",
     "\\bDVD\\b", "\\bAND\\b", "\\bNTSC\\b", "\\bPA2\\b", "\\bWi1\\b", "\\bENG\\b", "\\bVGWO\\b", "\\bFPS\\b", "\\b(PS( )?)?VR\\b( version)?", "\\bSRG(\\d+)?\\b", "\\bEA\\b", "\\bGC\\b", "\\bCIB\\b",
     "SEALED$", "NEW$", "very rare", "award winning",
-    "(100\\s+)?(fully )?complete( (instructions|package))?"
+    "(100\\s+)?((all|fully) )?complete( (instructions|package))?"
   ).mkString("(?i)", "|", "")
 
   private val EDGE_WORDS_REPLACEMENTS = List(
