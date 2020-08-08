@@ -1,4 +1,3 @@
-import Dependencies.Libraries.{catsCore, catsEffect, circeCore, circeExtras, circeGeneric, circeParser, embeddedMongo, expiringMap, fs2Core, mockitoCore, mockitoScalatest, pureconfigCore, reactiveMongoPlay, scalatestPlay, sttpCats, sttpCirce, sttpCore}
 import sbt._
 
 object Dependencies {
@@ -36,25 +35,25 @@ object Dependencies {
   }
 
   val core = Seq(
-    pureconfigCore,
-    catsCore,
-    catsEffect,
-    fs2Core,
-    sttpCore,
-    sttpCats,
-    sttpCirce,
-    circeCore,
-    circeGeneric,
-    circeParser,
-    circeExtras,
-    reactiveMongoPlay,
-    expiringMap
+    Libraries.pureconfigCore,
+    Libraries.catsCore,
+    Libraries.catsEffect,
+    Libraries.fs2Core,
+    Libraries.sttpCore,
+    Libraries.sttpCats,
+    Libraries.sttpCirce,
+    Libraries.circeCore,
+    Libraries.circeGeneric,
+    Libraries.circeParser,
+    Libraries.circeExtras,
+    Libraries.reactiveMongoPlay,
+    Libraries.expiringMap
   )
 
   val test = Seq(
-    scalatestPlay % Test,
-    mockitoCore % Test,
-    mockitoScalatest % Test,
-    embeddedMongo % Test
+    Libraries.scalatestPlay % Test,
+    Libraries.mockitoCore % Test,
+    Libraries.mockitoScalatest % Test,
+    Libraries.embeddedMongo % Test
   )
 }
