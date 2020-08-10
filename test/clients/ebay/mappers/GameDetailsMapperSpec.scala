@@ -182,12 +182,32 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       gameDetails.name must be (Some("Call of Duty Infinite Warfare 2"))
     }
 
+    "remove formula 1 if f1" in {
+      val titles = Map(
+        "formula 1 f1 2019" -> "f1 2019",
+        "formula one f1 2019" -> "f1 2019",
+        "f1 formula one 2019" -> "f1 2019",
+      )
+
+      forAll (titles) { case (title, expected) =>
+        val listingDetails = testListing.copy(title = title)
+        val gameDetails = GameDetailsMapper.from(listingDetails)
+        gameDetails.name must be (Some(expected))
+      }
+    }
+
     "remove year after number" in {
-      val listingDetails = testListing.copy(title = "FIFA 19 2019")
+      val titles = Map(
+        "FIFA 19 2019" -> "FIFA 19",
+        "FIFA 2019" -> "FIFA 19",
+        "FIFA 2020" -> "FIFA 20"
+      )
 
-      val gameDetails = GameDetailsMapper.from(listingDetails)
-
-      gameDetails.name must be (Some("FIFA 19"))
+      forAll (titles) { case (title, expected) =>
+        val listingDetails = testListing.copy(title = title)
+        val gameDetails = GameDetailsMapper.from(listingDetails)
+        gameDetails.name must be (Some(expected))
+      }
     }
 
     "remove year after 2k17" in {
