@@ -13,11 +13,7 @@ private[mappers] object GameDetailsMapper {
     "(the )?(\\bHD\\b|essential|exclusive|special|limited collectors|definitive|atlas|platinum|complete|standard|std|classic(s)?|(\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of the|legacy( pro)?|(un)?limited|premium|(digital )?deluxe|(\\w+)?ultimat).{0,20}(collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
     "(?<=.{5})(the )?((new|pristine|inc)\\s+)?(super|cheap(\\s+)?)?(free|fast|quick)?(\\s+)?(and )?(super( )?)?(prompt|free|fast|quick|(next|same) day|tracked|speedy|worldwide|\\bsc\\b|\\bfc\\b)(?s).*(dispatch|ship(ping)?|post(age)?|delivery|p(\\s+)?p).*$",
     "(?<=.{15})((brand\\s+)?new.{0,15})?(still )?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
-    "(?<=.{15})\\b(hack\\s+slash|single player|Family Fun|basketball|((kids|fun) )?adventure|console single|tactical|3rd-person|rpg|fps|survival|(kids )?action|(kids )?racing|role|wrestling|fighting|multi(\\s+|-)?player)\\b.{0,20}game(?s).*",
-    "(?<=\\b(W)?(2k)?\\d+)(\\s+| - )(20\\d\\d|wrestling|basketball|footbal|formula)(?s).*",
-    "(?<=FIFA) (soccer|football)", "(?<=WWE) wrestling", "(?<=F1)\\s+(Formula (one|1))",
-    "(?<=\\b20\\d\\d)(\\s+| - )(version|formula)(?s).*", "Formula (1|One) (?=F1)",
-    "(?<=\\b[iv]{1,4}\\b)\\s+\\d"
+    "(?<=.{15})\\b(hack\\s+slash|single player|Family Fun|basketball|((kids|fun) )?adventure|console single|tactical|3rd-person|rpg|fps|survival|(kids )?action|(kids )?racing|role|wrestling|fighting|multi(\\s+|-)?player)\\b.{0,20}game(?s).*"
   ).mkString("(?i)", "|", "")
 
   private val LEVEL2_TITLE_WORDS_REPLACEMENTS = List(
@@ -33,7 +29,11 @@ private[mappers] object GameDetailsMapper {
     "Microsoft( 20\\d\\d)?", "sony", "(by )?electronic arts", "nintendo( \\d+)?", "square enix", "Dreamworks", "Disneys", "Disney Pixar(s)?", "WB Games", "Bend Studio", "LucasArt(s)?",
     "Insomniac(s)?",
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]",
-    "\\d{5,}(\\w+)?", "\\d{3,}\\s+\\d{4,}"
+    "\\d{5,}(\\w+)?", "\\d{3,}\\s+\\d{4,}",
+    "(?<=\\b(W)?(2k)?\\d+)(\\s+| - )(20\\d\\d|wrestling|basketball|footbal|formula)(?s).*",
+    "(?<=FIFA) (soccer|football)", "(?<=WWE) wrestling", "(?<=F1)\\s+(Formula (one|1))( racing)?",
+    "(?<=\\b20\\d\\d)(\\s+| - )(version|formula)(?s).*", "Formula (1|One) (?=F1)",
+    "(?<=\\b[iv]{1,4}\\b)\\s+\\d"
   ).mkString("(?i)", "|", "")
 
   private val LEVEL3_TITLE_WORDS_REPLACEMENTS = List(
