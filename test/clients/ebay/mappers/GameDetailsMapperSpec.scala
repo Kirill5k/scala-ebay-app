@@ -163,25 +163,6 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       gameDetails.name must be (Some("Grand Theft Auto 5"))
     }
 
-    "quick test" in {
-      val listingDetails = testListing.copy(title = "MINECRAFT XBOX 360 EDITION ")
-
-      val gameDetails = GameDetailsMapper.from(listingDetails)
-
-      println(gameDetails.name.get.toCharArray.toList)
-      println(gameDetails.name.get.toCharArray.map(_.asDigit).toList)
-
-      gameDetails.name must be (Some("MINECRAFT"))
-    }
-
-    "remove year from title if it is preceded with a number" in {
-      val listingDetails = testListing.copy(title = "Call of Duty: Infinite Warfare 2 2019")
-
-      val gameDetails = GameDetailsMapper.from(listingDetails)
-
-      gameDetails.name must be (Some("Call of Duty Infinite Warfare 2"))
-    }
-
     "remove formula 1 if f1" in {
       val titles = Map(
         "formula 1 f1 2019" -> "f1 2019",
@@ -200,7 +181,9 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       val titles = Map(
         "FIFA 19 2019" -> "FIFA 19",
         "FIFA 2019" -> "FIFA 19",
-        "FIFA 2020" -> "FIFA 20"
+        "FIFA 2020" -> "FIFA 20",
+        "WWE 2k17 2019" -> "WWE 2k17",
+        "Call of Duty: Infinite Warfare 2 2019" -> "Call of Duty: Infinite Warfare 2"
       )
 
       forAll (titles) { case (title, expected) =>
@@ -208,14 +191,6 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         val gameDetails = GameDetailsMapper.from(listingDetails)
         gameDetails.name must be (Some(expected))
       }
-    }
-
-    "remove year after 2k17" in {
-      val listingDetails = testListing.copy(title = "WWE 2k17 2019")
-
-      val gameDetails = GameDetailsMapper.from(listingDetails)
-
-      gameDetails.name must be (Some("WWE 2k17"))
     }
 
     "remove wrestling after 2k17 title" in {
@@ -303,6 +278,17 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         val details = GameDetailsMapper.from(testListing.copy(title = title, properties = Map()))
         details.name must be (Some(expected))
       }
+    }
+
+    "quick test" in {
+      val listingDetails = testListing.copy(title = "Fable II (Xbox 360). Complete in box. Good condition.")
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      println(gameDetails.name.get.toCharArray.toList)
+      println(gameDetails.name.get.toCharArray.map(_.asDigit).toList)
+
+      gameDetails.name must be (Some("Fable II"))
     }
   }
 }
