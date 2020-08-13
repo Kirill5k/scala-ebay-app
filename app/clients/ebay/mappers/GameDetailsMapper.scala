@@ -17,7 +17,7 @@ private[mappers] object GameDetailsMapper {
   ).mkString("(?i)", "|", "")
 
   private val LEVEL2_TITLE_WORDS_REPLACEMENTS = List(
-    "for (the )?playstation(\\s+)?vr", "((ps( )?)?(vr|move)|kinect) (needed|required|compatible)",
+    "for (the )?playstation(\\s+)?vr", "((ps( )?)?(vr|move)|kinect) (needed|required|compatible)", "requires kinect( sensor)?",
     "((new|rare) )?((very )?good )?(\\b(for|((only|playable|plays) )?on)\\b )?(the )?(sony |microsoft )?(play( )?st(a)?(t)?(i)?(o)?(n)?(( )?(\\d|one))?|x( )?b(ox)?(( |-)?(live|one|\\d+))?|\\bps\\d\\b|(nintendo )?(switch|\\bwii( u)?\\b))( (edition|version|action|wrestling|football))?(\\s+new)?((\\s+)?20\\d\\d)?",
     "(dbl|double|triple|twin|expansion|combo)( )?(pack|pk)", "new in (cellophane|packaging)",
     "(1st|2nd|first) class.*$", "(fully )?(boxed|complete) (\\bin\\b|with|case)(?s).*$", "exclusive to(?s).*$", "((supplied|comes) )?(with(out)?|\\bw(\\s+)?(o)?\\b|in original|no|missing|plus|has|inc(l)?(udes|uding)?) (booklet|original|instruction|box|map|case|manual)(?s).*$", "(the )?disc(s)? (are|is|in)(?s).*$",
@@ -33,20 +33,20 @@ private[mappers] object GameDetailsMapper {
     "(?<=\\b(W)?(2k)?\\d+)(\\s+| - )(20\\d\\d|wrestling|basketball|footbal|formula)(?s).*",
     "(?<=FIFA) (soccer|football)", "(?<=WWE) wrestling", "(?<=F1)\\s+(Formula (one|1))( racing)?",
     "(?<=\\b20\\d\\d)(\\s+| - )(version|formula)(?s).*", "Formula (1|One) (?=F1)",
-    "(?<=\\b[iv]{1,4}\\b)\\s+\\d"
+    "(?<=\\b[ivx]{1,4}\\b)(\\s+| - )\\d+"
   ).mkString("(?i)", "|", "")
 
   private val LEVEL3_TITLE_WORDS_REPLACEMENTS = List(
     "Strategy\\s+Combat", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "(auto|golf) sports", "Adventure\\s+role playing",
-    "Sport\\s+(basketball|football)", "football soccer", "Action Adventure( Open World)?", "(adventure )?survival horros", "fighting multiplayer", "Multi( |-)?Player",
-    "(the )?(\\b(Skateboarding|action|hit|official|console|gold|kids|children)\\b.{0,15})??\\b(video( )?)?game(s)?\\b( (for kids|series|good|boxed|console|of the movie|of( the)? year))?( 20\\d\\d)?", "nuevo", // focus on removing the word GAME
+    "Sport\\s+(basketball|football)", "football soccer", "(servival )?Action Adventure( Open World)?", "(adventure )?survival horros", "fighting multiplayer", "Multi( |-)?Player",
+    "(the )?(\\b(\\d player|Skateboarding|action|hit|official|console|gold|kids|children)\\b.{0,15})??\\b(video( )?)?game(s)?\\b( (for kids|series|good|boxed|console|of( the)? (year|olympic|movie)))?( 20\\d\\d)?", "nuevo", // focus on removing the word GAME
     "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(\\d|both)?( )?(dis(c|k)(s)?|cd(s)?)( (version|set|mint))?", "platinum", "(sealed )?brand new( (case|sealed))?( in packaging)?( 20\\d\\d)?", "\\bID\\d+\\w", "18\\s+years",
     "limited run( \\d+)?", "box( )?set", "pre(-|\\s+)?(owned|enjoyed|loved)", "compatible", "physical copy", "steel( )?box", "no scratches", "(manual|instructions) included", "100\\s+ebayer",
     "((barely|condition|never|hardly) )?(un)?used(( very)? good)?( (game|condition))?", "very good", "reorderable", "(posted|sent) same day", "in stock( now)?", "pre(\\s+)?release", "(only )?played once", "best price", "Special Reserve",
     "Expertly Refurbished Product", "(quality|value) guaranteed", "(trusted|eBay|best|from ebays biggest) Seller(s)?", "fully (working|tested)", "Order By 4pm", "Ultimate Fighting Championship",
     "remaster(ed)?", "directors cut", "\\bctr\\b", "original", "english", "deluxe", "standard", "\\bgoty\\b", "mult(i)?(-| )?lang(uage)?(s)?( in game)?", "(fast|free)( )?(dispatch|post)", "fast free",
     "blu-ray", "bonus level", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "essentials", "classic(s)?( hit(s)?)?", "boxed(?s).*(complete|manual)",
-    "very rare", "award winning", "official licenced", "Unwanted Gift", "limited quantity",
+    "very rare", "award winning", "official licenced", "Unwanted Gift", "limited quantity", "region free",
     "\\b(For )?age(s)? \\d+\\b", "must see", "see pics", "Backwards Compatible", "with bonus content", "Refurbished", "manual", "\\brated \\d+\\b",
     "\\bpal\\b(\\s+\\d+)?( (format|version))?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c| con(d)?(ition)?)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b",
     "\\bns\\b", "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNI(B|P)\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b", "\\bUE\\b", "\\bBN\\b", "\\bRRP\\b(\\s|\\d)*",

@@ -22,7 +22,7 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
 
   private val LISTING_NAME_TRIGGER_WORDS = List(
     "(rune|perk|skill|(e)?xp(erience)?) (stats|points)",
-    "(demo|game)( )?(code|disc|key|cart|pass)", "(store|reservation|access|cd|unused|digital|upgrade|no)( )?(redeem )?(game|code|key)",
+    "(demo|game)( )?(code|disc|key|cart|pass)", "(store|reservation|access|cd|unused|digital|upgrade|test|beta|no)( )?(redeem )?(game|code|key)",
     "(software|cartridge(s)?|cart|game|disk|disc(s)?( \\d)?|cover|box|sleeve|book|cd|collection|manual) only",
     "(case|variety|accessor(ies|y)|storage|charge|robot) (system|set|kit|box)", "no dis(c|k)", "Season( \\d)? Pass",
     "(canvas|replacement|cover|carry|travel(er)?|commuter|carrying|just( the)?|no|hard|storage|game|vault|phone|card|foreign|metal|protection|protective)\\s+(pouch|case|bag)",
@@ -32,12 +32,12 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
     "(no|protective|case|silicone|phone|style) cover(s)?", "promotional game", "starter pack", "Microphone", "KontrolFreek",
     "sniper thumbs", "(game|skin|thumb|Silicone|floating) grip", "thumb( )?stick", "(screen|grip) (protector|combat|stick)", "leg strap", "Cleaning Cloth",
     "dual( )?(shock|charge)", "efigs", "gamepad", "(toy|joy|ring)(\\s+)?con", "controller", "(card|stand) holder", "memory card", "(Spa|messenger)?( )?Bag", "keyring",
-    "headset", "\\bhdmi\\b", "\\bUSB\\b", "\\bhdd\\b", "(nintendo|switch) labo", "(steering|racing|driving|official|nintendo) wheel", "wristband", "horipad", "(cord|power|hdmi)( )?(adapter|level|supply)", "tv tuner",
+    "headset", "\\bhdmi\\b", "\\bUSB\\b", "\\bhdd\\b", "(nintendo|switch) labo", "(steering|racing|driving|official|nintendo|wii) wheel", "wristband", "horipad", "(cord|power|hdmi)( )?(adapter|level|supply)", "tv tuner",
     "100k", "50k", "\\bDL( )?C\\b", "pve", "starter (set|pack|bundle|kit)", "figure(s)? bundle", "k eso", "(mini|gift) toy", "pad pro", "cable pack", "dvd player",
     "pre(\\s+|-)?(order|sale)", "season pass", "(steel|art)( )?book", "(game|mini)( )?figure", "collectable", "collectible", "remote control", "(aux|charg(ing|e)|power) cable",
     "membership", "(subscription|gift)( |-)?card", "12 month", "(wallpaper|dynamic) theme", "themes", "account", "achievement pack",
     "(xp|level|lvl) boost", "gamer score", "trophy service", "platinum trophy", "arcade mini", "boosting levels",
-    "samsung", "huawei", "iphone", "sandisk", "server", "wireless", "Tempered Glass",
+    "samsung", "huawei", "iphone", "sandisk", "server", "wireless", "Tempered Glass", "Early Access", "beta test",
     "(usa|hungarian|scandinavian|asian|korea(n)?|polish|german|promo(tional)?|starter|demo|french|jap(an)?(ese)?|dutch|italian|spanish|us(a)?|digital|nordic) (release|cover|pack|box|import|item|disc|vers|copy)", "arabic", "slovakian", "czech",
     "\\bhori\\b", "\\bDE\\b", "ID59z", "\\bemail\\b",
     "ark survival(\\s+(\\w+|\\d+)){5,}", "Code(-| )?in(-| )?(a)?(-| )?Box",
