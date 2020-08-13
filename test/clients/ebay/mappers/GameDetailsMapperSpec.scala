@@ -119,7 +119,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      gameDetails.name must be (Some("LEGO Avengers"))
+      gameDetails.name must be (Some("LEGO Marvel Avengers"))
     }
 
     "keep word 'ultimate' if it is too far from 'edition'" in {
@@ -127,7 +127,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      gameDetails.name must be (Some("Ultimate Alliance 3 The Black Order"))
+      gameDetails.name must be (Some("Marvel Ultimate Alliance 3 The Black Order"))
     }
 
     "map bundles" in {
@@ -183,7 +183,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         "FIFA 2019" -> "FIFA 19",
         "FIFA 2020" -> "FIFA 20",
         "WWE 2k17 2019" -> "WWE 2k17",
-        "Call of Duty: Infinite Warfare 2 2019" -> "Call of Duty: Infinite Warfare 2"
+        "Call of Duty: Infinite Warfare 2 2019" -> "Call of Duty Infinite Warfare 2"
       )
 
       forAll (titles) { case (title, expected) =>
