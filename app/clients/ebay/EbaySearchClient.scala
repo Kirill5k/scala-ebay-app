@@ -14,7 +14,7 @@ import clients.ebay.mappers.EbayItemMapper._
 import common.Logging
 import common.errors.ApiClientError
 import common.errors.ApiClientError.AuthError
-import domain.{ItemDetails, ListingDetails}
+import domain.{ItemDetails, ListingDetails, SearchQuery}
 import fs2.Stream
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 
@@ -33,16 +33,15 @@ trait EbaySearchClient[A <: ItemDetails] extends Logging {
   protected def ebayAuthClient: EbayAuthClient
   protected def ebayBrowseClient: EbayBrowseClient
   protected def categoryId: Int
-  protected def searchQueries: List[String]
   protected def newlyListedSearchFilterTemplate: String
 
   protected def removeUnwanted(itemSummary: EbayItemSummary): Boolean
 
-  def getItemsListedInLastMinutes(minutes: Int): Stream[IO, (A, ListingDetails)] = {
+  def findItemsListedInLastMinutes(query: SearchQuery, minutes: Int): Stream[IO, (A, ListingDetails)] = {
     val time = Instant.now.minusSeconds(minutes * 60).`with`(MILLI_OF_SECOND, 0)
     val filter = newlyListedSearchFilterTemplate.format(time).replaceAll("\\{", "%7B").replaceAll("}", "%7D")
 
-    Stream.emits(searchQueries)
+    Stream(query)
       .map(getSearchParams(filter, _))
       .map(searchForItems)
       .flatMap(Stream.evalSeq)
@@ -53,12 +52,12 @@ trait EbaySearchClient[A <: ItemDetails] extends Logging {
       .handleErrorWith(switchAccountIfItHasExpired)
   }
 
-  private def getSearchParams(filter: String, query: String): Map[String, String] =
+  private def getSearchParams(filter: String, query: SearchQuery): Map[String, String] =
     Map(
       "category_ids" -> categoryId.toString,
       "filter" -> filter,
       "limit" -> "200",
-      "q" -> query
+      "q" -> query.value
     )
 
   private def searchForItems(searchParams: Map[String, String]): IO[Seq[EbayItemSummary]] =

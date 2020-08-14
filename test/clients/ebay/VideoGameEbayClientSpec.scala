@@ -6,6 +6,7 @@ import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse._
 import common.errors.ApiClientError.{AuthError, HttpError}
 import domain.ItemDetails.GameDetails
+import domain.SearchQuery
 import org.mockito.ArgumentMatchersSugar
 import org.mockito.captor.ArgCaptor
 import org.mockito.scalatest.AsyncMockitoSugar
@@ -14,6 +15,7 @@ import org.scalatest.wordspec.AsyncWordSpec
 
 class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMockitoSugar with ArgumentMatchersSugar {
   val accessToken = "access-token"
+  val searchQuery = SearchQuery("xbox")
 
   "VideoGameSearchClient" should {
 
@@ -24,12 +26,12 @@ class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMock
 
       when(browseClient.search(any, any)).thenReturn(IO.pure(List()))
 
-      val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
+      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes(searchQuery, 15)
 
       itemsResponse.compile.toList.unsafeToFuture().map { items =>
-        verify(authClient, times(6)).accessToken
-        verify(browseClient, times(6)).search(eqTo(accessToken), searchParamsCaptor)
-        searchParamsCaptor.values.map(_("q")) must contain allOf ("PS3", "PS4", "XBOX ONE", "SWITCH", "XBOX 360", "WII")
+        verify(authClient, times(1)).accessToken
+        verify(browseClient, times(1)).search(eqTo(accessToken), searchParamsCaptor)
+        searchParamsCaptor.values.map(_("q")) must be (List("xbox"))
         searchParamsCaptor.value("limit") must be ("200")
         searchParamsCaptor.value("category_ids") must be ("139973")
         searchParamsCaptor.value("filter") must startWith ("conditionIds:%7B1000|1500|2000|2500|3000|4000|5000%7D,itemLocationCountry:GB,deliveryCountry:GB,price:[0..90],priceCurrency:GBP,itemLocationCountry:GB,buyingOptions:%7BFIXED_PRICE%7D,itemStartDate:[")
@@ -42,24 +44,16 @@ class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMock
       val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
       when(authClient.accessToken).thenReturn(IO.pure(accessToken))
-      when(browseClient.getItem(any, any)).thenReturn(IO.pure(None))
+      when(browseClient.search(any, any)).thenReturn(IO.raiseError(AuthError("Too many requests")))
 
-      doReturn(IO.pure(List()))
-        .doReturn(IO.pure(List(ebayItemSummary("1"))))
-        .doReturn(IO.pure(List()))
-        .doReturn(IO.raiseError(AuthError("Too many requests")))
-        .doReturn(IO.pure(List()))
-        .doReturn(IO.pure(List()))
-        .when(browseClient).search(any, any)
-
-      val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
+      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes(searchQuery, 15)
 
       itemsResponse.compile.toList.unsafeToFuture().map { error =>
         videoGameSearchClient.itemsIds.isEmpty must be (true)
-        verify(authClient, times(7)).accessToken
-        verify(authClient, times(1)).switchAccount
-        verify(browseClient, times(4)).search(eqTo(accessToken), anyMap[String, String])
-        verify(browseClient).getItem(accessToken, "1")
+        verify(authClient).accessToken
+        verify(authClient).switchAccount
+        verify(browseClient).search(eqTo(accessToken), anyMap[String, String])
+        verify(browseClient, never).getItem(any[String], any[String])
         error must be (List())
       }
     }
@@ -69,18 +63,13 @@ class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMock
       val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
       doReturn(IO.raiseError(HttpError(400, "Bad request")))
-        .doReturn(IO.pure(ebayItemSummaries("item-1", "item-2")))
-        .doReturn(IO.pure(ebayItemSummaries("item-3", "item-4")))
-        .doReturn(IO.pure(List()))
-        .doReturn(IO.pure(List()))
-        .doReturn(IO.pure(List()))
         .when(browseClient).search(any, any)
 
-      val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
+      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes(searchQuery, 15)
 
       itemsResponse.compile.toList.unsafeToFuture().map { error =>
         videoGameSearchClient.itemsIds.isEmpty must be (true)
-        verify(authClient, times(6)).accessToken
+        verify(authClient, times(1)).accessToken
         verify(authClient, never).switchAccount
         verify(browseClient, times(1)).search(eqTo(accessToken), anyMap[String, String])
         verify(browseClient, never).getItem(any, any)
@@ -93,19 +82,14 @@ class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMock
       val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
       doReturn(IO.pure(List(ebayItemSummary("1", feedbackPercentage = 90), ebayItemSummary("1", feedbackScore = 4))))
-        .doReturn(IO.pure(List()))
-        .doReturn(IO.pure(List()))
-        .doReturn(IO.pure(List()))
-        .doReturn(IO.pure(List()))
-        .doReturn(IO.pure(List()))
         .when(browseClient).search(any, any)
 
-      val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
+      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes(searchQuery, 15)
 
       itemsResponse.compile.toList.unsafeToFuture().map { items =>
         videoGameSearchClient.itemsIds.isEmpty must be (true)
-        verify(authClient, times(6)).accessToken
-        verify(browseClient, times(6)).search(eqTo(accessToken), anyMap[String, String])
+        verify(authClient, times(1)).accessToken
+        verify(browseClient, times(1)).search(eqTo(accessToken), anyMap[String, String])
         verify(browseClient, never).getItem(any, any)
         items must be (List())
       }
@@ -139,11 +123,9 @@ class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMock
         ebayItemSummary("21", name = """borderlands 4 promotional copy"""),
         ebayItemSummary("22", name = """Shiny 6IV Go Park Level 1 Timid Trace Gardevoir Sword/Shield Switch Master Ball""")
       )))
-        .doReturn(IO.pure(List()))
-        .doReturn(IO.pure(List()))
         .when(browseClient).search(any, any)
 
-      val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
+      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes(searchQuery, 15)
 
       itemsResponse.compile.toList.unsafeToFuture().map { items =>
         videoGameSearchClient.itemsIds.isEmpty must be (true)
@@ -155,28 +137,16 @@ class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMock
       val (authClient, browseClient) = mockEbayClients
       val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
 
-      doReturn(IO.pure(ebayItemSummaries("item-1")))
-        .doReturn(IO.pure(ebayItemSummaries("item-2")))
-        .doReturn(IO.pure(ebayItemSummaries("item-3")))
-        .doReturn(IO.pure(ebayItemSummaries("item-4")))
-        .doReturn(IO.pure(ebayItemSummaries("item-5")))
-        .doReturn(IO.pure(ebayItemSummaries("item-6")))
-        .when(browseClient).search(any, any)
+      when(browseClient.search(any, any)).thenReturn(IO.pure(ebayItemSummaries("item-1")))
+      when(browseClient.getItem(accessToken, "item-1")).thenReturn(IO.pure(Some(ebayItem.copy(itemId = "item-1"))))
 
-      doReturn(IO.pure(None)).when(browseClient).getItem(accessToken, "item-1")
-      doReturn(IO.pure(None)).when(browseClient).getItem(accessToken, "item-2")
-      doReturn(IO.pure(Some(ebayItem.copy(itemId = "item-3")))).when(browseClient).getItem(accessToken, "item-3")
-      doReturn(IO.pure(None)).when(browseClient).getItem(accessToken, "item-4")
-      doReturn(IO.pure(None)).when(browseClient).getItem(accessToken, "item-5")
-      doReturn(IO.pure(None)).when(browseClient).getItem(accessToken, "item-6")
-
-      val itemsResponse = videoGameSearchClient.getItemsListedInLastMinutes(15)
+      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes(searchQuery, 15)
 
       itemsResponse.compile.toList.unsafeToFuture().map { items =>
-        videoGameSearchClient.itemsIds.containsKey("item-3") must be (true)
-        verify(authClient, times(12)).accessToken
-        verify(browseClient, times(6)).search(eqTo(accessToken), anyMap[String, String])
-        verify(browseClient, times(6)).getItem(eqTo(accessToken), any)
+        videoGameSearchClient.itemsIds.containsKey("item-1") must be (true)
+        verify(authClient, times(2)).accessToken
+        verify(browseClient, times(1)).search(eqTo(accessToken), anyMap[String, String])
+        verify(browseClient, times(1)).getItem(eqTo(accessToken), any)
         items.map(_._1) must be (List(GameDetails(Some("call of duty modern warfare"), Some("XBOX ONE"), Some("2019"), Some("Action"))))
       }
     }

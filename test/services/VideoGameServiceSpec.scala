@@ -4,7 +4,7 @@ import cats.effect.IO
 import clients.cex.CexClient
 import clients.ebay.VideoGameEbayClient
 import clients.telegram.TelegramClient
-import domain.VideoGameBuilder
+import domain.{SearchQuery, VideoGameBuilder}
 import domain.ResellableItem.VideoGame
 import fs2.Stream
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
@@ -26,17 +26,17 @@ class VideoGameServiceSpec extends AnyWordSpec with Matchers with ScalaFutures w
     "return new items from ebay" in {
       val (repository, ebayClient, cexClient) = mockDependecies
       val searchResponse = List((videoGame.itemDetails, videoGame.listingDetails), (videoGame2.itemDetails, videoGame2.listingDetails))
-      when(ebayClient.getItemsListedInLastMinutes(anyInt)).thenReturn(Stream.evalSeq(IO.pure(searchResponse)))
+      when(ebayClient.findItemsListedInLastMinutes(any[SearchQuery], anyInt)).thenReturn(Stream.evalSeq(IO.pure(searchResponse)))
       when(cexClient.findResellPrice(videoGame.itemDetails)).thenReturn(IO.pure(videoGame.resellPrice))
       when(cexClient.findResellPrice(videoGame2.itemDetails)).thenReturn(IO.pure(None))
 
       val service = new VideoGameService(repository, ebayClient, cexClient)
 
-      val latestItemsResponse = service.getLatestFromEbay(10)
+      val latestItemsResponse = service.searchEbay(SearchQuery("xbox"), 10)
 
       whenReady(latestItemsResponse.compile.toList.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
         items must be (List(videoGame, videoGame2))
-        verify(ebayClient).getItemsListedInLastMinutes(10)
+        verify(ebayClient).findItemsListedInLastMinutes(SearchQuery("xbox"), 10)
         verify(cexClient).findResellPrice(videoGame.itemDetails)
         verify(cexClient).findResellPrice(videoGame2.itemDetails)
       }
@@ -74,7 +74,7 @@ class VideoGameServiceSpec extends AnyWordSpec with Matchers with ScalaFutures w
       when(repository.findAll(any, any, any)).thenReturn(IO.pure(List(videoGame)))
       val service = new VideoGameService(repository, ebayClient, cexClient)
 
-      val latestResult = service.getLatest(Some(10), None, None)
+      val latestResult = service.get(Some(10), None, None)
 
       whenReady(latestResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { latest =>
         latest must be (List(videoGame))

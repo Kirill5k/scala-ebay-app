@@ -28,7 +28,7 @@ class VideoGameController @Inject()(
 
   def getAll(limit: Option[Int], from: Option[Instant], to: Option[Instant]): Action[AnyContent] = Action.async {
     itemService
-      .getLatest(limit, from, to)
+      .get(limit, from, to)
       .map(toSuccessResult[Seq[VideoGame]])
       .unsafeToFuture()
       .recover {
@@ -38,7 +38,7 @@ class VideoGameController @Inject()(
 
   def summary(from: Option[Instant], to: Option[Instant]): Action[AnyContent] = Action.async {
     itemService
-      .getLatest(None, from, to)
+      .get(None, from, to)
       .map(VideoGameController.resellableItemsSummaryResponse)
       .map(toSuccessResult[ResellableItemsSummaryResponse])
       .unsafeToFuture()

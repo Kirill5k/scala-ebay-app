@@ -2,13 +2,12 @@ package services
 
 import java.time.Instant
 
-import cats.effect.{IO, Timer}
+import cats.effect.IO
 import clients.cex.CexClient
 import clients.ebay.{EbaySearchClient, VideoGameEbayClient}
-import clients.telegram.TelegramClient
 import domain.ItemDetails.GameDetails
 import domain.ResellableItem.VideoGame
-import domain.{ItemDetails, ListingDetails, ResellPrice, ResellableItem}
+import domain.{ItemDetails, ListingDetails, ResellPrice, ResellableItem, SearchQuery}
 import fs2.Stream
 import javax.inject.Inject
 import repositories.ResellableItemEntity.VideoGameEntity
@@ -24,15 +23,17 @@ trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: Resellab
 
   protected def createItem(itemDetails: D, listingDetails: ListingDetails, resellPrice: Option[ResellPrice]): I
 
-  def getLatestFromEbay(minutes: Int): Stream[IO, I] =
+  def searchEbay(query: SearchQuery, minutes: Int): Stream[IO, I] =
     ebaySearchClient
-      .getItemsListedInLastMinutes(minutes)
-      .evalMap { case (id, ld) => cexClient.findResellPrice(id).map(rp => createItem(id, ld, rp)) }
+      .findItemsListedInLastMinutes(query, minutes)
+      .evalMap {
+        case (id, ld) => cexClient.findResellPrice(id).map(rp => createItem(id, ld, rp))
+      }
 
   def save(item: I): IO[Unit] =
     itemRepository.save(item)
 
-  def getLatest(limit: Option[Int], from: Option[Instant], to: Option[Instant]): IO[Seq[I]] =
+  def get(limit: Option[Int], from: Option[Instant], to: Option[Instant]): IO[Seq[I]] =
     itemRepository.findAll(limit, from, to)
 
   def isNew(item: I): IO[Boolean] =

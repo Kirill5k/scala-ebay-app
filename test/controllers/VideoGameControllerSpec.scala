@@ -23,7 +23,7 @@ class VideoGameControllerSpec extends PlaySpec with MockitoSugar with ArgumentMa
 
     "return list of video games" in {
       val service = mock[VideoGameService]
-      when(service.getLatest(any, any, any)).thenReturn(IO.pure(List(videoGame, videoGame2)))
+      when(service.get(any, any, any)).thenReturn(IO.pure(List(videoGame, videoGame2)))
 
       val controller = new VideoGameController(service, stubControllerComponents())
 
@@ -34,12 +34,12 @@ class VideoGameControllerSpec extends PlaySpec with MockitoSugar with ArgumentMa
       status(itemsResponse) mustBe OK
       contentType(itemsResponse) mustBe Some("application/json")
       contentAsString(itemsResponse) mustBe ("""[{"itemDetails":{"name":"super mario 3","platform":"XBOX ONE","releaseYear":"2019","genre":"Action","packaging":"single"},"listingDetails":{"url":"https://www.ebay.co.uk/itm/super-mario-3","title":"super mario 3","shortDescription":"super mario 3 xbox one 2019. Condition is New. Game came as part of bundle and not wanted. Never playes. Dispatched with Royal Mail 1st Class Large Letter.","description":null,"image":"https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg","buyingOptions":["FIXED_PRICE"],"sellerName":"168.robinhood","price":32.99,"condition":"New","datePosted":"2020-01-01T00:00:00Z","dateEnded":null,"properties":{"Game Name":"super mario 3","Release Year":"2019","Platform":"Microsoft Xbox One","Genre":"Action"}},"resellPrice":{"cash":100,"exchange":80}},{"itemDetails":{"name":"Battlefield 1","platform":"XBOX ONE","releaseYear":"2019","genre":"Action","packaging":"single"},"listingDetails":{"url":"https://www.ebay.co.uk/itm/battlefield-1","title":"Battlefield 1","shortDescription":"Battlefield 1 xbox one 2019. Condition is New. Game came as part of bundle and not wanted. Never playes. Dispatched with Royal Mail 1st Class Large Letter.","description":null,"image":"https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg","buyingOptions":["FIXED_PRICE"],"sellerName":"168.robinhood","price":32.99,"condition":"New","datePosted":"2020-01-01T00:00:00Z","dateEnded":null,"properties":{"Game Name":"Battlefield 1","Release Year":"2019","Platform":"Microsoft Xbox One","Genre":"Action"}},"resellPrice":null}]""")
-      verify(service).getLatest(Some(100), Some(from), Some(to))
+      verify(service).get(Some(100), Some(from), Some(to))
     }
 
     "return summary of video games" in {
       val service = mock[VideoGameService]
-      when(service.getLatest(any, any, any)).thenReturn(IO.pure(List(videoGame, videoGame2, videoGame3)))
+      when(service.get(any, any, any)).thenReturn(IO.pure(List(videoGame, videoGame2, videoGame3)))
 
       val controller = new VideoGameController(service, stubControllerComponents())
 
@@ -50,12 +50,12 @@ class VideoGameControllerSpec extends PlaySpec with MockitoSugar with ArgumentMa
       status(itemsResponse) mustBe OK
       contentType(itemsResponse) mustBe Some("application/json")
       contentAsString(itemsResponse) mustBe ("""{"total":3,"unrecognized":{"total":1,"items":[{"name":"Battlefield 1 XBOX ONE","url":"https://www.ebay.co.uk/itm/battlefield-1","price":32.99}]},"profitable":{"total":1,"items":[{"name":"super mario 3 XBOX ONE","url":"https://www.ebay.co.uk/itm/super-mario-3","price":32.99}]},"rest":{"total":1,"items":[{"name":"Battlefield 1 XBOX ONE","url":"https://www.ebay.co.uk/itm/battlefield-1","price":32.99}]}}""")
-      verify(service).getLatest(None, Some(from), Some(to))
+      verify(service).get(None, Some(from), Some(to))
     }
 
     "return error" in {
       val service = mock[VideoGameService]
-      when(service.getLatest(any, any, any)).thenReturn(IO.raiseError(HttpError(400, "bad request")))
+      when(service.get(any, any, any)).thenReturn(IO.raiseError(HttpError(400, "bad request")))
 
       val controller = new VideoGameController(service, stubControllerComponents())
 
@@ -64,7 +64,7 @@ class VideoGameControllerSpec extends PlaySpec with MockitoSugar with ArgumentMa
       status(itemsResponse) mustBe INTERNAL_SERVER_ERROR
       contentType(itemsResponse) mustBe Some("application/json")
       contentAsString(itemsResponse) mustBe ("""{"message":"bad request"}""")
-      verify(service).getLatest(None, None, None)
+      verify(service).get(None, None, None)
     }
   }
 }

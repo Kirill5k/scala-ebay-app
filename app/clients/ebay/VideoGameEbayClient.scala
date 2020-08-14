@@ -9,7 +9,10 @@ import javax.inject._
 
 
 @Singleton
-class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebayBrowseClient: EbayBrowseClient) extends EbaySearchClient[GameDetails] {
+class VideoGameEbayClient @Inject()(
+  val ebayAuthClient: EbayAuthClient,
+  val ebayBrowseClient: EbayBrowseClient
+) extends EbaySearchClient[GameDetails] {
 
   implicit override protected val m: EbayItemMapper[GameDetails] = EbayItemMapper.gameDetailsMapper
 
@@ -56,7 +59,6 @@ class VideoGameEbayClient @Inject()(val ebayAuthClient: EbayAuthClient, val ebay
   ).mkString("^.*?(?i)(", "|", ").*$").r
 
   override protected val categoryId: Int = 139973
-  override protected val searchQueries: List[String] = List("PS3", "PS4", "XBOX ONE", "SWITCH", "XBOX 360", "WII")
 
   override protected val newlyListedSearchFilterTemplate: String = DEFAULT_SEARCH_FILTER + "buyingOptions:{FIXED_PRICE},itemStartDate:[%s]"
 

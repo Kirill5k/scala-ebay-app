@@ -37,7 +37,7 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) exte
         queryResellPrice(query)
       case None =>
         IO(logger.warn(s"not enough details to query for resell price $itemDetails")) *>
-          IO.pure(none[ResellPrice])
+          IO.pure(None)
     }
 
   private def queryResellPrice(query: String): IO[Option[ResellPrice]] =
