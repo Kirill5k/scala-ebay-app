@@ -1,8 +1,8 @@
 package common
 
-import org.slf4j.LoggerFactory
+import play.api.Logger
 
 trait Logging {
   val loggerName             = getClass.getName
-  @transient lazy val logger = LoggerFactory.getLogger(loggerName)
+  @transient lazy val logger = Logger(loggerName)
 }

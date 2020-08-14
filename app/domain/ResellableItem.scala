@@ -1,7 +1,5 @@
 package domain
 
-import java.time.Instant
-
 sealed trait ResellableItem {
   def itemDetails: ItemDetails
   def listingDetails: ListingDetails

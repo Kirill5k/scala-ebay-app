@@ -17,7 +17,6 @@ import repositories.{ResellableItemEntity, ResellableItemRepository, VideoGameRe
 import scala.concurrent.ExecutionContext
 
 trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: ResellableItemEntity] {
-  implicit protected def timer: Timer[IO]
 
   protected def itemRepository: ResellableItemRepository[I, E]
   protected def ebaySearchClient: EbaySearchClient[D]
@@ -47,8 +46,10 @@ class VideoGameService @Inject()(
 )(implicit ex: ExecutionContext)
     extends ResellableItemService[VideoGame, GameDetails, VideoGameEntity] {
 
-  implicit override protected val timer: Timer[IO] = IO.timer(ex)
-
-  override protected def createItem(itemDetails: GameDetails, listingDetails: ListingDetails, resellPrice: Option[ResellPrice]): VideoGame =
+  override protected def createItem(
+      itemDetails: GameDetails,
+      listingDetails: ListingDetails,
+      resellPrice: Option[ResellPrice]
+  ): VideoGame =
     VideoGame.apply(itemDetails, listingDetails, resellPrice)
 }

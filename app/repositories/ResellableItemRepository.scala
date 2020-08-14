@@ -4,6 +4,7 @@ import java.time.Instant
 
 import cats.effect.{ContextShift, IO}
 import cats.implicits._
+import common.Logging
 import domain.ApiClientError.DbError
 import domain.ResellableItem
 import play.api.Logger
@@ -16,7 +17,7 @@ import reactivemongo.play.json._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait ResellableItemRepository[D <: ResellableItem, E <: ResellableItemEntity] {
+trait ResellableItemRepository[D <: ResellableItem, E <: ResellableItemEntity] extends Logging {
   implicit protected def ex: ExecutionContext
   implicit protected def mongo: ReactiveMongoApi
   implicit protected def entityMapper: ResellableItemEntityMapper[D, E]
@@ -26,8 +27,6 @@ trait ResellableItemRepository[D <: ResellableItem, E <: ResellableItemEntity] {
 
   protected def collectionName: String
   protected val itemCollection: Future[JSONCollection] = mongo.database.map(_.collection(collectionName))
-
-  private val log: Logger = Logger(getClass)
 
   def existsByUrl(listingUrl: String): IO[Boolean] =
     toIO(itemCollection.flatMap { collection =>
@@ -63,7 +62,7 @@ trait ResellableItemRepository[D <: ResellableItem, E <: ResellableItemEntity] {
 
   private def toIO[A](result: Future[A]): IO[A] =
     IO.fromFuture(IO(result)).handleErrorWith { e =>
-      log.error("error during db operation", e)
+      logger.error("error during db operation", e)
       IO.raiseError(DbError(s"error during db operation: ${e.getMessage}"))
     }
 

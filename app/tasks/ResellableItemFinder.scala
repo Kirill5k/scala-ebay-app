@@ -2,14 +2,12 @@ package tasks
 
 import akka.actor.ActorSystem
 import cats.effect.IO
-import cats.implicits._
 import common.Logging
 import domain.ItemDetails.GameDetails
 import domain.ResellableItem.VideoGame
 import domain.{ItemDetails, ResellableItem}
 import fs2.Stream
 import javax.inject.Inject
-import play.api.Logger
 import repositories.ResellableItemEntity
 import repositories.ResellableItemEntity.VideoGameEntity
 import services.{NotificationService, ResellableItemService, TelegramNotificationService, VideoGameService}
@@ -40,7 +38,7 @@ trait ResellableItemFinder[I <: ResellableItem, D <: ItemDetails, E <: Resellabl
     item => item.resellPrice.exists(rp => (rp.exchange * 100 / item.listingDetails.price - 100) > minMarginPercentage)
 }
 
-class VideoGamesFinder @Inject()(
+final class VideoGamesFinder @Inject()(
     override val itemService: VideoGameService,
     override val notificationService: TelegramNotificationService,
     actorSystem: ActorSystem

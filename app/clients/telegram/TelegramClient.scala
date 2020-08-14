@@ -2,6 +2,7 @@ package clients.telegram
 
 import cats.effect.IO
 import cats.implicits._
+import common.Logging
 import common.config.AppConfig
 import common.resources.SttpBackendResource
 import domain.{ApiClientError, ResellableItem}
@@ -9,7 +10,7 @@ import javax.inject.Inject
 import play.api.Logger
 import sttp.client._
 
-class TelegramClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) {
+class TelegramClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) extends Logging {
   private val log: Logger = Logger(getClass)
   private val telegramConfig = AppConfig.load().telegram
 
@@ -25,7 +26,7 @@ class TelegramClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO])
           r.body match {
             case Right(_) => IO.pure(())
             case Left(error) =>
-              IO(log.error(s"error sending message to telegram: ${r.code}\n$error")) *>
+              IO(logger.error(s"error sending message to telegram: ${r.code}\n$error")) *>
                 IO.raiseError(ApiClientError.HttpError(r.code.code, s"error sending message to telegram channel $channelId: ${r.code}"))
           }
         }

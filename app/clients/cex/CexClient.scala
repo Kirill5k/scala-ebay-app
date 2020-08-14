@@ -4,22 +4,20 @@ import java.util.concurrent.TimeUnit
 
 import cats.effect.IO
 import cats.implicits._
+import common.Logging
 import common.config.AppConfig
 import domain.{ApiClientError, ItemDetails, ResellPrice}
 import io.circe.generic.auto._
 import javax.inject.{Inject, Singleton}
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
-import play.api.{Configuration, Logger}
 import common.resources.SttpBackendResource
 import sttp.client._
 import sttp.client.circe._
 import sttp.model.{HeaderNames, MediaType, StatusCode}
 
 @Singleton
-class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) {
+class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) extends Logging {
   import CexClient._
-
-  private val log: Logger = Logger(getClass)
 
   private val cexConfig = AppConfig.load().cex
 
@@ -36,7 +34,7 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) {
       case Some(query) =>
         queryResellPrice(query)
       case None =>
-        IO(log.warn(s"not enough details to query for resell price $itemDetails")) *>
+        IO(logger.warn(s"not enough details to query for resell price $itemDetails")) *>
           IO.pure(none[ResellPrice])
     }
 
@@ -53,10 +51,10 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) {
             case status if status.isSuccess =>
               IO.fromEither(r.body.map(getMinResellPrice(query)).left.map(ApiClientError.recoverFromHttpCallFailure))
             case StatusCode.TooManyRequests =>
-              IO(log.error(s"too many requests to cex")) *>
+              IO(logger.error(s"too many requests to cex")) *>
                 IO.pure(none[ResellPrice])
             case status =>
-              IO(log.error(s"error sending price query to cex: $status\n${r.body.fold(_.body, _.toString)}")) *>
+              IO(logger.error(s"error sending price query to cex: $status\n${r.body.fold(_.body, _.toString)}")) *>
                 IO.raiseError(ApiClientError.HttpError(status.code, s"error sending request to cex: $status"))
           }
         }
@@ -69,7 +67,7 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) {
       cheapest <- data.boxes.minByOption(_.exchangePrice)
     } yield ResellPrice(BigDecimal.valueOf(cheapest.cashPrice), BigDecimal.valueOf(cheapest.exchangePrice))
 
-    if (resellPrice.isEmpty) log.warn(s"search '$query' returned 0 results")
+    if (resellPrice.isEmpty) logger.warn(s"search '$query' returned 0 results")
     else searchResultsCache.put(query, resellPrice)
 
     resellPrice

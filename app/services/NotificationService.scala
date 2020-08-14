@@ -11,6 +11,7 @@ import javax.inject.Inject
 
 trait NotificationService[F[_]] extends Logging {
   def cheapItem(item: ResellableItem): F[Unit]
+  def wantedItem(item: ResellableItem): F[Unit]
 }
 
 final class TelegramNotificationService @Inject()(
@@ -28,6 +29,8 @@ final class TelegramNotificationService @Inject()(
           IO.pure(None)
     }
   }
+
+  override def wantedItem(item: ResellableItem): IO[Unit] = ???
 }
 
 object NotificationService {

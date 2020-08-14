@@ -3,6 +3,7 @@ package clients.ebay.auth
 import cats.effect.IO
 import cats.effect.concurrent.Ref
 import cats.implicits._
+import common.Logging
 import common.config.AppConfig
 import common.resources.SttpBackendResource
 import domain.ApiClientError
@@ -10,16 +11,14 @@ import domain.ApiClientError._
 import io.circe.generic.auto._
 import io.circe.parser._
 import javax.inject._
-import play.api.Logger
 import sttp.client._
 import sttp.client.circe._
 import sttp.model.{HeaderNames, MediaType, StatusCode}
 
 @Singleton
-private[ebay] class EbayAuthClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) {
+private[ebay] class EbayAuthClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) extends Logging {
   import EbayAuthClient._
 
-  private val log: Logger = Logger(getClass)
   private val ebayConfig  = AppConfig.load().ebay
 
   private val expiredToken: IO[Ref[IO, Either[ApiClientError, EbayAuthToken]]] =
@@ -37,7 +36,7 @@ private[ebay] class EbayAuthClient @Inject()(catsSttpBackendResource: SttpBacken
     } yield validToken.token
 
   def switchAccount(): Unit = {
-    log.warn("switching ebay account")
+    logger.warn("switching ebay account")
     currentAccountIndex = if (currentAccountIndex + 1 < ebayConfig.credentials.length) currentAccountIndex + 1 else 0
     authTokenRef = expiredToken
   }
@@ -61,7 +60,7 @@ private[ebay] class EbayAuthClient @Inject()(catsSttpBackendResource: SttpBacken
             case Left(error) =>
               val message = decode[EbayAuthErrorResponse](error.body)
                 .fold(_ => error.body, e => s"${e.error}: ${e.error_description}")
-              IO(log.error(s"error authenticating with ebay ${r.code}: $message (cid - ${credentials.clientId})")) *>
+              IO(logger.error(s"error authenticating with ebay ${r.code}: $message (cid - ${credentials.clientId})")) *>
                 (if (r.code == StatusCode.TooManyRequests || r.code == StatusCode.Unauthorized) IO(switchAccount()) *> authenticate()
                 else IO.pure(Left(ApiClientError.HttpError(r.code.code, s"error authenticating with ebay: $message"))))
           }
