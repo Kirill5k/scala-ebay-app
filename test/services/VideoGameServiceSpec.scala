@@ -24,13 +24,13 @@ class VideoGameServiceSpec extends AnyWordSpec with Matchers with ScalaFutures w
 
   "VideoGameService" should {
     "return new items from ebay" in {
-      val (repository, ebayClient, telegramClient, cexClient) = mockDependecies
+      val (repository, ebayClient, cexClient) = mockDependecies
       val searchResponse = List((videoGame.itemDetails, videoGame.listingDetails), (videoGame2.itemDetails, videoGame2.listingDetails))
       when(ebayClient.getItemsListedInLastMinutes(anyInt)).thenReturn(Stream.evalSeq(IO.pure(searchResponse)))
       when(cexClient.findResellPrice(videoGame.itemDetails)).thenReturn(IO.pure(videoGame.resellPrice))
       when(cexClient.findResellPrice(videoGame2.itemDetails)).thenReturn(IO.pure(None))
 
-      val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
+      val service = new VideoGameService(repository, ebayClient, cexClient)
 
       val latestItemsResponse = service.getLatestFromEbay(10)
 
@@ -43,10 +43,10 @@ class VideoGameServiceSpec extends AnyWordSpec with Matchers with ScalaFutures w
     }
 
     "check if item is new" in {
-      val (repository, ebayClient, telegramClient, cexClient) = mockDependecies
+      val (repository, ebayClient, cexClient) = mockDependecies
       when(repository.existsByUrl(any)).thenReturn(IO.pure(true))
 
-      val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
+      val service = new VideoGameService(repository, ebayClient, cexClient)
 
       val isNewResult = service.isNew(videoGame)
 
@@ -57,9 +57,9 @@ class VideoGameServiceSpec extends AnyWordSpec with Matchers with ScalaFutures w
     }
 
     "store item in db" in {
-      val (repository, ebayClient, telegramClient, cexClient) = mockDependecies
+      val (repository, ebayClient, cexClient) = mockDependecies
       when(repository.save(any)).thenReturn(IO.pure(()))
-      val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
+      val service = new VideoGameService(repository, ebayClient, cexClient)
 
       val saveResult = service.save(videoGame)
 
@@ -70,9 +70,9 @@ class VideoGameServiceSpec extends AnyWordSpec with Matchers with ScalaFutures w
     }
 
     "get latest items from db" in {
-      val (repository, ebayClient, telegramClient, cexClient) = mockDependecies
+      val (repository, ebayClient, cexClient) = mockDependecies
       when(repository.findAll(any, any, any)).thenReturn(IO.pure(List(videoGame)))
-      val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
+      val service = new VideoGameService(repository, ebayClient, cexClient)
 
       val latestResult = service.getLatest(Some(10), None, None)
 
@@ -81,26 +81,12 @@ class VideoGameServiceSpec extends AnyWordSpec with Matchers with ScalaFutures w
         verify(repository).findAll(Some(10), None, None)
       }
     }
-
-    "send notification message" in {
-      val (repository, ebayClient, telegramClient, cexClient) = mockDependecies
-      when(telegramClient.sendMessageToMainChannel(any[VideoGame])).thenReturn(IO.pure(()))
-      val service = new VideoGameService(repository, ebayClient, telegramClient, cexClient)
-
-      val notificationResult = service.sendNotification(videoGame)
-
-      whenReady(notificationResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { sent =>
-        sent must be (())
-        verify(telegramClient).sendMessageToMainChannel(videoGame)
-      }
-    }
   }
 
-  def mockDependecies: (VideoGameRepository, VideoGameEbayClient, TelegramClient, CexClient) = {
+  def mockDependecies: (VideoGameRepository, VideoGameEbayClient, CexClient) = {
     val repository = mock[VideoGameRepository]
     val ebayClient = mock[VideoGameEbayClient]
-    val telegramClient = mock[TelegramClient]
     val cexClient = mock[CexClient]
-    (repository, ebayClient, telegramClient, cexClient)
+    (repository, ebayClient, cexClient)
   }
 }

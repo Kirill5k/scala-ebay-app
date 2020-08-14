@@ -1,11 +1,12 @@
-package domain
+package services
 
+import domain.{VideoGameBuilder}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 
-class ResellableItemSpec extends AnyWordSpec with Matchers {
-  import ResellableItemOps._
+class ResellableOpsSpec extends AnyWordSpec with Matchers {
+  import NotificationService._
 
   "A VideoGame" should {
     val game = VideoGameBuilder.build("super mario 3", platform = "SWITCH")
