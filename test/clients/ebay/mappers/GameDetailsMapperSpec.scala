@@ -281,14 +281,14 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
     }
 
     "quick test" in {
-      val listingDetails = testListing.copy(title = "Fable II (Xbox 360). Complete in box. Good condition.")
+      val listingDetails = testListing.copy(title = "Xbox 360 Game - Fast & Furious Showdown - PAL - VGC Free UK PP")
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
       println(gameDetails.name.get.toCharArray.toList)
       println(gameDetails.name.get.toCharArray.map(_.asDigit).toList)
 
-      gameDetails.name must be (Some("Fable II"))
+      gameDetails.name must be (Some("Fast Furious Showdown"))
     }
   }
 }
