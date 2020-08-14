@@ -4,7 +4,7 @@ import cats.effect.IO
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse._
-import domain.ApiClientError.{AuthError, HttpError}
+import common.errors.ApiClientError.{AuthError, HttpError}
 import domain.ItemDetails.GameDetails
 import org.mockito.ArgumentMatchersSugar
 import org.mockito.captor.ArgCaptor

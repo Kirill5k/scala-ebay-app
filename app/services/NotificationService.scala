@@ -11,7 +11,6 @@ import javax.inject.Inject
 
 trait NotificationService[F[_]] extends Logging {
   def cheapItem(item: ResellableItem): F[Unit]
-  def wantedItem(item: ResellableItem): F[Unit]
 }
 
 final class TelegramNotificationService @Inject()(
@@ -19,23 +18,19 @@ final class TelegramNotificationService @Inject()(
 ) extends NotificationService[IO] {
   import NotificationService._
 
-  override def cheapItem(item: ResellableItem): IO[Unit] = {
-    IO(item.notificationMessage).flatMap {
+  override def cheapItem(item: ResellableItem): IO[Unit] =
+    IO(item.cheapItemNotification).flatMap {
       case Some(message) =>
         IO(logger.info(s"""sending "$message"""")) *>
           telegramClient.sendMessageToMainChannel(message)
       case None =>
-        IO(logger.warn(s"not enough details for sending notification $item")) *>
-          IO.pure(None)
+        IO(logger.warn(s"not enough details for sending cheap item notification $item"))
     }
-  }
-
-  override def wantedItem(item: ResellableItem): IO[Unit] = ???
 }
 
 object NotificationService {
   implicit class ResellableItemOps(private val item: ResellableItem) extends AnyVal {
-    def notificationMessage: Option[String] =
+    def cheapItemNotification: Option[String] =
       for {
         itemSummary <- item.itemDetails.summary
         rp          <- item.resellPrice
@@ -43,6 +38,7 @@ object NotificationService {
         profitPercentage = rp.exchange * 100 / price - 100
         isEnding         = item.listingDetails.dateEnded.exists(_.minusSeconds(600).isBefore(Instant.now))
         url              = item.listingDetails.url
-      } yield s"""${if (isEnding) "ENDING" else "NEW"} "$itemSummary" - ebay: £$price, cex: £${rp.exchange}(${profitPercentage.intValue}%)/£${rp.cash} $url"""
+        header           = if (isEnding) "ENDING" else "NEW"
+      } yield s"""$header "$itemSummary" - ebay: £$price, cex: £${rp.exchange}(${profitPercentage.intValue}%)/£${rp.cash} $url"""
   }
 }

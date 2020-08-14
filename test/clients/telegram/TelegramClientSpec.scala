@@ -2,7 +2,7 @@ package clients.telegram
 
 import cats.effect.IO
 import clients.SttpClientSpec
-import domain.ApiClientError._
+import common.errors.ApiClientError.HttpError
 import play.api.Configuration
 import sttp.client.Response
 import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend

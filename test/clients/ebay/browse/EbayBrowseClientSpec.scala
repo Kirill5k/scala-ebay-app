@@ -2,8 +2,7 @@ package clients.ebay.browse
 
 import cats.effect.IO
 import clients.SttpClientSpec
-import domain.ApiClientError._
-import play.api.Configuration
+import common.errors.ApiClientError.AuthError
 import sttp.client.Response
 import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend
 import sttp.client.testing.SttpBackendStub

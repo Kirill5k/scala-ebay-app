@@ -3,7 +3,7 @@ package clients.ebay.auth
 import cats.effect.IO
 import cats.effect.concurrent.Ref
 import clients.SttpClientSpec
-import domain.ApiClientError._
+import common.errors.ApiClientError.HttpError
 import sttp.client
 import sttp.client.Response
 import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend

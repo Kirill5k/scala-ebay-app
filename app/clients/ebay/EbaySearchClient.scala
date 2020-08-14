@@ -12,8 +12,9 @@ import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary}
 import clients.ebay.mappers.EbayItemMapper
 import clients.ebay.mappers.EbayItemMapper._
 import common.Logging
-import domain.ApiClientError.AuthError
-import domain.{ApiClientError, ItemDetails, ListingDetails}
+import common.errors.ApiClientError
+import common.errors.ApiClientError.AuthError
+import domain.{ItemDetails, ListingDetails}
 import fs2.Stream
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 

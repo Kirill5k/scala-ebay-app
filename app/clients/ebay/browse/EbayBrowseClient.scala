@@ -5,12 +5,11 @@ import cats.implicits._
 import clients.ebay.browse.EbayBrowseResponse._
 import common.Logging
 import common.config.AppConfig
+import common.errors.ApiClientError
+import common.errors.ApiClientError.AuthError
 import common.resources.SttpBackendResource
-import domain.ApiClientError
-import domain.ApiClientError._
 import io.circe.generic.auto._
 import javax.inject._
-import play.api.Logger
 import sttp.client._
 import sttp.client.circe._
 import sttp.model.{HeaderNames, MediaType, StatusCode}

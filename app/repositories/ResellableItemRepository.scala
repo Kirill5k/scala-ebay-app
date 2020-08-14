@@ -5,9 +5,8 @@ import java.time.Instant
 import cats.effect.{ContextShift, IO}
 import cats.implicits._
 import common.Logging
-import domain.ApiClientError.DbError
+import common.errors.ApiClientError.DbError
 import domain.ResellableItem
-import play.api.Logger
 import play.api.libs.json.{JsObject, Json, OFormat}
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.{Cursor, ReadConcern, ReadPreference}
@@ -62,8 +61,8 @@ trait ResellableItemRepository[D <: ResellableItem, E <: ResellableItemEntity] e
 
   private def toIO[A](result: Future[A]): IO[A] =
     IO.fromFuture(IO(result)).handleErrorWith { e =>
-      logger.error("error during db operation", e)
-      IO.raiseError(DbError(s"error during db operation: ${e.getMessage}"))
+      IO(logger.error("error during db operation", e)) *>
+        IO.raiseError(DbError(s"error during db operation: ${e.getMessage}"))
     }
 
   private def postedDateRangeSelector(from: Option[Instant], to: Option[Instant]): Option[(String, BSONDocument)] = {

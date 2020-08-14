@@ -5,9 +5,9 @@ import cats.effect.concurrent.Ref
 import cats.implicits._
 import common.Logging
 import common.config.AppConfig
+import common.errors.ApiClientError
+import common.errors.ApiClientError.AuthError
 import common.resources.SttpBackendResource
-import domain.ApiClientError
-import domain.ApiClientError._
 import io.circe.generic.auto._
 import io.circe.parser._
 import javax.inject._

@@ -3,7 +3,7 @@ package controllers
 import java.time.Instant
 
 import cats.effect.IO
-import domain.ApiClientError.HttpError
+import common.errors.ApiClientError.HttpError
 import domain.{ResellPrice, VideoGameBuilder}
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatestplus.play._

@@ -6,7 +6,9 @@ import cats.effect.IO
 import cats.implicits._
 import common.Logging
 import common.config.AppConfig
-import domain.{ApiClientError, ItemDetails, ResellPrice}
+import common.errors.ApiClientError
+import common.errors.ApiClientError.JsonParsingError
+import domain.{ItemDetails, ResellPrice}
 import io.circe.generic.auto._
 import javax.inject.{Inject, Singleton}
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
@@ -38,7 +40,7 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) exte
           IO.pure(none[ResellPrice])
     }
 
-  private def queryResellPrice(query: String): IO[Option[ResellPrice]] = {
+  private def queryResellPrice(query: String): IO[Option[ResellPrice]] =
     catsSttpBackendResource.get.use { implicit b =>
       basicRequest
         .get(uri"${cexConfig.baseUri}/v3/boxes?q=${query}")
@@ -48,18 +50,22 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) exte
         .send()
         .flatMap { r =>
           r.code match {
-            case status if status.isSuccess =>
-              IO.fromEither(r.body.map(getMinResellPrice(query)).left.map(ApiClientError.recoverFromHttpCallFailure))
+            case s if s.isSuccess =>
+              val resellPrice = r.body.map(getMinResellPrice(query))
+                .left.map {
+                  case DeserializationError(_, e) => JsonParsingError(s"error parsing json: $e")
+                  case e => JsonParsingError(s"error parsing json: ${e.getMessage}")
+                }
+              IO.fromEither(resellPrice)
             case StatusCode.TooManyRequests =>
               IO(logger.error(s"too many requests to cex")) *>
                 IO.pure(none[ResellPrice])
-            case status =>
-              IO(logger.error(s"error sending price query to cex: $status\n${r.body.fold(_.body, _.toString)}")) *>
-                IO.raiseError(ApiClientError.HttpError(status.code, s"error sending request to cex: $status"))
+            case s =>
+              IO(logger.error(s"error sending price query to cex: $s\n${r.body.fold(_.body, _.toString)}")) *>
+                IO.raiseError(ApiClientError.HttpError(s.code, s"error sending request to cex: $s"))
           }
         }
     }
-  }
 
   private def getMinResellPrice(query: String)(searchResponse: CexSearchResponse): Option[ResellPrice] = {
     val resellPrice = for {
