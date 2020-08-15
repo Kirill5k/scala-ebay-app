@@ -123,7 +123,7 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
 
       result.unsafeToFuture().map { u =>
         service.cache.get("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A") must be (mb1)
-        u must be (List(StockUpdate(StockUpdateType.PriceIncrease(BigDecimal(950.0), BigDecimal(1950.0)), mb1)))
+        u must be (List(StockUpdate(StockUpdateType.PriceRaise(BigDecimal(950.0), BigDecimal(1950.0)), mb1)))
       }
     }
 

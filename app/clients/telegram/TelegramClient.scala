@@ -15,6 +15,9 @@ class TelegramClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO])
   def sendMessageToMainChannel(message: String): IO[Unit] =
     sendMessage(telegramConfig.mainChannelId, message)
 
+  def sendMessageToSecondaryChannel(message: String): IO[Unit] =
+    sendMessage(telegramConfig.secondaryChannelId, message)
+
   def sendMessage(channelId: String, message: String): IO[Unit] =
     catsSttpBackendResource.get.use { implicit b =>
       basicRequest

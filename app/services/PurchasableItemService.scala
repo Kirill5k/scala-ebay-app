@@ -50,7 +50,7 @@ final class GenericPurchasableItemService @Inject()(
         case Some(prev) if prev.purchasePrice.pricePerUnit > i.purchasePrice.pricePerUnit =>
           Some(StockUpdate(StockUpdateType.PriceDrop(prev.purchasePrice.pricePerUnit, i.purchasePrice.pricePerUnit), i))
         case Some(prev) if prev.purchasePrice.pricePerUnit < i.purchasePrice.pricePerUnit =>
-          Some(StockUpdate(StockUpdateType.PriceIncrease(prev.purchasePrice.pricePerUnit, i.purchasePrice.pricePerUnit), i))
+          Some(StockUpdate(StockUpdateType.PriceRaise(prev.purchasePrice.pricePerUnit, i.purchasePrice.pricePerUnit), i))
         case _ => None
       }
     }

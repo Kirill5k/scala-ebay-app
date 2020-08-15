@@ -37,6 +37,25 @@ class TelegramClientSpec extends SttpClientSpec {
       }
     }
 
+    "send message to the secondary channel" in {
+      val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
+        .stub[IO]
+        .whenRequestMatchesPartial {
+          case r
+            if isGoingTo(r, Method.GET, "telegram.com", List("botBOT-KEY", "sendMessage"), Map("chat_id" -> "m2", "text" -> message)) =>
+            Response.ok("success")
+          case _ => throw new RuntimeException()
+        }
+
+      val telegramClient = new TelegramClient(sttpCatsBackend(testingBackend))
+
+      val result = telegramClient.sendMessageToSecondaryChannel(message)
+
+      whenReady(result.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { sent =>
+        sent must be(())
+      }
+    }
+
     "send message to the channel" in {
       val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
         .stub[IO]
