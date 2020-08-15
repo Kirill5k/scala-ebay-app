@@ -1,23 +1,17 @@
 package domain
 
-sealed trait ResellableItem {
-  def itemDetails: ItemDetails
-  def listingDetails: ListingDetails
-  def resellPrice: Option[ResellPrice]
-}
+final case class ResellableItem[D <: ItemDetails](
+  itemDetails: D,
+  listingDetails: ListingDetails,
+  resellPrice: Option[ResellPrice]
+)
 
 object ResellableItem {
   import ItemDetails._
 
-  final case class VideoGame(
-      itemDetails: GameDetails,
-      listingDetails: ListingDetails,
-      resellPrice: Option[ResellPrice]
-  ) extends ResellableItem
+  type VideoGame = ResellableItem[GameDetails]
+  type MobilePhone = ResellableItem[PhoneDetails]
 
-  final case class MobilePhone(
-      itemDetails: PhoneDetails,
-      listingDetails: ListingDetails,
-      resellPrice: Option[ResellPrice]
-  ) extends ResellableItem
+  def generic(id: GenericItemDetails, ld: ListingDetails, rp: Option[ResellPrice]): ResellableItem[GenericItemDetails] =
+    ResellableItem(id, ld, rp)
 }

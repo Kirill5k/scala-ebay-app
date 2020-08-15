@@ -2,10 +2,11 @@ package controllers
 
 import java.time.Instant
 
-import controllers.VideoGameController.ResellableItemsSummaryResponse
+import controllers.VideoGameController.{ResellableItemsSummaryResponse, VideoGameResponse}
 import domain.ResellableItem.VideoGame
-import domain.{Packaging, ResellableItem}
+import domain.{ItemDetails, ListingDetails, Packaging, ResellPrice, ResellableItem}
 import common.json._
+import domain.ItemDetails.GameDetails
 import io.circe._
 import io.circe.generic.extras.auto._
 import io.circe.generic.extras._
@@ -29,7 +30,8 @@ class VideoGameController @Inject()(
   def getAll(limit: Option[Int], from: Option[Instant], to: Option[Instant]): Action[AnyContent] = Action.async {
     itemService
       .get(limit, from, to)
-      .map(toSuccessResult[Seq[VideoGame]])
+      .map(_.map(VideoGameResponse.from))
+      .map(toSuccessResult[List[VideoGameResponse]])
       .unsafeToFuture()
       .recover {
         case error => toErrorResult(error)
@@ -55,6 +57,17 @@ class VideoGameController @Inject()(
 }
 
 object VideoGameController {
+  final case class VideoGameResponse(
+      itemDetails: GameDetails,
+      listingDetails: ListingDetails,
+      resellPrice: Option[ResellPrice]
+  )
+
+  object VideoGameResponse {
+    def from(game: VideoGame): VideoGameResponse =
+      VideoGameResponse(game.itemDetails, game.listingDetails, game.resellPrice)
+  }
+
   final case class ItemSummary(
       name: Option[String],
       url: String,
@@ -68,7 +81,7 @@ object VideoGameController {
       rest: ItemsSummary
   )
 
-  def resellableItemsSummaryResponse(items: Seq[ResellableItem]): ResellableItemsSummaryResponse = {
+  def resellableItemsSummaryResponse[D <: ItemDetails](items: Seq[ResellableItem[D]]): ResellableItemsSummaryResponse = {
     val withoutResellPrice  = items.filter(_.resellPrice.isEmpty)
     val profitableForResell = items.filter(i => i.resellPrice.exists(rp => rp.cash > i.listingDetails.price))
     val rest                = items.filter(i => !withoutResellPrice.contains(i) && !profitableForResell.contains(i))
@@ -80,7 +93,7 @@ object VideoGameController {
     )
   }
 
-  private def toItemsSummary(items: Seq[ResellableItem]): ItemsSummary =
+  private def toItemsSummary[D <: ItemDetails](items: Seq[ResellableItem[D]]): ItemsSummary =
     ItemsSummary(
       items.size,
       items.map(i => ItemSummary(i.itemDetails.fullName, i.listingDetails.url, i.listingDetails.price))

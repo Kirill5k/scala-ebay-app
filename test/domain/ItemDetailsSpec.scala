@@ -6,7 +6,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class ItemDetailsSpec extends AnyWordSpec with Matchers {
   "A VideoGame" should {
-    val game = VideoGameBuilder.build("super mario 3", platform = "SWITCH")
+    val game = ResellableItemBuilder.videoGame("super mario 3", platform = Some("SWITCH"))
 
     "return search query string" in {
       val query = game.itemDetails.fullName
@@ -20,14 +20,14 @@ class ItemDetailsSpec extends AnyWordSpec with Matchers {
   }
 
   "A MobilePhone" should {
-    val phone = MobilePhoneBuilder.build("apple", "iphone 6", "Space Grey")
-
     "return search query string" in {
+      val phone = ResellableItemBuilder.mobilePhone("apple", "iphone 6", "Space Grey")
       val query = phone.itemDetails.fullName
       query must be (Some("apple iphone 6 16GB Space Grey Unlocked"))
     }
 
     "return none is some of the parameters are missing" in {
+      val phone = ResellableItemBuilder.mobilePhone("apple", "iphone 6", "Space Grey")
       val query = phone.itemDetails.copy(model = None).fullName
       query must be (None)
     }

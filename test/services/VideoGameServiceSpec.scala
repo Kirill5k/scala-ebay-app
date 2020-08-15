@@ -3,8 +3,7 @@ package services
 import cats.effect.IO
 import clients.cex.CexClient
 import clients.ebay.VideoGameEbayClient
-import domain.ResellableItem.VideoGame
-import domain.{SearchQuery, VideoGameBuilder}
+import domain.{ResellableItem, ResellableItemBuilder, SearchQuery}
 import fs2.Stream
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatest.matchers.must.Matchers
@@ -13,8 +12,8 @@ import repositories.VideoGameRepository
 
 class VideoGameServiceSpec extends AsyncWordSpec with Matchers with MockitoSugar with ArgumentMatchersSugar {
 
-  val videoGame = VideoGameBuilder.build("super mario 3")
-  val videoGame2 = VideoGameBuilder.build("Battlefield 1", resellPrice = None)
+  val videoGame = ResellableItemBuilder.videoGame("super mario 3")
+  val videoGame2 = ResellableItemBuilder.videoGame("Battlefield 1", resellPrice = None)
 
   "VideoGameService" should {
     "return new items from ebay" in {
@@ -52,7 +51,7 @@ class VideoGameServiceSpec extends AsyncWordSpec with Matchers with MockitoSugar
       latestItemsResponse.compile.toList.unsafeToFuture().map { items =>
         verify(ebayClient).findItemsListedInLastMinutes(SearchQuery("xbox"), 10)
         verify(cexClient, never).findResellPrice(any[SearchQuery])
-        items must be (List(VideoGame(itemDetails, videoGame.listingDetails, None)))
+        items must be (List(ResellableItem(itemDetails, videoGame.listingDetails, None)))
       }
     }
 

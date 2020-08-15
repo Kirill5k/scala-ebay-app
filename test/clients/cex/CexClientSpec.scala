@@ -5,7 +5,7 @@ import clients.SttpClientSpec
 import common.errors.ApiClientError.{HttpError, JsonParsingError}
 import domain.ItemDetails.GenericItemDetails
 import domain.PurchasableItem.GenericPurchasableItem
-import domain.{PurchasableItemBuilder, PurchasePrice, ResellPrice, SearchQuery, VideoGameBuilder}
+import domain.{PurchasableItemBuilder, PurchasePrice, ResellPrice, SearchQuery}
 import sttp.client
 import sttp.client.Response
 import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend
@@ -33,13 +33,11 @@ class CexClientSpec extends SttpClientSpec {
 
       val result = cexClient.getCurrentStock(query)
 
-      whenReady(result.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
-        items must be (List(
-          PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 2, 1950.0),
-          PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/B", 1, 1800.0),
-          PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i9-9880H/16GB/1TB SSD/5500M 4GB/16\"/Space Grey/A", 1, 2200.0)
-        ))
-      }
+      result.unsafeToFuture().map(_ must be (List(
+        PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 2, 1950.0),
+        PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/B", 1, 1800.0),
+        PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i9-9880H/16GB/1TB SSD/5500M 4GB/16\"/Space Grey/A", 1, 2200.0)
+      )))
     }
 
     "find minimal resell price and store it in cache" in {
@@ -56,7 +54,7 @@ class CexClientSpec extends SttpClientSpec {
 
       val result = cexClient.findResellPrice(query)
 
-      whenReady(result.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { price =>
+      result.unsafeToFuture().map { price =>
         val expectedPrice = Some(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153)))
         price must be(expectedPrice)
         cexClient.searchResultsCache.get(query) must be(expectedPrice)
@@ -76,7 +74,7 @@ class CexClientSpec extends SttpClientSpec {
 
       val result = cexClient.findResellPrice(query)
 
-      whenReady(result.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { price =>
+      result.unsafeToFuture().map { price =>
         val expectedPrice = Some(ResellPrice(BigDecimal.valueOf(108), BigDecimal.valueOf(153)))
         price must be(expectedPrice)
         cexClient.searchResultsCache.get(query) must be(expectedPrice)
@@ -97,7 +95,7 @@ class CexClientSpec extends SttpClientSpec {
 
       val result = cexClient.findResellPrice(query)
 
-      whenReady(result.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { price =>
+      result.unsafeToFuture().map { price =>
         price must be(None)
         cexClient.searchResultsCache.containsKey(query) must be(false)
       }
@@ -117,9 +115,9 @@ class CexClientSpec extends SttpClientSpec {
 
       val result = cexClient.findResellPrice(query)
 
-      whenReady(result.attempt.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { price =>
-        price must be(Left(JsonParsingError("error parsing json: DecodingFailure(C[A], List(DownField(boxes), DownField(data), DownField(response)))")))
+      result.attempt.unsafeToFuture().map { price =>
         cexClient.searchResultsCache.isEmpty must be(true)
+        price must be(Left(JsonParsingError("error parsing json: DecodingFailure(C[A], List(DownField(boxes), DownField(data), DownField(response)))")))
       }
     }
 
@@ -137,9 +135,9 @@ class CexClientSpec extends SttpClientSpec {
 
       val result = cexClient.findResellPrice(query)
 
-      whenReady(result.attempt.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { price =>
-        price must be(Left(HttpError(400, "error sending request to cex: 400")))
+      result.attempt.unsafeToFuture().map { price =>
         cexClient.searchResultsCache.isEmpty must be(true)
+        price must be(Left(HttpError(400, "error sending request to cex: 400")))
       }
     }
 
@@ -157,7 +155,7 @@ class CexClientSpec extends SttpClientSpec {
 
       val result = cexClient.findResellPrice(query)
 
-      whenReady(result.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { price =>
+      result.unsafeToFuture().map { price =>
         price must be(None)
         cexClient.searchResultsCache.isEmpty must be(true)
       }

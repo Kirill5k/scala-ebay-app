@@ -6,11 +6,11 @@ import cats.effect.{IO, Sync}
 import cats.implicits._
 import clients.telegram.TelegramClient
 import common.Logging
-import domain.{PurchasableItem, ResellableItem, StockUpdate}
+import domain.{ItemDetails, PurchasableItem, ResellableItem, StockUpdate}
 import javax.inject.Inject
 
 trait NotificationService[F[_]] extends Logging {
-  def cheapItem(item: ResellableItem): F[Unit]
+  def cheapItem[D <: ItemDetails](item: ResellableItem[D]): F[Unit]
   def stockUpdate[I <: PurchasableItem](update: StockUpdate[I]): F[Unit]
 }
 
@@ -19,7 +19,7 @@ final class TelegramNotificationService @Inject()(
 ) extends NotificationService[IO] {
   import NotificationService._
 
-  override def cheapItem(item: ResellableItem): IO[Unit] =
+  override def cheapItem[D <: ItemDetails](item: ResellableItem[D]): IO[Unit] =
     IO(item.cheapItemNotification).flatMap {
       case Some(message) =>
         IO(logger.info(s"""sending "$message"""")) *>
@@ -40,7 +40,7 @@ final class TelegramNotificationService @Inject()(
 }
 
 object NotificationService {
-  implicit class ResellableItemOps(private val item: ResellableItem) extends AnyVal {
+  implicit class ResellableItemOps[D <: ItemDetails](private val item: ResellableItem[D]) extends AnyVal {
     def cheapItemNotification: Option[String] =
       for {
         itemSummary <- item.itemDetails.fullName

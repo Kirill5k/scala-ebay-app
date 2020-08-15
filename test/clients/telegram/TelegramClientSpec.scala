@@ -32,9 +32,7 @@ class TelegramClientSpec extends SttpClientSpec {
 
       val result = telegramClient.sendMessageToMainChannel(message)
 
-      whenReady(result.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { sent =>
-        sent must be(())
-      }
+      result.unsafeToFuture().map(_ must be(()))
     }
 
     "send message to the secondary channel" in {
@@ -51,9 +49,7 @@ class TelegramClientSpec extends SttpClientSpec {
 
       val result = telegramClient.sendMessageToSecondaryChannel(message)
 
-      whenReady(result.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { sent =>
-        sent must be(())
-      }
+      result.unsafeToFuture().map(_ must be(()))
     }
 
     "send message to the channel" in {
@@ -70,9 +66,7 @@ class TelegramClientSpec extends SttpClientSpec {
 
       val result = telegramClient.sendMessageToMainChannel(message)
 
-      whenReady(result.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { sent =>
-        sent must be(())
-      }
+      result.unsafeToFuture().map(_ must be(()))
     }
 
     "return error when not success" in {
@@ -89,9 +83,7 @@ class TelegramClientSpec extends SttpClientSpec {
 
       val result = telegramClient.sendMessageToMainChannel(message)
 
-      whenReady(result.attempt.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { sent =>
-        sent must be(Left(HttpError(400, "error sending message to telegram channel m1: 400")))
-      }
+      result.attempt.unsafeToFuture().map(_ must be(Left(HttpError(400, "error sending message to telegram channel m1: 400"))))
     }
   }
 }

@@ -1,6 +1,5 @@
 package clients.ebay.mappers
 
-import java.net.URI
 import java.time.Instant
 
 import domain.ListingDetails

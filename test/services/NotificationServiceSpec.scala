@@ -2,9 +2,7 @@ package services
 
 import cats.effect.IO
 import clients.telegram.TelegramClient
-import domain.ItemDetails.GenericItemDetails
-import domain.PurchasableItem.GenericPurchasableItem
-import domain.{PurchasableItem, PurchasableItemBuilder, PurchasePrice, StockUpdate, StockUpdateType, VideoGameBuilder}
+import domain.{PurchasableItemBuilder, ResellableItemBuilder, StockUpdate, StockUpdateType}
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
@@ -18,7 +16,7 @@ class NotificationServiceSpec extends AsyncWordSpec with Matchers with MockitoSu
       when(client.sendMessageToMainChannel(any[String])).thenReturn(IO.pure(()))
       val service = new TelegramNotificationService(client)
 
-      val videoGame = VideoGameBuilder.build("super mario 3", platform = "SWITCH")
+      val videoGame = ResellableItemBuilder.videoGame("super mario 3", platform = Some( "SWITCH"))
       val notificationResult = service.cheapItem(videoGame)
 
       notificationResult.unsafeToFuture().map {

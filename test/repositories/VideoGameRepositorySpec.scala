@@ -3,14 +3,13 @@ package repositories
 import java.time.Instant
 
 import domain.ResellableItem.VideoGame
-import domain.VideoGameBuilder
+import domain.ResellableItemBuilder
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import reactivemongo.play.json.collection.JSONCollection
 import play.api.test.Helpers._
 
 import scala.concurrent.Future
-
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
@@ -20,10 +19,10 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
   import ResellableItemEntityMapper._
 
   var videoGamesDb: Future[JSONCollection] = _
-  val videoGames: Seq[VideoGame] = List(
-      VideoGameBuilder.build("GTA 5", Instant.now().minusSeconds(1000)),
-      VideoGameBuilder.build("Call of Duty WW2", Instant.now()),
-      VideoGameBuilder.build("Super Mario 3", Instant.now().plusSeconds(1000))
+  val videoGames: List[VideoGame] = List(
+      ResellableItemBuilder.videoGame("GTA 5", Instant.now().minusSeconds(1000)),
+      ResellableItemBuilder.videoGame("Call of Duty WW2", Instant.now()),
+      ResellableItemBuilder.videoGame("Super Mario 3", Instant.now().plusSeconds(1000))
   )
 
   before {
@@ -109,7 +108,7 @@ class VideoGameRepositorySpec extends PlayWithMongoSpec with BeforeAndAfter with
 
     "save video game in db" in {
       val videoGameRepository = inject[VideoGameRepository]
-      val saveResult = videoGameRepository.save(VideoGameBuilder.build("Witcher 3"))
+      val saveResult = videoGameRepository.save(ResellableItemBuilder.videoGame("Witcher 3"))
 
       whenReady(saveResult.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { saved =>
         saved must be (())

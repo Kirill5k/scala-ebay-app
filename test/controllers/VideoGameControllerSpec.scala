@@ -4,7 +4,7 @@ import java.time.Instant
 
 import cats.effect.IO
 import common.errors.ApiClientError.HttpError
-import domain.{ResellPrice, VideoGameBuilder}
+import domain.{ResellPrice, ResellableItemBuilder}
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatestplus.play._
 import play.api.test.Helpers._
@@ -15,9 +15,9 @@ import services.VideoGameService
 class VideoGameControllerSpec extends PlaySpec with MockitoSugar with ArgumentMatchersSugar {
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  val videoGame = VideoGameBuilder.build("super mario 3", datePosted = Instant.ofEpochMilli(1577836800000L))
-  val videoGame2 = VideoGameBuilder.build("Battlefield 1", datePosted = Instant.ofEpochMilli(1577836800000L), resellPrice = None)
-  val videoGame3 = VideoGameBuilder.build("Battlefield 1", datePosted = Instant.ofEpochMilli(1577836800000L), resellPrice = Some(ResellPrice(BigDecimal.valueOf(10), BigDecimal.valueOf(5))))
+  val videoGame = ResellableItemBuilder.videoGame("super mario 3", datePosted = Instant.ofEpochMilli(1577836800000L))
+  val videoGame2 = ResellableItemBuilder.videoGame("Battlefield 1", datePosted = Instant.ofEpochMilli(1577836800000L), resellPrice = None)
+  val videoGame3 = ResellableItemBuilder.videoGame("Battlefield 1", datePosted = Instant.ofEpochMilli(1577836800000L), resellPrice = Some(ResellPrice(BigDecimal.valueOf(10), BigDecimal.valueOf(5))))
 
   "VideoGameController GET" should {
 

@@ -15,15 +15,15 @@ import services.{NotificationService, ResellableItemService, TelegramNotificatio
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
-trait ResellableItemFinder[I <: ResellableItem, D <: ItemDetails, E <: ResellableItemEntity] extends Logging {
+trait ResellableItemFinder[D <: ItemDetails] extends Logging {
 
   protected def minMarginPercentage: Int
   protected def searchQueries: List[SearchQuery]
 
-  protected def itemService: ResellableItemService[I, D, E]
+  protected def itemService: ResellableItemService[D]
   protected def notificationService: NotificationService[IO]
 
-  def searchForCheapItems(): Stream[IO, I] = {
+  def searchForCheapItems(): Stream[IO, ResellableItem[D]] = {
     fs2.Stream.emits(searchQueries)
       .flatMap(itemService.searchEbay(_, 15))
       .evalFilter(itemService.isNew)
@@ -36,7 +36,7 @@ trait ResellableItemFinder[I <: ResellableItem, D <: ItemDetails, E <: Resellabl
       }
   }
 
-  private val isProfitableToResell: I => Boolean =
+  private val isProfitableToResell: ResellableItem[D] => Boolean =
     item => item.resellPrice.exists(rp => (rp.exchange * 100 / item.listingDetails.price - 100) > minMarginPercentage)
 }
 
@@ -46,7 +46,7 @@ final class VideoGamesFinder @Inject()(
     actorSystem: ActorSystem
 )(
     implicit val ex: ExecutionContext
-) extends ResellableItemFinder[VideoGame, GameDetails, VideoGameEntity] {
+) extends ResellableItemFinder[GameDetails] {
 
   override protected val minMarginPercentage: Int = 15
   override protected val searchQueries: List[SearchQuery] = List(
