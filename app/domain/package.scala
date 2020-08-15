@@ -23,4 +23,9 @@ package object domain {
       cash: BigDecimal,
       exchange: BigDecimal
   )
+
+  final case class PurchasePrice(
+      quantityAvailable: Int,
+      pricePerUnit: BigDecimal
+  )
 }

@@ -10,11 +10,16 @@ object Packaging {
 }
 
 sealed trait ItemDetails {
-  def packaging: Packaging
   def summary: Option[String]
 }
 
 object ItemDetails {
+
+  final case class GenericItemDetails(
+      name: String
+  ) extends ItemDetails {
+    val summary: Option[String] = Some(name)
+  }
 
   final case class PhoneDetails(
       make: Option[String],
@@ -22,8 +27,7 @@ object ItemDetails {
       colour: Option[String],
       storageCapacity: Option[String],
       network: Option[String],
-      condition: Option[String],
-      packaging: Packaging = Packaging.Single
+      condition: Option[String]
   ) extends ItemDetails {
     val summary: Option[String] = List(make, model, storageCapacity, colour, network).sequence.map(_.mkString(" "))
   }

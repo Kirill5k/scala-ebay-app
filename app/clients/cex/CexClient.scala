@@ -9,7 +9,7 @@ import common.config.AppConfig
 import common.errors.ApiClientError
 import common.errors.ApiClientError.JsonParsingError
 import common.resources.SttpBackendResource
-import domain.{ResellPrice, SearchQuery}
+import domain.{PurchasableItem, ResellPrice, SearchQuery}
 import io.circe.generic.auto._
 import javax.inject.{Inject, Singleton}
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
@@ -38,6 +38,8 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) exte
           if (rp.isEmpty) IO(logger.warn(s"search '${query.value}' returned 0 results"))
           else IO(searchResultsCache.put(query, rp))
         }
+
+  def getCurrentStock(query: SearchQuery): IO[List[PurchasableItem]] = ???
 
   private def search(query: SearchQuery, inStock: Option[Boolean] = None): IO[Option[CexSearchResponse]] =
     catsSttpBackendResource.get.use { implicit b =>
