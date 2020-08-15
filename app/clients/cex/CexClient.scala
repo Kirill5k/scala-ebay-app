@@ -35,14 +35,15 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) exte
       search(query)
         .map(_.flatMap(getMinResellPrice))
         .flatTap { rp =>
-          if (rp.isEmpty) IO(logger.warn(s"search '$query' returned 0 results"))
+          if (rp.isEmpty) IO(logger.warn(s"search '${query.value}' returned 0 results"))
           else IO(searchResultsCache.put(query, rp))
         }
 
-  private def search(query: SearchQuery): IO[Option[CexSearchResponse]] =
+  private def search(query: SearchQuery, inStock: Option[Boolean] = None): IO[Option[CexSearchResponse]] =
     catsSttpBackendResource.get.use { implicit b =>
+      val inStockQuery = inStock.map(if (_) 1 else 0).map(i => s"&inStock=$i&inStockOnline=$i").getOrElse("")
       basicRequest
-        .get(uri"${cexConfig.baseUri}/v3/boxes?q=${query.value}")
+        .get(uri"${cexConfig.baseUri}/v3/boxes?q=${query.value}$inStockQuery")
         .contentType(MediaType.ApplicationJson)
         .header(HeaderNames.Accept, MediaType.ApplicationJson.toString())
         .response(asJson[CexSearchResponse])
@@ -79,7 +80,8 @@ object CexClient {
       categoryName: String,
       sellPrice: Double,
       exchangePrice: Double,
-      cashPrice: Double
+      cashPrice: Double,
+      ecomQuantityOnHand: Int
   )
 
   final case class SearchResults(

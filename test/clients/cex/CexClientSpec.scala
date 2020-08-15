@@ -24,7 +24,7 @@ class CexClientSpec extends SttpClientSpec {
         .stub[IO]
         .whenRequestMatchesPartial {
           case r if isPriceQueryRequest(r) =>
-            Response.ok(json("cex/search-success-response.json"))
+            Response.ok(json("cex/search-iphone-success-response.json"))
           case _ => throw new RuntimeException()
         }
 
