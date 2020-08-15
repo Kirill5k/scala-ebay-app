@@ -8,11 +8,11 @@ import common.Logging
 import common.config.AppConfig
 import common.errors.ApiClientError
 import common.errors.ApiClientError.JsonParsingError
-import domain.{ItemDetails, ResellPrice}
+import common.resources.SttpBackendResource
+import domain.{ResellPrice, SearchQuery}
 import io.circe.generic.auto._
 import javax.inject.{Inject, Singleton}
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
-import common.resources.SttpBackendResource
 import sttp.client._
 import sttp.client.circe._
 import sttp.model.{HeaderNames, MediaType, StatusCode}
@@ -27,23 +27,22 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) exte
     .builder()
     .expirationPolicy(ExpirationPolicy.CREATED)
     .expiration(24, TimeUnit.HOURS)
-    .build[String, Option[ResellPrice]]()
+    .build[SearchQuery, Option[ResellPrice]]()
 
-  def findResellPrice(itemDetails: ItemDetails): IO[Option[ResellPrice]] =
-    IO.pure(itemDetails.summary).flatMap {
-      case Some(query) if searchResultsCache.containsKey(query) =>
-        IO.pure(searchResultsCache.get(query))
-      case Some(query) =>
-        queryResellPrice(query)
-      case None =>
-        IO(logger.warn(s"not enough details to query for resell price $itemDetails")) *>
-          IO.pure(None)
-    }
+  def findResellPrice(query: SearchQuery): IO[Option[ResellPrice]] =
+    if (searchResultsCache.containsKey(query)) IO.pure(searchResultsCache.get(query))
+    else
+      search(query)
+        .map(_.flatMap(getMinResellPrice))
+        .flatTap { rp =>
+          if (rp.isEmpty) IO(logger.warn(s"search '$query' returned 0 results"))
+          else IO(searchResultsCache.put(query, rp))
+        }
 
-  private def queryResellPrice(query: String): IO[Option[ResellPrice]] =
+  private def search(query: SearchQuery): IO[Option[CexSearchResponse]] =
     catsSttpBackendResource.get.use { implicit b =>
       basicRequest
-        .get(uri"${cexConfig.baseUri}/v3/boxes?q=${query}")
+        .get(uri"${cexConfig.baseUri}/v3/boxes?q=${query.value}")
         .contentType(MediaType.ApplicationJson)
         .header(HeaderNames.Accept, MediaType.ApplicationJson.toString())
         .response(asJson[CexSearchResponse])
@@ -51,15 +50,14 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) exte
         .flatMap { r =>
           r.code match {
             case s if s.isSuccess =>
-              val resellPrice = r.body.map(getMinResellPrice(query))
-                .left.map {
-                  case DeserializationError(_, e) => JsonParsingError(s"error parsing json: $e")
-                  case e => JsonParsingError(s"error parsing json: ${e.getMessage}")
-                }
-              IO.fromEither(resellPrice)
+              val searchResponse = r.body.left.map {
+                case DeserializationError(_, e) => JsonParsingError(s"error parsing json: $e")
+                case e                          => JsonParsingError(s"error parsing json: ${e.getMessage}")
+              }
+              IO.fromEither(searchResponse).map(Some(_))
             case StatusCode.TooManyRequests =>
               IO(logger.error(s"too many requests to cex")) *>
-                IO.pure(none[ResellPrice])
+                IO.pure(None)
             case s =>
               IO(logger.error(s"error sending price query to cex: $s\n${r.body.fold(_.body, _.toString)}")) *>
                 IO.raiseError(ApiClientError.HttpError(s.code, s"error sending request to cex: $s"))
@@ -67,17 +65,11 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) exte
         }
     }
 
-  private def getMinResellPrice(query: String)(searchResponse: CexSearchResponse): Option[ResellPrice] = {
-    val resellPrice = for {
+  private def getMinResellPrice(searchResponse: CexSearchResponse): Option[ResellPrice] =
+    for {
       data     <- searchResponse.response.data
       cheapest <- data.boxes.minByOption(_.exchangePrice)
     } yield ResellPrice(BigDecimal.valueOf(cheapest.cashPrice), BigDecimal.valueOf(cheapest.exchangePrice))
-
-    if (resellPrice.isEmpty) logger.warn(s"search '$query' returned 0 results")
-    else searchResultsCache.put(query, resellPrice)
-
-    resellPrice
-  }
 }
 
 object CexClient {

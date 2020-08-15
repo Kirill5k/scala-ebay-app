@@ -36,7 +36,6 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       gameDetails.releaseYear must be (Some("2019"))
       gameDetails.genre must be (Some("Action"))
       gameDetails.packaging must be (Packaging.Single)
-      gameDetails.isBundle must be (false)
     }
 
     "map uncommon platform spellings" in {
@@ -138,7 +137,6 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       gameDetails.name must be (Some("job lot 5"))
       gameDetails.platform must be (Some("PS4"))
       gameDetails.packaging must be (Packaging.Bundle)
-      gameDetails.isBundle must be (true)
     }
 
     "remove chars with code -1" in {

@@ -3,8 +3,10 @@ package services
 import java.time.Instant
 
 import cats.effect.IO
+import cats.implicits._
 import clients.cex.CexClient
 import clients.ebay.{EbaySearchClient, VideoGameEbayClient}
+import common.Logging
 import domain.ItemDetails.GameDetails
 import domain.ResellableItem.VideoGame
 import domain.{ItemDetails, ListingDetails, ResellPrice, ResellableItem, SearchQuery}
@@ -15,19 +17,30 @@ import repositories.{ResellableItemEntity, ResellableItemRepository, VideoGameRe
 
 import scala.concurrent.ExecutionContext
 
-trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: ResellableItemEntity] {
+trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: ResellableItemEntity] extends Logging {
 
   protected def itemRepository: ResellableItemRepository[I, E]
   protected def ebaySearchClient: EbaySearchClient[D]
   protected def cexClient: CexClient
 
-  protected def createItem(itemDetails: D, listingDetails: ListingDetails, resellPrice: Option[ResellPrice]): I
+  protected def createItem(
+      itemDetails: D,
+      listingDetails: ListingDetails,
+      resellPrice: Option[ResellPrice]
+  ): I
 
   def searchEbay(query: SearchQuery, minutes: Int): Stream[IO, I] =
     ebaySearchClient
       .findItemsListedInLastMinutes(query, minutes)
       .evalMap {
-        case (id, ld) => cexClient.findResellPrice(id).map(rp => createItem(id, ld, rp))
+        case (id, ld) =>
+          id.summary match {
+            case Some(summary) =>
+              cexClient.findResellPrice(SearchQuery(summary)).map(rp => createItem(id, ld, rp))
+            case None =>
+              IO(logger.warn(s"not enough details to query for resell price $id")) *>
+                IO(createItem(id, ld, None))
+          }
       }
 
   def save(item: I): IO[Unit] =

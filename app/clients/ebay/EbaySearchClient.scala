@@ -5,7 +5,6 @@ import java.time.temporal.ChronoField.MILLI_OF_SECOND
 import java.util.concurrent.TimeUnit
 
 import cats.effect.IO
-import cats.implicits._
 import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse.{EbayItem, EbayItemSummary}
