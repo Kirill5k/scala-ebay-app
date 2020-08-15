@@ -6,17 +6,18 @@ import cats.effect.IO
 import cats.implicits._
 import clients.cex.CexClient
 import com.google.inject.Inject
+import domain.PurchasableItem.GenericPurchasableItem
 import domain.{PurchasableItem, SearchQuery, StockUpdate, StockUpdateType}
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 
-trait PurchasableItemService[F[_]] {
+trait PurchasableItemService[F[_], I <: PurchasableItem] {
 
-  def getStockUpdatesFromCex(query: SearchQuery): F[List[StockUpdate]]
+  def getStockUpdatesFromCex(query: SearchQuery): F[List[StockUpdate[I]]]
 }
 
 final class GenericPurchasableItemService @Inject()(
     private val cexClient: CexClient
-) extends PurchasableItemService[IO] {
+) extends PurchasableItemService[IO, GenericPurchasableItem] {
 
   private[services] val searchHistory: scala.collection.mutable.Set[SearchQuery] =
     scala.collection.mutable.Set[SearchQuery]()
@@ -27,7 +28,7 @@ final class GenericPurchasableItemService @Inject()(
     .expiration(1, TimeUnit.HOURS)
     .build[String, PurchasableItem]()
 
-  override def getStockUpdatesFromCex(query: SearchQuery): IO[List[StockUpdate]] =
+  override def getStockUpdatesFromCex(query: SearchQuery): IO[List[StockUpdate[GenericPurchasableItem]]] =
     cexClient.getCurrentStock(query)
       .map(_.filter(_.itemDetails.fullName.isDefined))
       .flatMap { items =>
@@ -39,7 +40,7 @@ final class GenericPurchasableItemService @Inject()(
   private def updateCache(items: List[PurchasableItem]): Unit =
     items.foreach(i => cache.put(i.itemDetails.fullName.get, i))
 
-  private def getStockUpdates(items: List[PurchasableItem]): List[StockUpdate] = {
+  private def getStockUpdates(items: List[PurchasableItem]): List[StockUpdate[GenericPurchasableItem]] = {
     items.flatMap { i =>
       i.itemDetails.fullName.flatMap(n => Option(cache.get(n))) match {
         case None => Some(StockUpdate(StockUpdateType.New, i))

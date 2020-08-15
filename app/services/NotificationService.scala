@@ -6,12 +6,12 @@ import cats.effect.{IO, Sync}
 import cats.implicits._
 import clients.telegram.TelegramClient
 import common.Logging
-import domain.{ResellableItem, StockUpdate}
+import domain.{PurchasableItem, ResellableItem, StockUpdate}
 import javax.inject.Inject
 
 trait NotificationService[F[_]] extends Logging {
   def cheapItem(item: ResellableItem): F[Unit]
-  def stockUpdate(update: StockUpdate): F[Unit]
+  def stockUpdate[I <: PurchasableItem](update: StockUpdate[I]): F[Unit]
 }
 
 final class TelegramNotificationService @Inject()(
@@ -28,11 +28,15 @@ final class TelegramNotificationService @Inject()(
         IO(logger.warn(s"not enough details for sending cheap item notification $item"))
     }
 
-  override def stockUpdate(update: StockUpdate): IO[Unit] = {
-    val message = s"STOCK UPDATE for ${update.purchasableItem.itemDetails.fullName.get}: ${update.updateType}"
-    IO(logger.info(s"""sending "$message"""")) *>
-      telegramClient.sendMessageToSecondaryChannel(message)
-  }
+  override def stockUpdate[I <: PurchasableItem](update: StockUpdate[I]): IO[Unit] =
+    update.purchasableItem.itemDetails.fullName match {
+      case Some(name) =>
+        val message = s"STOCK UPDATE for $name: ${update.updateType}"
+        IO(logger.info(s"""sending "$message"""")) *>
+          telegramClient.sendMessageToSecondaryChannel(message)
+      case None =>
+        IO(logger.warn(s"not enough details for stock update notification $update"))
+    }
 }
 
 object NotificationService {
