@@ -32,7 +32,7 @@ object NotificationService {
   implicit class ResellableItemOps(private val item: ResellableItem) extends AnyVal {
     def cheapItemNotification: Option[String] =
       for {
-        itemSummary <- item.itemDetails.summary
+        itemSummary <- item.itemDetails.fullName
         rp          <- item.resellPrice
         price            = item.listingDetails.price
         profitPercentage = rp.exchange * 100 / price - 100

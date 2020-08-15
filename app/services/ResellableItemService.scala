@@ -34,7 +34,7 @@ trait ResellableItemService[I <: ResellableItem, D <: ItemDetails, E <: Resellab
       .findItemsListedInLastMinutes(query, minutes)
       .evalMap {
         case (id, ld) =>
-          id.summary match {
+          id.fullName match {
             case Some(summary) =>
               cexClient.findResellPrice(SearchQuery(summary)).map(rp => createItem(id, ld, rp))
             case None =>

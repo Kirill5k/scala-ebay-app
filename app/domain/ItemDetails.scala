@@ -10,7 +10,7 @@ object Packaging {
 }
 
 sealed trait ItemDetails {
-  def summary: Option[String]
+  def fullName: Option[String]
 }
 
 object ItemDetails {
@@ -18,7 +18,7 @@ object ItemDetails {
   final case class GenericItemDetails(
       name: String
   ) extends ItemDetails {
-    val summary: Option[String] = Some(name)
+    val fullName: Option[String] = Some(name)
   }
 
   final case class PhoneDetails(
@@ -29,7 +29,7 @@ object ItemDetails {
       network: Option[String],
       condition: Option[String]
   ) extends ItemDetails {
-    val summary: Option[String] = List(make, model, storageCapacity, colour, network).sequence.map(_.mkString(" "))
+    val fullName: Option[String] = List(make, model, storageCapacity, colour, network).sequence.map(_.mkString(" "))
   }
 
   final case class GameDetails(
@@ -39,7 +39,7 @@ object ItemDetails {
       genre: Option[String],
       packaging: Packaging = Packaging.Single
   ) extends ItemDetails {
-    val summary: Option[String] = for (n <- name; p <- platform) yield s"$n $p"
+    val fullName: Option[String] = for (n <- name; p <- platform) yield s"$n $p"
   }
 
 }

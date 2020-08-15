@@ -83,6 +83,6 @@ object VideoGameController {
   private def toItemsSummary(items: Seq[ResellableItem]): ItemsSummary =
     ItemsSummary(
       items.size,
-      items.map(i => ItemSummary(i.itemDetails.summary, i.listingDetails.url, i.listingDetails.price))
+      items.map(i => ItemSummary(i.itemDetails.fullName, i.listingDetails.url, i.listingDetails.price))
     )
 }
