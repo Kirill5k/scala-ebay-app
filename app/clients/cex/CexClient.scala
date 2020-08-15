@@ -9,9 +9,7 @@ import common.config.AppConfig
 import common.errors.ApiClientError
 import common.errors.ApiClientError.JsonParsingError
 import common.resources.SttpBackendResource
-import domain.ItemDetails.GenericItemDetails
-import domain.PurchasableItem.GenericPurchasableItem
-import domain.{PurchasableItem, PurchasePrice, ResellPrice, SearchQuery}
+import domain.{PurchasableItem, ResellPrice, SearchQuery}
 import io.circe.generic.auto._
 import javax.inject.{Inject, Singleton}
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
@@ -46,12 +44,7 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) exte
       .map(_.flatMap(_.response.data).fold(List[SearchResult]())(_.boxes))
       .flatTap(res => IO(logger.info(s""""${query.value}" stock request returned ${res.size} results""")))
       .map { res =>
-        res.map { sr =>
-          GenericPurchasableItem(
-            GenericItemDetails(sr.boxName),
-            PurchasePrice(sr.ecomQuantityOnHand, sr.sellPrice)
-          )
-        }
+        res.map(sr => PurchasableItem.generic(sr.boxName, sr.ecomQuantityOnHand, sr.sellPrice))
       }
 
   private def search(uri: Uri): IO[Option[CexSearchResponse]] =

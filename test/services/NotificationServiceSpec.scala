@@ -4,7 +4,7 @@ import cats.effect.IO
 import clients.telegram.TelegramClient
 import domain.ItemDetails.GenericItemDetails
 import domain.PurchasableItem.GenericPurchasableItem
-import domain.{PurchasableItem, PurchasePrice, StockUpdate, StockUpdateType, VideoGameBuilder}
+import domain.{PurchasableItem, PurchasableItemBuilder, PurchasePrice, StockUpdate, StockUpdateType, VideoGameBuilder}
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
@@ -34,7 +34,7 @@ class NotificationServiceSpec extends AsyncWordSpec with Matchers with MockitoSu
 
       val update = StockUpdate(
         StockUpdateType.PriceDrop(BigDecimal(100.0), BigDecimal(50.0)),
-        GenericPurchasableItem(GenericItemDetails("macbook pro"), PurchasePrice(1, BigDecimal(50.0)))
+        PurchasableItemBuilder.generic("macbook pro", price = 50.0)
       )
       val result = service.stockUpdate(update)
       result.unsafeToFuture().map {

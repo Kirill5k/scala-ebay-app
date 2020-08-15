@@ -12,4 +12,10 @@ object PurchasableItem {
       itemDetails: GenericItemDetails,
       purchasePrice: PurchasePrice
   ) extends PurchasableItem
+
+  def generic(name: String, quantity: Int, price: BigDecimal): PurchasableItem =
+    GenericPurchasableItem(
+      GenericItemDetails(name),
+      PurchasePrice(quantity, price)
+    )
 }

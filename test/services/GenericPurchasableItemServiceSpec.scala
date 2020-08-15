@@ -4,7 +4,7 @@ import cats.effect.IO
 import clients.cex.CexClient
 import domain.ItemDetails.GenericItemDetails
 import domain.PurchasableItem.GenericPurchasableItem
-import domain.{PurchasePrice, SearchQuery, StockUpdate, StockUpdateType}
+import domain.{PurchasableItemBuilder, PurchasePrice, SearchQuery, StockUpdate, StockUpdateType}
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
@@ -13,15 +13,8 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
 
   val query = SearchQuery("macbook")
 
-  val mb1 = GenericPurchasableItem(
-    GenericItemDetails("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A"),
-    PurchasePrice(2, BigDecimal(1950.0))
-  )
-
-  val mb2 = GenericPurchasableItem(
-    GenericItemDetails("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/B"),
-    PurchasePrice(1, BigDecimal(1800.0))
-  )
+  val mb1 = PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 2, 1950.0)
+  val mb2 = PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/B", 1, 1800.0)
 
   "A GenericPurchasableItemService" should {
 

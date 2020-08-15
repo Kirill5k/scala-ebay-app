@@ -5,7 +5,7 @@ import clients.SttpClientSpec
 import common.errors.ApiClientError.{HttpError, JsonParsingError}
 import domain.ItemDetails.GenericItemDetails
 import domain.PurchasableItem.GenericPurchasableItem
-import domain.{PurchasePrice, ResellPrice, SearchQuery, VideoGameBuilder}
+import domain.{PurchasableItemBuilder, PurchasePrice, ResellPrice, SearchQuery, VideoGameBuilder}
 import sttp.client
 import sttp.client.Response
 import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend
@@ -35,18 +35,9 @@ class CexClientSpec extends SttpClientSpec {
 
       whenReady(result.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
         items must be (List(
-          GenericPurchasableItem(
-            GenericItemDetails("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A"),
-            PurchasePrice(2, BigDecimal(1950.0))
-          ),
-          GenericPurchasableItem(
-            GenericItemDetails("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/B"),
-            PurchasePrice(1, BigDecimal(1800.0))
-          ),
-          GenericPurchasableItem(
-            GenericItemDetails("Apple MacBook Pro 16,1/i9-9880H/16GB/1TB SSD/5500M 4GB/16\"/Space Grey/A"),
-            PurchasePrice(1, BigDecimal(2200))
-          )
+          PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 2, 1950.0),
+          PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/B", 1, 1800.0),
+          PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i9-9880H/16GB/1TB SSD/5500M 4GB/16\"/Space Grey/A", 1, 2200.0)
         ))
       }
     }
