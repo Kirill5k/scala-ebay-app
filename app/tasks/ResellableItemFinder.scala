@@ -3,13 +3,9 @@ package tasks
 import akka.actor.ActorSystem
 import cats.effect.IO
 import common.Logging
-import domain.ItemDetails.GameDetails
-import domain.ResellableItem.VideoGame
 import domain.{ItemDetails, ResellableItem, SearchQuery}
 import fs2.Stream
 import javax.inject.Inject
-import repositories.ResellableItemEntity
-import repositories.ResellableItemEntity.VideoGameEntity
 import services.{NotificationService, ResellableItemService, TelegramNotificationService, VideoGameService}
 
 import scala.concurrent.ExecutionContext
@@ -46,7 +42,7 @@ final class VideoGamesFinder @Inject()(
     actorSystem: ActorSystem
 )(
     implicit val ex: ExecutionContext
-) extends ResellableItemFinder[GameDetails] {
+) extends ResellableItemFinder[ItemDetails.Game] {
 
   override protected val minMarginPercentage: Int = 15
   override protected val searchQueries: List[SearchQuery] = List(

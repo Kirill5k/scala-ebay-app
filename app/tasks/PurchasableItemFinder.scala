@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import cats.effect.IO
 import common.Logging
 import domain.PurchasableItem.GenericPurchasableItem
-import domain.{PurchasableItem, SearchQuery, StockUpdate}
+import domain.{ItemDetails, PurchasableItem, SearchQuery, StockUpdate}
 import fs2.Stream
 import javax.inject.Inject
 import services.{GenericPurchasableItemService, NotificationService, PurchasableItemService, TelegramNotificationService}
@@ -12,19 +12,19 @@ import services.{GenericPurchasableItemService, NotificationService, Purchasable
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
-trait PurchasableItemFinder[I <: PurchasableItem] extends Logging {
+trait PurchasableItemFinder[D <: ItemDetails] extends Logging {
 
   protected def searchQueries: List[SearchQuery]
 
-  protected def itemService: PurchasableItemService[IO, I]
+  protected def itemService: PurchasableItemService[IO, D]
   protected def notificationService: NotificationService[IO]
 
-  def checkCexStock(): Stream[IO, StockUpdate[I]] =
+  def checkCexStock(): Stream[IO, StockUpdate[D]] =
     fs2.Stream
       .emits(searchQueries)
       .evalMap(itemService.getStockUpdatesFromCex)
       .flatMap(updates => Stream.emits(updates))
-      .evalTap(notificationService.stockUpdate)
+      .evalTap(notificationService.stockUpdate[D])
       .handleErrorWith { error =>
         logger.error(s"error obtaining stock updates from cex: ${error.getMessage}", error)
         Stream.empty
@@ -37,7 +37,7 @@ final class GenericPurchasableItemFinder @Inject()(
     actorSystem: ActorSystem
 )(
     implicit val ex: ExecutionContext
-) extends PurchasableItemFinder[GenericPurchasableItem] {
+) extends PurchasableItemFinder[ItemDetails.Generic] {
 
   override protected val searchQueries: List[SearchQuery] = List(
     SearchQuery("macbook pro 16,1")

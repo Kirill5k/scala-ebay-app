@@ -7,7 +7,6 @@ import cats.implicits._
 import clients.cex.CexClient
 import clients.ebay.{EbaySearchClient, VideoGameEbayClient}
 import common.Logging
-import domain.ItemDetails.GameDetails
 import domain.{ItemDetails, ResellableItem, SearchQuery}
 import fs2.Stream
 import javax.inject.Inject
@@ -51,4 +50,4 @@ class VideoGameService @Inject()(
     override val cexClient: CexClient
 )(
     implicit ex: ExecutionContext
-) extends ResellableItemService[GameDetails] {}
+) extends ResellableItemService[ItemDetails.Game] {}

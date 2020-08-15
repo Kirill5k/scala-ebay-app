@@ -4,7 +4,7 @@ import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse.EbayItemSummary
 import clients.ebay.mappers.EbayItemMapper
-import domain.ItemDetails.GameDetails
+import domain.ItemDetails
 import javax.inject._
 
 
@@ -12,9 +12,9 @@ import javax.inject._
 class VideoGameEbayClient @Inject()(
   val ebayAuthClient: EbayAuthClient,
   val ebayBrowseClient: EbayBrowseClient
-) extends EbaySearchClient[GameDetails] {
+) extends EbaySearchClient[ItemDetails.Game] {
 
-  implicit override protected val m: EbayItemMapper[GameDetails] = EbayItemMapper.gameDetailsMapper
+  implicit override protected val m: EbayItemMapper[ItemDetails.Game] = EbayItemMapper.gameDetailsMapper
 
   private val DEFAULT_SEARCH_FILTER = "conditionIds:{1000|1500|2000|2500|3000|4000|5000}," +
     "itemLocationCountry:GB," +

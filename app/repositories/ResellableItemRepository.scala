@@ -6,7 +6,7 @@ import cats.effect.{ContextShift, IO}
 import cats.implicits._
 import common.Logging
 import common.errors.ApiClientError.DbError
-import domain.ItemDetails.GameDetails
+import domain.ItemDetails.Game
 import domain.ResellableItem.VideoGame
 import domain.{ItemDetails, ResellableItem}
 import javax.inject.Inject
@@ -77,10 +77,10 @@ trait ResellableItemRepository[D <: ItemDetails] extends Logging {
 class VideoGameRepository @Inject()(
     implicit override val ex: ExecutionContext,
     override val mongo: ReactiveMongoApi
-) extends ResellableItemRepository[GameDetails] {
+) extends ResellableItemRepository[Game] {
   import ResellableItemEntity._
 
-  implicit override protected def entityMapper: ResellableItemEntityMapper[GameDetails] =
+  implicit override protected def entityMapper: ResellableItemEntityMapper[Game] =
     ResellableItemEntityMapper.videoGameEntityMapper
 
   implicit override protected def entityFormat: OFormat[VideoGameEntity] =

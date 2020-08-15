@@ -1,6 +1,6 @@
 package repositories
 
-import domain.ItemDetails.GameDetails
+import domain.ItemDetails.Game
 import domain.{ItemDetails, ListingDetails, Packaging, ResellPrice}
 import reactivemongo.bson.BSONObjectID
 import reactivemongo.play.json._
@@ -13,7 +13,7 @@ final case class ResellableItemEntity[D <: ItemDetails] (
 )
 
 object ResellableItemEntity {
-  type VideoGameEntity = ResellableItemEntity[GameDetails]
+  type VideoGameEntity = ResellableItemEntity[Game]
 
   import play.api.libs.json._
 
@@ -29,6 +29,6 @@ object ResellableItemEntity {
   }
   implicit val resellPriceFormat: OFormat[ResellPrice]       = Json.format[ResellPrice]
   implicit val listingDetailsFormat: OFormat[ListingDetails] = Json.format[ListingDetails]
-  implicit val videoGameDetailsFormat: OFormat[GameDetails]  = Json.using[Json.WithDefaultValues].format[GameDetails]
+  implicit val videoGameDetailsFormat: OFormat[Game]  = Json.using[Json.WithDefaultValues].format[Game]
   implicit val videoGameFormat: OFormat[VideoGameEntity]     = Json.format[VideoGameEntity]
 }

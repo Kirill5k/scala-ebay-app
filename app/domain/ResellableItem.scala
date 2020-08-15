@@ -7,11 +7,10 @@ final case class ResellableItem[D <: ItemDetails](
 )
 
 object ResellableItem {
-  import ItemDetails._
 
-  type VideoGame = ResellableItem[GameDetails]
-  type MobilePhone = ResellableItem[PhoneDetails]
+  type VideoGame = ResellableItem[ItemDetails.Game]
+  type MobilePhone = ResellableItem[ItemDetails.Phone]
 
-  def generic(id: GenericItemDetails, ld: ListingDetails, rp: Option[ResellPrice]): ResellableItem[GenericItemDetails] =
+  def generic(id: ItemDetails.Generic, ld: ListingDetails, rp: Option[ResellPrice]): ResellableItem[ItemDetails.Generic] =
     ResellableItem(id, ld, rp)
 }

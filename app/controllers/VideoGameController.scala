@@ -6,7 +6,7 @@ import controllers.VideoGameController.{ResellableItemsSummaryResponse, VideoGam
 import domain.ResellableItem.VideoGame
 import domain.{ItemDetails, ListingDetails, Packaging, ResellPrice, ResellableItem}
 import common.json._
-import domain.ItemDetails.GameDetails
+import domain.ItemDetails.Game
 import io.circe._
 import io.circe.generic.extras.auto._
 import io.circe.generic.extras._
@@ -58,9 +58,9 @@ class VideoGameController @Inject()(
 
 object VideoGameController {
   final case class VideoGameResponse(
-      itemDetails: GameDetails,
-      listingDetails: ListingDetails,
-      resellPrice: Option[ResellPrice]
+                                      itemDetails: Game,
+                                      listingDetails: ListingDetails,
+                                      resellPrice: Option[ResellPrice]
   )
 
   object VideoGameResponse {

@@ -2,7 +2,7 @@ package domain
 
 import java.time.Instant
 
-import domain.ItemDetails.{GameDetails, PhoneDetails}
+import domain.ItemDetails.{Game, Phone}
 import domain.ResellableItem.{MobilePhone, VideoGame}
 
 object ResellableItemBuilder {
@@ -14,7 +14,7 @@ object ResellableItemBuilder {
       resellPrice: Option[ResellPrice] = Some(ResellPrice(BigDecimal.valueOf(100), BigDecimal.valueOf(80)))
   ): VideoGame =
     ResellableItem(
-      GameDetails(Some(name), platform, Some("2019"), Some("Action")),
+      Game(Some(name), platform, Some("2019"), Some("Action")),
       ListingDetails(
         s"https://www.ebay.co.uk/itm/$name".toLowerCase.replaceAll(" ", "-"),
         name,
@@ -47,7 +47,7 @@ object ResellableItemBuilder {
       datePosted: Instant = Instant.now()
   ): MobilePhone =
     ResellableItem(
-      PhoneDetails(Some(make), Some(model), Some(colour), Some(storage), Some("Unlocked"), Some("USED")),
+      Phone(Some(make), Some(model), Some(colour), Some(storage), Some("Unlocked"), Some("USED")),
       ListingDetails(
         s"https://www.ebay.co.uk/itm/$make-$model-$colour".toLowerCase.replaceAll(" ", "-"),
         s"$make $model $colour $storage",

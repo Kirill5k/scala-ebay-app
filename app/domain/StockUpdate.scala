@@ -21,7 +21,7 @@ object StockUpdateType {
 }
 
 
-final case class StockUpdate[I <: PurchasableItem](
+final case class StockUpdate[D <: ItemDetails](
     updateType: StockUpdateType,
-    purchasableItem: PurchasableItem
+    purchasableItem: PurchasableItem[D]
 )

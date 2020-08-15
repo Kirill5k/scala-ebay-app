@@ -1,7 +1,7 @@
 package clients.ebay.mappers
 
 import cats.implicits._
-import domain.ItemDetails.PhoneDetails
+import domain.ItemDetails.Phone
 import domain.ListingDetails
 
 private[mappers] object PhoneDetailsMapper {
@@ -31,8 +31,8 @@ private[mappers] object PhoneDetailsMapper {
     "Purple", "Yellow", "Orange", "Green", "Pink"
   ).mkString("(?i)", "|", "").r
 
-  def from(listingDetails: ListingDetails): PhoneDetails = {
-    PhoneDetails(
+  def from(listingDetails: ListingDetails): Phone = {
+    Phone(
       make = listingDetails.properties.get("Brand"),
       model = listingDetails.properties.get("Model"),
       colour = mapColour(listingDetails),

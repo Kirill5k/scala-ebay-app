@@ -1,7 +1,7 @@
 package clients.ebay.mappers
 
 import cats.implicits._
-import domain.ItemDetails.GameDetails
+import domain.ItemDetails.Game
 import domain.{Packaging, ListingDetails}
 
 private[mappers] object GameDetailsMapper {
@@ -100,9 +100,9 @@ private[mappers] object GameDetailsMapper {
     "WII" -> "WII"
   )
 
-  def from(listingDetails: ListingDetails): GameDetails = {
+  def from(listingDetails: ListingDetails): Game = {
     val isBundle = BUNDLE_MATCH_REGEX.findFirstIn(listingDetails.title.withoutSpecialChars).isDefined
-    GameDetails(
+    Game(
       name = sanitizeTitle(listingDetails.title),
       platform = mapPlatform(listingDetails),
       genre = mapGenre(listingDetails),

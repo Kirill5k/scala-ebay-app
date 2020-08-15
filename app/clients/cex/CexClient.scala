@@ -9,7 +9,7 @@ import common.config.AppConfig
 import common.errors.ApiClientError
 import common.errors.ApiClientError.JsonParsingError
 import common.resources.SttpBackendResource
-import domain.{PurchasableItem, ResellPrice, SearchQuery}
+import domain.{ItemDetails, PurchasableItem, ResellPrice, SearchQuery}
 import io.circe.generic.auto._
 import javax.inject.{Inject, Singleton}
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
@@ -39,7 +39,7 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) exte
           else IO(searchResultsCache.put(query, rp))
         }
 
-  def getCurrentStock(query: SearchQuery): IO[List[PurchasableItem]] =
+  def getCurrentStock(query: SearchQuery): IO[List[PurchasableItem[ItemDetails.Generic]]] =
     search(uri"${cexConfig.baseUri}/v3/boxes?q=${query.value}&inStock=1&inStockOnline=1")
       .map(_.flatMap(_.response.data).fold(List[SearchResult]())(_.boxes))
       .flatTap(res => IO(logger.info(s""""${query.value}" stock request returned ${res.size} results""")))

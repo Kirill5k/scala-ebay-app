@@ -6,29 +6,29 @@ import cats.effect.IO
 import cats.implicits._
 import clients.cex.CexClient
 import domain.PurchasableItem.GenericPurchasableItem
-import domain.{PurchasableItem, SearchQuery, StockUpdate, StockUpdateType}
+import domain.{ItemDetails, PurchasableItem, SearchQuery, StockUpdate, StockUpdateType}
 import javax.inject.Inject
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 
-trait PurchasableItemService[F[_], I <: PurchasableItem] {
+trait PurchasableItemService[F[_], D <: ItemDetails] {
 
-  def getStockUpdatesFromCex(query: SearchQuery): F[List[StockUpdate[I]]]
+  def getStockUpdatesFromCex(query: SearchQuery): F[List[StockUpdate[D]]]
 }
 
 final class GenericPurchasableItemService @Inject()(
     private val cexClient: CexClient
-) extends PurchasableItemService[IO, GenericPurchasableItem] {
+) extends PurchasableItemService[IO, ItemDetails.Generic] {
 
   private[services] val searchHistory: scala.collection.mutable.Set[SearchQuery] =
     scala.collection.mutable.Set[SearchQuery]()
 
-  private[services] val cache: java.util.Map[String, PurchasableItem] = ExpiringMap
+  private[services] val cache: java.util.Map[String, PurchasableItem[ItemDetails.Generic]] = ExpiringMap
     .builder()
     .expirationPolicy(ExpirationPolicy.ACCESSED)
     .expiration(30, TimeUnit.MINUTES)
-    .build[String, PurchasableItem]()
+    .build[String, PurchasableItem[ItemDetails.Generic]]()
 
-  override def getStockUpdatesFromCex(query: SearchQuery): IO[List[StockUpdate[GenericPurchasableItem]]] =
+  override def getStockUpdatesFromCex(query: SearchQuery): IO[List[StockUpdate[ItemDetails.Generic]]] =
     cexClient.getCurrentStock(query)
       .map(_.filter(_.itemDetails.fullName.isDefined))
       .flatMap { items =>
@@ -37,10 +37,10 @@ final class GenericPurchasableItemService @Inject()(
       }
       .flatTap(_ => IO(searchHistory.add(query)))
 
-  private def updateCache(items: List[PurchasableItem]): Unit =
+  private def updateCache(items: List[PurchasableItem[ItemDetails.Generic]]): Unit =
     items.foreach(i => cache.put(i.itemDetails.fullName.get, i))
 
-  private def getStockUpdates(items: List[PurchasableItem]): List[StockUpdate[GenericPurchasableItem]] = {
+  private def getStockUpdates(items: List[GenericPurchasableItem]): List[StockUpdate[ItemDetails.Generic]] = {
     items.flatMap { i =>
       i.itemDetails.fullName.flatMap(n => Option(cache.get(n))) match {
         case None => Some(StockUpdate(StockUpdateType.New, i))

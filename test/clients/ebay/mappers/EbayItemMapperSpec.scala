@@ -1,8 +1,7 @@
 package clients.ebay.mappers
 
 import clients.ebay.browse.EbayBrowseResponse._
-import domain.ItemDetails._
-import domain.ListingDetails
+import domain.{ItemDetails, ListingDetails}
 import clients.ebay.mappers.EbayItemMapper._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -63,9 +62,9 @@ class EbayItemMapperSpec extends AnyWordSpec with Matchers {
   "EbayItemMapper" should {
 
     "transform to GameDetails" in {
-      val (gameDetails, listingDetails) = videoGameEbayItem.as[GameDetails]
+      val (gameDetails, listingDetails) = videoGameEbayItem.as[ItemDetails.Game]
 
-      gameDetails must be(GameDetails(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action")))
+      gameDetails must be(ItemDetails.Game(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action")))
 
       listingDetails must be(ListingDetails(
         "https://www.ebay.co.uk/itm/call-of-duty-modern-warfare-xbox-one-2019-/333474293066",
@@ -89,9 +88,9 @@ class EbayItemMapperSpec extends AnyWordSpec with Matchers {
     }
 
     "transform to GameDetails even if no shipping options" in {
-      val (gameDetails, listingDetails) = videoGameEbayItem.copy(shippingOptions = None).as[GameDetails]
+      val (gameDetails, listingDetails) = videoGameEbayItem.copy(shippingOptions = None).as[ItemDetails.Game]
 
-      gameDetails must be(GameDetails(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action")))
+      gameDetails must be(ItemDetails.Game(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action")))
 
       listingDetails must be(ListingDetails(
         "https://www.ebay.co.uk/itm/call-of-duty-modern-warfare-xbox-one-2019-/333474293066",
@@ -115,9 +114,9 @@ class EbayItemMapperSpec extends AnyWordSpec with Matchers {
     }
 
     "transform to PhoneDetails" in {
-      val (phoneDetails, listingDetails) = mobilePhoneEbayItem.as[PhoneDetails]
+      val (phoneDetails, listingDetails) = mobilePhoneEbayItem.as[ItemDetails.Phone]
 
-      phoneDetails must be(PhoneDetails(
+      phoneDetails must be(ItemDetails.Phone(
         Some("Samsung"),
         Some("Samsung Galaxy S10"),
         Some("Blue"),

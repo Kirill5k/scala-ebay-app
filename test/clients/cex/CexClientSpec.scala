@@ -3,7 +3,7 @@ package clients.cex
 import cats.effect.IO
 import clients.SttpClientSpec
 import common.errors.ApiClientError.{HttpError, JsonParsingError}
-import domain.ItemDetails.GenericItemDetails
+import domain.ItemDetails.Generic
 import domain.PurchasableItem.GenericPurchasableItem
 import domain.{PurchasableItemBuilder, PurchasePrice, ResellPrice, SearchQuery}
 import sttp.client
@@ -35,7 +35,7 @@ class CexClientSpec extends SttpClientSpec {
 
       result.unsafeToFuture().map(_ must be (List(
         PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 2, 1950.0),
-        PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/B", 1, 1800.0),
+        PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/B"),
         PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i9-9880H/16GB/1TB SSD/5500M 4GB/16\"/Space Grey/A", 1, 2200.0)
       )))
     }

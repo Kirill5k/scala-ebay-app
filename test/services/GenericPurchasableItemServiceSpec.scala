@@ -2,9 +2,7 @@ package services
 
 import cats.effect.IO
 import clients.cex.CexClient
-import domain.ItemDetails.GenericItemDetails
-import domain.PurchasableItem.GenericPurchasableItem
-import domain.{PurchasableItemBuilder, PurchasePrice, SearchQuery, StockUpdate, StockUpdateType}
+import domain.{PurchasableItemBuilder, SearchQuery, StockUpdate, StockUpdateType}
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
@@ -70,10 +68,10 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
       val cexMock = mock[CexClient]
       val service = new GenericPurchasableItemService(cexMock)
       service.searchHistory.add(query)
-      service.cache.put("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", GenericPurchasableItem(
-        GenericItemDetails("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A"),
-        PurchasePrice(1, BigDecimal(1950.0))
-      ))
+      service.cache.put(
+        "Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A",
+        PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", price = 1950.0)
+      )
       when(cexMock.getCurrentStock(query)).thenReturn(IO.pure(List(mb1)))
 
       val result = service.getStockUpdatesFromCex(query)
@@ -88,10 +86,10 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
       val cexMock = mock[CexClient]
       val service = new GenericPurchasableItemService(cexMock)
       service.searchHistory.add(query)
-      service.cache.put("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", GenericPurchasableItem(
-        GenericItemDetails("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A"),
-        PurchasePrice(3, BigDecimal(1950.0))
-      ))
+      service.cache.put(
+        "Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A",
+        PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 3, 1950.0)
+      )
       when(cexMock.getCurrentStock(query)).thenReturn(IO.pure(List(mb1)))
 
       val result = service.getStockUpdatesFromCex(query)
@@ -106,10 +104,10 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
       val cexMock = mock[CexClient]
       val service = new GenericPurchasableItemService(cexMock)
       service.searchHistory.add(query)
-      service.cache.put("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", GenericPurchasableItem(
-        GenericItemDetails("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A"),
-        PurchasePrice(2, BigDecimal(950.0))
-      ))
+      service.cache.put(
+        "Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A",
+        PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 2, 950.0)
+      )
       when(cexMock.getCurrentStock(query)).thenReturn(IO.pure(List(mb1)))
 
       val result = service.getStockUpdatesFromCex(query)
@@ -124,10 +122,10 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
       val cexMock = mock[CexClient]
       val service = new GenericPurchasableItemService(cexMock)
       service.searchHistory.add(query)
-      service.cache.put("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", GenericPurchasableItem(
-        GenericItemDetails("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A"),
-        PurchasePrice(2, BigDecimal(2950.0))
-      ))
+      service.cache.put(
+        "Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A",
+        PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 2, 2950.0)
+      )
       when(cexMock.getCurrentStock(query)).thenReturn(IO.pure(List(mb1)))
 
       val result = service.getStockUpdatesFromCex(query)

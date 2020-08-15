@@ -15,13 +15,13 @@ sealed trait ItemDetails {
 
 object ItemDetails {
 
-  final case class GenericItemDetails(
+  final case class Generic(
       name: String
   ) extends ItemDetails {
     val fullName: Option[String] = Some(name)
   }
 
-  final case class PhoneDetails(
+  final case class Phone(
       make: Option[String],
       model: Option[String],
       colour: Option[String],
@@ -32,7 +32,7 @@ object ItemDetails {
     val fullName: Option[String] = List(make, model, storageCapacity, colour, network).sequence.map(_.mkString(" "))
   }
 
-  final case class GameDetails(
+  final case class Game(
       name: Option[String],
       platform: Option[String],
       releaseYear: Option[String],

@@ -11,16 +11,15 @@ private[ebay] trait EbayItemMapper[T <: ItemDetails] {
 
 
 private[ebay] object EbayItemMapper {
-  import domain.ItemDetails._
-  implicit val phoneDetailsMapper = new EbayItemMapper[PhoneDetails] {
-    override def toDomain(ebayItem: EbayItem): (PhoneDetails, ListingDetails) = {
+  implicit val phoneDetailsMapper = new EbayItemMapper[ItemDetails.Phone] {
+    override def toDomain(ebayItem: EbayItem): (ItemDetails.Phone, ListingDetails) = {
       val listing = toListingDetails(ebayItem)
       (PhoneDetailsMapper.from(listing), listing)
     }
   }
 
-  implicit val gameDetailsMapper = new EbayItemMapper[GameDetails] {
-    override def toDomain(ebayItem: EbayItem): (GameDetails, ListingDetails) = {
+  implicit val gameDetailsMapper = new EbayItemMapper[ItemDetails.Game] {
+    override def toDomain(ebayItem: EbayItem): (ItemDetails.Game, ListingDetails) = {
       val listing = toListingDetails(ebayItem)
       (GameDetailsMapper.from(listing), listing)
     }

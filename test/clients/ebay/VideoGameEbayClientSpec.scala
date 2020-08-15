@@ -5,7 +5,7 @@ import clients.ebay.auth.EbayAuthClient
 import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse._
 import common.errors.ApiClientError.{AuthError, HttpError}
-import domain.ItemDetails.GameDetails
+import domain.ItemDetails.Game
 import domain.SearchQuery
 import org.mockito.ArgumentMatchersSugar
 import org.mockito.captor.ArgCaptor
@@ -147,7 +147,7 @@ class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMock
         verify(authClient, times(2)).accessToken
         verify(browseClient, times(1)).search(eqTo(accessToken), anyMap[String, String])
         verify(browseClient, times(1)).getItem(eqTo(accessToken), any)
-        items.map(_._1) must be (List(GameDetails(Some("call of duty modern warfare"), Some("XBOX ONE"), Some("2019"), Some("Action"))))
+        items.map(_._1) must be (List(Game(Some("call of duty modern warfare"), Some("XBOX ONE"), Some("2019"), Some("Action"))))
       }
     }
   }
