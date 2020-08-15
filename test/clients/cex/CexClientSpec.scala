@@ -3,7 +3,9 @@ package clients.cex
 import cats.effect.IO
 import clients.SttpClientSpec
 import common.errors.ApiClientError.{HttpError, JsonParsingError}
-import domain.{ResellPrice, SearchQuery, VideoGameBuilder}
+import domain.ItemDetails.GenericItemDetails
+import domain.PurchasableItem.GenericPurchasableItem
+import domain.{PurchasePrice, ResellPrice, SearchQuery, VideoGameBuilder}
 import sttp.client
 import sttp.client.Response
 import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend
@@ -15,15 +17,46 @@ import scala.language.postfixOps
 
 class CexClientSpec extends SttpClientSpec {
 
-  val query = SearchQuery("super mario 3 XBOX ONE")
-
   "CexClient" should {
 
-    "find minimal resell price and store it in cache" in {
+    "get current stock" in {
+      val query = SearchQuery("macbook pro 16,1")
       val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
-          case r if isPriceQueryRequest(r) =>
+          case r if isQueryRequest(r, Map("q" -> query.value, "inStock" -> "1", "inStockOnline" -> "1")) =>
+            Response.ok(json("cex/search-macbook-success-response.json"))
+          case _ => throw new RuntimeException()
+        }
+
+      val cexClient = new CexClient(sttpCatsBackend(testingBackend))
+
+      val result = cexClient.getCurrentStock(query)
+
+      whenReady(result.unsafeToFuture(), timeout(6 seconds), interval(100 millis)) { items =>
+        items must be (List(
+          GenericPurchasableItem(
+            GenericItemDetails("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A"),
+            PurchasePrice(2, BigDecimal(1950.0))
+          ),
+          GenericPurchasableItem(
+            GenericItemDetails("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/B"),
+            PurchasePrice(1, BigDecimal(1800.0))
+          ),
+          GenericPurchasableItem(
+            GenericItemDetails("Apple MacBook Pro 16,1/i9-9880H/16GB/1TB SSD/5500M 4GB/16\"/Space Grey/A"),
+            PurchasePrice(1, BigDecimal(2200))
+          )
+        ))
+      }
+    }
+
+    "find minimal resell price and store it in cache" in {
+      val query = SearchQuery("super mario 3 XBOX ONE")
+      val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
+        .stub[IO]
+        .whenRequestMatchesPartial {
+          case r if isQueryRequest(r, Map("q" -> query.value)) =>
             Response.ok(json("cex/search-iphone-success-response.json"))
           case _ => throw new RuntimeException()
         }
@@ -40,6 +73,7 @@ class CexClientSpec extends SttpClientSpec {
     }
 
     "return resell price from cache" in {
+      val query = SearchQuery("super mario 3 XBOX ONE")
       val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
@@ -59,10 +93,11 @@ class CexClientSpec extends SttpClientSpec {
     }
 
     "return none when no results" in {
+      val query = SearchQuery("super mario 3 XBOX ONE")
       val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
-          case r if isPriceQueryRequest(r) =>
+          case r if isQueryRequest(r, Map("q" -> query.value)) =>
             Response.ok(json("cex/search-noresults-response.json"))
           case _ => throw new RuntimeException()
         }
@@ -78,10 +113,11 @@ class CexClientSpec extends SttpClientSpec {
     }
 
     "return internal error when failed to parse json" in {
+      val query = SearchQuery("super mario 3 XBOX ONE")
       val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
-          case r if isPriceQueryRequest(r) =>
+          case r if isQueryRequest(r, Map("q" -> query.value)) =>
             Response.ok(json("cex/search-unexpected-response.json"))
           case _ => throw new RuntimeException()
         }
@@ -97,10 +133,11 @@ class CexClientSpec extends SttpClientSpec {
     }
 
     "return http error when not success" in {
+      val query = SearchQuery("super mario 3 XBOX ONE")
       val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
-          case r if isPriceQueryRequest(r) =>
+          case r if isQueryRequest(r, Map("q" -> query.value)) =>
             Response(json("cex/search-error-response.json"), StatusCode.BadRequest)
           case _ => throw new RuntimeException()
         }
@@ -116,10 +153,11 @@ class CexClientSpec extends SttpClientSpec {
     }
 
     "return none when 429 returned" in {
+      val query = SearchQuery("super mario 3 XBOX ONE")
       val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
-          case r if isPriceQueryRequest(r) =>
+          case r if isQueryRequest(r, Map("q" -> query.value)) =>
             Response(json("cex/search-error-response.json"), StatusCode.TooManyRequests)
           case _ => throw new RuntimeException()
         }
@@ -134,7 +172,7 @@ class CexClientSpec extends SttpClientSpec {
       }
     }
 
-    def isPriceQueryRequest(req: client.Request[_, _]): Boolean =
-      isGoingTo(req, Method.GET, "cex.com", List("v3", "boxes"), Map("q" -> query.value))
+    def isQueryRequest(req: client.Request[_, _], params: Map[String, String]): Boolean =
+      isGoingTo(req, Method.GET, "cex.com", List("v3", "boxes"), params)
   }
 }

@@ -9,13 +9,15 @@ import common.config.AppConfig
 import common.errors.ApiClientError
 import common.errors.ApiClientError.JsonParsingError
 import common.resources.SttpBackendResource
-import domain.{PurchasableItem, ResellPrice, SearchQuery}
+import domain.ItemDetails.GenericItemDetails
+import domain.PurchasableItem.GenericPurchasableItem
+import domain.{PurchasableItem, PurchasePrice, ResellPrice, SearchQuery}
 import io.circe.generic.auto._
 import javax.inject.{Inject, Singleton}
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 import sttp.client._
 import sttp.client.circe._
-import sttp.model.{HeaderNames, MediaType, StatusCode}
+import sttp.model.{HeaderNames, MediaType, StatusCode, Uri}
 
 @Singleton
 class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) extends Logging {
@@ -32,20 +34,29 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) exte
   def findResellPrice(query: SearchQuery): IO[Option[ResellPrice]] =
     if (searchResultsCache.containsKey(query)) IO.pure(searchResultsCache.get(query))
     else
-      search(query)
+      search(uri"${cexConfig.baseUri}/v3/boxes?q=${query.value}")
         .map(_.flatMap(getMinResellPrice))
         .flatTap { rp =>
           if (rp.isEmpty) IO(logger.warn(s"search '${query.value}' returned 0 results"))
           else IO(searchResultsCache.put(query, rp))
         }
 
-  def getCurrentStock(query: SearchQuery): IO[List[PurchasableItem]] = ???
+  def getCurrentStock(query: SearchQuery): IO[List[PurchasableItem]] =
+    search(uri"${cexConfig.baseUri}/v3/boxes?q=${query.value}&inStock=1&inStockOnline=1")
+      .map(_.flatMap(_.response.data).fold(List[SearchResult]())(_.boxes))
+      .map { res =>
+        res.map { sr =>
+          GenericPurchasableItem(
+            GenericItemDetails(sr.boxName),
+            PurchasePrice(sr.ecomQuantityOnHand, sr.sellPrice)
+          )
+        }
+      }
 
-  private def search(query: SearchQuery, inStock: Option[Boolean] = None): IO[Option[CexSearchResponse]] =
+  private def search(uri: Uri): IO[Option[CexSearchResponse]] =
     catsSttpBackendResource.get.use { implicit b =>
-      val inStockQuery = inStock.map(if (_) 1 else 0).map(i => s"&inStock=$i&inStockOnline=$i").getOrElse("")
       basicRequest
-        .get(uri"${cexConfig.baseUri}/v3/boxes?q=${query.value}$inStockQuery")
+        .get(uri)
         .contentType(MediaType.ApplicationJson)
         .header(HeaderNames.Accept, MediaType.ApplicationJson.toString())
         .response(asJson[CexSearchResponse])
@@ -87,7 +98,7 @@ object CexClient {
   )
 
   final case class SearchResults(
-      boxes: Seq[SearchResult],
+      boxes: List[SearchResult],
       totalRecords: Int,
       minPrice: Double,
       maxPrice: Double
