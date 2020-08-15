@@ -12,10 +12,10 @@ private[repositories] trait ResellableItemEntityMapper[D <: ItemDetails] {
 
 private[repositories] object ResellableItemEntityMapper {
   val videoGameEntityMapper = new ResellableItemEntityMapper[Game] {
-    override def toEntity(videoGame: VideoGame): VideoGameEntity =
-      ResellableItemEntity[Game](None, videoGame.itemDetails, videoGame.listingDetails, videoGame.resellPrice)
+    override def toEntity(vg: VideoGame): VideoGameEntity =
+      ResellableItemEntity[Game](None, vg.itemDetails, vg.listingDetails, vg.price, vg.resellPrice)
 
     override def toDomain(entity: VideoGameEntity): VideoGame =
-      ResellableItem[Game](entity.itemDetails, entity.listingDetails, entity.resellPrice)
+      ResellableItem[Game](entity.itemDetails, entity.listingDetails, entity.price, entity.resellPrice)
   }
 }

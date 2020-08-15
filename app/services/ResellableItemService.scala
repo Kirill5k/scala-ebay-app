@@ -24,13 +24,13 @@ trait ResellableItemService[D <: ItemDetails] extends Logging {
     ebaySearchClient
       .findItemsListedInLastMinutes(query, minutes)
       .evalMap {
-        case (id, ld) =>
-          id.fullName match {
-            case Some(summary) =>
-              cexClient.findResellPrice(SearchQuery(summary)).map(rp => ResellableItem[D](id, ld, rp))
+        case i =>
+          i.itemDetails.fullName match {
+            case Some(name) =>
+              cexClient.findResellPrice(SearchQuery(name)).map(rp => i.copy(resellPrice = rp))
             case None =>
-              IO(logger.warn(s"not enough details to query for resell price $id")) *>
-                IO(ResellableItem[D](id, ld, None))
+              IO(logger.warn(s"not enough details to query for resell price ${i.itemDetails}")) *>
+                IO.pure(i)
           }
       }
 

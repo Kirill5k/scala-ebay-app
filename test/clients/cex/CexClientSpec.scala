@@ -3,17 +3,12 @@ package clients.cex
 import cats.effect.IO
 import clients.SttpClientSpec
 import common.errors.ApiClientError.{HttpError, JsonParsingError}
-import domain.ItemDetails.Generic
-import domain.PurchasableItem.GenericPurchasableItem
-import domain.{PurchasableItemBuilder, PurchasePrice, ResellPrice, SearchQuery}
+import domain._
 import sttp.client
 import sttp.client.Response
 import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend
 import sttp.client.testing.SttpBackendStub
 import sttp.model.{Method, StatusCode}
-
-import scala.concurrent.duration._
-import scala.language.postfixOps
 
 class CexClientSpec extends SttpClientSpec {
 
@@ -31,12 +26,27 @@ class CexClientSpec extends SttpClientSpec {
 
       val cexClient = new CexClient(sttpCatsBackend(testingBackend))
 
-      val result = cexClient.getCurrentStock(query)
+      val result = cexClient.getCurrentStock[ItemDetails.Generic](query)
 
-      result.unsafeToFuture().map(_ must be (List(
-        PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 2, 1950.0),
-        PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/B"),
-        PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i9-9880H/16GB/1TB SSD/5500M 4GB/16\"/Space Grey/A", 1, 2200.0)
+      result.unsafeToFuture().map(res => res must be (List(
+        ResellableItem(
+          ItemDetails.Generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A"),
+          ListingDetails("https://uk.webuy.com/product-detail/?id=SLAPAPPMP16101SA", "Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", Some("Laptops - Apple Mac"), None, None, "USED / A", res(0).listingDetails.datePosted, "CEX", Map()),
+          Price(2, 1950.0),
+          Some(ResellPrice(BigDecimal(1131.0), BigDecimal(1365.0)))
+        ),
+        ResellableItem(
+          ItemDetails.Generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/B"),
+          ListingDetails("https://uk.webuy.com/product-detail/?id=SLAPAPPMP16101SB", "Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/B", Some("Laptops - Apple Mac"), None, None, "USED / B", res(1).listingDetails.datePosted, "CEX", Map()),
+          Price(1, 1800.0),
+          Some(ResellPrice(BigDecimal(1044.0), BigDecimal(1260.0)))
+        ),
+        ResellableItem(
+          ItemDetails.Generic("Apple MacBook Pro 16,1/i9-9880H/16GB/1TB SSD/5500M 4GB/16\"/Space Grey/A"),
+          ListingDetails("https://uk.webuy.com/product-detail/?id=SLAPAPPMP16146SGA", "Apple MacBook Pro 16,1/i9-9880H/16GB/1TB SSD/5500M 4GB/16\"/Space Grey/A", Some("Laptops - Apple Mac"), None, None, "USED / A", res(2).listingDetails.datePosted, "CEX", Map()),
+          Price(1, 2200.0),
+          Some(ResellPrice(BigDecimal(1276.0), BigDecimal(1540.0)))
+        )
       )))
     }
 

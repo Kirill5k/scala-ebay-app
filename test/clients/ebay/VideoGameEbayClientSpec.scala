@@ -147,7 +147,7 @@ class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMock
         verify(authClient, times(2)).accessToken
         verify(browseClient, times(1)).search(eqTo(accessToken), anyMap[String, String])
         verify(browseClient, times(1)).getItem(eqTo(accessToken), any)
-        items.map(_._1) must be (List(Game(Some("call of duty modern warfare"), Some("XBOX ONE"), Some("2019"), Some("Action"))))
+        items.map(_.itemDetails) must be (List(Game(Some("call of duty modern warfare"), Some("XBOX ONE"), Some("2019"), Some("Action"))))
       }
     }
   }

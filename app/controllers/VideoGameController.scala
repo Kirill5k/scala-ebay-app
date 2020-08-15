@@ -4,7 +4,7 @@ import java.time.Instant
 
 import controllers.VideoGameController.{ResellableItemsSummaryResponse, VideoGameResponse}
 import domain.ResellableItem.VideoGame
-import domain.{ItemDetails, ListingDetails, Packaging, ResellPrice, ResellableItem}
+import domain.{ItemDetails, ListingDetails, Packaging, Price, ResellPrice, ResellableItem}
 import common.json._
 import domain.ItemDetails.Game
 import io.circe._
@@ -58,14 +58,15 @@ class VideoGameController @Inject()(
 
 object VideoGameController {
   final case class VideoGameResponse(
-                                      itemDetails: Game,
-                                      listingDetails: ListingDetails,
-                                      resellPrice: Option[ResellPrice]
+      itemDetails: Game,
+      listingDetails: ListingDetails,
+      price: Price,
+      resellPrice: Option[ResellPrice]
   )
 
   object VideoGameResponse {
     def from(game: VideoGame): VideoGameResponse =
-      VideoGameResponse(game.itemDetails, game.listingDetails, game.resellPrice)
+      VideoGameResponse(game.itemDetails, game.listingDetails, game.price, game.resellPrice)
   }
 
   final case class ItemSummary(
@@ -83,7 +84,7 @@ object VideoGameController {
 
   def resellableItemsSummaryResponse[D <: ItemDetails](items: Seq[ResellableItem[D]]): ResellableItemsSummaryResponse = {
     val withoutResellPrice  = items.filter(_.resellPrice.isEmpty)
-    val profitableForResell = items.filter(i => i.resellPrice.exists(rp => rp.cash > i.listingDetails.price))
+    val profitableForResell = items.filter(i => i.resellPrice.exists(rp => rp.cash > i.price.value))
     val rest                = items.filter(i => !withoutResellPrice.contains(i) && !profitableForResell.contains(i))
     ResellableItemsSummaryResponse(
       items.size,
@@ -96,6 +97,6 @@ object VideoGameController {
   private def toItemsSummary[D <: ItemDetails](items: Seq[ResellableItem[D]]): ItemsSummary =
     ItemsSummary(
       items.size,
-      items.map(i => ItemSummary(i.itemDetails.fullName, i.listingDetails.url, i.listingDetails.price))
+      items.map(i => ItemSummary(i.itemDetails.fullName, i.listingDetails.url, i.price.value))
     )
 }

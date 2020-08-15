@@ -33,7 +33,7 @@ trait ResellableItemFinder[D <: ItemDetails] extends Logging {
   }
 
   private val isProfitableToResell: ResellableItem[D] => Boolean =
-    item => item.resellPrice.exists(rp => (rp.exchange * 100 / item.listingDetails.price - 100) > minMarginPercentage)
+    item => item.resellPrice.exists(rp => (rp.exchange * 100 / item.price.value - 100) > minMarginPercentage)
 }
 
 final class VideoGamesFinder @Inject()(

@@ -1,7 +1,7 @@
 package clients.ebay.mappers
 
 import clients.ebay.browse.EbayBrowseResponse._
-import domain.{ItemDetails, ListingDetails}
+import domain.{ItemDetails, ListingDetails, Price}
 import clients.ebay.mappers.EbayItemMapper._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -62,22 +62,19 @@ class EbayItemMapperSpec extends AnyWordSpec with Matchers {
   "EbayItemMapper" should {
 
     "transform to GameDetails" in {
-      val (gameDetails, listingDetails) = videoGameEbayItem.as[ItemDetails.Game]
+      val game = gameDetailsMapper.toDomain(videoGameEbayItem)
 
-      gameDetails must be(ItemDetails.Game(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action")))
+      game.itemDetails must be(ItemDetails.Game(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action")))
 
-      listingDetails must be(ListingDetails(
+      game.listingDetails must be(ListingDetails(
         "https://www.ebay.co.uk/itm/call-of-duty-modern-warfare-xbox-one-2019-/333474293066",
         "Call of Duty Modern Warfare xbox one 2019",
         Some("call of duty modern warfare xbox one 2019. Condition is New. Game came as part of bundle and not wanted. Never playes. Dispatched with Royal Mail 1st Class Large Letter."),
         None,
         Some("https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg"),
-        List("FIXED_PRICE"),
-        Some("168.robinhood"),
-        BigDecimal.valueOf(32.99),
-        "New",
-        listingDetails.datePosted,
-        None,
+        "NEW",
+        game.listingDetails.datePosted,
+        "EBAY:168.robinhood",
         Map(
           "Game Name" -> "Call of Duty: Modern Warfare",
           "Release Year" -> "2019",
@@ -85,25 +82,24 @@ class EbayItemMapperSpec extends AnyWordSpec with Matchers {
           "Genre" -> "Action"
         )
       ))
+
+      game.price must be(Price(1, BigDecimal(32.99)))
     }
 
     "transform to GameDetails even if no shipping options" in {
-      val (gameDetails, listingDetails) = videoGameEbayItem.copy(shippingOptions = None).as[ItemDetails.Game]
+      val game = gameDetailsMapper.toDomain(videoGameEbayItem.copy(shippingOptions = None))
 
-      gameDetails must be(ItemDetails.Game(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action")))
+      game.itemDetails must be(ItemDetails.Game(Some("Call of Duty Modern Warfare"), Some("XBOX ONE"), Some("2019"), Some("Action")))
 
-      listingDetails must be(ListingDetails(
+      game.listingDetails must be(ListingDetails(
         "https://www.ebay.co.uk/itm/call-of-duty-modern-warfare-xbox-one-2019-/333474293066",
         "Call of Duty Modern Warfare xbox one 2019",
         Some("call of duty modern warfare xbox one 2019. Condition is New. Game came as part of bundle and not wanted. Never playes. Dispatched with Royal Mail 1st Class Large Letter."),
         None,
         Some("https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg"),
-        List("FIXED_PRICE"),
-        Some("168.robinhood"),
-        BigDecimal.valueOf(30.0),
-        "New",
-        listingDetails.datePosted,
-        None,
+        "NEW",
+        game.listingDetails.datePosted,
+        "EBAY:168.robinhood",
         Map(
           "Game Name" -> "Call of Duty: Modern Warfare",
           "Release Year" -> "2019",
@@ -111,32 +107,31 @@ class EbayItemMapperSpec extends AnyWordSpec with Matchers {
           "Genre" -> "Action"
         )
       ))
+
+      game.price must be(Price(1, BigDecimal(30.0)))
     }
 
     "transform to PhoneDetails" in {
-      val (phoneDetails, listingDetails) = mobilePhoneEbayItem.as[ItemDetails.Phone]
+      val phone = phoneDetailsMapper.toDomain(mobilePhoneEbayItem)
 
-      phoneDetails must be(ItemDetails.Phone(
+      phone.itemDetails must be(ItemDetails.Phone(
         Some("Samsung"),
         Some("Samsung Galaxy S10"),
         Some("Blue"),
         Some("128GB"),
         Some("Unlocked"),
-        Some("Used")
+        Some("USED")
       ))
 
-      listingDetails must be (ListingDetails(
+      phone.listingDetails must be (ListingDetails(
         "https://www.ebay.co.uk/itm/Samsung-Galaxy-S10-128gb-UNLOCKED-Prism-Blue-/114059888671",
         "Samsung Galaxy S10 128gb UNLOCKED Prism Blue",
         Some("Samsung Galaxy S10 Used"),
         Some("Up For GrabsSamsung Galaxy S10 128gb UNLOCKED Prism BlueGood ConditionThe usual minor wear and Tear as you would expect from a used phone.It has been in a case with a screen protector since new however they appears tohave 1 x Deeper Scratch no more than 1cm long to the top left of the phone which does not affect the use of the phone nor does it show up when the screen is in use and you have got to look for it to see it when the screen is off.Comes with Wall Plug and Wire.I like the phone but unf"),
         Some("https://i.ebayimg.com/images/g/yOMAAOSw~5ReGEH2/s-l1600.jpg"),
-        List("FIXED_PRICE", "BEST_OFFER"),
-        Some("jb-liquidation3"),
-        BigDecimal.valueOf(429.99),
-        "Used",
-        listingDetails.datePosted,
-        None,
+        "USED",
+        phone.listingDetails.datePosted,
+        "EBAY:jb-liquidation3",
         Map(
           "Brand" -> "Samsung",
           "Model" -> "Samsung Galaxy S10",
@@ -145,6 +140,8 @@ class EbayItemMapperSpec extends AnyWordSpec with Matchers {
           "Colour" -> "Blue"
         )
       ))
+
+      phone.price must be(Price(1, BigDecimal(429.99)))
     }
   }
 }

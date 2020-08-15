@@ -12,7 +12,13 @@ private[ebay] object EbayBrowseResponse {
   final case class ItemPrice(value: BigDecimal, currency: String)
   final case class ShippingCost(value: BigDecimal, currency: String)
   final case class ItemShippingOption(shippingServiceCode: String, shippingCost: ShippingCost)
-  final case class EbayItemSummary(itemId: String, title: String, price: Option[ItemPrice], seller: ItemSeller)
+
+  final case class EbayItemSummary(
+      itemId: String,
+      title: String,
+      price: Option[ItemPrice],
+      seller: ItemSeller
+  )
 
   final case class EbayItem(
       itemId: String,

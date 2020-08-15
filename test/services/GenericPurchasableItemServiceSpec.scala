@@ -2,7 +2,7 @@ package services
 
 import cats.effect.IO
 import clients.cex.CexClient
-import domain.{PurchasableItemBuilder, SearchQuery, StockUpdate, StockUpdateType}
+import domain.{ResellableItemBuilder, SearchQuery, StockUpdate, StockUpdateType}
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
@@ -11,8 +11,8 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
 
   val query = SearchQuery("macbook")
 
-  val mb1 = PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 2, 1950.0)
-  val mb2 = PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/B")
+  val mb1 = ResellableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 2, 1950.0)
+  val mb2 = ResellableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/B")
 
   "A GenericPurchasableItemService" should {
 
@@ -70,7 +70,7 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
       service.searchHistory.add(query)
       service.cache.put(
         "Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A",
-        PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", price = 1950.0)
+        ResellableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", price = 1950.0)
       )
       when(cexMock.getCurrentStock(query)).thenReturn(IO.pure(List(mb1)))
 
@@ -88,7 +88,7 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
       service.searchHistory.add(query)
       service.cache.put(
         "Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A",
-        PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 3, 1950.0)
+        ResellableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 3, 1950.0)
       )
       when(cexMock.getCurrentStock(query)).thenReturn(IO.pure(List(mb1)))
 
@@ -106,7 +106,7 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
       service.searchHistory.add(query)
       service.cache.put(
         "Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A",
-        PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 2, 950.0)
+        ResellableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 2, 950.0)
       )
       when(cexMock.getCurrentStock(query)).thenReturn(IO.pure(List(mb1)))
 
@@ -124,7 +124,7 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
       service.searchHistory.add(query)
       service.cache.put(
         "Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A",
-        PurchasableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 2, 2950.0)
+        ResellableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 2, 2950.0)
       )
       when(cexMock.getCurrentStock(query)).thenReturn(IO.pure(List(mb1)))
 

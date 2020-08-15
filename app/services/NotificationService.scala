@@ -1,12 +1,10 @@
 package services
 
-import java.time.Instant
-
 import cats.effect.IO
 import cats.implicits._
 import clients.telegram.TelegramClient
 import common.Logging
-import domain.{ItemDetails, PurchasableItem, ResellableItem, StockUpdate}
+import domain.{ItemDetails, ResellableItem, StockUpdate}
 import javax.inject.Inject
 
 trait NotificationService[F[_]] extends Logging {
@@ -29,7 +27,7 @@ final class TelegramNotificationService @Inject()(
     }
 
   override def stockUpdate[D <: ItemDetails](update: StockUpdate[D]): IO[Unit] =
-    update.purchasableItem.itemDetails.fullName match {
+    update.item.itemDetails.fullName match {
       case Some(name) =>
         val message = s"STOCK UPDATE for $name: ${update.updateType}"
         IO(logger.info(s"""sending "$message"""")) *>
@@ -45,11 +43,9 @@ object NotificationService {
       for {
         itemSummary <- item.itemDetails.fullName
         rp          <- item.resellPrice
-        price            = item.listingDetails.price
+        price            = item.price.value
         profitPercentage = rp.exchange * 100 / price - 100
-        isEnding         = item.listingDetails.dateEnded.exists(_.minusSeconds(600).isBefore(Instant.now))
         url              = item.listingDetails.url
-        header           = if (isEnding) "ENDING" else "NEW"
-      } yield s"""$header "$itemSummary" - ebay: £$price, cex: £${rp.exchange}(${profitPercentage.intValue}%)/£${rp.cash} $url"""
+      } yield s"""NEW "$itemSummary" - ebay: £$price, cex: £${rp.exchange}(${profitPercentage.intValue}%)/£${rp.cash} $url"""
   }
 }

@@ -3,9 +3,17 @@ package domain
 import java.time.Instant
 
 import domain.ItemDetails.{Game, Phone}
-import domain.ResellableItem.{MobilePhone, VideoGame}
+import domain.ResellableItem.{GenericItem, MobilePhone, VideoGame}
 
 object ResellableItemBuilder {
+
+  def generic(name: String, quantity: Int = 1, price: Double = 1800.0): GenericItem =
+    ResellableItem(
+      ItemDetails.Generic(name),
+      ListingDetails(s"http://cex.com/${name.replaceAll(" ", "")}", name, None, None, None, "USED", Instant.now(), "CEX", Map()),
+      Price(quantity, BigDecimal(price)),
+      None
+    )
 
   def videoGame(
       name: String,
@@ -23,12 +31,9 @@ object ResellableItemBuilder {
         ),
         None,
         Some("https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg"),
-        List("FIXED_PRICE"),
-        Some("168.robinhood"),
-        BigDecimal.valueOf(32.99),
-        "New",
+        "NEW",
         datePosted,
-        None,
+        "EBAY:168.robinhood",
         Map(
           "Game Name"    -> name,
           "Release Year" -> "2019",
@@ -36,6 +41,7 @@ object ResellableItemBuilder {
           "Genre"        -> "Action"
         )
       ),
+      Price(1, BigDecimal(32.99)),
       resellPrice
     )
 
@@ -54,14 +60,12 @@ object ResellableItemBuilder {
         Some(s"$make $model $colour $storage. Condition is Used. Dispatched with Royal Mail 1st Class Small parcel."),
         None,
         Some("https://i.ebayimg.com/images/g/0kcAAOSw~5ReGFCQ/s-l1600.jpg"),
-        List("FIXED_PRICE"),
-        Some("168.robinhood"),
-        BigDecimal.valueOf(99.99),
-        "New",
+        "NEW",
         datePosted,
-        None,
+        "EBAY:168.robinhood",
         Map()
       ),
+      Price(1, BigDecimal(99.99)),
       Some(ResellPrice(BigDecimal.valueOf(150), BigDecimal.valueOf(110)))
     )
 }

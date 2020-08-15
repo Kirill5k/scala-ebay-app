@@ -3,8 +3,7 @@ package tasks
 import akka.actor.ActorSystem
 import cats.effect.IO
 import common.Logging
-import domain.PurchasableItem.GenericPurchasableItem
-import domain.{ItemDetails, PurchasableItem, SearchQuery, StockUpdate}
+import domain.{ItemDetails, SearchQuery, StockUpdate}
 import fs2.Stream
 import javax.inject.Inject
 import services.{GenericPurchasableItemService, NotificationService, PurchasableItemService, TelegramNotificationService}

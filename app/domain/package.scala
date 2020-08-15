@@ -10,12 +10,9 @@ package object domain {
       shortDescription: Option[String],
       description: Option[String],
       image: Option[String],
-      buyingOptions: Seq[String],
-      sellerName: Option[String],
-      price: BigDecimal,
       condition: String,
       datePosted: Instant,
-      dateEnded: Option[Instant],
+      seller: String,
       properties: Map[String, String]
   )
 
@@ -24,8 +21,8 @@ package object domain {
       exchange: BigDecimal
   )
 
-  final case class PurchasePrice(
+  final case class Price(
       quantityAvailable: Int,
-      pricePerUnit: BigDecimal
+      value: BigDecimal
   )
 }

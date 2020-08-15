@@ -14,8 +14,6 @@ class VideoGameEbayClient @Inject()(
   val ebayBrowseClient: EbayBrowseClient
 ) extends EbaySearchClient[ItemDetails.Game] {
 
-  implicit override protected val m: EbayItemMapper[ItemDetails.Game] = EbayItemMapper.gameDetailsMapper
-
   private val DEFAULT_SEARCH_FILTER = "conditionIds:{1000|1500|2000|2500|3000|4000|5000}," +
     "itemLocationCountry:GB," +
     "deliveryCountry:GB," +
@@ -64,4 +62,6 @@ class VideoGameEbayClient @Inject()(
 
   override protected def removeUnwanted(itemSummary: EbayItemSummary): Boolean =
     !LISTING_NAME_TRIGGER_WORDS.matches(itemSummary.title.replaceAll("[^a-zA-Z0-9 ]", ""))
+
+  override protected val mapper: EbayItemMapper[ItemDetails.Game] = EbayItemMapper.gameDetailsMapper
 }

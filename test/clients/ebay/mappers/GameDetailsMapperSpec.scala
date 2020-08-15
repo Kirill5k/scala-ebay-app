@@ -15,12 +15,9 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
     Some("Call of Duty: Modern Warfare (Xbox One). Condition is New. Dispatched with Royal Mail 1st Class Large Letter."),
     None,
     Some("https://i.ebayimg.com/images/g/PW4AAOSweS5eHsrk/s-l1600.jpg"),
-    List("FIXED_PRICE"),
-    Some("boris999"),
-    BigDecimal(10),
     "USED",
     Instant.now,
-    None,
+    "EBAY:boris999",
     Map("Platform" -> "Microsoft Xbox One", "Game Name" -> "Call of Duty: Modern Warfare", "Release Year" -> "2019", "Genre" -> "Action")
   )
 

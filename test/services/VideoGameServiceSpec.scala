@@ -18,7 +18,7 @@ class VideoGameServiceSpec extends AsyncWordSpec with Matchers with MockitoSugar
   "VideoGameService" should {
     "return new items from ebay" in {
       val (repository, ebayClient, cexClient) = mockDependecies
-      val searchResponse = List((videoGame.itemDetails, videoGame.listingDetails), (videoGame2.itemDetails, videoGame2.listingDetails))
+      val searchResponse = List(videoGame, videoGame2)
 
       when(ebayClient.findItemsListedInLastMinutes(any[SearchQuery], anyInt)).thenReturn(Stream.evalSeq(IO.pure(searchResponse)))
 
@@ -37,10 +37,10 @@ class VideoGameServiceSpec extends AsyncWordSpec with Matchers with MockitoSugar
       }
     }
 
-    "set resell price as None when not enough details for query" in {
+    "leave resell price as None when not enough details for query" in {
       val (repository, ebayClient, cexClient) = mockDependecies
       val itemDetails = videoGame.itemDetails.copy(platform = None)
-      val searchResponse = List((itemDetails, videoGame.listingDetails))
+      val searchResponse = List(videoGame.copy(itemDetails = itemDetails, resellPrice = None))
 
       when(ebayClient.findItemsListedInLastMinutes(any[SearchQuery], anyInt)).thenReturn(Stream.evalSeq(IO.pure(searchResponse)))
 
@@ -51,7 +51,7 @@ class VideoGameServiceSpec extends AsyncWordSpec with Matchers with MockitoSugar
       latestItemsResponse.compile.toList.unsafeToFuture().map { items =>
         verify(ebayClient).findItemsListedInLastMinutes(SearchQuery("xbox"), 10)
         verify(cexClient, never).findResellPrice(any[SearchQuery])
-        items must be (List(ResellableItem(itemDetails, videoGame.listingDetails, None)))
+        items must be (List(ResellableItem(itemDetails, videoGame.listingDetails, videoGame.price, None)))
       }
     }
 

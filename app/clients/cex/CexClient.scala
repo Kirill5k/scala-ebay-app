@@ -4,12 +4,13 @@ import java.util.concurrent.TimeUnit
 
 import cats.effect.IO
 import cats.implicits._
+import clients.cex.mappers.CexItemMapper
 import common.Logging
 import common.config.AppConfig
 import common.errors.ApiClientError
 import common.errors.ApiClientError.JsonParsingError
 import common.resources.SttpBackendResource
-import domain.{ItemDetails, PurchasableItem, ResellPrice, SearchQuery}
+import domain.{ItemDetails, ResellPrice, ResellableItem, SearchQuery}
 import io.circe.generic.auto._
 import javax.inject.{Inject, Singleton}
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
@@ -39,12 +40,12 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) exte
           else IO(searchResultsCache.put(query, rp))
         }
 
-  def getCurrentStock(query: SearchQuery): IO[List[PurchasableItem[ItemDetails.Generic]]] =
+  def getCurrentStock[D <: ItemDetails](query: SearchQuery)(implicit mapper: CexItemMapper[D]): IO[List[ResellableItem[D]]] =
     search(uri"${cexConfig.baseUri}/v3/boxes?q=${query.value}&inStock=1&inStockOnline=1")
       .map(_.flatMap(_.response.data).fold(List[SearchResult]())(_.boxes))
       .flatTap(res => IO(logger.info(s""""${query.value}" stock request returned ${res.size} results""")))
       .map { res =>
-        res.map(sr => PurchasableItem.generic(sr.boxName, sr.ecomQuantityOnHand, sr.sellPrice))
+        res.map(mapper.toDomain)
       }
 
   private def search(uri: Uri): IO[Option[CexSearchResponse]] =
