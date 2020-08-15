@@ -5,9 +5,9 @@ import java.util.concurrent.TimeUnit
 import cats.effect.IO
 import cats.implicits._
 import clients.cex.CexClient
-import com.google.inject.Inject
 import domain.PurchasableItem.GenericPurchasableItem
 import domain.{PurchasableItem, SearchQuery, StockUpdate, StockUpdateType}
+import javax.inject.Inject
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 
 trait PurchasableItemService[F[_], I <: PurchasableItem] {

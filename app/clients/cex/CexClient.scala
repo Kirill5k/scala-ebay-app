@@ -44,6 +44,7 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) exte
   def getCurrentStock(query: SearchQuery): IO[List[PurchasableItem]] =
     search(uri"${cexConfig.baseUri}/v3/boxes?q=${query.value}&inStock=1&inStockOnline=1")
       .map(_.flatMap(_.response.data).fold(List[SearchResult]())(_.boxes))
+      .flatTap(res => IO(logger.info(s""""${query.value}" stock request returned ${res.size} results""")))
       .map { res =>
         res.map { sr =>
           GenericPurchasableItem(
