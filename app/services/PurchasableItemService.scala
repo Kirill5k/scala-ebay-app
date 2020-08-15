@@ -25,7 +25,7 @@ final class GenericPurchasableItemService @Inject()(
   private[services] val cache: java.util.Map[String, PurchasableItem] = ExpiringMap
     .builder()
     .expirationPolicy(ExpirationPolicy.ACCESSED)
-    .expiration(1, TimeUnit.HOURS)
+    .expiration(30, TimeUnit.MINUTES)
     .build[String, PurchasableItem]()
 
   override def getStockUpdatesFromCex(query: SearchQuery): IO[List[StockUpdate[GenericPurchasableItem]]] =

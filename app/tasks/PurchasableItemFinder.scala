@@ -43,7 +43,7 @@ final class GenericPurchasableItemFinder @Inject()(
     SearchQuery("macbook pro 16,1")
   )
 
-  actorSystem.scheduler.scheduleWithFixedDelay(initialDelay = 20.seconds, delay = 30.minutes) { () =>
+  actorSystem.scheduler.scheduleWithFixedDelay(initialDelay = 1.minutes, delay = 20.minutes) { () =>
     checkCexStock().compile.drain.unsafeRunSync
   }
 }
