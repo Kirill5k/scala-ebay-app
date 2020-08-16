@@ -129,6 +129,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(Hello Neighbour)", "Hello Neighbor")
       .replaceAll("(?i)(fifa 20(?=\\d+))", "FIFA ")
       .replaceAll("(?i)(witcher iii)", "witcher 3")
+      .replaceAll("(?i)(wolfenstein 2)", "Wolfenstein II")
       .replaceAll("(?i)(diablo 3)", "diablo iii")
       .replaceAll("(?i)(\\bnsane\\b)", "N Sane")
       .replaceAll("(?i)(\\bww2|ww11\\b)", "wwii")
