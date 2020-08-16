@@ -30,7 +30,7 @@ trait EbayDealsSearchService[D <: ItemDetails] extends Logging {
   def searchEbay(query: SearchQuery, minutes: Int): Stream[IO, ResellableItem[D]] =
     ebaySearchClient
       .findItemsListedInLastMinutes[D](query, minutes)
-      .delayBy(100.millis)
+      .delayBy(200.millis)
       .evalMap {
         case i =>
           i.itemDetails.fullName match {
@@ -47,7 +47,7 @@ class EbayVideoGameSearchService @Inject()(
     override val ebaySearchClient: EbaySearchClient,
     override val cexClient: CexClient
 )(
-    implicit ex: ExecutionContext
+    implicit override val ex: ExecutionContext
 ) extends EbayDealsSearchService[ItemDetails.Game] {
   override implicit protected def ebaySearchParams: EbaySearchParams[ItemDetails.Game] = videoGameSearchParams
   override implicit protected def ebayItemMapper: EbayItemMapper[ItemDetails.Game] = EbayItemMapper.gameDetailsMapper
