@@ -42,7 +42,7 @@ final class CexGenericStockMonitor @Inject()(
     SearchQuery("macbook pro 16,1")
   )
 
-  actorSystem.scheduler.scheduleWithFixedDelay(initialDelay = 1.minutes, delay = 20.minutes) { () =>
+  actorSystem.scheduler.scheduleWithFixedDelay(initialDelay = 1.minutes, delay = 10.minutes) { () =>
     checkCexStock().compile.drain.unsafeRunSync
   }
 }
