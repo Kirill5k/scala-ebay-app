@@ -6,7 +6,7 @@ import common.Logging
 import domain.{ItemDetails, ResellableItem, SearchQuery}
 import fs2.Stream
 import javax.inject.Inject
-import services.{EbayDealsSearchService, EbayVideoGameSearchService, NotificationService, TelegramNotificationService}
+import services.{EbayDealsSearchService, EbayVideoGameSearchService, NotificationService, ResellableItemService, TelegramNotificationService, VideoGameService}
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
@@ -17,13 +17,14 @@ trait ResellableItemFinder[D <: ItemDetails] extends Logging {
   protected def searchQueries: List[SearchQuery]
 
   protected def ebayDealsService: EbayDealsSearchService[D]
+  protected def resellableItemService: ResellableItemService[D]
   protected def notificationService: NotificationService[IO]
 
   def searchForCheapItems(): Stream[IO, ResellableItem[D]] = {
     fs2.Stream.emits(searchQueries)
       .flatMap(ebayDealsService.searchEbay(_, 15))
-      .evalFilter(ebayDealsService.isNew)
-      .evalTap(ebayDealsService.save)
+      .evalFilter(resellableItemService.isNew)
+      .evalTap(resellableItemService.save)
       .filter(isProfitableToResell)
       .evalTap(notificationService.cheapItem)
       .handleErrorWith { error =>
@@ -38,6 +39,7 @@ trait ResellableItemFinder[D <: ItemDetails] extends Logging {
 
 final class EbayVideoGamesFinder @Inject()(
     override val ebayDealsService: EbayVideoGameSearchService,
+    override val resellableItemService: VideoGameService,
     override val notificationService: TelegramNotificationService,
     actorSystem: ActorSystem
 )(

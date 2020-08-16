@@ -15,13 +15,13 @@ import io.circe.syntax._
 import javax.inject.{Inject, Singleton}
 import play.api.http.ContentTypes
 import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents, Result}
-import services.EbayVideoGameSearchService
+import services.{VideoGameService}
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class VideoGameController @Inject()(
-    itemService: EbayVideoGameSearchService,
+    itemService: VideoGameService,
     override val controllerComponents: ControllerComponents
 )(
     implicit ex: ExecutionContext

@@ -6,27 +6,27 @@ import clients.ebay.browse.EbayBrowseClient
 import clients.ebay.browse.EbayBrowseResponse._
 import common.errors.ApiClientError.{AuthError, HttpError}
 import domain.ItemDetails.Game
-import domain.SearchQuery
+import domain.{ItemDetails, SearchQuery}
 import org.mockito.ArgumentMatchersSugar
 import org.mockito.captor.ArgCaptor
 import org.mockito.scalatest.AsyncMockitoSugar
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 
-class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMockitoSugar with ArgumentMatchersSugar {
+class EbaySearchClientSpec extends AsyncWordSpec with Matchers with AsyncMockitoSugar with ArgumentMatchersSugar {
   val accessToken = "access-token"
   val searchQuery = SearchQuery("xbox")
 
-  "VideoGameSearchClient" should {
+  "An EbaySearchClient" should {
 
-    "search for ps4, xbox one and switch games" in {
+    "search for video games" in {
       val searchParamsCaptor = ArgCaptor[Map[String, String]]
       val (authClient, browseClient) = mockEbayClients
-      val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
+      val videoGameSearchClient = new EbaySearchClient(authClient, browseClient)
 
       when(browseClient.search(any, any)).thenReturn(IO.pure(List()))
 
-      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes(searchQuery, 15)
+      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes[ItemDetails.Game](searchQuery, 15)
 
       itemsResponse.compile.toList.unsafeToFuture().map { items =>
         verify(authClient, times(1)).accessToken
@@ -41,12 +41,12 @@ class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMock
 
     "switch ebay account on autherror" in {
       val (authClient, browseClient) = mockEbayClients
-      val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
+      val videoGameSearchClient = new EbaySearchClient(authClient, browseClient)
 
       when(authClient.accessToken).thenReturn(IO.pure(accessToken))
       when(browseClient.search(any, any)).thenReturn(IO.raiseError(AuthError("Too many requests")))
 
-      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes(searchQuery, 15)
+      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes[ItemDetails.Game](searchQuery, 15)
 
       itemsResponse.compile.toList.unsafeToFuture().map { error =>
         videoGameSearchClient.itemsIds.isEmpty must be (true)
@@ -60,12 +60,12 @@ class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMock
 
     "return api client error on failure" in {
       val (authClient, browseClient) = mockEbayClients
-      val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
+      val videoGameSearchClient = new EbaySearchClient(authClient, browseClient)
 
       doReturn(IO.raiseError(HttpError(400, "Bad request")))
         .when(browseClient).search(any, any)
 
-      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes(searchQuery, 15)
+      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes[ItemDetails.Game](searchQuery, 15)
 
       itemsResponse.compile.toList.unsafeToFuture().map { error =>
         videoGameSearchClient.itemsIds.isEmpty must be (true)
@@ -79,12 +79,12 @@ class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMock
 
     "filter out items with bad feedback" in {
       val (authClient, browseClient) = mockEbayClients
-      val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
+      val videoGameSearchClient = new EbaySearchClient(authClient, browseClient)
 
       doReturn(IO.pure(List(ebayItemSummary("1", feedbackPercentage = 90), ebayItemSummary("1", feedbackScore = 4))))
         .when(browseClient).search(any, any)
 
-      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes(searchQuery, 15)
+      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes[ItemDetails.Game](searchQuery, 15)
 
       itemsResponse.compile.toList.unsafeToFuture().map { items =>
         videoGameSearchClient.itemsIds.isEmpty must be (true)
@@ -97,7 +97,7 @@ class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMock
 
     "filter out items with bad names" in {
       val (authClient, browseClient) = mockEbayClients
-      val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
+      val videoGameSearchClient = new EbaySearchClient(authClient, browseClient)
 
       doReturn(IO.pure(List(
         ebayItemSummary("1", name = "fallout 4 disc only"),
@@ -125,7 +125,7 @@ class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMock
       )))
         .when(browseClient).search(any, any)
 
-      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes(searchQuery, 15)
+      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes[ItemDetails.Game](searchQuery, 15)
 
       itemsResponse.compile.toList.unsafeToFuture().map { items =>
         videoGameSearchClient.itemsIds.isEmpty must be (true)
@@ -135,12 +135,12 @@ class VideoGameEbayClientSpec extends AsyncWordSpec with Matchers with AsyncMock
 
     "get item details for each item id" in {
       val (authClient, browseClient) = mockEbayClients
-      val videoGameSearchClient = new VideoGameEbayClient(authClient, browseClient)
+      val videoGameSearchClient = new EbaySearchClient(authClient, browseClient)
 
       when(browseClient.search(any, any)).thenReturn(IO.pure(ebayItemSummaries("item-1")))
       when(browseClient.getItem(accessToken, "item-1")).thenReturn(IO.pure(Some(ebayItem.copy(itemId = "item-1"))))
 
-      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes(searchQuery, 15)
+      val itemsResponse = videoGameSearchClient.findItemsListedInLastMinutes[ItemDetails.Game](searchQuery, 15)
 
       itemsResponse.compile.toList.unsafeToFuture().map { items =>
         videoGameSearchClient.itemsIds.containsKey("item-1") must be (true)

@@ -5,24 +5,27 @@ import java.time.Instant
 import cats.effect.IO
 import cats.implicits._
 import clients.cex.CexClient
-import clients.ebay.{EbaySearchClient, VideoGameEbayClient}
+import clients.ebay.mappers._
+import clients.ebay.params._
+import clients.ebay.EbaySearchClient
 import common.Logging
 import domain.{ItemDetails, ResellableItem, SearchQuery}
 import fs2.Stream
 import javax.inject.Inject
-import repositories.{ResellableItemRepository, VideoGameRepository}
 
 import scala.concurrent.ExecutionContext
 
 trait EbayDealsSearchService[D <: ItemDetails] extends Logging {
 
-  protected def itemRepository: ResellableItemRepository[D]
-  protected def ebaySearchClient: EbaySearchClient[D]
+  implicit protected def ebayItemMapper: EbayItemMapper[D]
+  implicit protected def ebaySearchParams: EbaySearchParams[D]
+
+  protected def ebaySearchClient: EbaySearchClient
   protected def cexClient: CexClient
 
   def searchEbay(query: SearchQuery, minutes: Int): Stream[IO, ResellableItem[D]] =
     ebaySearchClient
-      .findItemsListedInLastMinutes(query, minutes)
+      .findItemsListedInLastMinutes[D](query, minutes)
       .evalMap {
         case i =>
           i.itemDetails.fullName match {
@@ -33,21 +36,14 @@ trait EbayDealsSearchService[D <: ItemDetails] extends Logging {
                 IO.pure(i)
           }
       }
-
-  def save(item: ResellableItem[D]): IO[Unit] =
-    itemRepository.save(item)
-
-  def get(limit: Option[Int], from: Option[Instant], to: Option[Instant]): IO[List[ResellableItem[D]]] =
-    itemRepository.findAll(limit, from, to)
-
-  def isNew(item: ResellableItem[D]): IO[Boolean] =
-    itemRepository.existsByUrl(item.listingDetails.url).map(!_)
 }
 
 class EbayVideoGameSearchService @Inject()(
-    override val itemRepository: VideoGameRepository,
-    override val ebaySearchClient: VideoGameEbayClient,
+    override val ebaySearchClient: EbaySearchClient,
     override val cexClient: CexClient
 )(
     implicit ex: ExecutionContext
-) extends EbayDealsSearchService[ItemDetails.Game] {}
+) extends EbayDealsSearchService[ItemDetails.Game] {
+  override implicit protected def ebaySearchParams: EbaySearchParams[ItemDetails.Game] = videoGameSearchParams
+  override implicit protected def ebayItemMapper: EbayItemMapper[ItemDetails.Game] = EbayItemMapper.gameDetailsMapper
+}
