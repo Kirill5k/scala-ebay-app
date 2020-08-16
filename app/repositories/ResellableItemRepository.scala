@@ -23,11 +23,11 @@ import scala.concurrent.{ExecutionContext, Future}
 trait ResellableItemRepository[D <: ItemDetails] extends Logging {
   implicit protected def ex: ExecutionContext
   implicit protected def mongo: ReactiveMongoApi
-  implicit protected def entityMapper: ResellableItemEntityMapper[D]
   implicit protected def entityFormat: OFormat[ResellableItemEntity[D]]
 
   implicit private val cs: ContextShift[IO] = IO.contextShift(ex)
 
+  protected def entityMapper: ResellableItemEntityMapper[D]
   protected def collectionName: String
   protected val itemCollection: Future[JSONCollection] = mongo.database.map(_.collection(collectionName))
 
@@ -80,11 +80,11 @@ class VideoGameRepository @Inject()(
 ) extends ResellableItemRepository[Game] {
   import ResellableItemEntity._
 
-  implicit override protected def entityMapper: ResellableItemEntityMapper[Game] =
-    ResellableItemEntityMapper.videoGameEntityMapper
-
   implicit override protected def entityFormat: OFormat[VideoGameEntity] =
     ResellableItemEntity.videoGameFormat
+
+  override protected def entityMapper: ResellableItemEntityMapper[Game] =
+    ResellableItemEntityMapper.videoGameEntityMapper
 
   override protected val collectionName: String = "videoGames"
 }
