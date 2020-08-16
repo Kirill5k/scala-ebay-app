@@ -1,6 +1,7 @@
 package services
 
 import java.time.Instant
+import java.util.concurrent.TimeUnit
 
 import cats.effect.{IO, Timer}
 import cats.implicits._
@@ -30,12 +31,11 @@ trait EbayDealsSearchService[D <: ItemDetails] extends Logging {
   def searchEbay(query: SearchQuery, minutes: Int): Stream[IO, ResellableItem[D]] =
     ebaySearchClient
       .findItemsListedInLastMinutes[D](query, minutes)
-      .delayBy(200.millis)
       .evalMap {
         case i =>
           i.itemDetails.fullName match {
             case Some(name) =>
-              cexClient.findResellPrice(SearchQuery(name)).map(rp => i.copy(resellPrice = rp))
+              IO.sleep(200.millis) *> cexClient.findResellPrice(SearchQuery(name)).map(rp => i.copy(resellPrice = rp))
             case None =>
               IO(logger.warn(s"not enough details to query for resell price ${i.itemDetails}")) *>
                 IO.pure(i)
