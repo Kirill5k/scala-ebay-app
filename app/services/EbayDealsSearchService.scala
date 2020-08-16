@@ -2,7 +2,7 @@ package services
 
 import java.time.Instant
 
-import cats.effect.IO
+import cats.effect.{IO, Timer}
 import cats.implicits._
 import clients.cex.CexClient
 import clients.ebay.mappers._
@@ -14,18 +14,23 @@ import fs2.Stream
 import javax.inject.Inject
 
 import scala.concurrent.ExecutionContext
+import scala.concurrent.duration._
 
 trait EbayDealsSearchService[D <: ItemDetails] extends Logging {
 
   implicit protected def ebayItemMapper: EbayItemMapper[D]
   implicit protected def ebaySearchParams: EbaySearchParams[D]
+  implicit protected def ex: ExecutionContext
 
   protected def ebaySearchClient: EbaySearchClient
   protected def cexClient: CexClient
 
+  implicit private val timer = IO.timer(ex)
+
   def searchEbay(query: SearchQuery, minutes: Int): Stream[IO, ResellableItem[D]] =
     ebaySearchClient
       .findItemsListedInLastMinutes[D](query, minutes)
+      .delayBy(100.millis)
       .evalMap {
         case i =>
           i.itemDetails.fullName match {
