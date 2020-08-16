@@ -6,22 +6,22 @@ import common.Logging
 import domain.{ItemDetails, SearchQuery, StockUpdate}
 import fs2.Stream
 import javax.inject.Inject
-import services.{GenericPurchasableItemService, NotificationService, PurchasableItemService, TelegramNotificationService}
+import services.{CexStockSearchService, GenericPurchasableItemService, NotificationService, TelegramNotificationService}
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
-trait PurchasableItemFinder[D <: ItemDetails] extends Logging {
+trait CexStockMonitor[D <: ItemDetails] extends Logging {
 
   protected def searchQueries: List[SearchQuery]
 
-  protected def itemService: PurchasableItemService[IO, D]
+  protected def itemService: CexStockSearchService[IO, D]
   protected def notificationService: NotificationService[IO]
 
   def checkCexStock(): Stream[IO, StockUpdate[D]] =
     fs2.Stream
       .emits(searchQueries)
-      .evalMap(itemService.getStockUpdatesFromCex)
+      .evalMap(itemService.getStockUpdates)
       .flatMap(updates => Stream.emits(updates))
       .evalTap(notificationService.stockUpdate[D])
       .handleErrorWith { error =>
@@ -30,13 +30,13 @@ trait PurchasableItemFinder[D <: ItemDetails] extends Logging {
       }
 }
 
-final class GenericPurchasableItemFinder @Inject()(
+final class CexGenericStockMonitor @Inject()(
     override val itemService: GenericPurchasableItemService,
     override val notificationService: TelegramNotificationService,
     actorSystem: ActorSystem
 )(
     implicit val ex: ExecutionContext
-) extends PurchasableItemFinder[ItemDetails.Generic] {
+) extends CexStockMonitor[ItemDetails.Generic] {
 
   override protected val searchQueries: List[SearchQuery] = List(
     SearchQuery("macbook pro 16,1")

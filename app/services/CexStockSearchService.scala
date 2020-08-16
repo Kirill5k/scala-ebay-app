@@ -5,19 +5,18 @@ import java.util.concurrent.TimeUnit
 import cats.effect.IO
 import cats.implicits._
 import clients.cex.CexClient
-import clients.cex.mappers.CexItemMapper
 import domain.ResellableItem.GenericItem
 import domain.{ItemDetails, ResellableItem, SearchQuery, StockUpdate, StockUpdateType}
 import javax.inject.Inject
 import net.jodah.expiringmap.{ExpirationPolicy, ExpiringMap}
 
-trait PurchasableItemService[F[_], D <: ItemDetails] {
-  def getStockUpdatesFromCex(query: SearchQuery): F[List[StockUpdate[D]]]
+trait CexStockSearchService[F[_], D <: ItemDetails] {
+  def getStockUpdates(query: SearchQuery): F[List[StockUpdate[D]]]
 }
 
 final class GenericPurchasableItemService @Inject()(
     private val cexClient: CexClient
-) extends PurchasableItemService[IO, ItemDetails.Generic] {
+) extends CexStockSearchService[IO, ItemDetails.Generic] {
 
   private[services] val searchHistory: scala.collection.mutable.Set[SearchQuery] =
     scala.collection.mutable.Set[SearchQuery]()
@@ -28,7 +27,7 @@ final class GenericPurchasableItemService @Inject()(
     .expiration(30, TimeUnit.MINUTES)
     .build[String, ResellableItem[ItemDetails.Generic]]()
 
-  override def getStockUpdatesFromCex(query: SearchQuery): IO[List[StockUpdate[ItemDetails.Generic]]] =
+  override def getStockUpdates(query: SearchQuery): IO[List[StockUpdate[ItemDetails.Generic]]] =
     cexClient.getCurrentStock[ItemDetails.Generic](query)
       .map(_.filter(_.itemDetails.fullName.isDefined))
       .flatMap { items =>

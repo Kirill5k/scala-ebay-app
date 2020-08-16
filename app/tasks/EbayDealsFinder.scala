@@ -6,7 +6,7 @@ import common.Logging
 import domain.{ItemDetails, ResellableItem, SearchQuery}
 import fs2.Stream
 import javax.inject.Inject
-import services.{NotificationService, ResellableItemService, TelegramNotificationService, VideoGameService}
+import services.{EbayDealsSearchService, EbayVideoGameSearchService, NotificationService, TelegramNotificationService}
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
@@ -16,14 +16,14 @@ trait ResellableItemFinder[D <: ItemDetails] extends Logging {
   protected def minMarginPercentage: Int
   protected def searchQueries: List[SearchQuery]
 
-  protected def itemService: ResellableItemService[D]
+  protected def ebayDealsService: EbayDealsSearchService[D]
   protected def notificationService: NotificationService[IO]
 
   def searchForCheapItems(): Stream[IO, ResellableItem[D]] = {
     fs2.Stream.emits(searchQueries)
-      .flatMap(itemService.searchEbay(_, 15))
-      .evalFilter(itemService.isNew)
-      .evalTap(itemService.save)
+      .flatMap(ebayDealsService.searchEbay(_, 15))
+      .evalFilter(ebayDealsService.isNew)
+      .evalTap(ebayDealsService.save)
       .filter(isProfitableToResell)
       .evalTap(notificationService.cheapItem)
       .handleErrorWith { error =>
@@ -36,8 +36,8 @@ trait ResellableItemFinder[D <: ItemDetails] extends Logging {
     item => item.resellPrice.exists(rp => (rp.exchange * 100 / item.price.value - 100) > minMarginPercentage)
 }
 
-final class VideoGamesFinder @Inject()(
-    override val itemService: VideoGameService,
+final class EbayVideoGamesFinder @Inject()(
+    override val ebayDealsService: EbayVideoGameSearchService,
     override val notificationService: TelegramNotificationService,
     actorSystem: ActorSystem
 )(

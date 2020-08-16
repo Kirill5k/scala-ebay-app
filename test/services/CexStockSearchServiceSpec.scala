@@ -7,14 +7,14 @@ import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 
-class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with MockitoSugar with ArgumentMatchersSugar {
+class CexStockSearchServiceSpec extends AsyncWordSpec with Matchers with MockitoSugar with ArgumentMatchersSugar {
 
   val query = SearchQuery("macbook")
 
   val mb1 = ResellableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", 2, 1950.0)
   val mb2 = ResellableItemBuilder.generic("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/B")
 
-  "A GenericPurchasableItemService" should {
+  "A CexGenericStockSearchService" should {
 
     "return empty list if cache is empty" in {
       val cexMock = mock[CexClient]
@@ -22,7 +22,7 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
 
       when(cexMock.getCurrentStock(query)).thenReturn(IO.pure(List(mb1, mb2)))
 
-      val result = service.getStockUpdatesFromCex(query)
+      val result = service.getStockUpdates(query)
 
       result.unsafeToFuture().map { u =>
         verify(cexMock).getCurrentStock(query)
@@ -40,7 +40,7 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
       service.cache.put("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", mb1)
       when(cexMock.getCurrentStock(query)).thenReturn(IO.pure(List(mb1, mb2)))
 
-      val result = service.getStockUpdatesFromCex(query)
+      val result = service.getStockUpdates(query)
 
       result.unsafeToFuture().map { u =>
         service.cache.get("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A") must be (mb1)
@@ -56,7 +56,7 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
       service.cache.put("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A", mb1)
       when(cexMock.getCurrentStock(query)).thenReturn(IO.pure(List(mb1)))
 
-      val result = service.getStockUpdatesFromCex(query)
+      val result = service.getStockUpdates(query)
 
       result.unsafeToFuture().map { u =>
         service.cache.get("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A") must be (mb1)
@@ -74,7 +74,7 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
       )
       when(cexMock.getCurrentStock(query)).thenReturn(IO.pure(List(mb1)))
 
-      val result = service.getStockUpdatesFromCex(query)
+      val result = service.getStockUpdates(query)
 
       result.unsafeToFuture().map { u =>
         service.cache.get("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A") must be (mb1)
@@ -92,7 +92,7 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
       )
       when(cexMock.getCurrentStock(query)).thenReturn(IO.pure(List(mb1)))
 
-      val result = service.getStockUpdatesFromCex(query)
+      val result = service.getStockUpdates(query)
 
       result.unsafeToFuture().map { u =>
         service.cache.get("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A") must be (mb1)
@@ -110,7 +110,7 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
       )
       when(cexMock.getCurrentStock(query)).thenReturn(IO.pure(List(mb1)))
 
-      val result = service.getStockUpdatesFromCex(query)
+      val result = service.getStockUpdates(query)
 
       result.unsafeToFuture().map { u =>
         service.cache.get("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A") must be (mb1)
@@ -128,7 +128,7 @@ class GenericPurchasableItemServiceSpec extends AsyncWordSpec with Matchers with
       )
       when(cexMock.getCurrentStock(query)).thenReturn(IO.pure(List(mb1)))
 
-      val result = service.getStockUpdatesFromCex(query)
+      val result = service.getStockUpdates(query)
 
       result.unsafeToFuture().map { u =>
         service.cache.get("Apple MacBook Pro 16,1/i7-9750H/16GB/512GB SSD/5300M 4GB/16\"/Silver/A") must be (mb1)

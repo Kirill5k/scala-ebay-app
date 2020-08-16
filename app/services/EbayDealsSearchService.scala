@@ -14,7 +14,7 @@ import repositories.{ResellableItemRepository, VideoGameRepository}
 
 import scala.concurrent.ExecutionContext
 
-trait ResellableItemService[D <: ItemDetails] extends Logging {
+trait EbayDealsSearchService[D <: ItemDetails] extends Logging {
 
   protected def itemRepository: ResellableItemRepository[D]
   protected def ebaySearchClient: EbaySearchClient[D]
@@ -44,10 +44,10 @@ trait ResellableItemService[D <: ItemDetails] extends Logging {
     itemRepository.existsByUrl(item.listingDetails.url).map(!_)
 }
 
-class VideoGameService @Inject()(
+class EbayVideoGameSearchService @Inject()(
     override val itemRepository: VideoGameRepository,
     override val ebaySearchClient: VideoGameEbayClient,
     override val cexClient: CexClient
 )(
     implicit ex: ExecutionContext
-) extends ResellableItemService[ItemDetails.Game] {}
+) extends EbayDealsSearchService[ItemDetails.Game] {}

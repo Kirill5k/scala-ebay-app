@@ -10,12 +10,12 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import repositories.VideoGameRepository
 
-class VideoGameServiceSpec extends AsyncWordSpec with Matchers with MockitoSugar with ArgumentMatchersSugar {
+class EbayDealsSearchServiceSpec extends AsyncWordSpec with Matchers with MockitoSugar with ArgumentMatchersSugar {
 
   val videoGame = ResellableItemBuilder.videoGame("super mario 3")
   val videoGame2 = ResellableItemBuilder.videoGame("Battlefield 1", resellPrice = None)
 
-  "VideoGameService" should {
+  "An EbayVideoGameSearchService" should {
     "return new items from ebay" in {
       val (repository, ebayClient, cexClient) = mockDependecies
       val searchResponse = List(videoGame, videoGame2)
@@ -26,7 +26,7 @@ class VideoGameServiceSpec extends AsyncWordSpec with Matchers with MockitoSugar
         .doReturn(IO.pure(None))
         .when(cexClient).findResellPrice(any[SearchQuery])
 
-      val service = new VideoGameService(repository, ebayClient, cexClient)
+      val service = new EbayVideoGameSearchService(repository, ebayClient, cexClient)
 
       val latestItemsResponse = service.searchEbay(SearchQuery("xbox"), 10)
 
@@ -44,7 +44,7 @@ class VideoGameServiceSpec extends AsyncWordSpec with Matchers with MockitoSugar
 
       when(ebayClient.findItemsListedInLastMinutes(any[SearchQuery], anyInt)).thenReturn(Stream.evalSeq(IO.pure(searchResponse)))
 
-      val service = new VideoGameService(repository, ebayClient, cexClient)
+      val service = new EbayVideoGameSearchService(repository, ebayClient, cexClient)
 
       val latestItemsResponse = service.searchEbay(SearchQuery("xbox"), 10)
 
@@ -59,7 +59,7 @@ class VideoGameServiceSpec extends AsyncWordSpec with Matchers with MockitoSugar
       val (repository, ebayClient, cexClient) = mockDependecies
       when(repository.existsByUrl(any)).thenReturn(IO.pure(true))
 
-      val service = new VideoGameService(repository, ebayClient, cexClient)
+      val service = new EbayVideoGameSearchService(repository, ebayClient, cexClient)
 
       val isNewResult = service.isNew(videoGame)
 
@@ -72,7 +72,7 @@ class VideoGameServiceSpec extends AsyncWordSpec with Matchers with MockitoSugar
     "store item in db" in {
       val (repository, ebayClient, cexClient) = mockDependecies
       when(repository.save(any)).thenReturn(IO.pure(()))
-      val service = new VideoGameService(repository, ebayClient, cexClient)
+      val service = new EbayVideoGameSearchService(repository, ebayClient, cexClient)
 
       val saveResult = service.save(videoGame)
 
@@ -85,7 +85,7 @@ class VideoGameServiceSpec extends AsyncWordSpec with Matchers with MockitoSugar
     "get latest items from db" in {
       val (repository, ebayClient, cexClient) = mockDependecies
       when(repository.findAll(any, any, any)).thenReturn(IO.pure(List(videoGame)))
-      val service = new VideoGameService(repository, ebayClient, cexClient)
+      val service = new EbayVideoGameSearchService(repository, ebayClient, cexClient)
 
       val latestResult = service.get(Some(10), None, None)
 

@@ -19,9 +19,9 @@ class NotificationServiceSpec extends AsyncWordSpec with Matchers with MockitoSu
       val videoGame = ResellableItemBuilder.videoGame("super mario 3", platform = Some( "SWITCH"))
       val notificationResult = service.cheapItem(videoGame)
 
-      notificationResult.unsafeToFuture().map {
+      notificationResult.unsafeToFuture().map { r =>
         verify(client).sendMessageToMainChannel("""NEW "super mario 3 SWITCH" - ebay: £32.99, cex: £80(142%)/£100 https://www.ebay.co.uk/itm/super-mario-3""")
-        _ must be (())
+        r must be (())
       }
     }
 
@@ -35,9 +35,9 @@ class NotificationServiceSpec extends AsyncWordSpec with Matchers with MockitoSu
         ResellableItemBuilder.generic("macbook pro", price = 50.0)
       )
       val result = service.stockUpdate(update)
-      result.unsafeToFuture().map {
-        verify(client).sendMessageToSecondaryChannel("""STOCK UPDATE for macbook pro: Price has reduced from £100.0 to £50.0""")
-        _ must be (())
+      result.unsafeToFuture().map { r =>
+        verify(client).sendMessageToSecondaryChannel("""STOCK UPDATE for macbook pro: Price has reduced from £100.0 to £50.0 http://cex.com/macbookpro""")
+        r must be (())
       }
     }
   }

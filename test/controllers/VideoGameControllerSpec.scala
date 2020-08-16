@@ -9,7 +9,7 @@ import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatestplus.play._
 import play.api.test.Helpers._
 import play.api.test._
-import services.VideoGameService
+import services.EbayVideoGameSearchService
 
 
 class VideoGameControllerSpec extends PlaySpec with MockitoSugar with ArgumentMatchersSugar {
@@ -22,7 +22,7 @@ class VideoGameControllerSpec extends PlaySpec with MockitoSugar with ArgumentMa
   "VideoGameController GET" should {
 
     "return list of video games" in {
-      val service = mock[VideoGameService]
+      val service = mock[EbayVideoGameSearchService]
       when(service.get(any, any, any)).thenReturn(IO.pure(List(videoGame, videoGame2)))
 
       val controller = new VideoGameController(service, stubControllerComponents())
@@ -38,7 +38,7 @@ class VideoGameControllerSpec extends PlaySpec with MockitoSugar with ArgumentMa
     }
 
     "return summary of video games" in {
-      val service = mock[VideoGameService]
+      val service = mock[EbayVideoGameSearchService]
       when(service.get(any, any, any)).thenReturn(IO.pure(List(videoGame, videoGame2, videoGame3)))
 
       val controller = new VideoGameController(service, stubControllerComponents())
@@ -54,7 +54,7 @@ class VideoGameControllerSpec extends PlaySpec with MockitoSugar with ArgumentMa
     }
 
     "return error" in {
-      val service = mock[VideoGameService]
+      val service = mock[EbayVideoGameSearchService]
       when(service.get(any, any, any)).thenReturn(IO.raiseError(HttpError(400, "bad request")))
 
       val controller = new VideoGameController(service, stubControllerComponents())
