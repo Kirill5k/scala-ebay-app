@@ -35,7 +35,8 @@ trait EbayDealsSearchService[D <: ItemDetails] extends Logging {
         case i =>
           i.itemDetails.fullName match {
             case Some(name) =>
-              IO.sleep(200.millis) *> cexClient.findResellPrice(SearchQuery(name)).map(rp => i.copy(resellPrice = rp))
+              IO.sleep(200.millis) *>
+                cexClient.findResellPrice(SearchQuery(name)).map(rp => i.copy(resellPrice = rp))
             case None =>
               IO(logger.warn(s"not enough details to query for resell price ${i.itemDetails}")) *>
                 IO.pure(i)
