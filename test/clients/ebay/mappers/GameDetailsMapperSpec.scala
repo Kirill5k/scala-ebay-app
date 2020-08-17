@@ -211,6 +211,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         "Call of Duty-Infinite Warfare xbox 360 blah blah blah",
         "Call of Duty - Infinite Warfare playstation 4 blah blah blah",
         "Call of Duty - Infinite Warfare - Sony PS4 blah blah blah",
+        "PS4 2019 Call of Duty: Infinite Warfare In Working Order",
         "Playstation 4 - PS4 - Call of Duty: Infinite Warfare In Working Order",
         "Playstation 4 PS4 game Call of Duty: Infinite Warfare superultimate edition",
         "Call of Duty: Infinite Warfare 20th anniversary FUVG ID7274z",
