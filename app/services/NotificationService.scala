@@ -29,7 +29,9 @@ final class TelegramNotificationService @Inject()(
   override def stockUpdate[D <: ItemDetails](update: StockUpdate[D]): IO[Unit] =
     update.item.itemDetails.fullName match {
       case Some(name) =>
-        val message = s"STOCK UPDATE for $name: ${update.updateType} ${update.item.listingDetails.url}"
+        val price = update.item.price.value
+        val url = update.item.listingDetails.url
+        val message = s"STOCK UPDATE for $name (£$price): ${update.updateType} $url"
         IO(logger.info(s"""sending "$message"""")) *>
           telegramClient.sendMessageToSecondaryChannel(message)
       case None =>
