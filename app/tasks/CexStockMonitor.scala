@@ -41,6 +41,7 @@ final class CexGenericStockMonitor @Inject()(
   override protected val searchQueries: List[StockMonitorRequest] = List(
     StockMonitorRequest(SearchQuery("macbook pro 16,1")),
     StockMonitorRequest(SearchQuery("xbox 360 grand theft auto 5"), false, true),
+    StockMonitorRequest(SearchQuery("ps4 the last of us remastered"), false, true)
   )
 
   actorSystem.scheduler.scheduleWithFixedDelay(initialDelay = 1.minutes, delay = 10.minutes) { () =>
