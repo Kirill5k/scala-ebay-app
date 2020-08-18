@@ -18,7 +18,12 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
     "USED",
     Instant.now,
     "EBAY:boris999",
-    Map("Platform" -> "Microsoft Xbox One", "Game Name" -> "Call of Duty: Modern Warfare", "Release Year" -> "2019", "Genre" -> "Action")
+    Map(
+      "Platform" -> "Microsoft Xbox One",
+      "Game Name" -> "Call of Duty: Modern Warfare",
+      "Release Year" -> "2019",
+      "Genre" -> "Action"
+    )
   )
 
   "GameDetailsMapper" should {
