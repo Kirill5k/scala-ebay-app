@@ -4,6 +4,12 @@ package object domain {
 
   final case class SearchQuery(value: String) extends AnyVal
 
+  final case class StockMonitorRequest(
+      query: SearchQuery,
+      monitorStockChange: Boolean = true,
+      monitorPriceChange: Boolean = true
+  )
+
   final case class ListingDetails(
       url: String,
       title: String,

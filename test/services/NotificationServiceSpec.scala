@@ -13,7 +13,7 @@ class NotificationServiceSpec extends AsyncWordSpec with Matchers with MockitoSu
 
     "send cheap item notification message" in {
       val client = mock[TelegramClient]
-      when(client.sendMessageToMainChannel(any[String])).thenReturn(IO.pure(()))
+      when(client.sendMessageToMainChannel(any[String])).thenReturn(IO.unit)
       val service = new TelegramNotificationService(client)
 
       val videoGame = ResellableItemBuilder.videoGame("super mario 3", platform = Some( "SWITCH"))
@@ -27,7 +27,7 @@ class NotificationServiceSpec extends AsyncWordSpec with Matchers with MockitoSu
 
     "stock update notification message" in {
       val client = mock[TelegramClient]
-      when(client.sendMessageToSecondaryChannel(any[String])).thenReturn(IO.pure(()))
+      when(client.sendMessageToSecondaryChannel(any[String])).thenReturn(IO.unit)
       val service = new TelegramNotificationService(client)
 
       val update = StockUpdate(
