@@ -6,8 +6,14 @@ import domain.{Packaging, ListingDetails}
 
 private[mappers] object GameDetailsMapper {
 
+  private val CONSOLE_REGEX_PATTERN =
+    "((new|rare) )?((very )?good )?(\\b(for|((only|playable|plays) )?on)\\b )?(the )?" +
+      "((sony )?play( )?st(a)?(t)?(i)?(o)?(n)?(( )?(\\d|one|move))?|(microsoft )?x( )?b(ox)?(( )?(live|o(ne)?|\\d+))?|\\bps( )?\\d\\b|(nintendo )?(switch|\\bwii( u)?\\b))" +
+      "( (console|edition|version|action|wrestling|football))?( new)?( 20\\d\\d)?"
+
   private val LEVEL1_TITLE_WORDS_REPLACEMENTS = List(
     "(gold )?((greatest|playstation|ps) )?\\bhits\\b( range)?", "nintendo selects",
+    s"(?<=.{12})$CONSOLE_REGEX_PATTERN(?s).*",
     "(?<=.{12})((new|rare|(very )?good) )?(\\b(for|((only|playable|plays) )?on)\\b )?(the )?((sony )?play( )?station( )?(\\d|one|move)|(?<!(Playstation(?s).*))\\bPS\\d\\b|(microsoft )?xb(ox)?( )?(1|o(ne)?|360)|nintendo switch|(nintendo )?(?<!(\\bwii\\b(?s).*))\\bwii( u)?\\b)(?s).*",
     "\\bday\\b (one|1|zero|0)( (edition|\\be(d)?(i)?(t)?(i)?\\b))?(?s).*$",
     "(the )?(\\bHD\\b|lost|essential|exclusive|special|limited collectors|definitive|atlas|platinum|complete|standard|std|classic(s)?|(\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of the|legacy( pro)?|(un)?limited|premium|(digital )?deluxe|(\\w+)?ultimat).{0,20}(collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
@@ -17,6 +23,7 @@ private[mappers] object GameDetailsMapper {
   ).mkString("(?i)", "|", "")
 
   private val LEVEL2_TITLE_WORDS_REPLACEMENTS = List(
+    CONSOLE_REGEX_PATTERN,
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]",
     "\\d{5,}(\\w+)?", "\\d{3,}\\s+\\d{4,}",
     "for (the )?playstation( )?vr", "((ps( )?)?(vr|move)|kinect) (needed|required|compatible)", "requires kinect( sensor)?",
@@ -61,6 +68,7 @@ private[mappers] object GameDetailsMapper {
   ).mkString("(?i)", "|", "")
 
   private val EDGE_WORDS_REPLACEMENTS = List(
+    "Playstation( \\d)?\\s+(?=PS)",
     "^(\\s)?(((brand )?NEW|BNIB|Factory) )?(and )?SEALED( in Packaging)?", "Standart$",
     "^SALE", "(brand )?new$", "^BOXED", "^SALE", "^NEW", "^best", "^software", "un( |-)?opened$", "rare$", "^rare", "official$",
     "^bargain","bargain$", "(near )?mint$", "\\bfor\\b( the)?$", "premium$", "\\bvery\\b$", "\\bLIMITED\\b$", "(fully )?(un)?tested$", "\\bON\\b$", "\\bBY\\b$",
