@@ -30,6 +30,7 @@ private[mappers] object GameDetailsMapper {
     "((new|rare) )?((very )?good )?(\\b(for|((only|playable|plays) )?on)\\b )?(the )?(sony |microsoft )?(play( )?st(a)?(t)?(i)?(o)?(n)?(( )?(\\d|one|move))?|x( )?b(ox)?(( )?(live|o(ne)?|\\d+))?|\\bps\\d\\b|(nintendo )?(switch|\\bwii( u)?\\b))( (console|edition|version|action|wrestling|football))?( new)?( 20\\d\\d)?",
     "(dbl|double|triple|twin|expansion|combo)( )?(pack|pk)", "new in (cellophane|packaging)", "Now Released(?s).*$", "includes.{0,20}pack(?s).*$",
     "(1st|2nd|first) class.*$", "(fully )?(boxed|complete) (\\bin\\b|with|case)(?s).*$", "exclusive to(?s).*$",
+    "((with|inc(ludes)?) ).{0,15}(content|bonus)(?s).*$",
     "((supplied|comes) )?(with(out)?|\\bw( )?(o)?\\b|in original|no|missing|plus|has|inc(l)?(udes|uding)?) (booklet|original|instruction|box|map|(slip )?case|manual)(?s).*$",
     "(the )?disc(s)? (are|is|in)(?s).*$",
     "((new|all) )?(fully )?(((very|super) )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)? complete) game(s)?( \\d+)?( new)?",
@@ -43,7 +44,7 @@ private[mappers] object GameDetailsMapper {
     "(?<=\\b(W)?(2k)?\\d+)\\s+(20\\d\\d|wrestling|basketball|footbal|formula)(?s).*",
     "(?<=FIFA) (soccer|football)", "(?<=WWE) wrestling", "(?<=F1)\\s+(Formula (one|1))( racing)?",
     "(?<=\\b20\\d\\d)(\\s+)(version|formula)(?s).*", "Formula (1|One)\\s+(?=F1)", "Marvel(s)?\\s+(?=Spider)",
-    "(?<=\\b[ivx]{1,4}\\b)(\\s+)\\d+"
+    "(?<=\\b[ivx]{1,4}\\b)(\\s+)\\d+", "(?<=\\d) \\b[ivx]{1,4}\\b",
   ).mkString("(?i)", "|", "")
 
   private val LEVEL3_TITLE_WORDS_REPLACEMENTS = List(
@@ -56,7 +57,7 @@ private[mappers] object GameDetailsMapper {
     "((barely|condition|never|hardly) )?(un)?used(( very)? good)?( (game|condition))?", "very good", "reorderable", "(posted|sent|dispatched) same day", "in stock( now)?", "(only )?played once", "best price", "Special Reserve",
     "Expertly Refurbished Product", "(quality|value) guaranteed", "(trusted|eBay|best|from ebays biggest) Seller(s)?", "fully (working|tested)", "Order By 4pm", "Ultimate Fighting Championship",
     "remaster(ed)?", "directors cut", "\\bctr\\b", "original", "english", "deluxe", "standard", "\\bgoty\\b", "mult(i)?( )?lang(uage)?(s)?( in game)?", "(with )?(fast|free)( )?(dispatch|post)", "fast free",
-    "blu( )?ray", "((with|includes) )?(\\d )?bonus (content|level(s)?)", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "essentials", "classic(s)?( (hit(s)?|version))?", "boxed(?s).*(complete|manual)",
+    "blu( )?ray", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "essentials", "classic(s)?( (hit(s)?|version))?", "boxed(?s).*(complete|manual)",
     "very rare", "award winning", "official licenced", "Unwanted Gift", "limited quantity", "region free", "gift idea", "in case", "add( |-)?on", "jeu console",
     "\\b(For )?age(s)? \\d+\\b", "must see", "see pics", "Backwards Compatible", "Refurbished", "manual", "\\brated \\d+\\b", "\\d supplied", "shrink( )?wrapped",
     "\\bPAL\\b( \\d+)?( (format|version))?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b", "\\bfr\\b", "\\bes\\b", "\\bvg(c| con(d)?(ition)?)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b",

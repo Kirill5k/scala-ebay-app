@@ -194,11 +194,11 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
     }
 
     "remove wrestling after 2k17 title" in {
-      val listingDetails = testListing.copy(title = "WWE 2k17 Wrestling")
+      val listingDetails = testListing.copy(title = "WWE 2k19 Wrestling")
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      gameDetails.name must be (Some("WWE 2k17"))
+      gameDetails.name must be (Some("WWE 2k19"))
     }
 
     "remove VR and PSVR from title" in {
@@ -243,6 +243,8 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         "Call of Duty: Infinite Warfare - new Fast free post for PS4 game 2020",
         "Call of Duty: Infinite Warfare includes mega awesome pack with goodies",
         "Call of Duty: Infinite Warfare - vr compatible psvr required",
+        "Call of Duty: Infinite Warfare includes 5 bonus levels",
+        "Call of Duty: Infinite Warfare with terminator bonus content",
         "Call of Duty: Infinite Warfare - super fast and superfree UK post",
         "Call of Duty: Infinite Warfare - Fast and Free shipping complete with manual and book",
         "Call of Duty: Infinite Warfare - day one edition - day 0 ed - day 1 E - day 1",
@@ -271,11 +273,13 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       }
     }
 
-    "remove roman numbers followed by digit" in {
+    "remove roman numbers followed by digit or vice versa" in {
       val titles = Map(
         "Call of Duty Black Ops iii 3" -> "Call of Duty Black Ops iii",
         "Call of Duty Black Ops iv 4" -> "Call of Duty Black Ops iv",
-        "Call of Duty Black Ops ii 2" -> "Call of Duty Black Ops ii"
+        "Call of Duty Black Ops ii 2" -> "Call of Duty Black Ops ii",
+        "Call of Duty Black Ops 2 ii" -> "Call of Duty Black Ops 2",
+        "witcher 3 iii" -> "witcher 3",
       )
 
       forAll (titles) { case (title, expected) =>
