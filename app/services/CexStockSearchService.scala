@@ -24,7 +24,7 @@ final class GenericPurchasableItemService @Inject()(
   private[services] val cache: java.util.Map[String, ResellableItem[ItemDetails.Generic]] = ExpiringMap
     .builder()
     .expirationPolicy(ExpirationPolicy.ACCESSED)
-    .expiration(15, TimeUnit.MINUTES)
+    .expiration(25, TimeUnit.MINUTES)
     .build[String, ResellableItem[ItemDetails.Generic]]()
 
   override def getStockUpdates(request: StockMonitorRequest): IO[List[StockUpdate[ItemDetails.Generic]]] =
