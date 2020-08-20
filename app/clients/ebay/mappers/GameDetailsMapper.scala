@@ -19,7 +19,7 @@ private[mappers] object GameDetailsMapper {
     "(the )?(\\bHD\\b|lost|essential|exclusive|special|limited collectors|definitive|atlas|platinum|complete|standard|std|classic(s)?|(\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of the|legacy( pro)?|(un)?limited|premium|(digital )?deluxe|(\\w+)?ultimat).{0,20}(collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
     "(?<=.{5})(the )?((new|pristine|inc) )?(super|cheap( )?)?(free|fast|quick)?( )?(and )?(super( )?)?(prompt|free|fast|quick|(next|same|1|one) day|tracked|speedy|worldwide|\\bsc\\b|\\bfc\\b).{0,20}(dispatch|ship(ping)?|post(age)?|delivery|p( )?p).*$",
     "(?<=.{15})((brand )?new.{0,15})?(still )?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
-    "(?<=.{15})\\b(hack slash|single player|Family Fun|basketball|((kids|fun) )?adventure|console single|tactical|3rd person|rpg|fps|survival|(kids )?action|(kids )?racing|role|wrestling|fighting|multi( )?player)\\b.{0,20}game(?s).*"
+    "(?<=.{15})\\b(kids( \\w+)?|hack slash|single player|Family Fun|basketball|(fun )?adventure|console single|tactical|3rd person|rpg|fps|survival|action|racing|role|wrestling|fighting|multi( )?player)\\b.{0,20}game(?s).*"
   ).mkString("(?i)", "|", "")
 
   private val LEVEL2_TITLE_WORDS_REPLACEMENTS = List(
@@ -42,19 +42,21 @@ private[mappers] object GameDetailsMapper {
     "Insomniac(s)?",
     "(?<=Sonic) The Hedgehog",
     "(?<=\\b(W)?(2k)?\\d+)\\s+(20\\d\\d|wrestling|basketball|footbal|formula)(?s).*",
-    "(?<=FIFA) (soccer|football)", "(?<=WWE) wrestling", "(?<=F1)\\s+(Formula (one|1))( racing)?",
+    "(?<=FIFA) (soccer|football)", "(?<=NBA) (basketball)", "(?<=WWE) wrestling", "(?<=F1)\\s+(Formula (one|1))( racing)?",
     "(?<=\\b20\\d\\d)(\\s+)(version|formula)(?s).*", "Formula (1|One)\\s+(?=F1)", "Marvel(s)?\\s+(?=Spider)",
     "(?<=\\b[ivx]{1,4}\\b)(\\s+)\\d+", "(?<=\\d) \\b[ivx]{1,4}\\b",
   ).mkString("(?i)", "|", "")
 
   private val LEVEL3_TITLE_WORDS_REPLACEMENTS = List(
-    // focus on removing the word GAME
-    "(the )?(\\b(\\d player|football sport|Skateboarding|action|hit|official|console|gold|kids|children)\\b.{0,15})??\\b(video( )?)?game(s)?\\b( (for kids|series|good|boxed|console|of( the)? (year|olympic|movie)))?( 20\\d\\d)?", "nuevo",
+    // removes the word GAME
+    "(the )?(\\b(\\d player|kids( \\w+)?|football sport|Skateboarding|action|hit|official|console|gold|children)\\b.{0,15})??\\b(video( )?)?game(s)?\\b( (for kids|series|good|boxed|console|of( the)? (year|olympic|movie)))?( 20\\d\\d)?", "nuevo",
+    // removes the word USED
+    "((barely|condition|never|hardly) )?(un)?used(( very)? good)?( (game|condition))?",
     "(the )?(official )?Strategy Combat( guide)?", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "(auto|golf) sports", "Adventure role playing", "ice hockey", "shoot em up",
     "Sport(s)? (basketball|football)", "football soccer", "((family fun|survival) )?Action Adventure( Open World)?", "(adventure )?survival horror", "fighting multiplayer", "Multi Player", "life simulation",
     "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(\\d|both)?( )?(dis(c|k)(s)?|cd(s)?)( (version|set|mint))?", "platinum", "(sealed )?brand new( (case|sealed))?( in packaging)?( 20\\d\\d)?", "\\bID\\d+\\w", "(16|18) years",
     "limited run( \\d+)?", "box( )?set", "pre( )?(release|owned|enjoyed|loved)", "compatible", "physical copy", "(big|steel)( )?box( version)?", "no scratches", "(manual|instructions) included", "100 ebayer",
-    "((barely|condition|never|hardly) )?(un)?used(( very)? good)?( (game|condition))?", "very good", "reorderable", "(posted|sent|dispatched) same day", "in stock( now)?", "(only )?played once", "best price", "Special Reserve",
+    "(condition )?very good", "reorderable", "(posted|sent|dispatched) same day", "in stock( now)?", "(only )?played once", "best price", "Special Reserve",
     "Expertly Refurbished Product", "(quality|value) guaranteed", "(trusted|eBay|best|from ebays biggest) Seller(s)?", "fully (working|tested)", "Order By 4pm", "Ultimate Fighting Championship",
     "remaster(ed)?", "directors cut", "\\bctr\\b", "original", "english", "deluxe", "standard", "\\bgoty\\b", "mult(i)?( )?lang(uage)?(s)?( in game)?", "(with )?(fast|free)( )?(dispatch|post)", "fast free",
     "blu( )?ray", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "essentials", "classic(s)?( (hit(s)?|version))?", "boxed(?s).*(complete|manual)",
