@@ -45,7 +45,7 @@ private[mappers] object GameDetailsMapper {
     "(\\bUK\\b|\\bEU\\b|genuine|european|platinum|original)( (release|new|only|seller|version|stock|import))?( 20\\d\\d)?",
     "Warner Bros", "ubisoft", "currys", "Take (Two|2)( Interactive)?", "(EA|2k) (dice|music|sport(s)?|games)", "James Camerons",
     "\\bTom clancy(s)?\\b", "gamecube", "Bethesda(s)?( Softworks)?", "Hideo Kojima", "(bandai )?namco",
-    "rockstar games( presents)?", "James Bond", "Activision", "Peter Jacksons", "Naughty Dog", "Marvels", "\\bTHQ\\b",
+    "rockstar games( present(s)?)?", "James Bond", "Activision", "Peter Jacksons", "Naughty Dog", "Marvels", "\\bTHQ\\b",
     "Microsoft( 20\\d\\d)?", "sony", "(by )?elect(r)?onic arts", "nintendo( \\d+)?", "square enix", "Dreamworks", "Disneys",
     "Disney Pixar(s)?", "WB Games", "Bend Studio", "LucasArt(s)?", "Insomniac(s)?",
     "(?<=\\b(W)?(2k)?\\d+)\\s+(20\\d\\d|wrestling|basketball|footbal|formula)(?s).*",
