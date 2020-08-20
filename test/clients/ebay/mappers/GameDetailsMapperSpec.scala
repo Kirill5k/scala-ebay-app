@@ -141,6 +141,17 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       gameDetails.packaging must be (Packaging.Bundle)
     }
 
+    "keep collection if there is just 1 word" in {
+      val listingDetails = testListing.copy(title = "Bioshock Collection PS4")
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      println(gameDetails.name.get.toCharArray.toList)
+      println(gameDetails.name.get.toCharArray.map(_.asDigit).toList)
+
+      gameDetails.name must be (Some("Bioshock Collection"))
+    }
+
     "remove chars with code -1" in {
       val listingDetails = testListing.copy(title = "MINECRAFT XBOX 360 EDITION ")
 
@@ -289,14 +300,14 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
     }
 
     "quick test" in {
-      val listingDetails = testListing.copy(title = "Playstation 4 - PS4 - Call of Duty: Infinite Warfare In Working Order")
+      val listingDetails = testListing.copy(title = "Bioshock Collection PS4")
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
       println(gameDetails.name.get.toCharArray.toList)
       println(gameDetails.name.get.toCharArray.map(_.asDigit).toList)
 
-      gameDetails.name must be (Some("Call of Duty Infinite Warfare"))
+      gameDetails.name must be (Some("Bioshock Collection"))
     }
   }
 }

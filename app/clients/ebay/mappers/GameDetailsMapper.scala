@@ -9,7 +9,7 @@ private[mappers] object GameDetailsMapper {
   private val CONSOLE_REGEX_PATTERN =
     "((new|rare) )?((very )?good )?(\\b(for|((only|playable|plays) )?on)\\b )?(the )?" +
       "((sony )?play( )?st(a)?(t)?(i)?(o)?(n)?(( )?(\\d|one|move))?|(microsoft )?x( )?b(ox)?(( )?(live|o(ne)?|\\d+))?|\\bps( )?\\d\\b|(nintendo )?(switch|\\bwii( u)?\\b))" +
-      "( (console|edition|version|action|wrestling|football))?( new)?( 20\\d\\d)?"
+      "( (console|edition|version|action|wrestling|football))?( game(s)?)?( new)?( 20\\d\\d)?"
 
   private val LEVEL1_TITLE_WORDS_REPLACEMENTS = List(
     "(gold )?((greatest|playstation|ps) )?\\bhits\\b( range)?", "nintendo selects",
@@ -52,7 +52,7 @@ private[mappers] object GameDetailsMapper {
     "(the )?(\\b(\\d player|football sport|Skateboarding|action|hit|official|console|gold|kids|children)\\b.{0,15})??\\b(video( )?)?game(s)?\\b( (for kids|series|good|boxed|console|of( the)? (year|olympic|movie)))?( 20\\d\\d)?", "nuevo",
     "(the )?(official )?Strategy Combat( guide)?", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "(auto|golf) sports", "Adventure role playing", "ice hockey", "shoot em up",
     "Sport(s)? (basketball|football)", "football soccer", "((family fun|survival) )?Action Adventure( Open World)?", "(adventure )?survival horror", "fighting multiplayer", "Multi Player", "life simulation",
-    "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(\\d|both)?( )?(dis(c|k)(s)?|cd(s)?)( (version|set|mint))?", "platinum", "(sealed )?brand new( (case|sealed))?( in packaging)?( 20\\d\\d)?", "\\bID\\d+\\w", "18 years",
+    "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(\\d|both)?( )?(dis(c|k)(s)?|cd(s)?)( (version|set|mint))?", "platinum", "(sealed )?brand new( (case|sealed))?( in packaging)?( 20\\d\\d)?", "\\bID\\d+\\w", "(16|18) years",
     "limited run( \\d+)?", "box( )?set", "pre( )?(release|owned|enjoyed|loved)", "compatible", "physical copy", "(big|steel)( )?box( version)?", "no scratches", "(manual|instructions) included", "100 ebayer",
     "((barely|condition|never|hardly) )?(un)?used(( very)? good)?( (game|condition))?", "very good", "reorderable", "(posted|sent|dispatched) same day", "in stock( now)?", "(only )?played once", "best price", "Special Reserve",
     "Expertly Refurbished Product", "(quality|value) guaranteed", "(trusted|eBay|best|from ebays biggest) Seller(s)?", "fully (working|tested)", "Order By 4pm", "Ultimate Fighting Championship",
@@ -71,7 +71,7 @@ private[mappers] object GameDetailsMapper {
   private val EDGE_WORDS_REPLACEMENTS = List(
     "Playstation( \\d)?\\s+(?=PS)",
     "^(\\s)?(((brand )?NEW|BNIB|Factory) )?(and )?SEALED( in Packaging)?", "Standart$",
-    "^SALE", "(brand )?new$", "^BOXED", "^SALE", "^NEW", "^best", "^software", "un( |-)?opened$", "rare$", "^rare", "official$",
+    "^SALE", "(brand )?new$", "^BOXED", "^SALE", "^NEW", "^best", "^software", "^un( )?opened", "un( )?opened$", "rare$", "^rare", "official$",
     "^bargain","bargain$", "(near )?mint$", "\\bfor\\b( the)?$", "premium$", "\\bvery\\b$", "\\bLIMITED\\b$", "(fully )?(un)?tested$", "\\bON\\b$", "\\bBY\\b$",
     "boxed$", "brand$", "good$", "excellent$", "immaculate$", "instructions$", "superb$", "marvel$"
   ).mkString("(?i)", "|", "")
@@ -131,7 +131,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll(LEVEL1_TITLE_WORDS_REPLACEMENTS, "")
       .replaceAll(LEVEL2_TITLE_WORDS_REPLACEMENTS, "")
       .replaceAll(LEVEL3_TITLE_WORDS_REPLACEMENTS, "")
-      .replaceFirst("(?i)(the )?\\w+(?=\\s+(\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)) (\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)(?s).*$", "")
+      .replaceFirst("(?<=\\w+ )(?i)(the )?\\w+(?=\\s+(\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)) (\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)(?s).*$", "")
       .replaceAll("é", "e")
       .replaceAll("(?i)playerunknown", "Player Unknown")
       .replaceAll("(?i)(littlebigplanet)", "Little Big Planet")
