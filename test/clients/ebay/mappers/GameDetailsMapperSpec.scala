@@ -300,11 +300,11 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
     }
 
     "quick test" in {
-      val listingDetails = testListing.copy(title = "* Nintendo Switch New Sealed Game * THIS IS THE POLICE")
+      val listingDetails = testListing.copy(title = "Playstation 3 PS3 LITTLE BIG PLANET 2 video game UK  PAL with manual FREE P+P")
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      gameDetails.name must be (Some("THIS IS THE POLICE"))
+      gameDetails.name must be (Some("LITTLE BIG PLANET 2"))
     }
   }
 }

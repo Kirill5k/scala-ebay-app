@@ -42,7 +42,7 @@ private[mappers] object GameDetailsMapper {
     "(the )?disc(s)? (are|is|in)(?s).*$",
     "((new|all) )?(fully )?(((very|super) )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)? complete) game(s)?( \\d+)?( new)?",
     "(in )?(near )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|(full )?working|perfect|used|(fully )?tested|lovely|immaculate|fantastic|\\bfab\\b|decent|fair|\\bV\\b)(?s).*(dis(c|k)?(s)?|working( perfectly)?|good|(working )?order|con(d)?(ition)?|value|prices)",
-    "(\\bUK\\b|\\bEU\\b|genuine|european|platinum|original)( (release|new|only|seller|version|stock|import))?( 20\\d\\d)?",
+    "(\\bUK\\b|\\bEU\\b|genuine|european|platinum|original)( (region|release|new|only|seller|version|stock|import))?( 20\\d\\d)?",
     "Warner Bros", "ubisoft", "currys", "Take (Two|2)( Interactive)?", "(EA|2k) (dice|music|sport(s)?|games)", "James Camerons",
     "\\bTom clancy(s)?\\b", "gamecube", "Bethesda(s)?( Softworks)?", "Hideo Kojima", "(bandai )?namco", "EastAsiaSoft",
     "rockstar games( present(s)?)?", "James Bond", "Activision", "Peter Jacksons", "Naughty Dog", "Marvels", "\\bTHQ\\b",
@@ -51,7 +51,7 @@ private[mappers] object GameDetailsMapper {
     "(?<=\\b(W)?(2k)?\\d+)\\s+(20\\d\\d|wrestling|basketball|footbal|formula)(?s).*",
     "(?<=FIFA) (soccer|football)", "(?<=NBA) basketball", "(?<=WWE) wrestling", "(?<=FIFA )20(?=\\d\\d)",
     "(?<=F1)\\s+(Formula (one|1))( racing)?", "(?<=\\b20\\d\\d)(\\s+)(version|formula)(?s).*",
-    "(?<=Sonic) The Hedgehog", "Formula (1|One)\\s+(?=F1)", "Marvel(s)?\\s+(?=(deadpool|Spider))",
+    "(?<=Turismo) \\bGT\\b", "(?<=Sonic) The Hedgehog", "Formula (1|One)\\s+(?=F1)", "Marvel(s)?\\s+(?=(deadpool|Spider))",
     "(?<=\\b[ivx]{1,4}\\b)(\\s+)\\d+", "(?<=\\d) \\b[ivx]{1,4}\\b"
   ).mkString("(?i)", "|", "")
 
@@ -209,6 +209,7 @@ private[mappers] object GameDetailsMapper {
   implicit class StringOps(private val str: String) extends AnyVal {
     def withoutSpecialChars: String =
       str
+        .replaceAll("\\P{Print}", "")
         .replaceAll("[@~+%\"{}?_;`—–“”!•£&#’'*|.\\[\\]]", "")
         .replaceAll("[()/,:-]", " ")
         .replaceAll(" +", " ")
