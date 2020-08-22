@@ -210,6 +210,7 @@ private[mappers] object GameDetailsMapper {
     def withoutSpecialChars: String =
       str
         .replaceAll("\\P{Print}", "")
+        .replaceAll("\\\\x\\p{XDigit}{2}", "")
         .replaceAll("[@~+%\"{}?_;`—–“”!•£&#’'*|.\\[\\]]", "")
         .replaceAll("[()/,:-]", " ")
         .replaceAll(" +", " ")
