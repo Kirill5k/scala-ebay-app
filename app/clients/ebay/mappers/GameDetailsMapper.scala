@@ -9,7 +9,7 @@ private[mappers] object GameDetailsMapper {
   private val CONSOLE_REGEX_PATTERN =
     "((new|rare) )?((very )?good )?(\\b(for|((only|playable|plays) )?on)\\b )?(the )?" +
       "((sony )?play( )?st(a)?(t)?(i)?(o)?(n)?(( )?(\\d|one|move))?|(microsoft )?x( )?b(ox)?(( )?(live|o(ne)?|\\d+))?|\\bps( )?\\d\\b|(nintendo )?(switch|\\bwii( u)?\\b))" +
-      "( (console|edition|version|action|wrestling|football))?( game(s)?)?( new)?( 20\\d\\d)?"
+      "( (exclusive|console|edition|version|action|wrestling|football))?( game(s)?)?( new)?( 20\\d\\d)?"
 
   private val LEVEL1_TITLE_WORDS_REPLACEMENTS = List(
     "(gold )?((greatest|playstation|ps) )?\\bhits\\b( range)?",
@@ -44,12 +44,12 @@ private[mappers] object GameDetailsMapper {
     "(in )?(near )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|(full )?working|perfect|used|(fully )?tested|lovely|immaculate|fantastic|\\bfab\\b|decent|fair|\\bV\\b)(?s).*(dis(c|k)?|working( perfectly)?|good|(working )?order|con(d)?(ition)?|value|prices)",
     "(\\bUK\\b|\\bEU\\b|genuine|european|platinum|original)( (release|new|only|seller|version|stock|import))?( 20\\d\\d)?",
     "Warner Bros", "ubisoft", "currys", "Take (Two|2)( Interactive)?", "(EA|2k) (dice|music|sport(s)?|games)", "James Camerons",
-    "\\bTom clancy(s)?\\b", "gamecube", "Bethesda(s)?( Softworks)?", "Hideo Kojima", "(bandai )?namco",
+    "\\bTom clancy(s)?\\b", "gamecube", "Bethesda(s)?( Softworks)?", "Hideo Kojima", "(bandai )?namco", "EastAsiaSoft",
     "rockstar games( present(s)?)?", "James Bond", "Activision", "Peter Jacksons", "Naughty Dog", "Marvels", "\\bTHQ\\b",
     "Microsoft( 20\\d\\d)?", "sony", "(by )?elect(r)?onic arts", "nintendo( \\d+)?", "square enix", "Dreamworks", "Disneys",
     "Disney Pixar(s)?", "WB Games", "Bend Studio", "LucasArt(s)?", "Insomniac(s)?",
     "(?<=\\b(W)?(2k)?\\d+)\\s+(20\\d\\d|wrestling|basketball|footbal|formula)(?s).*",
-    "(?<=FIFA) (soccer|football)", "(?<=NBA) (basketball)", "(?<=WWE) wrestling",
+    "(?<=FIFA) (soccer|football)", "(?<=NBA) basketball", "(?<=WWE) wrestling", "(?<=FIFA )20(?=\\d\\d)",
     "(?<=F1)\\s+(Formula (one|1))( racing)?", "(?<=\\b20\\d\\d)(\\s+)(version|formula)(?s).*",
     "(?<=Sonic) The Hedgehog", "Formula (1|One)\\s+(?=F1)", "Marvel(s)?\\s+(?=Spider)",
     "(?<=\\b[ivx]{1,4}\\b)(\\s+)\\d+", "(?<=\\d) \\b[ivx]{1,4}\\b"
@@ -76,12 +76,12 @@ private[mappers] object GameDetailsMapper {
     "fast free", "blu( )?ray", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "essentials",
     "classic(s)?( (hit(s)?|version))?", "boxed(?s).*(complete|manual)", "very rare", "award winning", "official licenced",
     "Unwanted Gift", "limited quantity", "region free", "gift idea", "in case", "add( |-)?on", "jeu console", "\\b(For )?age(s)? \\d+\\b",
-    "must see", "see pics", "Backwards Compatible", "Refurbished", "manual", "shrink( )?wrapped",
+    "must see", "see pics", "Backwards Compatible", "Refurbished", "manual", "shrink( )?wrapped", "cert \\d+",
     "\\brated \\d+\\b", "\\d supplied", "\\bPAL\\b( \\d+)?( (format|version))?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b",
     "\\bfr\\b", "\\bes\\b", "\\bvg(c| con(d)?(ition)?)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b", "\\bns\\b",
     "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNI(B|P)\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b(( )?\\d+)?",
     "\\bUE\\b", "\\bBN\\b", "\\bRRP\\b(\\s|\\d)*", "\\bremake\\b( 20\\d\\d)?", "(ultra )?\\b(u)?hd(r)?\\b", "\\b4k\\b( enhanced)?",
-    "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b", "\\bPG(13)?\\b", "\\bDVD\\b",
+    "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b", "\\bPG(13)?\\b", "\\bDVD\\b", "\\bSE\\b",
     "\\bAND\\b", "\\bNTSC\\b", "\\bPA2\\b", "\\bWi1\\b", "\\bENG\\b", "\\bVGWO\\b", "\\bFPS\\b", "\\b(PS( )?)?VR\\b( version)?",
     "\\bSRG(\\d+)?\\b", "\\bEA(N)?\\b", "\\bGC\\b", "\\bCIB\\b",
     "(100 )?((all|fully) )?complete( (instructions|package))?", "SEALED$", "NEW$"
@@ -92,7 +92,7 @@ private[mappers] object GameDetailsMapper {
     "^(\\s)?(((brand )?NEW|BNIB|Factory) )?(and )?SEALED( in Packaging)?",
     "Standart$", "^SALE", "(brand )?new$", "^BOXED", "^SALE", "^NEW", "^best", "^software", "^un( )?opened",
     "un( )?opened$", "rare$", "^rare", "official$", "^bargain", "bargain$", "(near )?mint$", "\\bfor\\b( the)?$",
-    "premium$", "\\bvery\\b$", "\\bLIMITED\\b$", "(fully )?(un)?tested$", "\\bON\\b$", "\\bBY\\b$",
+    "premium$", "\\bvery\\b$", "\\bLIMITED\\b$", "(fully )?(un)?tested$", "\\bON\\b$", "\\bBY\\b$", "^cheapest",
     "boxed$", "brand$", "good$", "excellent$", "immaculate$", "instructions$", "superb$", "marvel$"
   ).mkString("(?i)", "|", "")
 
@@ -163,7 +163,6 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(W2K)", "WWE 2k")
       .replaceAll("(?i)(NierAutomata)", "Nier Automata")
       .replaceAll("(?i)(Hello Neighbour)", "Hello Neighbor")
-      .replaceAll("(?i)(fifa 20(?=\\d+))", "FIFA ")
       .replaceAll("(?i)(witcher iii)", "witcher 3")
       .replaceAll("(?i)(wolfenstein 2)", "Wolfenstein II")
       .replaceAll("(?i)(diablo 3)", "diablo iii")
