@@ -7,9 +7,9 @@ import domain.{ListingDetails, Packaging}
 private[mappers] object GameDetailsMapper {
 
   private val CONSOLE_REGEX_PATTERN =
-    "((new|rare) )?((very )?good )?(\\b(for|((only|playable|plays) )?on)\\b )?(the )?" +
+    "((new|rare|official) )?((very )?good )?(\\b(for|((only|playable|plays) )?on)\\b )?(the )?" +
       "((sony )?play( )?st(a)?(t)?(i)?(o)?(n)?(( )?(\\d|one|move))?|(microsoft )?x( )?b(ox)?(( )?(live|o(ne)?|\\d+))?|\\bps( )?\\d\\b|(nintendo )?(switch|\\bwii( u)?\\b))" +
-      "( (exclusive|console|edition|version|action|wrestling|football))?( game(s)?)?( new)?( 20\\d\\d)?"
+      "( (basketball|exclusive|console|edition|version|action|wrestling|football))?( game(s)?)?( new)?( 20\\d\\d)?"
 
   private val LEVEL1_TITLE_WORDS_REPLACEMENTS = List(
     "(gold )?((greatest|playstation|ps) )?\\bhits\\b( range)?",
