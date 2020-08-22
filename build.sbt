@@ -4,12 +4,12 @@ name := """scala-ebay-app"""
 organization := "io.kirill"
 version := "1.0"
 
-herokuAppName in Compile := "scala-ebay-app"
-herokuJdkVersion in Compile := "13"
+Compile / herokuAppName := "scala-ebay-app"
+Compile / herokuJdkVersion := "13"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-scalaVersion := "2.13.1"
+scalaVersion := "2.13.3"
 
 libraryDependencies ++= Seq(guice) ++ Dependencies.core ++ Dependencies.test
 

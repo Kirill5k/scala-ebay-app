@@ -41,7 +41,7 @@ private[mappers] object GameDetailsMapper {
     "((supplied|comes) )?(with(out)?|\\bw( )?(o)?\\b|in original|no|missing|plus|has|inc(l)?(udes|uding)?) (booklet|original|instruction|box|map|(slip )?case|manual)(?s).*$",
     "(the )?disc(s)? (are|is|in)(?s).*$",
     "((new|all) )?(fully )?(((very|super) )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)? complete) game(s)?( \\d+)?( new)?",
-    "(in )?(near )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|(full )?working|perfect|used|(fully )?tested|lovely|immaculate|fantastic|\\bfab\\b|decent|fair|\\bV\\b)(?s).*(dis(c|k)?|working( perfectly)?|good|(working )?order|con(d)?(ition)?|value|prices)",
+    "(in )?(near )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|(full )?working|perfect|used|(fully )?tested|lovely|immaculate|fantastic|\\bfab\\b|decent|fair|\\bV\\b)(?s).*(dis(c|k)?(s)?|working( perfectly)?|good|(working )?order|con(d)?(ition)?|value|prices)",
     "(\\bUK\\b|\\bEU\\b|genuine|european|platinum|original)( (release|new|only|seller|version|stock|import))?( 20\\d\\d)?",
     "Warner Bros", "ubisoft", "currys", "Take (Two|2)( Interactive)?", "(EA|2k) (dice|music|sport(s)?|games)", "James Camerons",
     "\\bTom clancy(s)?\\b", "gamecube", "Bethesda(s)?( Softworks)?", "Hideo Kojima", "(bandai )?namco", "EastAsiaSoft",
@@ -51,7 +51,7 @@ private[mappers] object GameDetailsMapper {
     "(?<=\\b(W)?(2k)?\\d+)\\s+(20\\d\\d|wrestling|basketball|footbal|formula)(?s).*",
     "(?<=FIFA) (soccer|football)", "(?<=NBA) basketball", "(?<=WWE) wrestling", "(?<=FIFA )20(?=\\d\\d)",
     "(?<=F1)\\s+(Formula (one|1))( racing)?", "(?<=\\b20\\d\\d)(\\s+)(version|formula)(?s).*",
-    "(?<=Sonic) The Hedgehog", "Formula (1|One)\\s+(?=F1)", "Marvel(s)?\\s+(?=Spider)",
+    "(?<=Sonic) The Hedgehog", "Formula (1|One)\\s+(?=F1)", "Marvel(s)?\\s+(?=(deadpool|Spider))",
     "(?<=\\b[ivx]{1,4}\\b)(\\s+)\\d+", "(?<=\\d) \\b[ivx]{1,4}\\b"
   ).mkString("(?i)", "|", "")
 
@@ -69,12 +69,12 @@ private[mappers] object GameDetailsMapper {
     "platinum", "(16|18) years", "limited run( \\d+)?", "box( )?set", "pre( )?(release|owned|enjoyed|loved)",
     "compatible", "physical copy", "nuevo", "(big|steel)( )?box( version)?", "no scratches", "(manual|instructions) included",
     "100 ebayer", "(condition )?very good", "reorderable", "(posted|sent|dispatched) same day", "in stock( now)?",
-    "(only )?played once", "best price", "Special Reserve", "Expertly Refurbished Product", "(quality|value) guaranteed",
+    "(only )?played (once|twice)", "best price", "Special Reserve", "Expertly Refurbished Product", "(quality|value) guaranteed",
     "(trusted|eBay|best|from ebays biggest) Seller(s)?", "fully (working|tested)", "Order By 4pm", "Ultimate Fighting Championship",
     "remaster(ed)?", "directors cut", "original", "english", "deluxe", "standard",
     "\\bctr\\b", "\\bgoty\\b", "mult(i)?( )?lang(uage)?(s)?( in game)?", "(with )?(fast|free)( )?(dispatch|post)",
     "fast free", "blu( )?ray", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "essentials",
-    "classic(s)?( (hit(s)?|version))?", "boxed(?s).*(complete|manual)", "very rare", "award winning", "official licenced",
+    "classic(s)?( (hit(s)?|version))?", "box.{0,20}(complete|manual)", "very rare", "award winning", "official licenced",
     "Unwanted Gift", "limited quantity", "region free", "gift idea", "in case", "add( |-)?on", "jeu console", "\\b(For )?age(s)? \\d+\\b",
     "must see", "see pics", "Backwards Compatible", "Refurbished", "manual", "shrink( )?wrapped", "cert \\d+",
     "\\brated \\d+\\b", "\\d supplied", "\\bPAL\\b( \\d+)?( (format|version))?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b",
@@ -212,5 +212,6 @@ private[mappers] object GameDetailsMapper {
         .replaceAll("[@~+%\"{}?_;`—–“”!•£&#’'*|.\\[\\]]", "")
         .replaceAll("[()/,:-]", " ")
         .replaceAll(" +", " ")
+        .trim
   }
 }
