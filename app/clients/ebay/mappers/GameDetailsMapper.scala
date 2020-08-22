@@ -60,7 +60,7 @@ private[mappers] object GameDetailsMapper {
     "(the )?(\\b(\\d player|kids( \\w+)?|football sport|Skateboarding|action|hit|official|console|gold|children)\\b.{0,15})??\\b(video( )?)?game(s)?\\b( (for kids|series|good|boxed|console|of( the)? (year|olympic|movie)))?( 20\\d\\d)?",
     // removes the word USED
     "((barely|condition|never|hardly) )?(un)?used(( very)? good)?( (game|condition))?",
-    "(the )?(official )?Strategy Combat( guide)?", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "(auto|golf) sports",
+    "(the )?(official )?Strategy Combat( guide)?", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "(auto|golf|football) sport(s)?",
     "Adventure role playing", "ice hockey", "shoot em up", "Sport(s)? (basketball|football)", "football soccer",
     "((family fun|survival) )?Action Adventure( Open World)?", "(adventure )?survival horror", "fighting multiplayer", "Multi Player", "life simulation",
     "\\bpegi( \\d+)?\\b(?s).*$", "(\\d+th|(20|ten) year) (anniversary|celebration)", "(\\d|both)?( )?(dis(c|k)(s)?|cd(s)?)( (version|set|mint))?",
@@ -88,6 +88,7 @@ private[mappers] object GameDetailsMapper {
   ).mkString("(?i)", "|", "")
 
   private val EDGE_WORDS_REPLACEMENTS = List(
+    s"^$CONSOLE_REGEX_PATTERN",
     "Playstation( \\d)?\\s+(?=PS)",
     "^(\\s)?(((brand )?NEW|BNIB|Factory) )?(and )?SEALED( in Packaging)?",
     "Standart$", "^SALE", "(brand )?new$", "^BOXED", "^SALE", "^NEW", "^best", "^software", "^un( )?opened",
@@ -184,6 +185,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll(EDGE_WORDS_REPLACEMENTS, "")
       .trim()
       .some
+      .filterNot(_.isBlank)
 
   private def mapPlatform(listingDetails: ListingDetails): Option[String] =
     PLATFORMS_MATCH_REGEX
