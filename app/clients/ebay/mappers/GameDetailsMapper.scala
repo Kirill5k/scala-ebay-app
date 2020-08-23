@@ -57,7 +57,7 @@ private[mappers] object GameDetailsMapper {
 
   private val LEVEL3_TITLE_WORDS_REPLACEMENTS = List(
     // removes the word GAME
-    "(the )?(\\b(\\d player|kids( \\w+)?|football sport|Skateboarding|action|hit|official|console|gold|children)\\b.{0,15})??\\b(video( )?)?game(s)?\\b( (for kids|series|good|boxed|console|of( the)? (year|olympic|movie)))?( 20\\d\\d)?",
+    "(the )?(\\b(\\d player|kids( \\w+)?|football sport|racing|Skateboarding|action|hit|official|console|gold|children)\\b.{0,15})??\\b(video( )?)?game(s)?\\b( (for kids|series|good|boxed|console|of( the)? (year|olympic|movie)))?( 20\\d\\d)?",
     // removes the word USED
     "((barely|condition|never|hardly) )?(un)?used(( very)? good)?( (game|condition))?",
     "(the )?(official )?Strategy Combat( guide)?", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "(auto|golf|football) sport(s)?",
@@ -170,6 +170,8 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(\\bnsane\\b)", "N Sane")
       .replaceAll("(?i)(\\bww2|ww11\\b)", "wwii")
       .replaceAll("(?i)(\\bcod\\b)", "Call of Duty ")
+      .replaceAll("(?i)(\\bmysims\\b)", "my sims")
+      .replaceAll("(?i)RDR(?=\\d)?", "Red Dead Redemption ")
       .replaceAll("(?i)GTA(?=\\d)?", "Grand Theft Auto ")
       .replaceAll("(?i)(\\bMGS\\b)", "Metal Gear Solid ")
       .replaceAll("(?i)(\\bRainbow 6\\b)", "Rainbow Six ")
