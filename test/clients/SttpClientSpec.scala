@@ -7,6 +7,7 @@ import common.resources.SttpBackendResource
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import sttp.client
+import sttp.client.asynchttpclient.WebSocketHandler
 import sttp.client.{NothingT, SttpBackend}
 import sttp.client.testing.SttpBackendStub
 import sttp.model.{Header, HeaderNames, MediaType, Method}
@@ -41,9 +42,9 @@ trait SttpClientSpec extends AsyncWordSpec with Matchers {
       req.headers.contains(Header(HeaderNames.Accept, MediaType.ApplicationJson.toString())) &&
       req.headers.contains(Header(HeaderNames.ContentType, contentType.toString()))
 
-  def json(path: String): String = Source.fromResource(path).getLines.toList.mkString
+  def json(path: String): String = Source.fromResource(path).getLines().toList.mkString
 
-  def sttpCatsBackend(testingBackend: SttpBackendStub[IO, Nothing]): SttpBackendResource[IO] = new SttpBackendResource[IO] {
+  def sttpCatsBackend(testingBackend: SttpBackendStub[IO, Nothing, WebSocketHandler]): SttpBackendResource[IO] = new SttpBackendResource[IO] {
     override val get: Resource[IO, SttpBackend[IO, Nothing, NothingT]] =
       Resource.liftF(IO.pure(testingBackend))
   }

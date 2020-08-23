@@ -7,7 +7,7 @@ object Dependencies {
     lazy val circe             = "0.13.0"
     lazy val mockito           = "1.10.3"
     lazy val reactiveMongoPlay = "0.20.10-play28"
-    lazy val sttp              = "2.1.1"
+    lazy val sttp              = "2.2.5"
   }
 
   object Libraries {

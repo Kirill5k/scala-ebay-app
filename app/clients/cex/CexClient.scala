@@ -68,7 +68,7 @@ class CexClient @Inject()(catsSttpBackendResource: SttpBackendResource[IO]) exte
               IO(logger.error(s"too many requests to cex")) *>
                 IO.pure(None)
             case s =>
-              IO(logger.error(s"error sending price query to cex: $s\n${r.body.fold(_.body, _.toString)}")) *>
+              IO(logger.error(s"error sending price query to cex: $s\n${r.body.fold(_.getMessage, _.toString)}")) *>
                 IO.raiseError(ApiClientError.HttpError(s.code, s"error sending request to cex: $s"))
           }
         }

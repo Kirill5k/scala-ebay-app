@@ -38,7 +38,7 @@ private[ebay] class EbayBrowseClient @Inject()(
             case StatusCode.TooManyRequests | StatusCode.Forbidden | StatusCode.Unauthorized =>
               IO.raiseError(AuthError(s"ebay account has expired: ${r.code}"))
             case status =>
-              IO(logger.error(s"error sending search request to ebay: $status\n${r.body.fold(_.body, _.toString)}")) *>
+              IO(logger.error(s"error sending search request to ebay: $status\n${r.body.fold(_.toString, _.toString)}")) *>
                 IO.raiseError(ApiClientError.HttpError(status.code, s"error sending request to ebay search api: $status"))
           }
         }
@@ -64,7 +64,7 @@ private[ebay] class EbayBrowseClient @Inject()(
             case StatusCode.TooManyRequests | StatusCode.Forbidden | StatusCode.Unauthorized =>
               IO.raiseError(AuthError(s"ebay account has expired: ${r.code}"))
             case status =>
-              IO(logger.error(s"error getting item from ebay: $status\n${r.body.fold(_.body, _.toString)}")) *>
+              IO(logger.error(s"error getting item from ebay: $status\n${r.body.fold(_.toString, _.toString)}")) *>
                 IO.raiseError(ApiClientError.HttpError(status.code, s"error getting item from ebay search api: $status"))
           }
         }

@@ -57,15 +57,22 @@ private[ebay] class EbayAuthClient @Inject()(catsSttpBackendResource: SttpBacken
           r.body match {
             case Right(token) =>
               IO.pure(Right(EbayAuthToken(token.access_token, token.expires_in)))
-            case Left(error) =>
-              val message = decode[EbayAuthErrorResponse](error.body)
-                .fold(_ => error.body, e => s"${e.error}: ${e.error_description}")
-              IO(logger.error(s"error authenticating with ebay ${r.code}: $message (cid - ${credentials.clientId})")) *>
-                (if (r.code == StatusCode.TooManyRequests || r.code == StatusCode.Unauthorized) IO(switchAccount()) *> authenticate()
-                else IO.pure(Left(ApiClientError.HttpError(r.code.code, s"error authenticating with ebay: $message"))))
+            case Left(HttpError(_, StatusCode.TooManyRequests)) =>
+              IO(logger.error(s"reached api calls limit (cid - ${credentials.clientId})")) *>
+                IO(switchAccount()) *> authenticate()
+            case Left(HttpError(body, StatusCode.Unauthorized)) =>
+              IO(logger.error(s"unauthorized: ${errorMessage(body)} (cid - ${credentials.clientId})")) *>
+                IO(switchAccount()) *> authenticate()
+            case Left(HttpError(body, status)) =>
+              val message = errorMessage(body)
+              IO(logger.error(s"error authenticating with ebay ${status.code}: $message (cid - ${credentials.clientId})")) *>
+                IO.pure(Left(ApiClientError.HttpError(r.code.code, s"error authenticating with ebay: $message")))
           }
         }
     }
+
+  private def errorMessage(json: String): String =
+    decode[EbayAuthErrorResponse](json).fold(_ => json, e => s"${e.error}: ${e.error_description}")
 }
 
 object EbayAuthClient {

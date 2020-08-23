@@ -4,6 +4,7 @@ import cats.effect.IO
 import clients.SttpClientSpec
 import common.errors.ApiClientError.AuthError
 import sttp.client.Response
+import sttp.client.asynchttpclient.WebSocketHandler
 import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend
 import sttp.client.testing.SttpBackendStub
 import sttp.model.{Method, StatusCode}
@@ -20,7 +21,7 @@ class EbayBrowseClientSpec extends SttpClientSpec {
   "EbaySearchClient" should {
 
     "make get request to search api" in {
-      val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
+      val testingBackend: SttpBackendStub[IO, Nothing, WebSocketHandler] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
           case r if isGoingToWithSpecificContent(r, Method.GET, "ebay.com", List("buy", "browse", "v1", "item_summary", "search"), searchQueryParams) =>
@@ -37,7 +38,7 @@ class EbayBrowseClientSpec extends SttpClientSpec {
     }
 
     "return empty seq when nothing found" in {
-      val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
+      val testingBackend: SttpBackendStub[IO, Nothing, WebSocketHandler] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
           case r if isGoingToWithSpecificContent(r, Method.GET, "ebay.com", List("buy", "browse", "v1", "item_summary", "search"), searchQueryParams) =>
@@ -54,7 +55,7 @@ class EbayBrowseClientSpec extends SttpClientSpec {
     }
 
     "return autherror when token expired during search" in {
-      val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
+      val testingBackend: SttpBackendStub[IO, Nothing, WebSocketHandler] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
           case r if isGoingToWithSpecificContent(r, Method.GET, "ebay.com", List("buy", "browse", "v1", "item_summary", "search"), searchQueryParams) =>
@@ -71,7 +72,7 @@ class EbayBrowseClientSpec extends SttpClientSpec {
     }
 
     "make get request to obtain item details" in {
-      val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
+      val testingBackend: SttpBackendStub[IO, Nothing, WebSocketHandler] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
           case r if isGoingToWithSpecificContent(r, Method.GET, "ebay.com", List("buy", "browse", "v1", "item", itemId)) =>
@@ -88,7 +89,7 @@ class EbayBrowseClientSpec extends SttpClientSpec {
     }
 
     "make get request to obtain item details without aspects" in {
-      val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
+      val testingBackend: SttpBackendStub[IO, Nothing, WebSocketHandler] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
           case r if isGoingToWithSpecificContent(r, Method.GET, "ebay.com", List("buy", "browse", "v1", "item", itemId)) =>
@@ -105,7 +106,7 @@ class EbayBrowseClientSpec extends SttpClientSpec {
     }
 
     "return autherror when token expired" in {
-      val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
+      val testingBackend: SttpBackendStub[IO, Nothing, WebSocketHandler] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
           case r if isGoingToWithSpecificContent(r, Method.GET, "ebay.com", List("buy", "browse", "v1", "item", itemId)) =>
@@ -122,7 +123,7 @@ class EbayBrowseClientSpec extends SttpClientSpec {
     }
 
     "return None when 404" in {
-      val testingBackend: SttpBackendStub[IO, Nothing] = AsyncHttpClientCatsBackend
+      val testingBackend: SttpBackendStub[IO, Nothing, WebSocketHandler] = AsyncHttpClientCatsBackend
         .stub[IO]
         .whenRequestMatchesPartial {
           case r if isGoingToWithSpecificContent(r, Method.GET, "ebay.com", List("buy", "browse", "v1", "item", itemId)) =>
