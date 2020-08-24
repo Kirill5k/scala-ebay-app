@@ -17,7 +17,7 @@ private[mappers] object GameDetailsMapper {
     s"(?<=.{12})$CONSOLE_REGEX_PATTERN(?s).*",
     "(?<=.{12})((new|rare|(very )?good) )?(\\b(for|((only|playable|plays) )?on)\\b )?(the )?((sony )?play( )?station( )?(\\d|one|move)|(?<!(Playstation(?s).*))\\bPS\\d\\b|(microsoft )?xb(ox)?( )?(1|o(ne)?|360)|nintendo switch|(nintendo )?(?<!(\\bwii\\b(?s).*))\\bwii( u)?\\b)(?s).*",
     "\\bday\\b (one|1|zero|0)( (edition|\\be(d)?(i)?(t)?(i)?\\b))?(?s).*$",
-    "(the )?(\\bHD\\b|lost|essential|exclusive|special|limited collectors|definitive|atlas|platinum|complete|standard|std|classic(s)?|(\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of the|legacy( pro)?|(un)?limited|premium|(digital )?deluxe|(\\w+)?ultimat).{0,20}(collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
+    "(the )?(\\bHD\\b|steel case|nuketown|wild run|lost|essential|exclusive|special|limited collectors|definitive|atlas|platinum|complete|standard|std|classic(s)?|(\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of|legacy( pro)?|(un)?limited|premium|(digital )?deluxe|(\\w+)?ultimat).{0,20}(collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
     "(?<=.{5})(the )?((new|pristine|inc) )?(super|cheap( )?)?(free|fast|quick)?( )?(and )?(super( )?)?(prompt|free|fast|quick|(next|same|1|one) day|tracked|speedy|worldwide|\\bsc\\b|\\bfc\\b).{0,20}(dispatch|ship(ping)?|post(age)?|delivery|p( )?p).*$",
     "(?<=.{15})((brand )?new.{0,15})?(still )?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
     "(?<=.{15})\\b(kids( \\w+)?|hack slash|single player|Family Fun|basketball|(fun )?adventure|console single|tactical|3rd person|rpg|fps|survival|action|racing|role|wrestling|fighting|multi( )?player)\\b.{0,20}game(?s).*"
@@ -35,12 +35,12 @@ private[mappers] object GameDetailsMapper {
     "Now Released(?s).*$",
     "includes.{0,20}pack(?s).*$",
     "(1st|2nd|first) class.*$",
-    "(fully )?(boxed|complete) (\\bin\\b|with|case)(?s).*$",
+    "(?<=\\w+ )(fully )?(boxed|complete) (\\bin\\b|with|case)(?s).*$",
     "exclusive to(?s).*$",
     "((with|inc(ludes)?) ).{0,15}(content|bonus)(?s).*$",
     "((supplied|comes) )?(with(out)?|\\bw( )?(o)?\\b|in original|no|missing|plus|has|inc(l)?(udes|uding)?) (booklet|original|instruction|box|map|(slip )?case|manual)(?s).*$",
     "(the )?disc(s)? (are|is|in)(?s).*$",
-    "((new|all) )?(fully )?(((very|super) )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)? complete) game(s)?( \\d+)?( new)?",
+    "((new|all) )?(fully )?(((very|super) )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)? complete|\\d) game(s)?( \\d+)?( new)?",
     "(in )?(near )?(great|(very )?good|incredible|ex(cellent)?|amazing|mint|superb|(full )?working|perfect|used|(fully )?tested|lovely|immaculate|fantastic|\\bfab\\b|decent|fair|\\bV\\b)(?s).*(dis(c|k)?(s)?|working( perfectly)?|good|(working )?order|con(d)?(ition)?|value|prices)",
     "(\\bUK\\b|\\bEU\\b|genuine|european|platinum|original)( (region|release|new|only|seller|version|stock|import))?( 20\\d\\d)?",
     "Warner Bros", "ubisoft", "currys", "Take (Two|2)( Interactive)?", "(EA|2k) (dice|music|sport(s)?|games)", "James Camerons",
@@ -51,7 +51,7 @@ private[mappers] object GameDetailsMapper {
     "(?<=\\b(W)?(2k)?\\d+)\\s+(20\\d\\d|wrestling|basketball|footbal|formula)(?s).*",
     "(?<=FIFA) (soccer|football)", "(?<=NBA) basketball", "(?<=WWE) wrestling", "(?<=FIFA )20(?=\\d\\d)",
     "(?<=F1)\\s+(Formula (one|1))( racing)?", "(?<=\\b20\\d\\d)(\\s+)(version|formula)(?s).*",
-    "(?<=Turismo) \\bGT\\b", "(?<=Sonic) The Hedgehog", "Formula (1|One)\\s+(?=F1)", "Marvel(s)?\\s+(?=(deadpool|Spider))",
+    "(?<=Turismo( (\\d|sport))?) \\bGT(\\d|S)?\\b", "(?<=Sonic) The Hedgehog", "Formula (1|One)\\s+(?=F1)", "Marvel(s)?\\s+(?=(deadpool|Spider))",
     "(?<=\\b[ivx]{1,4}\\b)(\\s+)\\d+", "(?<=\\d) \\b[ivx]{1,4}\\b"
   ).mkString("(?i)", "|", "")
 
@@ -67,18 +67,18 @@ private[mappers] object GameDetailsMapper {
     "(sealed )?brand new( (case|sealed))?( in packaging)?( 20\\d\\d)?",
     "\\bID\\d+\\w",
     "platinum", "(16|18) years", "limited run( \\d+)?", "box( )?set", "pre( )?(release|owned|enjoyed|loved)",
-    "compatible", "physical copy", "nuevo", "(big|steel)( )?box( version)?", "no scratches", "(manual|instructions) included",
+    "compatible", "physical copy", "nuevo", "(big|steel)( )?box( version)?", "no scratches", "(manual|instructions)( (is|are))? (included|missing)",
     "100 ebayer", "(condition )?very good", "reorderable", "(posted|sent|dispatched) same day", "in stock( now)?",
     "(only )?played (once|twice)", "best price", "Special Reserve", "Expertly Refurbished Product", "(quality|value) guaranteed",
     "(trusted|eBay|best|from ebays biggest) Seller(s)?", "fully (working|tested)", "Order By 4pm", "Ultimate Fighting Championship",
     "remaster(ed)?", "directors cut", "original", "english", "deluxe", "standard",
-    "\\bctr\\b", "\\bgoty\\b", "mult(i)?( )?lang(uage)?(s)?( in game)?", "(with )?(fast|free)( )?(dispatch|post)",
+    "\\bctr\\b", "\\bgoty\\b", "mult(i)?( )?lang(uage)?(s)?( in game)?", "(with )?(fast|free)( )?(delivery|dispatch|post)",
     "fast free", "blu( )?ray", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "essentials",
     "classic(s)?( (hit(s)?|version))?", "box.{0,20}(complete|manual)", "very rare", "award winning", "official licenced",
     "Unwanted Gift", "limited quantity", "region free", "gift idea", "in case", "add( |-)?on", "jeu console", "\\b(For )?age(s)? \\d+\\b",
     "must see", "see pics", "Backwards Compatible", "Refurbished", "manual", "shrink( )?wrapped", "cert \\d+",
-    "\\brated \\d+\\b", "\\d supplied", "\\bPAL\\b( \\d+)?( (format|version))?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b",
-    "\\bfr\\b", "\\bes\\b", "\\bvg(c| con(d)?(ition)?)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b", "\\bns\\b",
+    "\\brated \\d+\\b", "\\d supplied", "\\bPAL\\b( \\d+)?( (region|format|version))?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b",
+    "\\bfr\\b", "\\bes\\b", "\\bvg(c| con(d)?(ition)?)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b", "\\bns\\b", "\\bBNW(O)?T\\b",
     "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNI(B|P)\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b(( )?\\d+)?",
     "\\bUE\\b", "\\bBN\\b", "\\bRRP\\b(\\s|\\d)*", "\\bremake\\b( 20\\d\\d)?", "(ultra )?\\b(u)?hd(r)?\\b", "\\b4k\\b( enhanced)?",
     "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b", "\\bPG(13)?\\b", "\\bDVD\\b", "\\bSE\\b",
@@ -152,10 +152,7 @@ private[mappers] object GameDetailsMapper {
       .replaceAll(LEVEL1_TITLE_WORDS_REPLACEMENTS, "")
       .replaceAll(LEVEL2_TITLE_WORDS_REPLACEMENTS, "")
       .replaceAll(LEVEL3_TITLE_WORDS_REPLACEMENTS, "")
-      .replaceFirst(
-        "(?<=\\w+ )(?i)(the )?\\w+(?=\\s+(\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)) (\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)(?s).*$",
-        ""
-      )
+      .replaceFirst("(?<=\\w+ )(?i)(the )?\\w+(?=\\s+(\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)) (\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)(?s).*$", "")
       .replaceAll("é", "e")
       .replaceAll("(?i)playerunknown", "Player Unknown")
       .replaceAll("(?i)(littlebigplanet)", "Little Big Planet")

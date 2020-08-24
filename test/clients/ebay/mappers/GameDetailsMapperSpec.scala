@@ -99,6 +99,14 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
       gameDetails.genre must be (None)
     }
 
+    "remove GT from gran turismo title" in {
+      val listingDetails = testListing.copy(title = "Gran Turismo 6 GT6")
+
+      val gameDetails = GameDetailsMapper.from(listingDetails)
+
+      gameDetails.name must be (Some("Gran Turismo 6"))
+    }
+
     "split pubg title" in {
       val listingDetails = testListing.copy(title = "NEW Playerunknowns battlegrounds pal PSVR Ultimate Evil Ed", properties = Map())
 
@@ -300,11 +308,11 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
     }
 
     "quick test" in {
-      val listingDetails = testListing.copy(title = "Playstation 3 PS3 LITTLE BIG PLANET 2 video game UK  PAL with manual FREE P+P")
+      val listingDetails = testListing.copy(title = "Gran Turismo sport GTS")
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      gameDetails.name must be (Some("LITTLE BIG PLANET 2"))
+      gameDetails.name must be (Some("Gran Turismo sport"))
     }
   }
 }
