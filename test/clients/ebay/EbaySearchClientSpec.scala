@@ -51,7 +51,7 @@ class EbaySearchClientSpec extends AsyncWordSpec with Matchers with AsyncMockito
       itemsResponse.compile.toList.unsafeToFuture().map { error =>
         videoGameSearchClient.itemsIds.isEmpty must be (true)
         verify(authClient).accessToken
-        verify(authClient).switchAccount
+        verify(authClient).switchAccount()
         verify(browseClient).search(eqTo(accessToken), anyMap[String, String])
         verify(browseClient, never).getItem(any[String], any[String])
         error must be (List())
@@ -70,7 +70,7 @@ class EbaySearchClientSpec extends AsyncWordSpec with Matchers with AsyncMockito
       itemsResponse.compile.toList.unsafeToFuture().map { error =>
         videoGameSearchClient.itemsIds.isEmpty must be (true)
         verify(authClient, times(1)).accessToken
-        verify(authClient, never).switchAccount
+        verify(authClient, never).switchAccount()
         verify(browseClient, times(1)).search(eqTo(accessToken), anyMap[String, String])
         verify(browseClient, never).getItem(any, any)
         error must be (List())

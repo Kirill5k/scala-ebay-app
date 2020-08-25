@@ -308,11 +308,11 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
     }
 
     "quick test" in {
-      val listingDetails = testListing.copy(title = "Gran Turismo sport GTS")
+      val listingDetails = testListing.copy(title = "FIFA 14 Playstation 3 PS3 Game + Free UK Delivery")
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      gameDetails.name must be (Some("Gran Turismo sport"))
+      gameDetails.name must be (Some("FIFA 14"))
     }
   }
 }

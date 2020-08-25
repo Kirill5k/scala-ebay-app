@@ -27,7 +27,7 @@ private[ebay] class EbayAuthClient @Inject()(catsSttpBackendResource: SttpBacken
   private[auth] var currentAccountIndex: Int = 0
   private[auth] var authTokenRef             = expiredToken
 
-  def accessToken(): IO[String] =
+  def accessToken: IO[String] =
     for {
       tokenRef <- authTokenRef
       token    <- tokenRef.get
@@ -67,6 +67,10 @@ private[ebay] class EbayAuthClient @Inject()(catsSttpBackendResource: SttpBacken
               val message = errorMessage(body)
               IO(logger.error(s"error authenticating with ebay ${status.code}: $message (cid - ${credentials.clientId})")) *>
                 IO.pure(Left(ApiClientError.HttpError(r.code.code, s"error authenticating with ebay: $message")))
+            case Left(error) =>
+              IO(logger.error(s"unexpected error authenticating with ebay: ${error.getMessage}")) *>
+                IO.pure(Left(ApiClientError.InternalError(s"unexpected error authenticating with ebay: ${error.getMessage}")))
+
           }
         }
     }

@@ -25,7 +25,7 @@ class EbayAuthClientSpec extends SttpClientSpec {
         }
 
       val ebayAuthClient = new EbayAuthClient(sttpCatsBackend(testingBackend))
-      val accessToken = ebayAuthClient.accessToken()
+      val accessToken = ebayAuthClient.accessToken
 
       accessToken.unsafeToFuture().map { token =>
         token must be ("KTeE7V9J5VTzdfKpn/nnrkj4+nbtl/fDD92Vctbbalh37c1X3fvEt7u7/uLZ93emB1uu/i5eOz3o8MfJuV7288dzu48BEAAA==")
@@ -42,7 +42,7 @@ class EbayAuthClientSpec extends SttpClientSpec {
       val ebayAuthClient = new EbayAuthClient(sttpCatsBackend(testingBackend))
       ebayAuthClient.authTokenRef = Ref.of(Right(EbayAuthToken("test-token", 7200)))
 
-      val accessToken = ebayAuthClient.accessToken()
+      val accessToken = ebayAuthClient.accessToken
 
       accessToken.unsafeToFuture().map { token =>
         token must be ("test-token")
@@ -60,7 +60,7 @@ class EbayAuthClientSpec extends SttpClientSpec {
 
       val ebayAuthClient = new EbayAuthClient(sttpCatsBackend(testingBackend))
       ebayAuthClient.switchAccount()
-      val accessToken = ebayAuthClient.accessToken()
+      val accessToken = ebayAuthClient.accessToken
 
       accessToken.unsafeToFuture().map { token =>
         token must be ("KTeE7V9J5VTzdfKpn/nnrkj4+nbtl/fDD92Vctbbalh37c1X3fvEt7u7/uLZ93emB1uu/i5eOz3o8MfJuV7288dzu48BEAAA==")
@@ -79,7 +79,7 @@ class EbayAuthClientSpec extends SttpClientSpec {
 
       val ebayAuthClient = new EbayAuthClient(sttpCatsBackend(testingBackend))
       ebayAuthClient.authTokenRef = Ref.of(Right(EbayAuthToken("test-token", 0)))
-      val accessToken = ebayAuthClient.accessToken()
+      val accessToken = ebayAuthClient.accessToken
 
       accessToken.unsafeToFuture().map { token =>
         token must be ("KTeE7V9J5VTzdfKpn/nnrkj4+nbtl/fDD92Vctbbalh37c1X3fvEt7u7/uLZ93emB1uu/i5eOz3o8MfJuV7288dzu48BEAAA==")
@@ -96,7 +96,7 @@ class EbayAuthClientSpec extends SttpClientSpec {
         }
 
       val ebayAuthClient = new EbayAuthClient(sttpCatsBackend(testingBackend))
-      val accessToken = ebayAuthClient.accessToken()
+      val accessToken = ebayAuthClient.accessToken
 
       accessToken.attempt.unsafeToFuture().map { token =>
         token must be (Left(HttpError(400, "error authenticating with ebay: unsupported_grant_type: grant type in request is not supported by the authorization server")))
@@ -115,7 +115,7 @@ class EbayAuthClientSpec extends SttpClientSpec {
         }
 
       val ebayAuthClient = new EbayAuthClient(sttpCatsBackend(testingBackend))
-      val accessToken = ebayAuthClient.accessToken()
+      val accessToken = ebayAuthClient.accessToken
 
       accessToken.unsafeToFuture().map { token =>
         token must be ("KTeE7V9J5VTzdfKpn/nnrkj4+nbtl/fDD92Vctbbalh37c1X3fvEt7u7/uLZ93emB1uu/i5eOz3o8MfJuV7288dzu48BEAAA==")

@@ -57,6 +57,6 @@ final class EbayVideoGamesFinder @Inject()(
   )
 
   actorSystem.scheduler.scheduleWithFixedDelay(initialDelay = 5.seconds, delay = 60.seconds) { () =>
-    searchForCheapItems().compile.drain.unsafeRunSync
+    searchForCheapItems().compile.drain.unsafeRunSync()
   }
 }

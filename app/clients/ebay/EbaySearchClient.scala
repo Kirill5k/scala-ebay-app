@@ -64,7 +64,7 @@ class EbaySearchClient @Inject()(
 
   private def searchForItems(removeUnwanted: EbayItemSummary => Boolean)(searchParams: Map[String, String]): IO[Seq[EbayItemSummary]] =
     for {
-      token <- ebayAuthClient.accessToken()
+      token <- ebayAuthClient.accessToken
       items <- ebayBrowseClient.search(token, searchParams)
       goodItems = items.filter(isNew).filter(hasTrustedSeller).filter(removeUnwanted)
       _         = logger.info(s"search ${searchParams("q")} returned ${goodItems.size} new items (total - ${items.size})")
@@ -72,7 +72,7 @@ class EbaySearchClient @Inject()(
 
   private def getCompleteItem(itemSummary: EbayItemSummary): IO[Option[EbayItem]] =
     for {
-      token <- ebayAuthClient.accessToken()
+      token <- ebayAuthClient.accessToken
       item  <- ebayBrowseClient.getItem(token, itemSummary.itemId)
     } yield item
 

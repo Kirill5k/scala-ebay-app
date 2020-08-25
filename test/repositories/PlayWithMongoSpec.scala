@@ -30,7 +30,7 @@ trait PlayWithMongoSpec extends PlaySpec with GuiceOneAppPerSuite with Injecting
     mongodExecutable.stop()
   }
 
-  override def fakeApplication = new GuiceApplicationBuilder()
+  override def fakeApplication() = new GuiceApplicationBuilder()
     .configure("ebay.credentials" -> List())
     .configure("telegram.botKey" -> "bot-1")
     .configure("telegram.mainChannelId" -> "c-main")

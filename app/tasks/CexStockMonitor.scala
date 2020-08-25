@@ -46,6 +46,6 @@ final class CexGenericStockMonitor @Inject()(
   )
 
   actorSystem.scheduler.scheduleWithFixedDelay(initialDelay = 1.minutes, delay = 10.minutes) { () =>
-    checkCexStock().compile.drain.unsafeRunSync
+    checkCexStock().compile.drain.unsafeRunSync()
   }
 }
