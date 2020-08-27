@@ -9,7 +9,7 @@ private[mappers] object GameDetailsMapper {
   private val CONSOLE_REGEX_PATTERN =
     "((new|rare|official) )?((very )?good )?(\\b(for|((only|playable|plays) )?on)\\b )?(the )?" +
       "((sony )?play( )?st(a)?(t)?(i)?(o)?(n)?(( )?(\\d|one|move))?|(microsoft )?x( )?b(ox)?(( )?(live|o(ne)?|\\d+))?|\\bps( )?\\d\\b|(nintendo )?(switch|\\bwii( u)?\\b))" +
-      "( (only|basketball|exclusive|console|edition|version|action|wrestling|football))?( game(s)?)?( new)?( 20\\d\\d)?"
+      "( game(s)?)?( (formula (1|one)|only|basketball|exclusive|console|edition|version|action|wrestling|football))?( game(s)?)?( new)?( 20\\d\\d)?"
 
   private val LEVEL1_TITLE_WORDS_REPLACEMENTS = List(
     "(gold )?((greatest|playstation|ps) )?\\bhits\\b( range)?",
@@ -17,7 +17,7 @@ private[mappers] object GameDetailsMapper {
     s"(?<=.{12})$CONSOLE_REGEX_PATTERN(?s).*",
     "\\bday\\b (one|1|zero|0)( (edition|\\be(d)?(i)?(t)?(i)?\\b))?(?s).*$",
     "(the )?(\\bHD\\b|steel case|nuketown|wild run|lost|essential|exclusive|special|limited collectors|definitive|atlas|platinum|complete|standard|std|classic(s)?|(\\d+(th)?)? anniversary|remastered|elite|\\beu\\b|coll(ector(s)?)?|ltd|goty|(action )?game of|legacy( pro)?|(un)?limited|premium|(digital )?deluxe|(\\w+)?ultimat).{0,20}(collection|edition|\\be(d)?(i)?(t)?(i)?\\b)(?s).*$",
-    "(?<=.{5})(the )?((new|pristine|inc) )?(super|cheap( )?)?(free|fast|quick)?( )?(and )?(super( )?)?(prompt|free|fast|quick|(next|same|1|one) day|tracked|speedy|worldwide|\\bsc\\b|\\bfc\\b).{0,20}(dispatch|ship(ping)?|post(age)?|delivery|p( )?p).*$",
+    "(?<=.{5})(the )?((new|pristine|inc) )?(super|cheap( )?)?(free|fast|quick)?( )?(and )?(super( )?)?(prompt|free|fast|quick|(next|same|1|one) day|tracked|recorded|speedy|worldwide|\\bsc\\b|\\bfc\\b).{0,20}(dispatch|ship(ping)?|post(age)?|delivery|p( )?p).*$",
     "(?<=.{15})((brand )?new.{0,15})?(still )?((factory |un)?sealed|unopened|shrinkwrapped)(?s).*$",
     "(?<=.{15})\\b(kids( \\w+)?|hack slash|single player|open world|Family Fun|basketball|(fun )?adventure|console single|tactical|3rd person|rpg|fps|survival|action|racing|role|wrestling|fighting|multi( )?player)\\b.{0,20}game(?s).*"
   ).mkString("(?i)", "|", "")
@@ -76,7 +76,7 @@ private[mappers] object GameDetailsMapper {
     "classic(s)?( (hit(s)?|version))?", "box.{0,20}(complete|manual)", "very rare", "award winning", "official licenced",
     "Unwanted Gift", "limited quantity", "region free", "gift idea", "in case", "add( |-)?on", "jeu console", "\\b(For )?age(s)? \\d+\\b",
     "must see", "see pics", "Backwards Compatible", "Refurbished", "manual", "shrink( )?wrapped", "cert \\d+",
-    "\\brated \\d+\\b", "\\d supplied", "\\bPAL\\b( \\d+)?( (region|format|version))?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b",
+    "\\brated \\d+\\b", "\\d supplied", "(region )?\\bPAL\\b( \\d+)?( (region|format|version))?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b",
     "\\bfr\\b", "\\bes\\b", "\\bvg(c| con(d)?(ition)?)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b", "\\bns\\b", "\\bBNW(O)?T\\b",
     "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNI(B|P)\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b(( )?\\d+)?",
     "\\bUE\\b", "\\bBN\\b", "\\bRRP\\b(\\s|\\d)*", "\\bremake\\b( 20\\d\\d)?", "(ultra )?\\b(u)?hd(r)?\\b", "\\b4k\\b( enhanced)?",
@@ -152,7 +152,6 @@ private[mappers] object GameDetailsMapper {
       .replaceAll(LEVEL2_TITLE_WORDS_REPLACEMENTS, "")
       .replaceAll(LEVEL3_TITLE_WORDS_REPLACEMENTS, "")
       .replaceFirst("(?<=\\w+ )(?i)(the )?\\w+(?=\\s+(\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)) (\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)(?s).*$", "")
-      .replaceAll("é", "e")
       .replaceAll("(?i)playerunknown", "Player Unknown")
       .replaceAll("(?i)(littlebigplanet)", "Little Big Planet")
       .replaceAll("(?i)(farcry)", "Far Cry")
@@ -207,6 +206,7 @@ private[mappers] object GameDetailsMapper {
   implicit class StringOps(private val str: String) extends AnyVal {
     def withoutSpecialChars: String =
       str
+        .replaceAll("é", "e")
         .replaceAll("\\P{Print}", "")
         .replaceAll("\\\\x\\p{XDigit}{2}", "")
         .replaceAll("[@~+%\"{}?_;`—–“”!•£&#’'*|.\\[\\]]", "")
