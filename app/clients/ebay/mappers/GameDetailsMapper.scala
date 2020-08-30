@@ -29,13 +29,13 @@ private[mappers] object GameDetailsMapper {
     "\\d{3,}\\s+\\d{4,}",
     "for (the )?playstation( )?vr", "((ps( )?)?(vr|move)|kinect) (needed|required|compatible)", "requires kinect( sensor)?",
     "(dbl|double|triple|twin|expansion|combo)( )?(pack|pk)",
-    "new in (cellophane|packaging|box)( still wrapped)?",
+    "new in (wrapping|cellophane|packaging|box)( still wrapped)?",
     "Now Released(?s).*$",
     "includes.{0,20}pack(?s).*$",
     "(royal mail )?(1st|2nd|first) class.*$",
     "(?<=\\w+ )(fully )?(boxed|complete) (\\bin\\b|with|case)(?s).*$",
     "exclusive to(?s).*$",
-    "((with|inc(ludes)?) ).{0,15}(content|bonus)(?s).*$",
+    "((with|inc(ludes)?) ).{0,15}(dlc|content|bonus)(?s).*$",
     "((supplied|comes) )?(with(out)?|\\bW( )?(O)?\\b|in original|no|missing|plus|has|inc(l)?(udes|uding)?)( game)? (strategy guide|booklet|original|instruction|box|map|(slip )?case|manual)(?s).*$",
     "(the )?disc(s)? (are|is|in)(?s).*$",
     "((new|all) )?(fully )?(((very|super) )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)? complete|\\b\\d\\b) game(s)?( \\d+)?( new)?",
@@ -55,7 +55,7 @@ private[mappers] object GameDetailsMapper {
 
   private val LEVEL3_TITLE_WORDS_REPLACEMENTS = List(
     // removes the word GAME
-    "(the )?(\\b(\\d player|kids( \\w+)?|football sport|shooting|hacker|racing|Skateboarding|action|hit|official|console|gold|children)\\b.{0,15})??\\b(video( )?)?game(s)?\\b( (for kids|series|good|boxed|console|of( the)? (year|olympic|movie)))?( 20\\d\\d)?",
+    "(the )?(\\b(\\d player|kids( \\w+)?|multiplayer|football sport|shooting|hacker|racing|Skateboarding|action|hit|official|console|gold|children)\\b.{0,15})??\\b(video( )?)?game(s)?\\b( (for kids|series|good|boxed|console|of( the)? (year|olympic|movie)))?( 20\\d\\d)?",
     // removes the word USED
     "((barely|condition|never|hardly) )?(un)?used(( very)? good)?( (game|condition))?",
     "(the )?(official )?Strategy Combat( guide)?", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "(racing|auto|golf|football) sport(s)?",
