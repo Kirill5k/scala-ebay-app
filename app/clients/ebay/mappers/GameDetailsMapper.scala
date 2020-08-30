@@ -29,7 +29,7 @@ private[mappers] object GameDetailsMapper {
     "\\d{3,}\\s+\\d{4,}",
     "for (the )?playstation( )?vr", "((ps( )?)?(vr|move)|kinect) (needed|required|compatible)", "requires kinect( sensor)?",
     "(dbl|double|triple|twin|expansion|combo)( )?(pack|pk)",
-    "new in (cellophane|packaging)",
+    "new in (cellophane|packaging|box)( still wrapped)?",
     "Now Released(?s).*$",
     "includes.{0,20}pack(?s).*$",
     "(royal mail )?(1st|2nd|first) class.*$",
@@ -55,7 +55,7 @@ private[mappers] object GameDetailsMapper {
 
   private val LEVEL3_TITLE_WORDS_REPLACEMENTS = List(
     // removes the word GAME
-    "(the )?(\\b(\\d player|kids( \\w+)?|football sport|racing|Skateboarding|action|hit|official|console|gold|children)\\b.{0,15})??\\b(video( )?)?game(s)?\\b( (for kids|series|good|boxed|console|of( the)? (year|olympic|movie)))?( 20\\d\\d)?",
+    "(the )?(\\b(\\d player|kids( \\w+)?|football sport|shooting|hacker|racing|Skateboarding|action|hit|official|console|gold|children)\\b.{0,15})??\\b(video( )?)?game(s)?\\b( (for kids|series|good|boxed|console|of( the)? (year|olympic|movie)))?( 20\\d\\d)?",
     // removes the word USED
     "((barely|condition|never|hardly) )?(un)?used(( very)? good)?( (game|condition))?",
     "(the )?(official )?Strategy Combat( guide)?", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "(racing|auto|golf|football) sport(s)?",
@@ -69,7 +69,7 @@ private[mappers] object GameDetailsMapper {
     "100 ebayer", "(condition )?very good", "reorderable", "(posted|sent|dispatched) same day", "in stock( now)?",
     "(only )?played (once|twice)", "best price", "Special Reserve", "Expertly Refurbished Product", "(quality|value) guaranteed",
     "(trusted|eBay|best|from ebays biggest) Seller(s)?", "fully (working|tested)", "Order By 4pm", "Ultimate Fighting Championship",
-    "remaster(ed)?", "directors cut", "original", "english", "deluxe", "standard",
+    "remaster(ed)?", "directors cut", "original", "english", "deluxe", "standard", "Officially Licenced",
     "\\bctr\\b", "\\bgoty\\b", "mult(i)?( )?lang(uage)?(s)?( in game)?", "(with )?(fast|free|same day)( )?(delivery|dispatch|post)",
     "fast free", "blu( )?ray", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "essentials",
     "classic(s)?( (hit(s)?|version))?", "box.{0,20}(complete|manual)", "very rare", "award winning", "official licenced",
