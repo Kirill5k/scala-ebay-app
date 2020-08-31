@@ -9,7 +9,7 @@ private[mappers] object GameDetailsMapper {
   private val CONSOLE_REGEX_PATTERN =
     "((new|rare|official) )?((very )?good )?(\\b(for|((only|playable|plays) )?on)\\b )?(the )?" +
       "((sony )?play( )?st(a)?(t)?(i)?(o)?(n)?(( )?(\\d|one|move))?|(microsoft )?x( )?b(ox)?(( )?(live|o(ne)?|\\d+))?|\\bps( )?\\d\\b|(nintendo )?(switch|\\bwii( u)?\\b))" +
-      "( game(s)?)?( (formula (1|one)|only|basketball|exclusive|console|edition|version|action|wrestling|football))?( game(s)?)?( new)?( 20\\d\\d)?"
+      "( game(s)?)?( (formula (1|one)|only|basketball|exclusive|console|edition|version|action|wrestling|football|sport(s)?))?( game(s)?)?( new)?( 20\\d\\d)?"
 
   private val LEVEL1_TITLE_WORDS_REPLACEMENTS = List(
     "(gold )?((greatest|playstation|ps) )?\\bhits\\b( range)?",
@@ -74,14 +74,14 @@ private[mappers] object GameDetailsMapper {
     "fast free", "blu( )?ray", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "essentials",
     "classic(s)?( (hit(s)?|version))?", "box.{0,20}(complete|manual)", "very rare", "award winning", "official licenced",
     "Unwanted Gift", "limited quantity", "region free", "gift idea", "in case", "add( |-)?on", "jeu console", "\\b(For )?age(s)? \\d+\\b",
-    "must see", "see pics", "Backwards Compatible", "Refurbished", "manual", "shrink( )?wrapped", "\\bcert( )?\\d+\\b",
+    "must see", "see pics", "Backwards Compatible", "Refurbished", "manual", "shrink( )?wrapped", "\\bcert( )?\\d+\\b", "no dlc(s)?",
     "\\brated \\d+\\b", "\\d supplied", "((region|europe) )?(\\bPAL\\b|\\bNTSC\\b)( \\d+)?( (region|format|version))?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b",
     "\\bfr\\b", "\\bes\\b", "\\bvg(c| con(d)?(ition)?)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b", "\\bns\\b", "\\bBNW(O)?T\\b",
     "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNI(B|P)\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b(( )?\\d+)?",
     "\\bUE\\b", "\\bBN\\b", "\\bRRP\\b(\\s|\\d)*", "\\bremake\\b( 20\\d\\d)?", "(ultra )?\\b(u)?hd(r)?\\b", "\\b4k\\b( enhanced)?",
     "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b", "\\bPG(13)?\\b", "\\bDVD\\b", "\\bSE\\b",
     "\\bAND\\b", "\\bPA2\\b", "\\bWi1\\b", "\\bENG\\b", "\\bVGWO\\b", "\\bFPS\\b", "\\b(PS( )?)?VR\\b( version)?",
-    "\\bSRG(\\d+)?\\b", "\\bEA(N)?\\b", "\\bGC\\b", "\\bCIB\\b", "\\bFOR PC\\b",
+    "\\bSRG(\\d+)?\\b", "\\bEA(N)?\\b", "\\bGC\\b", "\\bCIB\\b", "\\bFOR PC\\b", "\\bLOT 2\\b",
     "(100 )?((all|fully) )?complete( (instructions|package))?", "SEALED(\\s+)?$", "NEW(\\s+)?$"
   ).mkString("(?i)", "|", "")
 
