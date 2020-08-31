@@ -30,7 +30,7 @@ private[mappers] object GameDetailsMapper {
     "for (the )?playstation( )?vr", "((ps( )?)?(vr|move)|kinect) (needed|required|compatible)", "requires kinect( sensor)?",
     "(dbl|double|triple|twin|expansion|combo)( )?(pack|pk)",
     "new in (wrapping|cellophane|packaging|box)( still wrapped)?",
-    "Now Released(?s).*$",
+    "Now Released(?s).*$", "Release date(?s).*$",
     "includes.{0,20}pack(?s).*$",
     "(royal mail )?(1st|2nd|first) class.*$",
     "(?<=\\w+ )(fully )?(boxed|complete) (\\bin\\b|with|case)(?s).*$",

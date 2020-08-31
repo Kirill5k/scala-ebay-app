@@ -39,9 +39,7 @@ final class CexGenericStockMonitor @Inject()(
 ) extends CexStockMonitor[ItemDetails.Generic] {
 
   override protected val searchQueries: List[StockMonitorRequest] = List(
-    StockMonitorRequest(SearchQuery("macbook pro 16,1")),
-    StockMonitorRequest(SearchQuery("xbox 360 grand theft auto 5"), false, true),
-    StockMonitorRequest(SearchQuery("xbox one FireFighters - Airport Fire Department"), false, true)
+    StockMonitorRequest(SearchQuery("macbook pro 16,1"))
   )
 
   actorSystem.scheduler.scheduleWithFixedDelay(initialDelay = 1.minutes, delay = 10.minutes) { () =>
