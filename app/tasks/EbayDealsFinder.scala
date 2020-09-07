@@ -46,7 +46,7 @@ final class EbayVideoGamesFinder @Inject()(
     implicit val ex: ExecutionContext
 ) extends ResellableItemFinder[ItemDetails.Game] {
 
-  override protected val minMarginPercentage: Int = 15
+  override protected val minMarginPercentage: Int = 34
   override protected val searchQueries: List[SearchQuery] = List(
     SearchQuery("PS3"),
     SearchQuery("PS4"),
