@@ -154,9 +154,6 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      println(gameDetails.name.get.toCharArray.toList)
-      println(gameDetails.name.get.toCharArray.map(_.asDigit).toList)
-
       gameDetails.name must be (Some("Bioshock Collection"))
     }
 
@@ -165,21 +162,23 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
 
       val gameDetails = GameDetailsMapper.from(listingDetails)
 
-      println(gameDetails.name.get.toCharArray.toList)
-      println(gameDetails.name.get.toCharArray.map(_.asDigit).toList)
-
       gameDetails.name must be (Some("MINECRAFT"))
     }
 
-    "map gta to full title" in {
-      val listingDetails = testListing.copy(title = "GTA5")
+    "map gta and rdr to full title" in {
+      val titles = Map(
+        "gta5" -> "Grand Theft Auto 5",
+        "gta 5" -> "Grand Theft Auto 5",
+        "grand theft auto gta" -> "grand theft auto Grand Theft Auto",
+        "rdr" -> "Red Dead Redemption",
+        "sunset overdrive" -> "sunset overdrive",
+      )
 
-      val gameDetails = GameDetailsMapper.from(listingDetails)
-
-      println(gameDetails.name.get.toCharArray.toList)
-      println(gameDetails.name.get.toCharArray.map(_.asDigit).toList)
-
-      gameDetails.name must be (Some("Grand Theft Auto 5"))
+      forAll (titles) { case (title, expected) =>
+        val listingDetails = testListing.copy(title = title)
+        val gameDetails = GameDetailsMapper.from(listingDetails)
+        gameDetails.name must be (Some(expected))
+      }
     }
 
     "remove formula 1 if f1" in {
@@ -276,6 +275,8 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         "Call of Duty: Infinite Warfare - complete free 1st class uk postage",
         "Call of Duty: Infinite Warfare the official authentic videogame - new unopened",
         "Call of Duty: Infinite Warfare for microsoft xbox one",
+        "Call of Duty: Infinite Warfare comes with both manuals",
+        "Call of Duty: Infinite Warfare with both manuals",
         "Call of Duty: Infinite Warfare VideoGames",
         "genuine brand new sealed Call of Duty: Infinite Warfare The game",
         "brand new Call of Duty: Infinite Warfare For ages 18+",

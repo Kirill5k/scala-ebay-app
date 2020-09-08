@@ -33,10 +33,10 @@ private[mappers] object GameDetailsMapper {
     "Now Released(?s).*$", "Release date(?s).*$",
     "includes.{0,20}pack(?s).*$",  "amazon.{0,20}exclusive(?s).*$",
     "(royal mail )?(1st|2nd|first) class.*$",
-    "(?<=\\w+ )(fully )?(boxed|complete) (\\bin\\b|with|case)(?s).*$",
+    "(?<=\\w+ )((all|fully) )?(boxed|complete) (\\bin\\b|with|case)(?s).*$",
     "exclusive to(?s).*$",
     "((with|inc(ludes)?|contain)).{0,15}(dlc|content|bonus)(?s).*$",
-    "((supplied|comes) )?(with(out)?|\\bW( )?(O)?\\b|in original|no|missing|plus|has|inc(l)?(udes|uding)?)( game)? (strategy guide|booklet|original|instruction|box|map|(slip )?case|manual)(?s).*$",
+    "((supplied|comes) )?(with(out)?|\\bW( )?(O)?\\b|in original|no|missing|plus|has|inc(l)?(udes|uding)?).{0,15}(strategy guide|booklet|original|instruction|box|map|(slip )?case|manual)(?s).*$",
     "(the )?disc(s)? (are|is|in)(?s).*$",
     "((new|all) )?(fully )?(((very|super) )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)? complete|\\b\\d\\b) game(s)?( \\d+)?( new)?",
     "(in )?(near )?(great|(very )?good|incredible|ex(cellent)?|amazing|nice|mint|superb|(full )?working|perfect|used|(fully )?tested|lovely|immaculate|fantastic|\\bfab\\b|decent|fair|\\bV\\b)(?s).*(dis(c|k)?(s)?|working( (perfectly|fine))?|good|(working )?order|con(d)?(ition)?|value|prices)",
@@ -45,7 +45,7 @@ private[mappers] object GameDetailsMapper {
     "\\bTom clancy(s)?\\b", "gamecube", "Bethesda(s)?( Softworks)?", "Hideo Kojima", "(bandai )?namco", "EastAsiaSoft",
     "rockstar games( present(s)?)?", "James Bond", "Activision", "Peter Jacksons", "Naughty Dog", "Marvels", "\\bTHQ\\b",
     "Microsoft( 20\\d\\d)?", "sony", "(by )?elect(r)?onic arts", "nintendo( \\d+)?", "square enix", "Dreamworks", "Disneys",
-    "Disney( )?Pixar(s)?", "WB Games", "Bend Studio", "LucasArt(s)?", "Insomniac(s)?",
+    "Disney( )?Pixar(s)?", "WB Games", "Bend Studio", "LucasArt(s)?", "Insomniac(s)?", "Amazon",
     "(?<=\\b(W)?(2k)?\\d+)\\s+(20\\d\\d|wrestling|basketball|footbal|formula)(?s).*",
     "(?<=FIFA) (soccer|football)", "(?<=NBA) basketball", "(?<=WWE) wrestling", "(?<=(FIFA|MotoGP) )20(?=\\d\\d)",
     "(?<=F1)\\s+(Formula (one|1))( racing)?", "(?<=\\b20\\d\\d)(\\s+)(version|formula)(?s).*",
@@ -81,7 +81,7 @@ private[mappers] object GameDetailsMapper {
     "\\bUE\\b", "\\bBN\\b", "\\bRRP\\b(\\s|\\d)*", "\\bremake\\b( 20\\d\\d)?", "(ultra )?\\b(u)?hd(r)?\\b", "\\b4k\\b( enhanced)?",
     "\\buns\\b", "\\bx360\\b", "\\bstd\\b", "\\bpsh\\b", "\\bAMP\\b", "\\bRPG\\b", "\\bBBFC\\b", "\\bPG(13)?\\b", "\\bDVD\\b", "\\bSE\\b",
     "\\bAND\\b", "\\bPA2\\b", "\\bWi1\\b", "\\bENG\\b", "\\bVGWO\\b", "\\bFPS\\b", "\\b(PS( )?)?VR\\b( version)?",
-    "\\bSRG(\\d+)?\\b", "\\bEA(N)?\\b", "\\bGC\\b", "\\bCIB\\b", "\\bFOR PC\\b", "\\bLOT 2\\b", "\\bSO4\\b",
+    "\\bSRG(\\d+)?\\b", "\\bEA(N)?\\b", "\\bGC\\b", "\\bCIB\\b", "\\bFOR PC\\b", "\\bLOT 2\\b", "\\bSO4\\b", "\\bT18\\b",
     "(100 )?((all|fully) )?complete( (instructions|package))?", "SEALED(\\s+)?$", "NEW(\\s+)?$"
   ).mkString("(?i)", "|", "")
 
@@ -170,8 +170,8 @@ private[mappers] object GameDetailsMapper {
       .replaceAll("(?i)(\\bww2|ww11\\b)", "wwii")
       .replaceAll("(?i)(\\bcod\\b)", "Call of Duty ")
       .replaceAll("(?i)(\\bmysims\\b)", "my sims")
-      .replaceAll("(?i)RDR(?=\\d)?", "Red Dead Redemption ")
-      .replaceAll("(?i)GTA(?=\\d)?", "Grand Theft Auto ")
+      .replaceAll("(?i)(?<=(^| ))RDR( )?(?=\\d)?", "Red Dead Redemption ")
+      .replaceAll("(?i)(?<=(^| ))GTA( )?(?=\\d)?", "Grand Theft Auto ")
       .replaceAll("(?i)(\\bMGS\\b)", "Metal Gear Solid ")
       .replaceAll("(?i)(\\bRainbow 6\\b)", "Rainbow Six ")
       .replaceAll("(?i)(\\bLEGO Star Wars III\\b)", "LEGO Star Wars 3 ")

@@ -30,8 +30,9 @@ final class TelegramNotificationService @Inject()(
     update.item.itemDetails.fullName match {
       case Some(name) =>
         val price = update.item.price.value
+        val quantity = update.item.price.quantityAvailable
         val url = update.item.listingDetails.url
-        val message = s"STOCK UPDATE for $name (£$price): ${update.updateType} $url"
+        val message = s"STOCK UPDATE for $name (£$price, $quantity): ${update.updateType} $url"
         IO(logger.info(s"""sending "$message"""")) *>
           telegramClient.sendMessageToSecondaryChannel(message)
       case None =>
