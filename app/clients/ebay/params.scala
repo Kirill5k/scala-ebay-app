@@ -21,7 +21,7 @@ object params {
       "itemLocationCountry:GB,"
 
     private val LISTING_NAME_TRIGGER_WORDS = List(
-      "(rune|perk|skill|(e)?xp(erience)?) (stats|points)",
+      "(\\d+|rune|perk|skill|(e)?xp(erience)?) (stats|points)",
       "(demo|game)( )?(code|disc|key|cart|pass)", "(store|reservation|access|cd|unused|digital|upgrade|test|beta|no)( )?(redeem )?(game|code|key)",
       "(software|cartridge(s)?|cart|game|disk|disc(s)?( \\d)?|cover|box|inlay|sleeve|book|cd|collection|manual|card) only",
       "(case|variety|accessor(ies|y)|storage|charge|robot) (system|set|kit|box)", "no dis(c|k)", "Season( \\d)? Pass",
@@ -40,7 +40,7 @@ object params {
       "(xp|level|lvl) boost", "gamer score", "trophy service", "platinum trophy", "arcade mini", "boosting levels", "rare promo",
       "samsung", "huawei", "iphone", "sandisk", "server", "wireless", "Tempered Glass", "Early Access", "beta test",
       "(usa|hungarian|scandinavian|asian|korea(n)?|polish|german|promo(tional)?|starter|demo|french|jap(an)?(ese)?|dutch|italian|spanish|us(a)?|digital|nordic|multi(-)?language) (release|cover|pack|box|import|item|disc|vers|copy)", "arabic", "slovakian", "czech",
-      "\\bhori\\b", "\\bDE\\b", "ID59z", "\\bemail\\b",
+      "\\bhori\\b", "\\bDE\\b", "ID59z", "\\bemail\\b", "steel( )?box",
       "ark survival(\\s+(\\w+|\\d+)){5,}", "Code(-| )?in(-| )?(a)?(-| )?Box",
       "diablo 3(\\s+(\\w+|\\d+)){6,}", "fortnite",
       "skylander", "lego dimension", "disney infinity", "ring fit", "guitar hero",
@@ -53,7 +53,8 @@ object params {
       "fifa(?s).* (team|money|milli|gener|player|gold|point)",
       "borderlands 3(\\s+(\\w+|\\d+)){5,}", "borderlands(?s).* (mayhem|lvl|cash|x50|legendary|money|mod)",
       "rocket(?s).* (item|bod|car|fire|import|trade|inventor|rare|crate|decal|wheel|goal|explos)", "((\\w+|\\d+)\\s+){1,}rocket league(\\s+(\\w+|\\d+)){2,}", "((\\w+|\\d+)\\s+){3,}rocket league",
-      "((\\w+|\\d+)\\s+){3,}swordshield", "((\\w+|\\d+)\\s+){3,}pokemon", "pokemon(\\s+(\\w+|\\d+)){6,}"
+      "((\\w+|\\d+)\\s+){3,}swordshield", "((\\w+|\\d+)\\s+){3,}pokemon", "pokemon(\\s+(\\w+|\\d+)){6,}",
+      "\\bPS1\\b", "\\bPlaystation 1\\b"
     ).mkString("^.*?(?i)(", "|", ").*$").r
 
     override val categoryId: Int = 139973

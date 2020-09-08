@@ -49,7 +49,7 @@ private[mappers] object GameDetailsMapper {
     "(?<=\\b(W)?(2k)?\\d+)\\s+(20\\d\\d|wrestling|basketball|footbal|formula)(?s).*",
     "(?<=FIFA) (soccer|football)", "(?<=NBA) basketball", "(?<=WWE) wrestling", "(?<=(FIFA|MotoGP) )20(?=\\d\\d)",
     "(?<=F1)\\s+(Formula (one|1))( racing)?", "(?<=\\b20\\d\\d)(\\s+)(version|formula)(?s).*",
-    "(?<=Turismo( (\\d|sport))?) \\bGT(\\d|S)?\\b", "(?<=Sonic) The Hedgehog", "Formula (1|One)\\s+(?=F1)", "Marvel(s)?\\s+(?=(deadpool|Spider))",
+    "\\bGT\\b (?=gran turismo)", "(?<=Turismo( (\\d|sport))?) \\bGT(\\d|S)?\\b", "(?<=Sonic) The Hedgehog", "Formula (1|One)\\s+(?=F1)", "Marvel(s)?\\s+(?=(deadpool|Spider))",
     "(?<=\\b[ivx]{1,4}\\b)(\\s+)\\d+", "(?<=\\d) \\b[ivx]{1,4}\\b", "(?<=1) \\bone\b"
   ).mkString("(?i)", "|", "")
 
@@ -210,6 +210,7 @@ private[mappers] object GameDetailsMapper {
   implicit class StringOps(private val str: String) extends AnyVal {
     def withoutSpecialChars: String =
       str
+        .replaceAll("£\\d+(\\.\\d+)?", "")
         .replaceAll("é", "e")
         .replaceAll("\\P{Print}", "")
         .replaceAll("\\\\x\\p{XDigit}{2}", "")
