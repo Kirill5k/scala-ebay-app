@@ -21,6 +21,7 @@ object params {
       "itemLocationCountry:GB,"
 
     private val LISTING_NAME_TRIGGER_WORDS = List(
+      "bundle", "job( |-)?lot",
       "(\\d+|rune|perk|skill|(e)?xp(erience)?) (stats|points)",
       "(demo|game)( )?(code|disc|key|cart|pass)", "(store|reservation|access|cd|unused|digital|upgrade|test|beta|no)( )?(redeem )?(game|code|key)",
       "(software|cartridge(s)?|cart|game|disk|disc(s)?( \\d)?|cover|box|inlay|sleeve|book|cd|collection|manual|card) only",
@@ -54,7 +55,7 @@ object params {
       "borderlands 3(\\s+(\\w+|\\d+)){5,}", "borderlands(?s).* (mayhem|lvl|cash|x50|legendary|money|mod)",
       "rocket(?s).* (item|bod|car|fire|import|trade|inventor|rare|crate|decal|wheel|goal|explos)", "((\\w+|\\d+)\\s+){1,}rocket league(\\s+(\\w+|\\d+)){2,}", "((\\w+|\\d+)\\s+){3,}rocket league",
       "((\\w+|\\d+)\\s+){3,}swordshield", "((\\w+|\\d+)\\s+){3,}pokemon", "pokemon(\\s+(\\w+|\\d+)){6,}",
-      "\\bPS1\\b", "\\bPlaystation 1\\b"
+      "\\bPS(1|2)\\b", "\\bPlaystation 1\\b"
     ).mkString("^.*?(?i)(", "|", ").*$").r
 
     override val categoryId: Int = 139973
