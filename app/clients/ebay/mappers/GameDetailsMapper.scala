@@ -27,7 +27,7 @@ private[mappers] object GameDetailsMapper {
     "[^\\p{L}\\p{N}\\p{P}\\p{Z}]",
     "\\d{5,}(\\w+)?",
     "\\d{3,}\\s+\\d{4,}",
-    "for (the )?playstation( )?vr", "((ps( )?)?(vr|move)|kinect|fit) (needed|required|compatible)", "requires kinect( sensor)?",
+    "for (the )?playstation( )?vr", "((ps( )?)?(vr|move)|kinect|fit|balance board) (needed|required|compatible)", "requires kinect( sensor)?",
     "(dbl|double|triple|twin|expansion|combo|mega)( )?(pack|pk)",
     "new in (wrapping|cellophane|packaging|box)( still wrapped)?",
     "Now Released(?s).*$", "Release date(?s).*$",
@@ -35,10 +35,10 @@ private[mappers] object GameDetailsMapper {
     "(royal mail )?(1st|2nd|first) class.*$",
     "(?<=\\w+ )((all|fully) )?(boxed|complete) (\\bin\\b|with|case)(?s).*$",
     "exclusive to(?s).*$",
-    "((with|inc(ludes)?|contain)).{0,15}(dlc|content|bonus|pack)(?s).*$",
+    "((with|inc(ludes)?|contain)).{0,20}(dlc|content|bonus|pack)(?s).*$",
     "((supplied|comes) )?(with(out)?|\\bW( )?(O)?\\b|in original|\\bno\\b|missing|plus|has|inc(l)?(udes|uding)?).{0,15}(strategy guide|booklet|original|instruction|box|map|(slip )?case|manual)(?s).*$",
     "(the )?disc(s)? (are|is|in)(?s).*$",
-    "((new|all) )?(fully )?(((very|super) )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)? complete|\\b\\d\\b) game(s)?( \\d+)?( new)?",
+    "((new|all) )?(fully )?(((very|super) )?rare|limited run|(\\d+ )?new|pal|physical|great|boxed|full|complete|boxed( and)? complete|\\b\\d\\b) game(s)?( (\\d+|in one))?( new)?",
     "(in )?(near )?(great|(very )?good|incredible|ex(cellent)?|amazing|nice|mint|superb|(full )?working|perfect|used|(fully )?tested|lovely|immaculate|fantastic|\\bfab\\b|decent|fair|\\bV\\b)(?s).*(dis(c|k)?(s)?|working( (perfectly|fine))?|good|(working )?order|con(d)?(ition)?|value|prices)",
     "(\\bUK\\b|\\bEU\\b|genuine|european|platinum|original)( (edition|region|release|new|only|seller|version|stock|import))?( 20\\d\\d)?",
     "Warner Bros", "ubisoft", "currys", "Take (Two|2)( (NG|Interactive))?", "(EA|2k) (dice|music|sport(s)?|games)", "James Camerons",
@@ -59,13 +59,13 @@ private[mappers] object GameDetailsMapper {
     // removes the word USED
     "((barely|condition|never|hardly) )?(un)?used( (once|twice))?(( very)? good)?( (game(s)?|condition))?",
     "(the )?(official )?Strategy Combat( guide)?", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "(racing|auto|golf|football) sport(s)?",
-    "Adventure role playing", "ice hockey", "shoot em up", "Sport(s)? (basketball|football)", "football soccer", "action stealth", "Motorcycles Racing",
+    "Adventure role playing", "ice hockey", "shoot em up", "Sport(s)? (basketball|football)", "football soccer", "action stealth", "(Motorcycles|rally) Racing",
     "((family fun|survival) )?Action Adventure( Open World)?", "(adventure )?survival horror", "fighting multiplayer", "Multi Player", "life simulation",
     "\\bpegi( \\d+)?\\b(?s).*$", "((\\d+|ten)th|(20|ten) year(s)?) (anniversary|celebration)", "(\\d|both)?( )?(dis(c|k)(s)?|cd(s)?)( (version|set|mint))?",
     "(sealed )?brand new( (case|sealed))?( in packaging)?( 20\\d\\d)?",
     "\\bID\\d+\\w", "SEEDESCRIPTIONFORDETAILS", "cheapest on ebay", "strategy guide",
     "platinum", "(16|18) years", "limited run( \\d+)?", "box( )?set", "pre( )?(release|owned|enjoyed|loved)",
-    "compatible", "(bundle|physical) copy", "nuevo", "(big|steel)( )?box( version)?", "no scratches", "(manual|instructions)( (is|are))? (included|missing)",
+    "(Backwards )?compatible", "(bundle|physical) copy", "nuevo", "(big|steel)( )?box( version)?", "no scratches", "(manual|instructions)( (is|are))? (included|missing)",
     "100 ebayer", "(condition )?very good", "reorderable", "(posted|sent|dispatched) same day", "in stock( now)?",
     "never played", "(only )?played (once|twice)", "best price", "Special Reserve", "Expertly Refurbished Product", "(quality|value) guaranteed",
     "(trusted|eBay|best|from ebays biggest) Seller(s)?", "fully (working|tested)", "Order By 4pm", "Ultimate Fighting Championship",
@@ -74,7 +74,7 @@ private[mappers] object GameDetailsMapper {
     "fast free", "blu( )?ray", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "essentials",
     "classic(s)?( (hit(s)?|version))?", "box.{0,20}(complete|manual)", "very rare", "award winning", "official licenced",
     "Unwanted Gift", "limited quantity", "region (free|1)", "gift idea", "in case", "add( |-)?on", "jeu console", "\\b(For )?age(s)? \\d+\\b",
-    "must see", "see pics", "Backwards Compatible", "Refurbished", "(map )?manual", "shrink( )?wrapped", "\\bcert( )?\\d+\\b", "no dlc(s)?",
+    "must see", "see pics", "Refurbished", "(map )?manual", "shrink( )?wrapped", "\\bcert( )?\\d+\\b", "no dlc(s)?",
     "\\brated \\d+\\b", "\\d supplied", "((region|europe) )?(\\bPAL\\b|\\bNTSC\\b)( \\d+)?( (region|format|version))?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b",
     "\\bfr\\b", "\\bes\\b", "\\bvg(c| con(d)?(ition)?)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b", "\\bns\\b", "\\b(B)?NW(O)?T\\b",
     "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNI(B|P)\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b(( )?\\d+)?",
@@ -94,7 +94,7 @@ private[mappers] object GameDetailsMapper {
     "Standart$", "^SALE", "(brand )?new$", "^BOXED", "^SALE", "^NEW", "^best", "^software", "^un( )?opened",
     "un( )?opened$", "rare$", "^rare", "official$", "^bargain", "bargain$", "(near )?mint$", "\\bfor\\b( the)?$",
     "premium$", "\\bvery\\b$", "\\bLIMITED\\b$", "(cleaned )?(fully )?(un)?tested$", "\\bON\\b$", "\\bBY\\b$", "^cheapest",
-    "boxed$", "brand$", "good$", "excellent$", "immaculate$", "instructions$", "superb$", "marvel$", "^mint"
+    "boxed$", "brand$", "good$", "brilliant$", "excellent$", "immaculate$", "instructions$", "superb$", "marvel$", "^mint"
   ).mkString("(?i)", "|", "")
 
   private val PLATFORMS_MATCH_REGEX = List(
@@ -210,6 +210,7 @@ private[mappers] object GameDetailsMapper {
   implicit class StringOps(private val str: String) extends AnyVal {
     def withoutSpecialChars: String =
       str
+        .replaceAll("100%$", "")
         .replaceAll("£\\d+(\\.\\d+)?", "")
         .replaceAll("é", "e")
         .replaceAll("\\P{Print}", "")
