@@ -55,7 +55,7 @@ private[mappers] object GameDetailsMapper {
 
   private val LEVEL3_TITLE_WORDS_REPLACEMENTS = List(
     // removes the word GAME
-    "(the )?(\\b(\\d player|kids( \\w+)?|multiplayer|football sport|shooting|hacker|(car )?racing|Skateboarding|action|hit|official|console|gold|children)\\b.{0,15})??\\b(video( )?)?game(s)?\\b( (for kids|series|good|boxed|console|of( the)? (year|olympic|movie)))?( 20\\d\\d)?",
+    "(the )?(\\b(\\d player|kids( \\w+)?|multiplayer|football sport|shooting|hacker|(car )?racing|Skateboarding|action|hit|official|console|gold|children)\\b.{0,15})??\\b(video( )?)?game(s)?\\b( (for kids|series|good|boxed|console|of( the)? (year|olympic(s)?|movie)))?( 20\\d\\d)?",
     // removes the word USED
     "((barely|condition|never|hardly) )?(un)?used( (once|twice))?(( very)? good)?( (game(s)?|condition))?",
     "(the )?(official )?Strategy Combat( guide)?", "(First Person|FPS) Shooter", "(american|soccer) football( 20\\d\\d)?", "(racing|auto|golf|football) sport(s)?",
@@ -74,7 +74,7 @@ private[mappers] object GameDetailsMapper {
     "fast free", "blu( )?ray", "Console Exclusive", "playable on", "Definitive Experience", "Highly Rated", "essentials",
     "classic(s)?( (hit(s)?|version))?", "box.{0,20}(complete|manual)", "very rare", "award winning", "official licenced",
     "Unwanted Gift", "limited quantity", "region (free|1)", "gift idea", "in case", "add( |-)?on", "jeu console", "\\b(For )?age(s)? \\d+\\b",
-    "must see", "see pics", "Refurbished", "(map )?manual", "shrink( )?wrapped", "\\bcert( )?\\d+\\b", "no dlc(s)?",
+    "must see", "see pics", "Refurbished", "(map )?manual", "shrink( )?wrapped", "\\bcert( )?\\d+\\b", "no dlc(s)?", "in wrappping",
     "\\brated \\d+\\b", "\\d supplied", "((region|europe) )?(\\bPAL\\b|\\bNTSC\\b)( \\d+)?( (region|format|version))?", "\\ben\\b", "\\bcr\\b", "\\bnc\\b",
     "\\bfr\\b", "\\bes\\b", "\\bvg(c| con(d)?(ition)?)?\\b", "\\ban\\b", "\\bLTD\\b", "\\b\\w+VG\\b", "\\bns\\b", "\\b(B)?NW(O)?T\\b",
     "\\bnsw\\b", "\\bsft\\b", "\\bsave s\\b", "\\bdmc\\b", "\\bBNI(B|P)\\b", "\\bNSO\\b", "\\bNM\\b", "\\bLRG\\b(( )?\\d+)?",

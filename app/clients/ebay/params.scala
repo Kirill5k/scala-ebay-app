@@ -40,7 +40,7 @@ object params {
       "membership", "(subscription|gift)( |-)?card", "12 month", "(wallpaper|dynamic) theme", "themes", "account", "achievement pack",
       "(xp|level|lvl) boost", "gamer score", "trophy service", "platinum trophy", "arcade mini", "boosting levels", "rare promo",
       "samsung", "huawei", "iphone", "sandisk", "server", "wireless", "Tempered Glass", "Early Access", "beta test",
-      "(usa|hungarian|scandinavian|asian|korea(n)?|polish|german|promo(tional)?|starter|demo|french|jap(an)?(ese)?|dutch|italian|spanish|us(a)?|digital|nordic|multi(-)?language) (release|cover|pack|box|import|item|disc|vers|copy)", "arabic", "slovakian", "czech",
+      "(usa|hungarian|scandinavian|asian|korea(n)?|polish|german|promo(tional)?|starter|demo|french|jap(an)?(ese)?|dutch|italian|spanish|us(a)?|digital|nordic|\\bau\\b|multi(-)?language) (release|cover|pack|box|import|item|disc|vers|copy)", "arabic", "slovakian", "czech",
       "\\bhori\\b", "\\bDE\\b", "ID59z", "\\bemail\\b", "steel( )?box",
       "ark survival(\\s+(\\w+|\\d+)){5,}", "Code(-| )?in(-| )?(a)?(-| )?Box",
       "diablo 3(\\s+(\\w+|\\d+)){6,}", "fortnite",
