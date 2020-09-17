@@ -241,6 +241,7 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
         "Playstation 4 PS4 game Call of Duty: Infinite Warfare superultimate edition",
         "Call of Duty: Infinite Warfare 20th anniversary FUVG ID7274z",
         "Call of Duty: Infinite Warfare classic edition foo",
+        "Call of Duty: Infinite Warfare new in wrapper",
         "Call of Duty: Infinite Warfare only on playstation",
         "Call of Duty: Infinite Warfare PS4 Game UK PAL VR Compatible PREOWNED",
         "3307216096665BC Call of Duty: Infinite Warfare BRAND NEW SEALED",
