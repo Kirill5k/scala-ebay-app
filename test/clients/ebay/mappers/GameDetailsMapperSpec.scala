@@ -230,6 +230,9 @@ class GameDetailsMapperSpec extends AnyWordSpec with Matchers with Inspectors {
     "remove noise words from title" in {
       val titles = List(
         "Call of Duty Infinite Warfare £54.99",
+        "Call of Duty Infinite Warfare game for kids",
+        "Call of Duty Infinite Warfare also works on ps4",
+        "Call of Duty Infinite Warfare also plays on ps4",
         "Call of Duty Infinite Warfare *brand new sealed*",
         "Call of Duty Infinite Warfare pre-owned multi-player xbox 360",
         "Call of Duty Infinite Warfare multi - player xbox 360",
