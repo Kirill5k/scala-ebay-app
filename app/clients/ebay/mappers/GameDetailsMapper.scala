@@ -61,8 +61,8 @@ private[mappers] object GameDetailsMapper {
     "Adventure role playing", "ice hockey", "shoot em up", "Sport(s)? (skateboard|basketball|football)", "football soccer", "action stealth", "(car|motorcycles|rally) Racing",
     "((family fun|survival) )?Action Adventure( Open World)?", "(adventure )?survival horror", "fighting multiplayer", "Multi Player", "life simulation",
     "\\bpegi( \\d+)?\\b(?s).*$", "((\\d+|ten)th|(20|ten))( year(s)?)? (anniversary|celebration)", "(\\d|both)?( )?(dis(c|k)(s)?|cd(s)?)( (version|set|mint))?",
-    "(sealed )?brand new( (case|sealed))?( in packaging)?( 20\\d\\d)?", "\\d \\d players",
-    "\\bID\\d+\\w", "SEEDESCRIPTIONFORDETAILS", "cheapest on ebay", "strategy guide",
+    "(sealed )?brand new( (case|sealed))?( in packaging)?( 20\\d\\d)?", "\\d \\d players", "1 ONE",
+    "\\bID\\d+\\w", "SEEDESCRIPTIONFORDETAILS", "cheapest on ebay", "strategy guide", "Enhanced for Series X",
     "platinum", "(16|18) years", "limited run( \\d+)?", "box( )?set", "pre( )?(release|owned|enjoyed|loved)",
     "(Backwards )?compatible", "(bundle|physical) copy", "nuevo", "(big|steel)( )?box( version)?", "no scratches", "(map\\s+)?(manual|instructions)( (is|are))?( (included|missing))?",
     "100 ebayer", "(condition )?very good", "reorderable", "(posted|sent|dispatched).{0,10}day( by \\d pm)?", "in stock( now)?",
@@ -153,6 +153,8 @@ private[mappers] object GameDetailsMapper {
       .replaceAll(LEVEL2_TITLE_WORDS_REPLACEMENTS, "")
       .replaceAll(LEVEL3_TITLE_WORDS_REPLACEMENTS, "")
       .replaceFirst("(?<=\\w+ )(?i)(the )?\\w+(?=\\s+(\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)) (\\be(d)?(i)?(t)?(i)?(o)?(n)?\\b|coll(ection)?)(?s).*$", "")
+      .replaceAll("(?i)\\bll\\b", "II")
+      .replaceAll("(?i)\\blll\\b", "III")
       .replaceAll("(?i)playerunknown", "Player Unknown")
       .replaceAll("(?i)(littlebigplanet)", "Little Big Planet")
       .replaceAll("(?i)(farcry)", "Far Cry")
